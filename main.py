@@ -13,9 +13,7 @@ async def start(update: Update, context):
     user = update.effective_user
     user_data = {
         "telegram_id": user.id,
-        "username": user.username,
-        "first_name": user.first_name,
-        "last_name": user.last_name
+        "username": user.username
     }
 
     # Проверяем, есть ли пользователь в БД
