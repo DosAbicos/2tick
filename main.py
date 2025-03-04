@@ -2,7 +2,7 @@ import os
 from telegram import Update
 from telegram.ext import Application, CommandHandler
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
-from supabase import create_client, Client
+from supabase import Client, create_client
 
 # Загружаем ключи из .env
 @@ -16,22 +16,55 @@ async def start(update: Update, context):
