@@ -1,6 +1,8 @@
-from aiogram import Bot, Dispatcher, types
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
+from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import Command
+from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import StatesGroup, State
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 import asyncio
 from supabase import create_client
 import os
@@ -13,6 +15,10 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher()
+
+class TaskState(StatesGroup):
+    waiting_for_text = State()
+    waiting_for_category = State()
 
 main_keyboard = ReplyKeyboardMarkup(
     keyboard=[
@@ -30,7 +36,6 @@ categories_keyboard = ReplyKeyboardMarkup(
     resize_keyboard=True
 )
 
-# Регистрация пользователя
 @dp.message(Command("start"))
 async def start(message: types.Message):
     user_id = message.from_user.id
@@ -46,21 +51,22 @@ async def start(message: types.Message):
     else:
         await message.answer("С возвращением! Что сделаем сегодня?", reply_markup=main_keyboard)
 
-
-# Добавление задачи
-@dp.message(lambda message: message.text == "➕ Добавить задачу")
-async def add_task(message: types.Message):
+@dp.message(F.text == "➕ Добавить задачу")
+async def add_task(message: types.Message, state: FSMContext):
     await message.answer("Напиши текст задачи:", reply_markup=ReplyKeyboardRemove())
-    dp.message.register(save_task)
+    await state.set_state(TaskState.waiting_for_text)
 
-async def save_task(message: types.Message):
-    task_text = message.text
+@dp.message(TaskState.waiting_for_text)
+async def save_task(message: types.Message, state: FSMContext):
+    await state.update_data(text=message.text)
     await message.answer("Выбери категорию задачи:", reply_markup=categories_keyboard)
-    dp.message.register(select_category, state=task_text)
+    await state.set_state(TaskState.waiting_for_category)
 
-async def select_category(message: types.Message, state):
+@dp.message(TaskState.waiting_for_category)
+async def select_category(message: types.Message, state: FSMContext):
+    data = await state.get_data()
+    task_text = data["text"]
     status = message.text
-    task_text = state
 
     supabase.table("tasks").insert({
         "telegram_id": str(message.from_user.id),
@@ -69,13 +75,9 @@ async def select_category(message: types.Message, state):
     }).execute()
 
     await message.answer("✅ Задача добавлена!", reply_markup=main_keyboard)
+    await state.clear()
 
-    # Финал — чистим все хендлеры
-    dp.message.handlers.clear()
-
-
-# Просмотр задач
-@dp.message(lambda message: message.text == "📄 Просмотр задач")
+@dp.message(F.text == "📄 Просмотр задач")
 async def view_tasks(message: types.Message):
     response = supabase.table("tasks").select("*").eq("telegram_id", str(message.from_user.id)).execute()
     tasks = response.data
