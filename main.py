@@ -21,7 +21,20 @@ add_task_button = InlineKeyboardMarkup(
 
 @dp.message(Command("start"))
 async def start(message: types.Message):
-    await message.answer("Привет! Я бот для управления задачами. Выберите действие:", reply_markup=add_task_button)
+    telegram_id = message.from_user.id
+    username = message.from_user.username
+
+    # Проверяем есть ли пользователь в базе
+    response = supabase.table("users").select("*").eq("telegram_id", telegram_id).execute()
+
+    if len(response.data) == 0:
+        # Регаем юзера
+        supabase.table("users").insert({"telegram_id": telegram_id, "username": username}).execute()
+        await message.answer("✅ Вы успешно зарегистрированы!")
+    else:
+        await message.answer("👋 Вы уже зарегистрированы!")
+
+    await message.answer("Выберите действие:", reply_markup=add_task_button)
 
 @dp.callback_query(lambda c: c.data == "add_task")
 async def add_task(callback_query: types.CallbackQuery):
@@ -41,7 +54,16 @@ async def add_task(callback_query: types.CallbackQuery):
 
         @dp.callback_query(lambda c: c.data == "confirm_task")
         async def confirm(callback_query: types.CallbackQuery):
-            supabase.table("tasks").insert({"user_id": message.from_user.id, "text": task_text, "status": "🔥"}).execute()
+            telegram_id = message.from_user.id
+            user_response = supabase.table("users").select("id").eq("telegram_id", telegram_id).execute()
+            user_id = user_response.data[0]["id"]
+
+            supabase.table("tasks").insert({
+                "user_id": user_id,
+                "text": task_text,
+                "status": "🔥"
+            }).execute()
+
             await callback_query.message.answer("✅ Задача добавлена!")
             await bot.answer_callback_query(callback_query.id)
 
