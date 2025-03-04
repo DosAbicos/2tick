@@ -1,65 +1,84 @@
 from aiogram import Bot, Dispatcher, types
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.filters import Command
 import asyncio
-import os
 from supabase import create_client
+import os
 
+API_TOKEN = os.getenv("API_TOKEN")
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-API_TOKEN = os.getenv("API_TOKEN")
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher()
 
-# Кнопки меню
-main_keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-main_keyboard.add("➕ Добавить задачу", "📄 Просмотр задач")
+main_keyboard = ReplyKeyboardMarkup(
+    keyboard=[
+        [KeyboardButton(text="➕ Добавить задачу")],
+        [KeyboardButton(text="📄 Просмотр задач")]
+    ],
+    resize_keyboard=True
+)
 
-category_keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-category_keyboard.add("🔥 Срочные", "✅ Запланированные")
-category_keyboard.add("🔁 Делегированные", "❌ Удаленные")
+categories_keyboard = ReplyKeyboardMarkup(
+    keyboard=[
+        [KeyboardButton(text="🔥 Срочные"), KeyboardButton(text="✅ Запланированные")],
+        [KeyboardButton(text="🔁 Делегированные"), KeyboardButton(text="❌ Удаленные")]
+    ],
+    resize_keyboard=True
+)
 
+# Регистрация пользователя
 @dp.message(Command("start"))
 async def start(message: types.Message):
-    await message.answer("Привет! Я бот для управления задачами. Выберите действие:", reply_markup=main_keyboard)
+    user_id = message.from_user.id
+    username = message.from_user.username
 
+    # Проверяем есть ли уже пользователь
+    response = supabase.table("users").select("*").eq("user_id", str(user_id)).execute()
+    if not response.data:
+        supabase.table("users").insert({
+            "user_id": str(user_id),
+            "username": username
+        }).execute()
+        await message.answer(f"✅ Регистрация завершена!\nДобро пожаловать, {username}!", reply_markup=main_keyboard)
+    else:
+        await message.answer("С возвращением! Что сделаем сегодня?", reply_markup=main_keyboard)
+
+# Добавление задачи
 @dp.message(lambda message: message.text == "➕ Добавить задачу")
 async def add_task(message: types.Message):
-    await message.answer("Введите текст задачи:")
+    await message.answer("Напиши текст задачи:")
+    dp.message.register(save_task)
 
-    @dp.message()
-    async def task_text(message: types.Message):
-        global task_text_global
-        task_text_global = message.text
-        await message.answer("Выберите категорию задачи:", reply_markup=category_keyboard)
+async def save_task(message: types.Message):
+    task_text = message.text
+    await message.answer("Выбери категорию задачи:", reply_markup=categories_keyboard)
+    dp.message.register(select_category, state=task_text)
 
-@dp.message(lambda message: message.text in ["🔥 Срочные", "✅ Запланированные", "🔁 Делегированные", "❌ Удаленные"])
-async def category(message: types.Message):
-    category_dict = {
-        "🔥 Срочные": "🔥",
-        "✅ Запланированные": "✅",
-        "🔁 Делегированные": "🔁",
-        "❌ Удаленные": "❌"
-    }
-    status = category_dict[message.text]
+async def select_category(message: types.Message, state):
+    status = message.text
+    task_text = state
     supabase.table("tasks").insert({
         "user_id": str(message.from_user.id),
-        "text": task_text_global,
+        "text": task_text,
         "status": status
     }).execute()
+
     await message.answer("✅ Задача добавлена!", reply_markup=main_keyboard)
 
+# Просмотр задач
 @dp.message(lambda message: message.text == "📄 Просмотр задач")
 async def view_tasks(message: types.Message):
-    response = supabase.table("tasks").select("text", "status").eq("user_id", str(message.from_user.id)).execute()
+    response = supabase.table("tasks").select("*").eq("user_id", str(message.from_user.id)).execute()
     tasks = response.data
-    if not tasks:
-        await message.answer("У вас нет задач.")
+    if tasks:
+        text = "\n".join([f"{task['status']} — {task['text']}" for task in tasks])
     else:
-        task_list = "\n".join([f"{task['status']} {task['text']}" for task in tasks])
-        await message.answer(f"Ваши задачи:\n{task_list}")
+        text = "У вас пока нет задач."
+    await message.answer(text, reply_markup=main_keyboard)
 
 async def main():
     await dp.start_polling(bot)
