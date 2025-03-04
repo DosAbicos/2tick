@@ -1,34 +1,68 @@
 import os
-import logging
-from telegram import Update
-from telegram.ext import Application, CommandHandler, ContextTypes
-from supabase import Client, create_client
+from aiogram import Bot, Dispatcher, types
+from aiogram.filters import CommandStart
+from aiogram.types import Message
+from supabase import create_client
+from dotenv import load_dotenv
 
+# Загрузка переменных окружения
+load_dotenv()
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-
 API_TOKEN = os.getenv("API_TOKEN")
-ADMIN_ID = int(os.getenv("ADMIN_ID"))
 
-logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
+# Подключение к Supabase
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    user = update.effective_user
-    user_data = {"user_id": user.id, "username": user.username, "first_name": user.first_name, "last_name": user.last_name}
-    supabase.table("users").insert(user_data).execute()
-    await update.message.reply_text(f"Привет, {user.first_name}! Добро пожаловать в Totick 🚀")
+# Инициализация бота
+bot = Bot(token=API_TOKEN)
+dp = Dispatcher()
 
-async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text(update.message.text)
+async def register_user(telegram_id, username):
+    user_exists = supabase.table("users").select("telegram_id").eq("telegram_id", telegram_id).execute()
+    if len(user_exists.data) == 0:
+        data = {
+            "telegram_id": telegram_id,
+            "username": username
+        }
+        supabase.table("users").insert(data).execute()
+        return True
+    return False
 
-def main() -> None:
-    application = Application.builder().token(API_TOKEN).build()
+async def create_task(user_id, text, status):
+    data = {
+        "user_id": user_id,
+        "text": text,
+        "status": status
+    }
+    response = supabase.table("tasks").insert(data).execute()
+    return response
 
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("echo", echo))
+@dp.message(CommandStart())
+async def start_handler(message: Message):
+    registered = await register_user(message.from_user.id, message.from_user.username)
+    if registered:
+        await message.answer("Вы успешно зарегистрированы в системе Totick! ✅")
+    else:
+        await message.answer("Вы уже зарегистрированы!")
 
-    application.run_polling()
+@dp.message()
+async def handle_task(message: Message):
+    user = supabase.table("users").select("id").eq("telegram_id", message.from_user.id).execute()
+    if len(user.data) == 0:
+        await message.answer("Сначала нужно зарегистрироваться через команду /start")
+        return
+
+    user_id = user.data[0]["id"]
+    text = message.text
+    status = "✅ Запланировать"
+
+    await create_task(user_id, text, status)
+    await message.answer(f"Задача добавлена: {text}")
+
+async def main():
+    await dp.start_polling(bot)
 
 if __name__ == "__main__":
-    main()
+    import asyncio
+    asyncio.run(main())
