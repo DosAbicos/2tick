@@ -1,96 +1,100 @@
+import logging
 from aiogram import Bot, Dispatcher, types, F
-from aiogram.filters import Command
+from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import StatesGroup, State
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
-import asyncio
-from supabase import create_client
+from aiogram.fsm.state import State, StatesGroup
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 import os
+from dotenv import load_dotenv
+from supabase import create_client, Client
+
+load_dotenv()
 
 API_TOKEN = os.getenv("API_TOKEN")
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
-supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+# Инициализация Supabase
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
+# Логирование
+logging.basicConfig(level=logging.INFO)
+
+# Инициализация бота и диспетчера
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher()
 
-class TaskState(StatesGroup):
-    waiting_for_text = State()
-    waiting_for_category = State()
+# Состояния
+class TaskForm(StatesGroup):
+    text = State()
+    category = State()
 
-main_keyboard = ReplyKeyboardMarkup(
-    keyboard=[
-        [KeyboardButton(text="➕ Добавить задачу")],
-        [KeyboardButton(text="📄 Просмотр задач")]
-    ],
-    resize_keyboard=True
-)
+# Кнопки главного меню
+main_menu = ReplyKeyboardMarkup(keyboard=[
+    [KeyboardButton(text="Добавить задачу"), KeyboardButton(text="Просмотр задач")],
+], resize_keyboard=True)
 
-categories_keyboard = ReplyKeyboardMarkup(
-    keyboard=[
-        [KeyboardButton(text="🔥 Срочные"), KeyboardButton(text="✅ Запланированные")],
-        [KeyboardButton(text="🔁 Делегированные"), KeyboardButton(text="❌ Удаленные")]
-    ],
-    resize_keyboard=True
-)
+# Inline-кнопки для категорий задач
+category_keyboard = InlineKeyboardMarkup(inline_keyboard=[
+    [InlineKeyboardButton(text="🔥 Срочные", callback_data="urgent"),
+     InlineKeyboardButton(text="✅ Запланированные", callback_data="planned")],
+    [InlineKeyboardButton(text="🔁 Делегированные", callback_data="delegated"),
+     InlineKeyboardButton(text="❌ Удаленные", callback_data="deleted")]
+])
 
-@dp.message(Command("start"))
-async def start(message: types.Message):
-    user_id = message.from_user.id
+# Обработчик команды /start
+@dp.message(CommandStart())
+async def cmd_start(message: types.Message):
+    telegram_id = message.from_user.id
     username = message.from_user.username
 
-    response = supabase.table("users").select("*").eq("telegram_id", str(user_id)).execute()
-    if not response.data:
-        supabase.table("users").insert({
-            "telegram_id": str(user_id),
-            "username": username
-        }).execute()
-        await message.answer(f"✅ Регистрация завершена!\nДобро пожаловать, {username}!", reply_markup=main_keyboard)
+    # Проверяем, есть ли пользователь в БД
+    user = supabase.table("users").select("id").eq("telegram_id", telegram_id).single().execute()
+
+    if user.data:
+        await message.answer("С возвращением! Что сделаем сегодня?", reply_markup=main_menu)
     else:
-        await message.answer("С возвращением! Что сделаем сегодня?", reply_markup=main_keyboard)
+        supabase.table("users").insert({"telegram_id": telegram_id, "username": username}).execute()
+        await message.answer("Добро пожаловать в Totick! Чем займемся?", reply_markup=main_menu)
 
-@dp.message(F.text == "➕ Добавить задачу")
+# Обработчик кнопки "Добавить задачу"
+@dp.message(F.text == "Добавить задачу")
 async def add_task(message: types.Message, state: FSMContext):
-    await message.answer("Напиши текст задачи:", reply_markup=ReplyKeyboardRemove())
-    await state.set_state(TaskState.waiting_for_text)
+    await message.answer("Напиши текст задачи:", reply_markup=types.ReplyKeyboardRemove())
+    await state.set_state(TaskForm.text)
 
-@dp.message(TaskState.waiting_for_text)
-async def save_task(message: types.Message, state: FSMContext):
+# Получаем текст задачи
+@dp.message(TaskForm.text)
+async def process_task_text(message: types.Message, state: FSMContext):
     await state.update_data(text=message.text)
-    await message.answer("Выбери категорию задачи:", reply_markup=categories_keyboard)
-    await state.set_state(TaskState.waiting_for_category)
+    await message.answer("Выбери категорию задачи:", reply_markup=category_keyboard)
+    await state.set_state(TaskForm.category)
 
-@dp.message(TaskState.waiting_for_category)
-async def select_category(message: types.Message, state: FSMContext):
+# Получаем категорию задачи
+@dp.callback_query(TaskForm.category)
+async def select_category(callback: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
     task_text = data["text"]
-    status = message.text
+    category = callback.data
+    telegram_id = callback.from_user.id
 
+    # Получаем user_id по telegram_id
+    user = supabase.table("users").select("id").eq("telegram_id", telegram_id).single().execute()
+    user_id = user.data["id"]
+
+    # Сохраняем задачу
     supabase.table("tasks").insert({
-        "telegram_id": str(message.from_user.id),
+        "user_id": user_id,
         "text": task_text,
-        "status": status
+        "category": category,
+        "status": "new"
     }).execute()
 
-    await message.answer("✅ Задача добавлена!", reply_markup=main_keyboard)
+    await callback.message.answer("Задача добавлена!", reply_markup=main_menu)
     await state.clear()
 
-@dp.message(F.text == "📄 Просмотр задач")
-async def view_tasks(message: types.Message):
-    response = supabase.table("tasks").select("*").eq("telegram_id", str(message.from_user.id)).execute()
-    tasks = response.data
-    if tasks:
-        text = "\n".join([f"{task['status']} — {task['text']}" for task in tasks])
-    else:
-        text = "У вас пока нет задач."
-    await message.answer(text, reply_markup=main_keyboard)
-
-
-async def main():
-    await dp.start_polling(bot)
-
+    await callback.answer()
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    dp.run_polling(bot)
