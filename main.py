@@ -14,26 +14,15 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher()
 
-# Кнопки главного меню
-main_menu = InlineKeyboardMarkup(
-    inline_keyboard=[
-        [InlineKeyboardButton(text="➕ Добавить задачу", callback_data="add_task")],
-        [InlineKeyboardButton(text="📄 Просмотр задач", callback_data="view_tasks")]
-    ]
-)
-
-category_buttons = InlineKeyboardMarkup(
-    inline_keyboard=[
-        [InlineKeyboardButton(text="🔥 Срочные", callback_data="category_urgent")],
-        [InlineKeyboardButton(text="✅ Запланированные", callback_data="category_planned")],
-        [InlineKeyboardButton(text="🔁 Делегированные", callback_data="category_delegated")],
-        [InlineKeyboardButton(text="❌ Удаленные", callback_data="category_deleted")]
-    ]
+# Кнопки
+add_task_button = InlineKeyboardMarkup(
+    inline_keyboard=[[InlineKeyboardButton(text="➕ Добавить задачу", callback_data="add_task")],
+                     [InlineKeyboardButton(text="👀 Просмотр задач", callback_data="view_tasks")]]
 )
 
 @dp.message(Command("start"))
 async def start(message: types.Message):
-    await message.answer("Привет! Я бот для управления задачами. Выберите действие:", reply_markup=main_menu)
+    await message.answer("Привет! Я бот для управления задачами. Выберите действие:", reply_markup=add_task_button)
 
 @dp.callback_query(lambda c: c.data == "add_task")
 async def add_task(callback_query: types.CallbackQuery):
@@ -42,32 +31,42 @@ async def add_task(callback_query: types.CallbackQuery):
 
     @dp.message()
     async def task_text(message: types.Message):
+        global task_text
         task_text = message.text
-        await message.answer("Выберите категорию задачи:", reply_markup=category_buttons)
+        category_buttons = InlineKeyboardMarkup(
+            inline_keyboard=[
+                [InlineKeyboardButton(text="🔥 Срочные", callback_data="🔥"),
+                 InlineKeyboardButton(text="✅ Запланированные", callback_data="✅")],
+                [InlineKeyboardButton(text="🔁 Делегированные", callback_data="🔁"),
+                 InlineKeyboardButton(text="❌ Удаленные", callback_data="❌")]
+            ]
+        )
+        await message.answer(f"Вы ввели задачу: {task_text}\nВыберите категорию:", reply_markup=category_buttons)
 
-        @dp.callback_query(lambda c: c.data.startswith("category_"))
-        async def category(callback_query: types.CallbackQuery):
-            category = callback_query.data.split("_")[1]
-            category_map = {
-                "urgent": "🔥",
-                "planned": "✅",
-                "delegated": "🔁",
-                "deleted": "❌"
-            }
-            status = category_map[category]
-            supabase.table("tasks").insert({"user_id": message.from_user.id, "text": task_text, "status": status}).execute()
-            await callback_query.message.answer(f"✅ Задача добавлена в категорию {status}!")
-            await bot.answer_callback_query(callback_query.id)
+@dp.callback_query(lambda c: c.data in ["🔥", "✅", "🔁", "❌"])
+async def category(callback_query: types.CallbackQuery):
+    status = callback_query.data
+    user_id = callback_query.from_user.id
+    await callback_query.message.answer(f"✅ Задача добавлена в категорию {status}!")
+    await bot.answer_callback_query(callback_query.id)
+    supabase.table("tasks").insert({
+        "user_id": str(user_id),
+        "text": task_text,
+        "status": status
+    }).execute()
 
 @dp.callback_query(lambda c: c.data == "view_tasks")
 async def view_tasks(callback_query: types.CallbackQuery):
-    response = supabase.table("tasks").select("text, status").execute()
-    tasks = response.data
-    if not tasks:
-        await callback_query.message.answer("У вас пока нет задач.")
-    else:
+    user_id = str(callback_query.from_user.id)
+    data = supabase.table("tasks").select("text, status").eq("user_id", user_id).execute()
+    tasks = data.data
+
+    if tasks:
         tasks_text = "\n".join([f"{task['status']} {task['text']}" for task in tasks])
         await callback_query.message.answer(f"Ваши задачи:\n{tasks_text}")
+    else:
+        await callback_query.message.answer("У вас пока нет задач.")
+
     await bot.answer_callback_query(callback_query.id)
 
 async def main():
