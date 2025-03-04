@@ -37,10 +37,10 @@ async def start(message: types.Message):
     username = message.from_user.username
 
     # Проверяем есть ли уже пользователь
-    response = supabase.table("users").select("*").eq("user_id", str(user_id)).execute()
+    response = supabase.table("users").select("*").eq("telegram_id", str(user_id)).execute()
     if not response.data:
         supabase.table("users").insert({
-            "user_id": str(user_id),
+            "telegram_id": str(user_id),
             "username": username
         }).execute()
         await message.answer(f"✅ Регистрация завершена!\nДобро пожаловать, {username}!", reply_markup=main_keyboard)
