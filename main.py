@@ -1,11 +1,9 @@
 import os
-from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 from supabase import create_client, Client
 
 # Загружаем ключи из .env
-load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
