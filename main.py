@@ -14,27 +14,26 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher()
 
-# Кнопка добавления задачи
-add_task_button = InlineKeyboardMarkup(
-    inline_keyboard=[[InlineKeyboardButton(text="➕ Добавить задачу", callback_data="add_task")]]
+# Кнопки главного меню
+main_menu = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [InlineKeyboardButton(text="➕ Добавить задачу", callback_data="add_task")],
+        [InlineKeyboardButton(text="📄 Просмотр задач", callback_data="view_tasks")]
+    ]
+)
+
+category_buttons = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [InlineKeyboardButton(text="🔥 Срочные", callback_data="category_urgent")],
+        [InlineKeyboardButton(text="✅ Запланированные", callback_data="category_planned")],
+        [InlineKeyboardButton(text="🔁 Делегированные", callback_data="category_delegated")],
+        [InlineKeyboardButton(text="❌ Удаленные", callback_data="category_deleted")]
+    ]
 )
 
 @dp.message(Command("start"))
 async def start(message: types.Message):
-    telegram_id = message.from_user.id
-    username = message.from_user.username
-
-    # Проверяем есть ли пользователь в базе
-    response = supabase.table("users").select("*").eq("telegram_id", telegram_id).execute()
-
-    if len(response.data) == 0:
-        # Регаем юзера
-        supabase.table("users").insert({"telegram_id": telegram_id, "username": username}).execute()
-        await message.answer("✅ Вы успешно зарегистрированы!")
-    else:
-        await message.answer("👋 Вы уже зарегистрированы!")
-
-    await message.answer("Выберите действие:", reply_markup=add_task_button)
+    await message.answer("Привет! Я бот для управления задачами. Выберите действие:", reply_markup=main_menu)
 
 @dp.callback_query(lambda c: c.data == "add_task")
 async def add_task(callback_query: types.CallbackQuery):
@@ -44,33 +43,32 @@ async def add_task(callback_query: types.CallbackQuery):
     @dp.message()
     async def task_text(message: types.Message):
         task_text = message.text
-        confirm_buttons = InlineKeyboardMarkup(
-            inline_keyboard=[
-                [InlineKeyboardButton(text="✅ Подтвердить", callback_data="confirm_task"),
-                 InlineKeyboardButton(text="❌ Отменить", callback_data="cancel_task")]
-            ]
-        )
-        await message.answer(f"Вы ввели задачу: {task_text}", reply_markup=confirm_buttons)
+        await message.answer("Выберите категорию задачи:", reply_markup=category_buttons)
 
-        @dp.callback_query(lambda c: c.data == "confirm_task")
-        async def confirm(callback_query: types.CallbackQuery):
-            telegram_id = message.from_user.id
-            user_response = supabase.table("users").select("id").eq("telegram_id", telegram_id).execute()
-            user_id = user_response.data[0]["id"]
-
-            supabase.table("tasks").insert({
-                "user_id": user_id,
-                "text": task_text,
-                "status": "🔥"
-            }).execute()
-
-            await callback_query.message.answer("✅ Задача добавлена!")
+        @dp.callback_query(lambda c: c.data.startswith("category_"))
+        async def category(callback_query: types.CallbackQuery):
+            category = callback_query.data.split("_")[1]
+            category_map = {
+                "urgent": "🔥",
+                "planned": "✅",
+                "delegated": "🔁",
+                "deleted": "❌"
+            }
+            status = category_map[category]
+            supabase.table("tasks").insert({"user_id": message.from_user.id, "text": task_text, "status": status}).execute()
+            await callback_query.message.answer(f"✅ Задача добавлена в категорию {status}!")
             await bot.answer_callback_query(callback_query.id)
 
-        @dp.callback_query(lambda c: c.data == "cancel_task")
-        async def cancel(callback_query: types.CallbackQuery):
-            await callback_query.message.answer("❌ Задача отменена.")
-            await bot.answer_callback_query(callback_query.id)
+@dp.callback_query(lambda c: c.data == "view_tasks")
+async def view_tasks(callback_query: types.CallbackQuery):
+    response = supabase.table("tasks").select("text, status").execute()
+    tasks = response.data
+    if not tasks:
+        await callback_query.message.answer("У вас пока нет задач.")
+    else:
+        tasks_text = "\n".join([f"{task['status']} {task['text']}" for task in tasks])
+        await callback_query.message.answer(f"Ваши задачи:\n{tasks_text}")
+    await bot.answer_callback_query(callback_query.id)
 
 async def main():
     await dp.start_polling(bot)
