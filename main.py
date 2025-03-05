@@ -89,7 +89,7 @@ async def send_reminders():
 
 
 async def main():
-    scheduler.add_job(send_reminders, "cron", hour=22, minute=26)
+    scheduler.add_job(send_reminders, "cron", hour=22, minute=30)
     scheduler.start()
 
     await dp.start_polling(bot)
