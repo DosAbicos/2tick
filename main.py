@@ -1,75 +1,87 @@
+import logging
+import os
 from aiogram import Bot, Dispatcher, types, F
-from aiogram.filters import Command
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-import asyncio
-import asyncpg
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
-import os
+import httpx
 
-TOKEN = os.getenv("API_TOKEN")
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+API_TOKEN = os.getenv("API_TOKEN")
 ADMIN_ID = os.getenv("ADMIN_ID")
 
-bot = Bot(token=TOKEN)
+bot = Bot(token=API_TOKEN, parse_mode=ParseMode.HTML)
 dp = Dispatcher()
-scheduler = AsyncIOScheduler()
-
-DB_DSN = os.getenv("DATABASE_URL")
+logging.basicConfig(level=logging.INFO)
 
 class TaskState(StatesGroup):
     waiting_for_task = State()
+    waiting_for_category = State()
 
-async def create_db_pool():
-    return await asyncpg.create_pool(dsn=DB_DSN)
+async def add_task_to_supabase(task, category):
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            f"{SUPABASE_URL}/rest/v1/tasks",
+            headers={
+                "apikey": SUPABASE_KEY,
+                "Authorization": f"Bearer {SUPABASE_KEY}",
+                "Content-Type": "application/json"
+            },
+            json={"title": task, "category": category, "completed": False}
+        )
+        print(response.json())
+        return response.status_code == 201
 
-async def send_reminders():
-    pool = await create_db_pool()
-    async with pool.acquire() as conn:
-        tasks = await conn.fetch("SELECT id, title FROM tasks WHERE reminder_time <= NOW() AND completed = false")
-        for task in tasks:
-            await bot.send_message(ADMIN_ID, f"🔔 Напоминание: {task['title']}")
-            await conn.execute("UPDATE tasks SET completed = true WHERE id = $1", task['id'])
-
-scheduler.add_job(send_reminders, "interval", minutes=1)
-scheduler.start()
-
-@dp.message(Command("start"))
-async def cmd_start(message: types.Message):
-    builder = InlineKeyboardBuilder()
-    builder.add(InlineKeyboardButton(text="Добавить задачу", callback_data="add_task"))
-    builder.add(InlineKeyboardButton(text="Просмотр задач", callback_data="view_tasks"))
-    await message.answer("Привет! Это Totick!", reply_markup=builder.as_markup())
+@dp.message(F.text == "/start")
+async def start_handler(message: types.Message):
+    buttons = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="➕ Добавить задачу", callback_data="add_task")],
+        [InlineKeyboardButton(text="👀 Просмотр задач", callback_data="view_tasks")]
+    ])
+    await message.answer("Привет! Я бот Totick 🤖\nВыбери действие:", reply_markup=buttons)
 
 @dp.callback_query(F.data == "add_task")
 async def add_task(callback: types.CallbackQuery, state: FSMContext):
-    await callback.message.answer("Введите задачу:")
+    await callback.message.answer("📝 Введите задачу:")
     await state.set_state(TaskState.waiting_for_task)
     await callback.answer()
 
 @dp.message(TaskState.waiting_for_task)
 async def process_task(message: types.Message, state: FSMContext):
-    pool = await create_db_pool()
-    async with pool.acquire() as conn:
-        await conn.execute("INSERT INTO tasks (title, completed) VALUES ($1, $2)", message.text, False)
-        await message.answer("✅ Задача добавлена")
-    await state.clear()
-
-@dp.callback_query(F.data == "view_tasks")
-async def view_tasks(callback: types.CallbackQuery):
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🔥 Срочные", callback_data="urgent")],
-        [InlineKeyboardButton(text="✅ Запланированные", callback_data="planned")],
-        [InlineKeyboardButton(text="🔁 Делегированные", callback_data="delegated")],
-        [InlineKeyboardButton(text="❌ Удаленные", callback_data="deleted")]
+    await state.update_data(task=message.text)
+    buttons = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="🔥 Сделать немедленно", callback_data="urgent")],
+        [InlineKeyboardButton(text="✅ Запланировать", callback_data="planned")],
+        [InlineKeyboardButton(text="🔁 Делегировать", callback_data="delegated")],
+        [InlineKeyboardButton(text="❌ Удалить", callback_data="deleted")]
     ])
-    await callback.message.answer("Выберите категорию задач:", reply_markup=keyboard)
+    await message.answer("Выбери категорию задачи:", reply_markup=buttons)
+    await state.set_state(TaskState.waiting_for_category)
+
+@dp.callback_query(TaskState.waiting_for_category)
+async def process_category(callback: types.CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    task = data["task"]
+    category = callback.data
+
+    category_names = {
+        "urgent": "🔥 Сделать немедленно",
+        "planned": "✅ Запланировать",
+        "delegated": "🔁 Делегировать",
+        "deleted": "❌ Удалить"
+    }
+    category_name = category_names.get(category, "Неизвестная категория")
+
+    success = await add_task_to_supabase(task, category_name)
+    if success:
+        await callback.message.answer(f"✅ Задача добавлена в категорию: {category_name}")
+    else:
+        await callback.message.answer("❌ Ошибка при добавлении задачи")
+
+    await state.clear()
     await callback.answer()
 
-async def main():
-    await bot.delete_webhook(drop_pending_updates=True)
-    await dp.start_polling(bot)
-
 if __name__ == "__main__":
-    asyncio.run(main())
+    dp.run_polling(bot)
