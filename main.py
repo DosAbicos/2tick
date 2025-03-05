@@ -1,72 +1,62 @@
-import os
+import logging
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton
-from supabase import create_client
+from aiogram.utils.keyboard import InlineKeyboardBuilder
+from supabase import create_client, Client
+import asyncio
+import os
 
-TOKEN = os.getenv("API_TOKEN")
+API_TOKEN = os.getenv("API_TOKEN")
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
-bot = Bot(token=TOKEN)
+bot = Bot(token=API_TOKEN)
 dp = Dispatcher()
 
-supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-main_keyboard = ReplyKeyboardMarkup(keyboard=[
-    [KeyboardButton(text="➕ Добавить задачу")],
-    [KeyboardButton(text="📋 Просмотр задач")]
-], resize_keyboard=True)
+# Логгер
+logging.basicConfig(level=logging.INFO)
 
-category_keyboard = InlineKeyboardMarkup(inline_keyboard=[
-    [InlineKeyboardButton(text="🔥 Срочные", callback_data="urgent")],
-    [InlineKeyboardButton(text="✅ Запланированные", callback_data="planned")],
-    [InlineKeyboardButton(text="🔁 Делегированные", callback_data="delegated")],
-    [InlineKeyboardButton(text="❌ Удаленные", callback_data="deleted")]
-])
+def get_or_create_user(telegram_id):
+    response = supabase.table("users").select("id").eq("telegram_id", telegram_id).execute()
+    if response.data:
+        return response.data[0]["id"]
+    else:
+        user = supabase.table("users").insert({"telegram_id": telegram_id}).execute()
+        return user.data[0]["id"]
 
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
     telegram_id = message.from_user.id
-    user = supabase.table("users").select("id").eq("telegram_id", telegram_id).execute()
+    get_or_create_user(telegram_id)
+    builder = InlineKeyboardBuilder()
+    builder.button(text="Добавить задачу", callback_data="add_task")
+    builder.button(text="Просмотр задач", callback_data="view_tasks")
+    builder.adjust(1)
+    await message.answer("Привет! Что хотите сделать?", reply_markup=builder.as_markup())
 
-    if len(user.data) == 0:
-        supabase.table("users").insert({
-            "telegram_id": telegram_id,
-            "username": message.from_user.username
-        }).execute()
-        await message.answer("Ты зарегистрирован! 🔥 Теперь можешь добавлять задачи", reply_markup=main_keyboard)
-    else:
-        await message.answer("С возвращением! Чем займемся сегодня?", reply_markup=main_keyboard)
+@dp.callback_query(lambda c: c.data == "add_task")
+async def add_task(callback: types.CallbackQuery):
+    await callback.message.answer("Введите текст задачи")
+    await bot.answer_callback_query(callback.id)
+    dp.message.register(process_task_text)
 
-@dp.message()
-async def add_task(message: types.Message):
-    if message.text == "➕ Добавить задачу":
-        await message.answer("Напиши текст задачи")
-        return
-
+async def process_task_text(message: types.Message):
     telegram_id = message.from_user.id
-    user = supabase.table("users").select("id").eq("telegram_id", telegram_id).execute()
+    user_id = get_or_create_user(telegram_id)
+    task_text = message.text
+    supabase.table("tasks").insert({
+        "user_id": user_id,
+        "text": task_text,
+        "category": "🔥 Срочные",
+        "status": "new"
+    }).execute()
+    await message.answer("✅ Задача добавлена")
+    dp.message.unregister(process_task_text)
 
-    if len(user.data) > 0:
-        user_id = user.data[0]["id"]
-        task_text = message.text
-        await message.answer("Выбери категорию задачи", reply_markup=category_keyboard)
-
-        @dp.callback_query()
-        async def choose_category(callback: types.CallbackQuery):
-            category = callback.data
-            supabase.table("tasks").insert({
-                "user_id": user_id,
-                "text": task_text,
-                "category": category,
-                "status": "new"
-            }).execute()
-            await callback.message.answer("Задача добавлена ✅")
-            await callback.answer()
-    else:
-        await message.answer("Ты еще не зарегистрирован, нажми /start чтобы зарегистрироваться")
+async def main():
+    await dp.start_polling(bot)
 
 if __name__ == "__main__":
-    import asyncio
-    asyncio.run(dp.start_polling(bot))
+    asyncio.run(main())
