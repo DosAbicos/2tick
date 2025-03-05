@@ -2,7 +2,9 @@ import os
 import asyncio
 import logging
 from aiogram import Bot, Dispatcher, types, F
-from aiogram.filters import Command
+from aiogram.filters import Command, StateFilter
+from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import StatesGroup, State
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from supabase import create_client
 from datetime import datetime
@@ -18,6 +20,9 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 scheduler = AsyncIOScheduler()
 
 logging.basicConfig(level=logging.INFO)
+
+class TaskState(StatesGroup):
+    waiting_for_task = State()
 
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
@@ -40,12 +45,13 @@ async def cmd_start(message: types.Message):
     await message.answer("Привет! Чем займемся сегодня?", reply_markup=keyboard)
 
 @dp.callback_query(F.data == "add_task")
-async def add_task_callback(callback: types.CallbackQuery):
+async def add_task_callback(callback: types.CallbackQuery, state: FSMContext):
     await callback.message.answer("Введите задачу текстом:")
+    await state.set_state(TaskState.waiting_for_task)
     await callback.answer()
 
-@dp.message()
-async def process_task(message: types.Message):
+@dp.message(StateFilter(TaskState.waiting_for_task))
+async def process_task(message: types.Message, state: FSMContext):
     user_id = message.from_user.id
     text = message.text
 
@@ -60,6 +66,7 @@ async def process_task(message: types.Message):
         }).execute()
 
         await message.answer(f"✅ Задача добавлена: {text}")
+        await state.clear()
 
 @dp.callback_query(F.data == "view_tasks")
 async def view_tasks(callback: types.CallbackQuery):
