@@ -30,6 +30,7 @@ async def get_user_id(telegram_id):
                 "Content-Type": "application/json"
             }
         )
+        logging.info(f"SUPABASE RESPONSE: {response.status_code} {response.text}")  # Лог ответа
         data = response.json()
         if data:
             return data[0]["id"]
