@@ -19,7 +19,6 @@ scheduler = AsyncIOScheduler()
 
 logging.basicConfig(level=logging.INFO)
 
-
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
     user_id = message.from_user.id
@@ -40,12 +39,10 @@ async def cmd_start(message: types.Message):
 
     await message.answer("Привет! Чем займемся сегодня?", reply_markup=keyboard)
 
-
 @dp.callback_query(F.data == "add_task")
 async def add_task_callback(callback: types.CallbackQuery):
     await callback.message.answer("Введите задачу текстом:")
     await callback.answer()
-
 
 @dp.message()
 async def process_task(message: types.Message):
@@ -64,7 +61,6 @@ async def process_task(message: types.Message):
 
         await message.answer(f"✅ Задача добавлена: {text}")
 
-
 @dp.callback_query(F.data == "view_tasks")
 async def view_tasks(callback: types.CallbackQuery):
     user_id = callback.from_user.id
@@ -81,19 +77,19 @@ async def view_tasks(callback: types.CallbackQuery):
             await callback.message.answer("У вас пока нет задач")
     await callback.answer()
 
-
 async def send_reminders():
     users = supabase.table("users").select("telegram_id").execute()
     for user in users.data:
-        await bot.send_message(user["telegram_id"], "🌅 Доброе утро! Не забудьте проверить свои задачи на сегодня!")
-
+        try:
+            await bot.send_message(chat_id=user["telegram_id"], text="🌅 Доброе утро! Не забудьте проверить свои задачи на сегодня!")
+            logging.info(f"Напоминание отправлено пользователю {user['telegram_id']}")
+        except Exception as e:
+            logging.error(f"Ошибка отправки напоминания пользователю {user['telegram_id']}: {e}")
 
 async def main():
-    scheduler.add_job(send_reminders, "cron", hour=22, minute=30)
+    scheduler.add_job(send_reminders, "cron", hour=10, minute=0)
     scheduler.start()
-
-    await dp.start_polling(bot)
-
+    await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
 
 if __name__ == "__main__":
     asyncio.run(main())
