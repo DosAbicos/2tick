@@ -1,7 +1,7 @@
 from supabase import create_client, Client
 from aiogram import Bot, Dispatcher, types
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.filters import Command
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import os
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
@@ -14,13 +14,10 @@ dp = Dispatcher()
 
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
-    telegram_id = str(message.from_user.id)
-
-    # Проверяем есть ли пользователь
+    telegram_id = message.from_user.id
     user = supabase.table("users").select("id").eq("telegram_id", telegram_id).execute()
 
     if len(user.data) == 0:
-        # Если пользователя нет — создаём
         new_user = supabase.table("users").insert({"telegram_id": telegram_id}).execute()
         user_id = new_user.data[0]["id"]
     else:
@@ -30,24 +27,20 @@ async def cmd_start(message: types.Message):
         [InlineKeyboardButton(text="➕ Добавить задачу", callback_data="add_task")],
         [InlineKeyboardButton(text="📄 Просмотр задач", callback_data="view_tasks")]
     ])
-
-    await message.answer("👋 Привет! Я бот Totick.\nВыбери действие:", reply_markup=keyboard)
-
+    await message.answer("👋 Привет! Выбери действие:", reply_markup=keyboard)
 
 @dp.callback_query(lambda c: c.data == "add_task")
-async def process_add_task(callback_query: types.CallbackQuery):
+async def add_task(callback_query: types.CallbackQuery):
     await callback_query.message.answer("Напиши текст задачи:")
     dp.message.register(waiting_task)
 
-
 async def waiting_task(message: types.Message):
-    telegram_id = str(message.from_user.id)
+    telegram_id = message.from_user.id
     task_text = message.text
 
     user = supabase.table("users").select("id").eq("telegram_id", telegram_id).execute()
-
     if len(user.data) == 0:
-        await message.answer("❌ Ты не зарегистрирован!")
+        await message.answer("❌ Ты не зарегистрирован")
         return
 
     user_id = user.data[0]["id"]
@@ -55,7 +48,6 @@ async def waiting_task(message: types.Message):
     supabase.table("tasks").insert({
         "user_id": user_id,
         "text": task_text,
-        "category": "🔥 Срочные",
         "status": "new"
     }).execute()
 
