@@ -19,6 +19,8 @@ scheduler = AsyncIOScheduler()
 
 logging.basicConfig(level=logging.INFO)
 
+
+@dp.message(Command("start"))
 async def cmd_start(message: types.Message):
     user_id = message.from_user.id
     username = message.from_user.username
@@ -38,10 +40,12 @@ async def cmd_start(message: types.Message):
 
     await message.answer("Привет! Чем займемся сегодня?", reply_markup=keyboard)
 
+
 @dp.callback_query(F.data == "add_task")
 async def add_task_callback(callback: types.CallbackQuery):
     await callback.message.answer("Введите задачу текстом:")
     await callback.answer()
+
 
 @dp.message()
 async def process_task(message: types.Message):
@@ -60,6 +64,7 @@ async def process_task(message: types.Message):
 
         await message.answer(f"✅ Задача добавлена: {text}")
 
+
 @dp.callback_query(F.data == "view_tasks")
 async def view_tasks(callback: types.CallbackQuery):
     user_id = callback.from_user.id
@@ -76,16 +81,19 @@ async def view_tasks(callback: types.CallbackQuery):
             await callback.message.answer("У вас пока нет задач")
     await callback.answer()
 
+
 async def send_reminders():
     users = supabase.table("users").select("telegram_id").execute()
     for user in users.data:
         await bot.send_message(user["telegram_id"], "🌅 Доброе утро! Не забудьте проверить свои задачи на сегодня!")
 
+
 async def main():
-    dp.include_router(dp.message.register(cmd_start, Command("start")))
     scheduler.add_job(send_reminders, "cron", hour=10, minute=0)
     scheduler.start()
+
     await dp.start_polling(bot)
+
 
 if __name__ == "__main__":
     asyncio.run(main())
