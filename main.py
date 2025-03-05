@@ -12,7 +12,7 @@ SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 API_TOKEN = os.getenv("API_TOKEN")
 ADMIN_ID = os.getenv("ADMIN_ID")
 
-bot = Bot(token=API_TOKEN, default=types.DefaultBotProperties(parse_mode=ParseMode.HTML))
+bot = Bot(token=API_TOKEN, parse_mode=ParseMode.HTML)
 dp = Dispatcher()
 logging.basicConfig(level=logging.INFO)
 
