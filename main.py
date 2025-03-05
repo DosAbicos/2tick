@@ -19,7 +19,7 @@ scheduler = AsyncIOScheduler()
 
 logging.basicConfig(level=logging.INFO)
 
-waiting_for_task = {}
+user_tasks = {}
 
 @dp.message(Command("start"))
 async def cmd_start(message: types.Message):
@@ -43,8 +43,7 @@ async def cmd_start(message: types.Message):
 
 @dp.callback_query(F.data == "add_task")
 async def add_task_callback(callback: types.CallbackQuery):
-    user_id = callback.from_user.id
-    waiting_for_task[user_id] = True
+    user_tasks[callback.from_user.id] = True
     await callback.message.answer("Введите задачу текстом:")
     await callback.answer()
 
@@ -53,44 +52,39 @@ async def process_task(message: types.Message):
     user_id = message.from_user.id
     text = message.text
 
-    if user_id not in waiting_for_task or not waiting_for_task[user_id]:
-        return
-
-    waiting_for_task[user_id] = False
-
-    user = supabase.table("users").select("id").eq("telegram_id", user_id).execute()
-    if len(user.data) > 0:
-        user_uuid = user.data[0]["id"]
-        task = supabase.table("tasks").insert({
-            "user_id": user_uuid,
-            "text": text,
-            "status": "Запланированные",
-            "created_at": datetime.now().isoformat()
-        }).execute().data[0]
+    if user_tasks.get(user_id):
+        user_tasks[user_id] = False
 
         keyboard = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="🔥 Сделать немедленно", callback_data=f"urgent:{task['id']}")],
-            [InlineKeyboardButton(text="✅ Запланировать", callback_data=f"planned:{task['id']}")],
-            [InlineKeyboardButton(text="🔁 Делегировать", callback_data=f"delegate:{task['id']}")],
-            [InlineKeyboardButton(text="❌ Удалить", callback_data=f"delete:{task['id']}")]
+            [InlineKeyboardButton(text="🔥 Сделать немедленно", callback_data=f"urgent")],
+            [InlineKeyboardButton(text="✅ Запланировать", callback_data=f"planned")],
+            [InlineKeyboardButton(text="🔁 Делегировать", callback_data=f"delegate")],
+            [InlineKeyboardButton(text="❌ Удалить", callback_data=f"delete")]
         ])
 
-        await message.answer(f"✅ Задача добавлена: {text}\nВыберите категорию:", reply_markup=keyboard)
+        user_tasks[user_id] = text
+        await message.answer(f"Выберите категорию для задачи: {text}", reply_markup=keyboard)
 
 @dp.callback_query()
 async def process_category(callback: types.CallbackQuery):
-    action, task_id = callback.data.split(":")
-    status_map = {
-        "urgent": "🔥 Сделать немедленно",
-        "planned": "✅ Запланированные",
-        "delegate": "🔁 Делегированные",
-        "delete": "❌ Удаленные"
-    }
+    user_id = callback.from_user.id
+    category = callback.data
+    task_text = user_tasks.get(user_id)
 
-    if action in status_map:
-        supabase.table("tasks").update({"status": status_map[action]}).eq("id", task_id).execute()
-        await callback.message.answer(f"Задача обновлена: {status_map[action]}")
-    await callback.answer()
+    if task_text:
+        user = supabase.table("users").select("id").eq("telegram_id", user_id).execute()
+        if len(user.data) > 0:
+            user_uuid = user.data[0]["id"]
+            supabase.table("tasks").insert({
+                "user_id": user_uuid,
+                "text": task_text,
+                "status": category,
+                "created_at": datetime.now().isoformat()
+            }).execute()
+
+            await callback.message.answer(f"✅ Задача добавлена: {task_text} — {category}")
+            del user_tasks[user_id]
+        await callback.answer()
 
 @dp.callback_query(F.data == "view_tasks")
 async def view_tasks(callback: types.CallbackQuery):
@@ -118,7 +112,7 @@ async def send_reminders():
             logging.error(f"Ошибка отправки напоминания пользователю {user['telegram_id']}: {e}")
 
 async def main():
-    scheduler.add_job(send_reminders, "cron", hour=10, minute=0)
+    scheduler.add_job(send_reminders, "cron", hour=22, minute=45)
     scheduler.start()
     await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
 
