@@ -1,74 +1,101 @@
-import logging
 from aiogram import Bot, Dispatcher, types
-from aiogram.enums import ParseMode
-from aiogram.filters import Command, CallbackQueryFilter
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram.filters import Command, CallbackQuery
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-import asyncpg
+import asyncio
 import os
+from supabase import create_client, Client
 
 API_TOKEN = os.getenv("API_TOKEN")
-ADMIN_ID = os.getenv("ADMIN_ID")
-DB_URL = os.getenv("DB_URL")
+ADMIN_ID = int(os.getenv("ADMIN_ID"))
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
-bot = Bot(token=API_TOKEN, parse_mode=ParseMode.HTML)
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+bot = Bot(token=API_TOKEN)
 dp = Dispatcher()
-
-logging.basicConfig(level=logging.INFO)
-
 scheduler = AsyncIOScheduler()
-scheduler.start()
 
-async def create_db_pool():
-    return await asyncpg.create_pool(DB_URL)
+CATEGORY_BUTTONS = [
+    InlineKeyboardButton(text="🔥 Срочные", callback_data="urgent"),
+    InlineKeyboardButton(text="✅ Запланированные", callback_data="planned"),
+    InlineKeyboardButton(text="🔁 Делегированные", callback_data="delegated"),
+    InlineKeyboardButton(text="❌ Удаленные", callback_data="deleted")
+]
 
-pool = None
+CATEGORY_KEYBOARD = InlineKeyboardMarkup(inline_keyboard=[CATEGORY_BUTTONS])
 
-async def add_task(user_id, task, category):
-    async with pool.acquire() as conn:
-        await conn.execute("INSERT INTO tasks (user_id, task, category) VALUES ($1, $2, $3)", user_id, task, category)
-
-async def get_tasks(user_id):
-    async with pool.acquire() as conn:
-        return await conn.fetch("SELECT task, category FROM tasks WHERE user_id = $1", user_id)
 
 @dp.message(Command("start"))
-async def start_handler(message: types.Message):
-    keyboard = InlineKeyboardBuilder()
-    keyboard.add(InlineKeyboardButton(text="➕ Добавить задачу", callback_data="add_task"))
-    keyboard.add(InlineKeyboardButton(text="🗒 Просмотр задач", callback_data="view_tasks"))
-    await message.answer("Привет! Чем займемся сегодня?", reply_markup=keyboard.as_markup())
+async def cmd_start(message: types.Message):
+    user_id = message.from_user.id
+    username = message.from_user.username
+    await register_user(user_id, username)
+    buttons = [
+        InlineKeyboardButton(text="➕ Добавить задачу", callback_data="add_task"),
+        InlineKeyboardButton(text="📋 Просмотр задач", callback_data="view_tasks")
+    ]
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[[button] for button in buttons])
+    await message.answer("Привет! Я бот для управления задачами. Выбери действие:", reply_markup=keyboard)
 
-@dp.callback_query(CallbackQueryFilter(data="add_task"))
-async def process_add_task(callback: types.CallbackQuery):
-    await callback.message.answer("Введите задачу текстом:")
-    await callback.answer()
-    dp.fsm.set_state(callback.from_user.id, "waiting_for_task")
 
-@dp.message(lambda message: dp.fsm.get_state(message.from_user.id) == "waiting_for_task")
+async def register_user(user_id, username):
+    data, _ = supabase.table("users").select("*").eq("id", user_id).execute()
+    if len(data) == 0:
+        supabase.table("users").insert({"id": user_id, "username": username}).execute()
+
+
+@dp.callback_query(CallbackQuery("add_task"))
+async def add_task(callback: types.CallbackQuery):
+    await callback.message.answer("Введите задачу текстом")
+
+
+@dp.message()
 async def process_task(message: types.Message):
-    await add_task(message.from_user.id, message.text, "Запланированные")
-    await message.answer(f"✅ Задача добавлена: {message.text}")
-    dp.fsm.finish(message.from_user.id)
+    user_id = message.from_user.id
+    task_text = message.text
+    buttons = [
+        InlineKeyboardButton(text="🔥 Срочные", callback_data=f"category:urgent:{task_text}"),
+        InlineKeyboardButton(text="✅ Запланированные", callback_data=f"category:planned:{task_text}"),
+        InlineKeyboardButton(text="🔁 Делегированные", callback_data=f"category:delegated:{task_text}"),
+        InlineKeyboardButton(text="❌ Удаленные", callback_data=f"category:deleted:{task_text}")
+    ]
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[[button] for button in buttons])
+    await message.answer("Выберите категорию для задачи:", reply_markup=keyboard)
 
-@dp.callback_query(CallbackQueryFilter(data="view_tasks"))
-async def process_view_tasks(callback: types.CallbackQuery):
-    tasks = await get_tasks(callback.from_user.id)
-    if tasks:
-        task_list = "\n".join([f"{task['task']} — {task['category']}" for task in tasks])
-        await callback.message.answer(f"Ваши задачи:\n{task_list}")
-    else:
-        await callback.message.answer("У вас пока нет задач.")
+
+@dp.callback_query(CallbackQuery(lambda c: c.data.startswith("category:")))
+async def process_category(callback: types.CallbackQuery):
+    _, category, task_text = callback.data.split(":")
+    user_id = callback.from_user.id
+    supabase.table("tasks").insert({"user_id": user_id, "text": task_text, "category": category}).execute()
+    await callback.message.answer(f"Задача добавлена в категорию {category}")
     await callback.answer()
 
-async def on_startup():
-    global pool
-    pool = await create_db_pool()
-    logging.info("Bot started")
+
+@dp.callback_query(CallbackQuery("view_tasks"))
+async def view_tasks(callback: types.CallbackQuery):
+    user_id = callback.from_user.id
+    data, _ = supabase.table("tasks").select("text", "category").eq("user_id", user_id).execute()
+    if len(data) == 0:
+        await callback.message.answer("У вас нет задач")
+    else:
+        tasks = "\n".join([f"{task['category']}: {task['text']}" for task in data])
+        await callback.message.answer(f"Ваши задачи:\n{tasks}")
+    await callback.answer()
+
+
+async def send_reminders():
+    data, _ = supabase.table("tasks").select("user_id", "text").eq("category", "urgent").execute()
+    for task in data:
+        user_id = task["user_id"]
+        task_text = task["text"]
+        await bot.send_message(user_id, f"Напоминание о задаче: {task_text}")
+
+
+scheduler.add_job(send_reminders, "interval", hours=1)
+scheduler.start()
 
 if __name__ == "__main__":
-    import asyncio
-
-    asyncio.run(on_startup())
-    dp.run_polling(bot)
+    asyncio.run(dp.start_polling(bot))
