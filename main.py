@@ -29,7 +29,7 @@ async def add_task_to_supabase(task, category):
                 "Authorization": f"Bearer {SUPABASE_KEY}",
                 "Content-Type": "application/json"
             },
-            json={"title": task, "category": category, "completed": False}
+            json={"title": task, "status": category, "completed": False}
         )
         print(response.json())
         return response.status_code == 201
