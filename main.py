@@ -12,7 +12,7 @@ SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 API_TOKEN = os.getenv("API_TOKEN")
 ADMIN_ID = os.getenv("ADMIN_ID")
 
-bot = Bot(token=API_TOKEN, parse_mode=ParseMode.HTML)
+bot = Bot(token=API_TOKEN, default=types.DefaultBotProperties(parse_mode=ParseMode.HTML))
 dp = Dispatcher()
 logging.basicConfig(level=logging.INFO)
 
@@ -20,7 +20,22 @@ class TaskState(StatesGroup):
     waiting_for_task = State()
     waiting_for_category = State()
 
-async def add_task_to_supabase(task, category):
+async def get_user_id(telegram_id):
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"{SUPABASE_URL}/rest/v1/users?telegram_id=eq.{telegram_id}",
+            headers={
+                "apikey": SUPABASE_KEY,
+                "Authorization": f"Bearer {SUPABASE_KEY}",
+                "Content-Type": "application/json"
+            }
+        )
+        data = response.json()
+        if data:
+            return data[0]["id"]
+        return None
+
+async def add_task_to_supabase(task, category, user_id):
     async with httpx.AsyncClient() as client:
         response = await client.post(
             f"{SUPABASE_URL}/rest/v1/tasks",
@@ -29,9 +44,8 @@ async def add_task_to_supabase(task, category):
                 "Authorization": f"Bearer {SUPABASE_KEY}",
                 "Content-Type": "application/json"
             },
-            json={"text": task, "status": category}
+            json={"text": task, "status": category, "user_id": user_id}
         )
-        print(response.json())
         return response.status_code == 201
 
 @dp.message(F.text == "/start")
@@ -65,6 +79,13 @@ async def process_category(callback: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
     task = data["task"]
     category = callback.data
+    user_id = await get_user_id(callback.from_user.id)
+
+    if not user_id:
+        await callback.message.answer("❌ Ты не зарегистрирован в системе!")
+        await state.clear()
+        await callback.answer()
+        return
 
     category_names = {
         "urgent": "🔥 Сделать немедленно",
@@ -74,7 +95,7 @@ async def process_category(callback: types.CallbackQuery, state: FSMContext):
     }
     category_name = category_names.get(category, "Неизвестная категория")
 
-    success = await add_task_to_supabase(task, category_name)
+    success = await add_task_to_supabase(task, category_name, user_id)
     if success:
         await callback.message.answer(f"✅ Задача добавлена в категорию: {category_name}")
     else:
