@@ -23,7 +23,7 @@ class TaskState(StatesGroup):
 async def get_user_id(telegram_id):
     async with httpx.AsyncClient() as client:
         response = await client.get(
-            f"{SUPABASE_URL}/rest/v1/users?telegram_id=eq.{telegram_id}",
+            f"{SUPABASE_URL}/rest/v1/users?telegram_id=eq.{telegram_id}&select=id",
             headers={
                 "apikey": SUPABASE_KEY,
                 "Authorization": f"Bearer {SUPABASE_KEY}",
