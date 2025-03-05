@@ -87,7 +87,7 @@ async def send_reminders():
             logging.error(f"Ошибка отправки напоминания пользователю {user['telegram_id']}: {e}")
 
 async def main():
-    scheduler.add_job(send_reminders, "cron", hour=10, minute=0)
+    scheduler.add_job(send_reminders, "cron", hour=22, minute=45)
     scheduler.start()
     await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
 
