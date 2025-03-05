@@ -1,98 +1,78 @@
 import asyncio
 import logging
-import os
 from aiogram import Bot, Dispatcher, types
+from aiogram.enums import ParseMode
 from aiogram.filters import Command
-from aiogram.utils.keyboard import InlineKeyboardBuilder
-from supabase import create_client
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from datetime import datetime, time
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from supabase import create_client
 
-# Настройки
-API_TOKEN = os.getenv("API_TOKEN")
-SUPABASE_URL = os.getenv("SUPABASE_URL")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-ADMIN_ID = int(os.getenv("ADMIN_ID"))
+API_TOKEN = "{API_TOKEN}"
+ADMIN_ID = {ADMIN_ID}
+SUPABASE_URL = "{SUPABASE_URL}"
+SUPABASE_KEY = "{SUPABASE_KEY}"
 
-# Инициализация
-bot = Bot(token=API_TOKEN)
+bot = Bot(token=API_TOKEN, parse_mode=ParseMode.HTML)
 dp = Dispatcher()
+scheduler = AsyncIOScheduler()
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+
 logging.basicConfig(level=logging.INFO)
 
-# Статусы задач
-STATUSES = {"🔥 Срочные": "urgent", "✅ Запланированные": "planned", "🔁 Делегированные": "delegated", "❌ Удаленные": "deleted"}
-
-# Команда /start
 async def cmd_start(message: types.Message):
-    user = supabase.table("users").select("id").eq("telegram_id", message.from_user.id).execute()
-    if not user.data:
-        supabase.table("users").insert({"telegram_id": message.from_user.id, "username": message.from_user.username}).execute()
-        await message.answer("Привет! Ты зарегистрирован в Totick 🎯")
-    else:
-        await message.answer("С возвращением в Totick! 🎯")
+    telegram_id = message.from_user.id
+    username = message.from_user.username
 
-# Кнопки для выбора статуса
-def get_status_keyboard():
-    builder = InlineKeyboardBuilder()
-    for text, status in STATUSES.items():
-        builder.button(text=text, callback_data=f"status:{status}")
-    return builder.as_markup()
+    response = supabase.table("users").select("id").eq("telegram_id", telegram_id).execute()
+    if len(response.data) == 0:
+        supabase.table("users").insert({"telegram_id": telegram_id, "username": username}).execute()
 
-# Добавление задачи
-@dp.message(Command("add"))
-async def add_task(message: types.Message):
-    await message.answer("Напиши задачу")
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="➕ Добавить задачу", callback_data="add_task")],
+        [InlineKeyboardButton(text="📋 Просмотреть задачи", callback_data="view_tasks")]
+    ])
+    await message.answer("Привет! Чем могу помочь?", reply_markup=keyboard)
+
+@dp.callback_query(lambda c: c.data == "add_task")
+async def add_task(callback: types.CallbackQuery):
+    await callback.message.answer("Введите текст задачи:")
     dp.message.register(process_task)
 
 async def process_task(message: types.Message):
-    keyboard = get_status_keyboard()
-    state = dp.current_state(user=message.from_user.id)
-    await state.update_data(text=message.text)
-    await message.answer("Выбери категорию задачи:", reply_markup=keyboard)
+    telegram_id = message.from_user.id
+    text = message.text
+    user = supabase.table("users").select("id").eq("telegram_id", telegram_id).execute().data[0]
+    user_id = user["id"]
 
-@dp.callback_query(lambda c: c.data.startswith("status:"))
-async def select_status(callback: types.CallbackQuery):
-    status = callback.data.split(":")[1]
-    state = dp.current_state(user=callback.from_user.id)
-    data = await state.get_data()
+    supabase.table("tasks").insert({"user_id": user_id, "text": text, "status": "Запланированные"}).execute()
+    await message.answer("✅ Задача добавлена")
 
-    task = {
-        "user_id": supabase.table("users").select("id").eq("telegram_id", callback.from_user.id).execute().data[0]["id"],
-        "text": data["text"],
-        "status": status,
-        "created_at": datetime.utcnow().isoformat()
-    }
-    supabase.table("tasks").insert(task).execute()
-    await callback.message.answer(f"✅ Задача добавлена в категорию: {status}")
-    await callback.answer()
+@dp.callback_query(lambda c: c.data == "view_tasks")
+async def view_tasks(callback: types.CallbackQuery):
+    telegram_id = callback.from_user.id
+    user = supabase.table("users").select("id").eq("telegram_id", telegram_id).execute().data[0]
+    user_id = user["id"]
 
-# Просмотр задач
-@dp.message(Command("tasks"))
-async def view_tasks(message: types.Message):
-    user = supabase.table("users").select("id").eq("telegram_id", message.from_user.id).execute().data[0]
-    tasks = supabase.table("tasks").select("text", "status").eq("user_id", user["id"]).execute().data
-    if tasks:
-        text = "\n".join([f"{t['text']} ({t['status']})" for t in tasks])
+    tasks = supabase.table("tasks").select("text", "status").eq("user_id", user_id).execute().data
+    if not tasks:
+        await callback.message.answer("У вас нет задач")
     else:
-        text = "Задач нет"
-    await message.answer(text)
+        text = "📋 Ваши задачи:\n"
+        for task in tasks:
+            text += f"- {task['text']} ({task['status']})\n"
+        await callback.message.answer(text)
 
-# Напоминания в 10:00
-async def daily_reminder():
-    while True:
-        now = datetime.now().time()
-        target_time = time(10, 0)
-        if now.hour == target_time.hour and now.minute == target_time.minute:
-            users = supabase.table("users").select("telegram_id").execute().data
-            for user in users:
-                await bot.send_message(user["telegram_id"], "🔥 Проверь свои срочные задачи!")
-        await asyncio.sleep(60)
+async def send_reminders():
+    users = supabase.table("users").select("telegram_id").execute().data
+    for user in users:
+        telegram_id = user["telegram_id"]
+        await bot.send_message(chat_id=telegram_id, text="🔔 Не забудьте проверить свои задачи!")
 
 async def main():
-    dp.message.register(cmd_start, Command("start"))
-    dp.message.register(add_task, Command("add"))
-    dp.message.register(view_tasks, Command("tasks"))
-    asyncio.create_task(daily_reminder())
+    dp.include_router(dp.message.register(cmd_start, Command("start")))
+    scheduler.add_job(send_reminders, 'cron', hour=10, minute=0)
+    scheduler.start()
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
