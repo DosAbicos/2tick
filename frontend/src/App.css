@@ -1,34 +1,64 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+/* Global styles for Signify KZ */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+html {
+  scroll-behavior: smooth;
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.App-link {
-    color: #61dafb;
+/* Focus visible improvements */
+*:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+/* Selection color */
+::selection {
+  background-color: hsl(var(--primary) / 0.2);
+  color: hsl(var(--foreground));
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
+
+/* Smooth transitions for interactive elements */
+button, a, input, textarea, select {
+  transition: color 0.2s ease-out, background-color 0.2s ease-out, border-color 0.2s ease-out, opacity 0.2s ease-out;
+}
+
+/* Prevent text selection on buttons */
+button {
+  user-select: none;
+}
+
+/* Image optimization */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
