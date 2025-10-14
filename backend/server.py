@@ -476,127 +476,183 @@ async def download_pdf(contract_id: str, current_user: dict = Depends(get_curren
     p = canvas.Canvas(buffer, pagesize=A4)
     width, height = A4
     
-    # Title
-    p.setFont("Helvetica-Bold", 24)
-    p.drawString(50, height - 80, contract['title'])
+    # Draw contract content as text (reportlab handles unicode)
+    y_position = height - 80
     
-    # Content
-    p.setFont("Helvetica", 10)
-    text_lines = contract['content'].split('\n')
-    y_position = height - 150
-    for line in text_lines:
-        if y_position < 250:  # Leave space for signature section
+    # Title
+    p.setFont("Helvetica-Bold", 20)
+    title_text = contract['title']
+    p.drawString(50, y_position, title_text[:60])  # Limit title length
+    y_position -= 60
+    
+    # Content - split by lines and draw
+    p.setFont("Helvetica", 9)
+    lines = contract['content'].split('\n')
+    
+    for line in lines:
+        # Check if we need new page
+        if y_position < 100:
             p.showPage()
             y_position = height - 50
-        # Handle long lines
-        if len(line) > 90:
+            p.setFont("Helvetica", 9)
+        
+        # Handle long lines - split by characters
+        if len(line) > 95:
+            # Split into chunks
             words = line.split(' ')
             current_line = ''
             for word in words:
-                if len(current_line + word) < 90:
-                    current_line += word + ' '
-                else:
-                    p.drawString(50, y_position, current_line)
-                    y_position -= 15
+                test_line = current_line + word + ' '
+                if len(test_line) > 95:
+                    if current_line:
+                        p.drawString(50, y_position, current_line.strip())
+                        y_position -= 12
+                        if y_position < 100:
+                            p.showPage()
+                            y_position = height - 50
+                            p.setFont("Helvetica", 9)
                     current_line = word + ' '
+                else:
+                    current_line = test_line
+            
             if current_line:
-                p.drawString(50, y_position, current_line)
-                y_position -= 15
+                p.drawString(50, y_position, current_line.strip())
+                y_position -= 12
         else:
             p.drawString(50, y_position, line)
-            y_position -= 15
+            y_position -= 12
     
-    # Signature section (like OkiDoki style)
+    # Signature section
     if signature and signature.get('verified') and contract.get('status') == 'signed':
         # New page for signatures
         p.showPage()
         y_position = height - 50
         
         # Header
-        p.setFont("Helvetica-Bold", 14)
-        p.drawString(50, y_position, "Документ подписан при помощи сервиса Signify KZ с использованием")
+        p.setFont("Helvetica-Bold", 12)
+        header1 = "Документ подписан при помощи сервиса Signify KZ"
+        p.drawCentredString(width / 2, y_position, header1)
         y_position -= 20
-        p.drawString(50, y_position, "почты и номера телефона в качестве простой электронной подписи (ПЭП)")
+        
+        p.setFont("Helvetica", 10)
+        header2 = "с использованием почты и номера телефона"
+        p.drawCentredString(width / 2, y_position, header2)
         y_position -= 40
         
-        # Contract identifier
-        p.setFont("Helvetica-Bold", 12)
-        p.drawString(50, y_position, f"Идентификатор документа: {contract_id}")
+        # Contract ID
+        p.setFont("Helvetica-Bold", 11)
+        p.drawString(50, y_position, f"ID документа: {contract_id}")
         y_position -= 50
         
         # Two columns for signatures
         col1_x = 50
-        col2_x = 320
+        col2_x = 310
+        sig_y = y_position
         
-        # Landlord signature (left column)
-        p.setFont("Helvetica-Bold", 12)
-        p.drawString(col1_x, y_position, "Подпись Наймодателя:")
-        y_position -= 25
+        # Landlord signature (left)
+        p.setFont("Helvetica-Bold", 11)
+        p.drawString(col1_x, sig_y, "Подпись Наймодателя:")
+        sig_y -= 20
         
-        p.setFont("Helvetica", 10)
+        p.setFont("Courier-Bold", 10)
         if contract.get('landlord_signature_hash'):
-            p.drawString(col1_x, y_position, contract['landlord_signature_hash'])
-            y_position -= 20
+            p.drawString(col1_x, sig_y, contract['landlord_signature_hash'])
+            sig_y -= 18
         
+        p.setFont("Helvetica", 9)
         if creator:
-            p.drawString(col1_x, y_position, creator.get('full_name', 'N/A'))
-            y_position -= 15
-            p.drawString(col1_x, y_position, f"Email: {creator.get('email', 'N/A')}")
-            y_position -= 15
-            p.drawString(col1_x, y_position, f"Телефон: {creator.get('phone', 'N/A')}")
+            name = creator.get('full_name', 'N/A')
+            p.drawString(col1_x, sig_y, name[:30])
+            sig_y -= 12
+            email = creator.get('email', 'N/A')
+            p.drawString(col1_x, sig_y, f"Email: {email[:25]}")
+            sig_y -= 12
+            phone = creator.get('phone', 'N/A')
+            p.drawString(col1_x, sig_y, f"Tel: {phone}")
         
-        # Reset y_position for right column
-        y_position = height - 50 - 40 - 50  # Same as landlord
+        # Tenant signature (right)
+        sig_y = y_position  # Reset
+        p.setFont("Helvetica-Bold", 11)
+        p.drawString(col2_x, sig_y, "Подпись Нанимателя:")
+        sig_y -= 20
         
-        # Tenant signature (right column)
-        p.setFont("Helvetica-Bold", 12)
-        p.drawString(col2_x, y_position, "Подпись Нанимателя:")
-        y_position -= 25
-        
-        p.setFont("Helvetica", 10)
+        p.setFont("Courier-Bold", 10)
         if signature.get('signature_hash'):
-            p.drawString(col2_x, y_position, signature['signature_hash'])
-            y_position -= 20
+            p.drawString(col2_x, sig_y, signature['signature_hash'])
+            sig_y -= 18
         
-        p.drawString(col2_x, y_position, contract['signer_name'])
-        y_position -= 15
+        p.setFont("Helvetica", 9)
+        signer = contract['signer_name']
+        p.drawString(col2_x, sig_y, signer[:30])
+        sig_y -= 12
         if contract.get('signer_email'):
-            p.drawString(col2_x, y_position, f"Email: {contract['signer_email']}")
-            y_position -= 15
-        p.drawString(col2_x, y_position, f"Телефон: {contract['signer_phone']}")
-        
-        y_position = height - 50 - 40 - 50 - 80  # Below signatures
+            p.drawString(col2_x, sig_y, f"Email: {contract['signer_email'][:25]}")
+            sig_y -= 12
+        p.drawString(col2_x, sig_y, f"Tel: {contract['signer_phone']}")
         
         # Date
-        p.setFont("Helvetica", 11)
+        y_position -= 100
+        p.setFont("Helvetica", 10)
         signed_date = contract.get('approved_at', datetime.now(timezone.utc).isoformat())
-        if isinstance(signed_date, str):
-            signed_date = datetime.fromisoformat(signed_date).strftime('%d %B %Y г.')
-        p.drawCentredString(width / 2, y_position, f"Дата подписания документа: {signed_date}")
+        try:
+            if isinstance(signed_date, str):
+                date_obj = datetime.fromisoformat(signed_date)
+                date_str = date_obj.strftime('%d.%m.%Y')
+            else:
+                date_str = signed_date.strftime('%d.%m.%Y')
+        except:
+            date_str = str(signed_date)[:10]
         
-        # Document photo on next page
+        p.drawCentredString(width / 2, y_position, f"Дата подписания: {date_str}")
+        
+        # Document photo
         if signature.get('document_upload'):
             p.showPage()
-            y_position = height - 50
+            y_position = height - 60
             
             try:
                 p.setFont("Helvetica-Bold", 14)
                 p.drawString(50, y_position, "Документ подписанта:")
                 y_position -= 30
                 
-                # Decode and add image
+                # Decode image
                 img_data = base64.b64decode(signature['document_upload'])
                 img_buffer = BytesIO(img_data)
-                img = ImageReader(img_buffer)
                 
-                # Add image (scaled to fit)
-                img_width = 400
-                img_height = 300
-                
-                p.drawImage(img, 100, y_position - img_height, width=img_width, height=img_height, preserveAspectRatio=True, mask='auto')
+                # Try to load image
+                try:
+                    from PIL import Image as PILImage
+                    pil_img = PILImage.open(img_buffer)
+                    
+                    # Convert to RGB if needed
+                    if pil_img.mode != 'RGB':
+                        pil_img = pil_img.convert('RGB')
+                    
+                    # Save to new buffer
+                    img_buffer2 = BytesIO()
+                    pil_img.save(img_buffer2, format='JPEG')
+                    img_buffer2.seek(0)
+                    
+                    img = ImageReader(img_buffer2)
+                    
+                    # Calculate size
+                    img_width = 400
+                    img_height = 300
+                    
+                    # Draw image
+                    p.drawImage(img, 100, y_position - img_height - 20, 
+                               width=img_width, height=img_height, 
+                               preserveAspectRatio=True, mask='auto')
+                    
+                except Exception as img_error:
+                    logging.error(f"PIL error: {str(img_error)}")
+                    p.setFont("Helvetica", 10)
+                    p.drawString(50, y_position - 20, "Ошибка загрузки изображения")
+                    
             except Exception as e:
-                logging.error(f"Error adding image to PDF: {str(e)}")
-                p.drawString(50, y_position, "Ошибка загрузки изображения документа")
+                logging.error(f"Error processing document image: {str(e)}")
+                p.setFont("Helvetica", 10)
+                p.drawString(50, y_position - 20, "Документ не может быть отображен")
     
     p.save()
     buffer.seek(0)
