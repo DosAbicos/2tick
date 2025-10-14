@@ -19,13 +19,21 @@ const SignContractPage = () => {
   const { t } = useTranslation();
   const { id } = useParams();
   const [contract, setContract] = useState(null);
-  const [step, setStep] = useState(1); // 1: View, 2: Upload, 3: Verify, 4: Success
+  const [step, setStep] = useState(1); // 1: View, 1.5: Fill Info (if needed), 2: Upload, 3: Verify, 4: Success
   const [loading, setLoading] = useState(true);
   const [otpValue, setOtpValue] = useState('');
   const [uploading, setUploading] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [mockOtp, setMockOtp] = useState('');
   const [signatureHash, setSignatureHash] = useState('');
+  
+  // Signer info form
+  const [signerInfo, setSignerInfo] = useState({
+    name: '',
+    phone: '',
+    email: ''
+  });
+  const [needsInfo, setNeedsInfo] = useState(false);
 
   useEffect(() => {
     fetchContract();
