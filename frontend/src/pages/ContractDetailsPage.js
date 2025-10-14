@@ -301,6 +301,52 @@ const ContractDetailsPage = () => {
                 </div>
               </div>
             )}
+            
+            {/* Signature Details (if signed) */}
+            {signature && signature.verified && (
+              <div className="border-t pt-6">
+                <h3 className="text-lg font-semibold mb-4">Метаданные подписи</h3>
+                
+                {/* Signature Hash */}
+                {signature.signature_hash && (
+                  <div className="bg-emerald-50 p-4 rounded-lg border border-emerald-200 mb-4">
+                    <p className="text-sm text-emerald-900 font-mono">
+                      <strong>Код-ключ подписи:</strong> {signature.signature_hash}
+                    </p>
+                  </div>
+                )}
+                
+                {/* Document Photo */}
+                {signature.document_upload && (
+                  <div className="mb-4">
+                    <h4 className="font-semibold mb-2">Документ подписанта:</h4>
+                    <div className="border rounded-lg p-4 bg-white">
+                      <img 
+                        src={`data:image/jpeg;base64,${signature.document_upload}`}
+                        alt="ID Document"
+                        className="max-w-md mx-auto rounded shadow-md"
+                        data-testid="signature-document-image"
+                      />
+                      {signature.document_filename && (
+                        <p className="text-xs text-neutral-500 mt-2 text-center">{signature.document_filename}</p>
+                      )}
+                    </div>
+                  </div>
+                )}
+                
+                {/* Other signature details */}
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="text-neutral-500">Метод верификации:</span>
+                    <p className="font-medium capitalize">{signature.verification_method}</p>
+                  </div>
+                  <div>
+                    <span className="text-neutral-500">Время подписания:</span>
+                    <p className="font-medium">{signature.signed_at ? format(new Date(signature.signed_at), 'dd MMM yyyy HH:mm') : 'N/A'}</p>
+                  </div>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
