@@ -11,6 +11,7 @@ import CreateContractPage from './pages/CreateContractPage';
 import ContractDetailsPage from './pages/ContractDetailsPage';
 import SignContractPage from './pages/SignContractPage';
 import AdminPage from './pages/AdminPage';
+import ProfilePage from './pages/ProfilePage';
 
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem('token');
