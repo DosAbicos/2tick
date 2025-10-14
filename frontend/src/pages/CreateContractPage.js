@@ -341,26 +341,27 @@ Email: ${templateData.tenant_email || '[Email]'}
                 {/* Tenant Info */}
                 <div className="space-y-4">
                   <h3 className="font-semibold text-neutral-900 border-b pb-2">Наниматель (Клиент)</h3>
+                  <p className="text-xs text-neutral-500 -mt-2">Если не заполните, клиент заполнит сам при подписании</p>
+                  
                   <div>
-                    <Label htmlFor="tenant_name">ФИО нанимателя *</Label>
+                    <Label htmlFor="tenant_name">ФИО нанимателя</Label>
                     <Input
                       id="tenant_name"
                       value={templateData.tenant_name}
                       onChange={(e) => handleFieldChange('tenant_name', e.target.value)}
-                      required
                       data-testid="tenant-name-input"
                       className="mt-1"
+                      placeholder="Оставьте пустым, если клиент заполнит сам"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="tenant_phone">Телефон *</Label>
+                      <Label htmlFor="tenant_phone">Телефон</Label>
                       <Input
                         id="tenant_phone"
                         type="tel"
                         value={templateData.tenant_phone}
                         onChange={(e) => handleFieldChange('tenant_phone', e.target.value)}
-                        required
                         data-testid="tenant-phone-input"
                         className="mt-1"
                         placeholder="+7 (___) ___-__-__"
@@ -375,6 +376,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                         onChange={(e) => handleFieldChange('tenant_email', e.target.value)}
                         data-testid="tenant-email-input"
                         className="mt-1"
+                        placeholder="Опционально"
                       />
                     </div>
                   </div>
