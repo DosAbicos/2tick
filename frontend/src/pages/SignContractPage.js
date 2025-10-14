@@ -25,6 +25,7 @@ const SignContractPage = () => {
   const [uploading, setUploading] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [mockOtp, setMockOtp] = useState('');
+  const [signatureHash, setSignatureHash] = useState('');
 
   useEffect(() => {
     fetchContract();
