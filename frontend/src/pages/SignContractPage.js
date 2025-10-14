@@ -47,6 +47,15 @@ const SignContractPage = () => {
       // Check if already signed
       if (response.data.status === 'pending-signature' || response.data.status === 'signed') {
         setStep(4); // Go directly to success
+      } else {
+        // Check if we need additional info
+        const needsName = !response.data.signer_name;
+        const needsPhone = !response.data.signer_phone;
+        const needsEmail = !response.data.signer_email;
+        
+        if (needsName || needsPhone || needsEmail) {
+          setNeedsInfo(true);
+        }
       }
     } catch (error) {
       toast.error(t('common.error'));
