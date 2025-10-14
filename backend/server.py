@@ -251,6 +251,66 @@ async def get_me(current_user: dict = Depends(get_current_user)):
         user_doc['created_at'] = datetime.fromisoformat(user_doc['created_at'])
     return User(**user_doc)
 
+@api_router.post("/auth/update-profile")
+async def update_profile(iin: Optional[str] = None, current_user: dict = Depends(get_current_user)):
+    update_data = {}
+    if iin:
+        update_data['iin'] = iin
+    
+    if update_data:
+        await db.users.update_one(
+            {"id": current_user['user_id']},
+            {"$set": update_data}
+        )
+    
+    return {"message": "Profile updated"}
+
+@api_router.post("/auth/upload-document")
+async def upload_landlord_document(file: UploadFile = File(...), current_user: dict = Depends(get_current_user)):
+    # Read file
+    content = await file.read()
+    
+    # Handle PDF conversion
+    file_data = None
+    filename = file.filename
+    
+    if file.content_type == 'application/pdf' or filename.lower().endswith('.pdf'):
+        try:
+            from pdf2image import convert_from_bytes
+            from PIL import Image as PILImage
+            
+            images = convert_from_bytes(content, first_page=1, last_page=1)
+            if images:
+                img = images[0]
+                if img.mode != 'RGB':
+                    img = img.convert('RGB')
+                
+                max_size = (1200, 1600)
+                img.thumbnail(max_size, PILImage.Resampling.LANCZOS)
+                
+                img_buffer = BytesIO()
+                img.save(img_buffer, format='JPEG', quality=85)
+                img_buffer.seek(0)
+                
+                file_data = base64.b64encode(img_buffer.getvalue()).decode()
+                filename = filename.replace('.pdf', '.jpg')
+        except Exception as e:
+            logging.error(f"Error converting PDF: {str(e)}")
+            raise HTTPException(status_code=400, detail="Error converting PDF document")
+    else:
+        file_data = base64.b64encode(content).decode()
+    
+    # Update user document
+    await db.users.update_one(
+        {"id": current_user['user_id']},
+        {"$set": {
+            "document_upload": file_data,
+            "document_filename": filename
+        }}
+    )
+    
+    return {"message": "Document uploaded successfully"}
+
 # ===== CONTRACT ROUTES =====
 @api_router.post("/contracts", response_model=Contract)
 async def create_contract(contract_data: ContractCreate, current_user: dict = Depends(get_current_user)):
