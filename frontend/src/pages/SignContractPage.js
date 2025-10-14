@@ -80,11 +80,15 @@ const SignContractPage = () => {
     
     setVerifying(true);
     try {
-      await axios.post(`${API}/sign/${id}/verify-otp`, {
+      const response = await axios.post(`${API}/sign/${id}/verify-otp`, {
         contract_id: id,
         phone: contract.signer_phone,
         otp_code: otpValue
       });
+      
+      if (response.data.signature_hash) {
+        setSignatureHash(response.data.signature_hash);
+      }
       
       toast.success(t('signing.success'));
       setStep(4);
