@@ -74,6 +74,8 @@ class Contract(BaseModel):
     amount: Optional[str] = None
     file_data: Optional[str] = None  # base64 encoded file
     signature_link: Optional[str] = None
+    landlord_signature_hash: Optional[str] = None  # Landlord's signature hash
+    approved_at: Optional[datetime] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
