@@ -436,18 +436,24 @@ async def verify_otp(contract_id: str, otp_data: OTPVerify):
 
 @api_router.post("/contracts/{contract_id}/approve")
 async def approve_signature(contract_id: str, current_user: dict = Depends(get_current_user)):
+    # Generate landlord signature hash
+    signature_data = f"{contract_id}-landlord-{current_user['user_id']}-{datetime.now(timezone.utc).isoformat()}"
+    landlord_signature_hash = hashlib.sha256(signature_data.encode()).hexdigest()[:16].upper()
+    
     # Update contract to signed
     await db.contracts.update_one(
         {"id": contract_id},
         {"$set": {
             "status": "signed",
+            "landlord_signature_hash": landlord_signature_hash,
+            "approved_at": datetime.now(timezone.utc).isoformat(),
             "updated_at": datetime.now(timezone.utc).isoformat()
         }}
     )
     
     await log_audit("contract_approved", contract_id=contract_id, user_id=current_user['user_id'])
     
-    return {"message": "Contract approved and signed"}
+    return {"message": "Contract approved and signed", "landlord_signature_hash": landlord_signature_hash}
 
 # ===== PDF GENERATION =====
 @api_router.get("/contracts/{contract_id}/download-pdf")
