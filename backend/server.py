@@ -92,9 +92,11 @@ class Signature(BaseModel):
     verification_method: str  # sms, call
     otp_code: str
     document_upload: Optional[str] = None  # base64 encoded ID/passport
+    document_filename: Optional[str] = None
     ip_address: Optional[str] = None
     device_info: Optional[str] = None
     verified: bool = False
+    signature_hash: Optional[str] = None  # Unique signature hash/key
     signed_at: Optional[datetime] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
