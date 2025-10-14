@@ -511,22 +511,41 @@ async def download_pdf(contract_id: str, current_user: dict = Depends(get_curren
     signature = await db.signatures.find_one({"contract_id": contract_id})
     creator = await db.users.find_one({"id": contract['creator_id']})
     
+    # Register DejaVu fonts for Cyrillic support
+    try:
+        dejavu_path = '/usr/share/fonts/truetype/dejavu/'
+        pdfmetrics.registerFont(TTFont('DejaVu', dejavu_path + 'DejaVuSans.ttf'))
+        pdfmetrics.registerFont(TTFont('DejaVu-Bold', dejavu_path + 'DejaVuSans-Bold.ttf'))
+        pdfmetrics.registerFont(TTFont('DejaVu-Mono', dejavu_path + 'DejaVuSansMono.ttf'))
+    except Exception as e:
+        logging.error(f"Font registration error: {str(e)}")
+        # Fallback to Helvetica
+        pass
+    
     # Generate PDF
     buffer = BytesIO()
     p = canvas.Canvas(buffer, pagesize=A4)
     width, height = A4
     
-    # Draw contract content as text (reportlab handles unicode)
+    # Use DejaVu font
+    try:
+        p.setFont("DejaVu-Bold", 20)
+    except:
+        p.setFont("Helvetica-Bold", 20)
+    
     y_position = height - 80
     
     # Title
-    p.setFont("Helvetica-Bold", 20)
     title_text = contract['title']
-    p.drawString(50, y_position, title_text[:60])  # Limit title length
+    p.drawString(50, y_position, title_text[:60])
     y_position -= 60
     
-    # Content - split by lines and draw
-    p.setFont("Helvetica", 9)
+    # Content with DejaVu font
+    try:
+        p.setFont("DejaVu", 9)
+    except:
+        p.setFont("Helvetica", 9)
+    
     lines = contract['content'].split('\n')
     
     for line in lines:
@@ -534,11 +553,13 @@ async def download_pdf(contract_id: str, current_user: dict = Depends(get_curren
         if y_position < 100:
             p.showPage()
             y_position = height - 50
-            p.setFont("Helvetica", 9)
+            try:
+                p.setFont("DejaVu", 9)
+            except:
+                p.setFont("Helvetica", 9)
         
-        # Handle long lines - split by characters
+        # Handle long lines
         if len(line) > 95:
-            # Split into chunks
             words = line.split(' ')
             current_line = ''
             for word in words:
@@ -550,7 +571,10 @@ async def download_pdf(contract_id: str, current_user: dict = Depends(get_curren
                         if y_position < 100:
                             p.showPage()
                             y_position = height - 50
-                            p.setFont("Helvetica", 9)
+                            try:
+                                p.setFont("DejaVu", 9)
+                            except:
+                                p.setFont("Helvetica", 9)
                     current_line = word + ' '
                 else:
                     current_line = test_line
@@ -569,18 +593,30 @@ async def download_pdf(contract_id: str, current_user: dict = Depends(get_curren
         y_position = height - 50
         
         # Header
-        p.setFont("Helvetica-Bold", 12)
+        try:
+            p.setFont("DejaVu-Bold", 12)
+        except:
+            p.setFont("Helvetica-Bold", 12)
+        
         header1 = "Документ подписан при помощи сервиса Signify KZ"
         p.drawCentredString(width / 2, y_position, header1)
         y_position -= 20
         
-        p.setFont("Helvetica", 10)
+        try:
+            p.setFont("DejaVu", 10)
+        except:
+            p.setFont("Helvetica", 10)
+        
         header2 = "с использованием почты и номера телефона"
         p.drawCentredString(width / 2, y_position, header2)
         y_position -= 40
         
         # Contract ID
-        p.setFont("Helvetica-Bold", 11)
+        try:
+            p.setFont("DejaVu-Bold", 11)
+        except:
+            p.setFont("Helvetica-Bold", 11)
+        
         p.drawString(50, y_position, f"ID документа: {contract_id}")
         y_position -= 50
         
@@ -590,16 +626,28 @@ async def download_pdf(contract_id: str, current_user: dict = Depends(get_curren
         sig_y = y_position
         
         # Landlord signature (left)
-        p.setFont("Helvetica-Bold", 11)
+        try:
+            p.setFont("DejaVu-Bold", 11)
+        except:
+            p.setFont("Helvetica-Bold", 11)
+        
         p.drawString(col1_x, sig_y, "Подпись Наймодателя:")
         sig_y -= 20
         
-        p.setFont("Courier-Bold", 10)
+        try:
+            p.setFont("DejaVu-Mono", 10)
+        except:
+            p.setFont("Courier-Bold", 10)
+        
         if contract.get('landlord_signature_hash'):
             p.drawString(col1_x, sig_y, contract['landlord_signature_hash'])
             sig_y -= 18
         
-        p.setFont("Helvetica", 9)
+        try:
+            p.setFont("DejaVu", 9)
+        except:
+            p.setFont("Helvetica", 9)
+        
         if creator:
             name = creator.get('full_name', 'N/A')
             p.drawString(col1_x, sig_y, name[:30])
@@ -611,17 +659,29 @@ async def download_pdf(contract_id: str, current_user: dict = Depends(get_curren
             p.drawString(col1_x, sig_y, f"Tel: {phone}")
         
         # Tenant signature (right)
-        sig_y = y_position  # Reset
-        p.setFont("Helvetica-Bold", 11)
+        sig_y = y_position
+        try:
+            p.setFont("DejaVu-Bold", 11)
+        except:
+            p.setFont("Helvetica-Bold", 11)
+        
         p.drawString(col2_x, sig_y, "Подпись Нанимателя:")
         sig_y -= 20
         
-        p.setFont("Courier-Bold", 10)
+        try:
+            p.setFont("DejaVu-Mono", 10)
+        except:
+            p.setFont("Courier-Bold", 10)
+        
         if signature.get('signature_hash'):
             p.drawString(col2_x, sig_y, signature['signature_hash'])
             sig_y -= 18
         
-        p.setFont("Helvetica", 9)
+        try:
+            p.setFont("DejaVu", 9)
+        except:
+            p.setFont("Helvetica", 9)
+        
         signer = contract['signer_name']
         p.drawString(col2_x, sig_y, signer[:30])
         sig_y -= 12
@@ -632,7 +692,11 @@ async def download_pdf(contract_id: str, current_user: dict = Depends(get_curren
         
         # Date
         y_position -= 100
-        p.setFont("Helvetica", 10)
+        try:
+            p.setFont("DejaVu", 10)
+        except:
+            p.setFont("Helvetica", 10)
+        
         signed_date = contract.get('approved_at', datetime.now(timezone.utc).isoformat())
         try:
             if isinstance(signed_date, str):
@@ -651,7 +715,11 @@ async def download_pdf(contract_id: str, current_user: dict = Depends(get_curren
             y_position = height - 60
             
             try:
-                p.setFont("Helvetica-Bold", 14)
+                try:
+                    p.setFont("DejaVu-Bold", 14)
+                except:
+                    p.setFont("Helvetica-Bold", 14)
+                
                 p.drawString(50, y_position, "Документ подписанта:")
                 y_position -= 30
                 
@@ -659,40 +727,37 @@ async def download_pdf(contract_id: str, current_user: dict = Depends(get_curren
                 img_data = base64.b64decode(signature['document_upload'])
                 img_buffer = BytesIO(img_data)
                 
-                # Try to load image
-                try:
-                    from PIL import Image as PILImage
-                    pil_img = PILImage.open(img_buffer)
-                    
-                    # Convert to RGB if needed
-                    if pil_img.mode != 'RGB':
-                        pil_img = pil_img.convert('RGB')
-                    
-                    # Save to new buffer
-                    img_buffer2 = BytesIO()
-                    pil_img.save(img_buffer2, format='JPEG')
-                    img_buffer2.seek(0)
-                    
-                    img = ImageReader(img_buffer2)
-                    
-                    # Calculate size
-                    img_width = 400
-                    img_height = 300
-                    
-                    # Draw image
-                    p.drawImage(img, 100, y_position - img_height - 20, 
-                               width=img_width, height=img_height, 
-                               preserveAspectRatio=True, mask='auto')
-                    
-                except Exception as img_error:
-                    logging.error(f"PIL error: {str(img_error)}")
-                    p.setFont("Helvetica", 10)
-                    p.drawString(50, y_position - 20, "Ошибка загрузки изображения")
-                    
+                # Load with PIL
+                from PIL import Image as PILImage
+                pil_img = PILImage.open(img_buffer)
+                
+                # Convert to RGB
+                if pil_img.mode != 'RGB':
+                    pil_img = pil_img.convert('RGB')
+                
+                # Save to new buffer
+                img_buffer2 = BytesIO()
+                pil_img.save(img_buffer2, format='JPEG')
+                img_buffer2.seek(0)
+                
+                img = ImageReader(img_buffer2)
+                
+                # Calculate size
+                img_width = 400
+                img_height = 300
+                
+                # Draw image
+                p.drawImage(img, 100, y_position - img_height - 20, 
+                           width=img_width, height=img_height, 
+                           preserveAspectRatio=True, mask='auto')
+                
             except Exception as e:
                 logging.error(f"Error processing document image: {str(e)}")
-                p.setFont("Helvetica", 10)
-                p.drawString(50, y_position - 20, "Документ не может быть отображен")
+                try:
+                    p.setFont("DejaVu", 10)
+                except:
+                    p.setFont("Helvetica", 10)
+                p.drawString(50, y_position - 20, "Ошибка загрузки изображения")
     
     p.save()
     buffer.seek(0)
