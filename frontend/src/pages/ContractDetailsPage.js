@@ -29,12 +29,14 @@ const ContractDetailsPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [contract, setContract] = useState(null);
+  const [signature, setSignature] = useState(null);
   const [loading, setLoading] = useState(true);
   const [sendingContract, setSendingContract] = useState(false);
   const token = localStorage.getItem('token');
 
   useEffect(() => {
     fetchContract();
+    fetchSignature();
   }, [id]);
 
   const fetchContract = async () => {
@@ -48,6 +50,19 @@ const ContractDetailsPage = () => {
       navigate('/dashboard');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchSignature = async () => {
+    try {
+      const response = await axios.get(`${API}/contracts/${id}/signature`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.data) {
+        setSignature(response.data);
+      }
+    } catch (error) {
+      console.log('No signature found');
     }
   };
 
