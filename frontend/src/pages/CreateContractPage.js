@@ -48,15 +48,47 @@ const CreateContractPage = () => {
     move_out_date: '',
     
     // Additional terms
-    days_count: '30',
+    days_count: '0',
     payment_method: 'наличными',
     
     // Contract type
     contract_type: 'rent' // rent, service, purchase
   });
 
+  // Calculate days automatically
+  const calculateDays = (moveIn, moveOut) => {
+    if (!moveIn || !moveOut) return 0;
+    
+    // Parse dates and set times: check-in at 14:00, check-out at 12:00
+    const checkInDate = new Date(moveIn);
+    checkInDate.setHours(14, 0, 0, 0);
+    
+    const checkOutDate = new Date(moveOut);
+    checkOutDate.setHours(12, 0, 0, 0);
+    
+    // Calculate difference in milliseconds
+    const diffMs = checkOutDate - checkInDate;
+    
+    // Convert to days (1 day = 24 hours = 86400000 ms)
+    const days = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+    
+    return days > 0 ? days : 0;
+  };
+
   const handleFieldChange = (field, value) => {
-    setTemplateData(prev => ({ ...prev, [field]: value }));
+    setTemplateData(prev => {
+      const newData = { ...prev, [field]: value };
+      
+      // Auto-calculate days when dates change
+      if (field === 'move_in_date' || field === 'move_out_date') {
+        newData.days_count = calculateDays(
+          field === 'move_in_date' ? value : prev.move_in_date,
+          field === 'move_out_date' ? value : prev.move_out_date
+        ).toString();
+      }
+      
+      return newData;
+    });
   };
 
   const generateContractContent = () => {
