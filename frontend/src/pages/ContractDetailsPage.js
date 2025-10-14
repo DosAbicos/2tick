@@ -87,13 +87,18 @@ const ContractDetailsPage = () => {
 
   const handleApprove = async () => {
     try {
-      await axios.post(
+      const response = await axios.post(
         `${API}/contracts/${id}/approve`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
-      toast.success(t('common.success'));
+      if (response.data.landlord_signature_hash) {
+        toast.success(`Договор утвержден! Ваш код: ${response.data.landlord_signature_hash}`);
+      } else {
+        toast.success(t('common.success'));
+      }
+      
       fetchContract();
       fetchSignature();
     } catch (error) {
