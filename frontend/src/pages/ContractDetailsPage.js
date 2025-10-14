@@ -77,6 +77,7 @@ const ContractDetailsPage = () => {
       
       toast.success(`Contract sent! Mock OTP: ${response.data.mock_otp}`);
       fetchContract();
+      fetchSignature();
     } catch (error) {
       toast.error(error.response?.data?.detail || t('common.error'));
     } finally {
