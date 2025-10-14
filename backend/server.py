@@ -396,12 +396,17 @@ async def verify_otp(contract_id: str, otp_data: OTPVerify):
     if signature['otp_code'] != otp_data.otp_code:
         raise HTTPException(status_code=400, detail="Invalid OTP code")
     
+    # Generate unique signature hash
+    signature_data = f"{contract_id}-{signature['signer_phone']}-{datetime.now(timezone.utc).isoformat()}"
+    signature_hash = hashlib.sha256(signature_data.encode()).hexdigest()[:16].upper()
+    
     # Mark as verified and signed
     await db.signatures.update_one(
         {"contract_id": contract_id},
         {"$set": {
             "verified": True,
-            "signed_at": datetime.now(timezone.utc).isoformat()
+            "signed_at": datetime.now(timezone.utc).isoformat(),
+            "signature_hash": signature_hash
         }}
     )
     
@@ -416,7 +421,7 @@ async def verify_otp(contract_id: str, otp_data: OTPVerify):
     
     await log_audit("signature_verified", contract_id=contract_id)
     
-    return {"message": "Signature verified successfully"}
+    return {"message": "Signature verified successfully", "signature_hash": signature_hash}
 
 @api_router.post("/contracts/{contract_id}/approve")
 async def approve_signature(contract_id: str, current_user: dict = Depends(get_current_user)):
