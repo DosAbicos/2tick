@@ -465,6 +465,7 @@ async def download_pdf(contract_id: str, current_user: dict = Depends(get_curren
         raise HTTPException(status_code=404, detail="Contract not found")
     
     signature = await db.signatures.find_one({"contract_id": contract_id})
+    creator = await db.users.find_one({"id": contract['creator_id']})
     
     # Generate PDF
     buffer = BytesIO()
@@ -485,7 +486,6 @@ async def download_pdf(contract_id: str, current_user: dict = Depends(get_curren
             y_position = height - 50
         # Handle long lines
         if len(line) > 90:
-            # Split long lines
             words = line.split(' ')
             current_line = ''
             for word in words:
@@ -502,41 +502,83 @@ async def download_pdf(contract_id: str, current_user: dict = Depends(get_curren
             p.drawString(50, y_position, line)
             y_position -= 15
     
-    # Signature metadata section
-    if signature and signature.get('verified'):
-        # New page for signature details
+    # Signature section (like OkiDoki style)
+    if signature and signature.get('verified') and contract.get('status') == 'signed':
+        # New page for signatures
         p.showPage()
         y_position = height - 50
         
-        p.setFont("Helvetica-Bold", 16)
-        p.drawString(50, y_position, "МЕТАДАННЫЕ ЭЛЕКТРОННОЙ ПОДПИСИ")
+        # Header
+        p.setFont("Helvetica-Bold", 14)
+        p.drawString(50, y_position, "Документ подписан при помощи сервиса Signify KZ с использованием")
+        y_position -= 20
+        p.drawString(50, y_position, "почты и номера телефона в качестве простой электронной подписи (ПЭП)")
         y_position -= 40
         
-        # Signature hash (code-key)
+        # Contract identifier
+        p.setFont("Helvetica-Bold", 12)
+        p.drawString(50, y_position, f"Идентификатор документа: {contract_id}")
+        y_position -= 50
+        
+        # Two columns for signatures
+        col1_x = 50
+        col2_x = 320
+        
+        # Landlord signature (left column)
+        p.setFont("Helvetica-Bold", 12)
+        p.drawString(col1_x, y_position, "Подпись Наймодателя:")
+        y_position -= 25
+        
+        p.setFont("Helvetica", 10)
+        if contract.get('landlord_signature_hash'):
+            p.drawString(col1_x, y_position, contract['landlord_signature_hash'])
+            y_position -= 20
+        
+        if creator:
+            p.drawString(col1_x, y_position, creator.get('full_name', 'N/A'))
+            y_position -= 15
+            p.drawString(col1_x, y_position, f"Email: {creator.get('email', 'N/A')}")
+            y_position -= 15
+            p.drawString(col1_x, y_position, f"Телефон: {creator.get('phone', 'N/A')}")
+        
+        # Reset y_position for right column
+        y_position = height - 50 - 40 - 50  # Same as landlord
+        
+        # Tenant signature (right column)
+        p.setFont("Helvetica-Bold", 12)
+        p.drawString(col2_x, y_position, "Подпись Нанимателя:")
+        y_position -= 25
+        
+        p.setFont("Helvetica", 10)
         if signature.get('signature_hash'):
-            p.setFont("Helvetica-Bold", 14)
-            p.drawString(50, y_position, f"Код-ключ подписи: {signature.get('signature_hash')}")
-            y_position -= 30
+            p.drawString(col2_x, y_position, signature['signature_hash'])
+            y_position -= 20
         
-        # Signature details
+        p.drawString(col2_x, y_position, contract['signer_name'])
+        y_position -= 15
+        if contract.get('signer_email'):
+            p.drawString(col2_x, y_position, f"Email: {contract['signer_email']}")
+            y_position -= 15
+        p.drawString(col2_x, y_position, f"Телефон: {contract['signer_phone']}")
+        
+        y_position = height - 50 - 40 - 50 - 80  # Below signatures
+        
+        # Date
         p.setFont("Helvetica", 11)
-        p.drawString(50, y_position, f"Подписант: {contract['signer_name']}")
-        y_position -= 20
-        p.drawString(50, y_position, f"Телефон: {contract['signer_phone']}")
-        y_position -= 20
-        p.drawString(50, y_position, f"Дата и время подписания: {signature.get('signed_at', 'N/A')}")
-        y_position -= 20
-        p.drawString(50, y_position, f"Метод верификации: {signature.get('verification_method', 'N/A')}")
-        y_position -= 20
-        p.drawString(50, y_position, f"ID контракта: {contract_id}")
-        y_position -= 40
+        signed_date = contract.get('approved_at', datetime.now(timezone.utc).isoformat())
+        if isinstance(signed_date, str):
+            signed_date = datetime.fromisoformat(signed_date).strftime('%d %B %Y г.')
+        p.drawCentredString(width / 2, y_position, f"Дата подписания документа: {signed_date}")
         
-        # Document photo
+        # Document photo on next page
         if signature.get('document_upload'):
+            p.showPage()
+            y_position = height - 50
+            
             try:
-                p.setFont("Helvetica-Bold", 12)
+                p.setFont("Helvetica-Bold", 14)
                 p.drawString(50, y_position, "Документ подписанта:")
-                y_position -= 20
+                y_position -= 30
                 
                 # Decode and add image
                 img_data = base64.b64decode(signature['document_upload'])
@@ -544,18 +586,13 @@ async def download_pdf(contract_id: str, current_user: dict = Depends(get_curren
                 img = ImageReader(img_buffer)
                 
                 # Add image (scaled to fit)
-                img_width = 300
-                img_height = 200
-                if y_position - img_height < 50:
-                    p.showPage()
-                    y_position = height - 50
+                img_width = 400
+                img_height = 300
                 
-                p.drawImage(img, 50, y_position - img_height, width=img_width, height=img_height, preserveAspectRatio=True, mask='auto')
-                y_position -= (img_height + 20)
+                p.drawImage(img, 100, y_position - img_height, width=img_width, height=img_height, preserveAspectRatio=True, mask='auto')
             except Exception as e:
                 logging.error(f"Error adding image to PDF: {str(e)}")
                 p.drawString(50, y_position, "Ошибка загрузки изображения документа")
-                y_position -= 20
     
     p.save()
     buffer.seek(0)
