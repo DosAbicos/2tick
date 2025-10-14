@@ -261,15 +261,7 @@ const SignContractPage = () => {
                   <CheckCircle className="h-10 w-10 text-emerald-600" />
                 </div>
                 <h3 className="text-2xl font-bold text-neutral-900 mb-2">{t('signing.success')}</h3>
-                <p className="text-neutral-600 mb-6">The contract creator will be notified and will review your signature.</p>
-                
-                {signatureHash && (
-                  <div className="bg-emerald-50 p-4 rounded-lg border border-emerald-200 mb-4 max-w-md mx-auto">
-                    <p className="text-sm text-emerald-900 mb-1 font-semibold">Код-ключ вашей подписи:</p>
-                    <p className="text-lg font-mono text-emerald-900" data-testid="signature-hash-display">{signatureHash}</p>
-                    <p className="text-xs text-emerald-700 mt-2">Сохраните этот код для подтверждения подлинности подписи</p>
-                  </div>
-                )}
+                <p className="text-neutral-600">Создатель договора получит уведомление и проверит вашу подпись.</p>
               </motion.div>
             )}
           </CardContent>
