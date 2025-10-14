@@ -428,16 +428,17 @@ Email: ${templateData.tenant_email || '[Email]'}
                     </div>
                   </div>
                   <div>
-                    <Label htmlFor="days_count">Количество суток *</Label>
+                    <Label htmlFor="days_count">Количество суток (рассчитывается автоматически)</Label>
                     <Input
                       id="days_count"
                       type="number"
                       value={templateData.days_count}
-                      onChange={(e) => handleFieldChange('days_count', e.target.value)}
-                      required
+                      readOnly
+                      disabled
                       data-testid="days-count-input"
-                      className="mt-1"
+                      className="mt-1 bg-neutral-100 cursor-not-allowed"
                     />
+                    <p className="text-xs text-neutral-500 mt-1">С 14:00 даты заселения до 12:00 даты выселения</p>
                   </div>
                   {templateData.rent_amount && templateData.days_count && (
                     <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
