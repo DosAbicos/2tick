@@ -95,6 +95,7 @@ const ContractDetailsPage = () => {
       
       toast.success(t('common.success'));
       fetchContract();
+      fetchSignature();
     } catch (error) {
       toast.error(error.response?.data?.detail || t('common.error'));
     }
