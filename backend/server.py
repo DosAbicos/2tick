@@ -350,7 +350,10 @@ async def upload_document(contract_id: str, file: UploadFile = File(...)):
     file_data = base64.b64encode(content).decode()
     await db.signatures.update_one(
         {"contract_id": contract_id},
-        {"$set": {"document_upload": file_data}},
+        {"$set": {
+            "document_upload": file_data,
+            "document_filename": file.filename
+        }},
         upsert=True
     )
     
