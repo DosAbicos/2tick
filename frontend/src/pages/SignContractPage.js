@@ -84,6 +84,41 @@ const SignContractPage = () => {
     }
   };
 
+  const handleSaveSignerInfo = async () => {
+    // Validate required fields
+    if (needsInfo) {
+      if (!contract.signer_name && !signerInfo.name) {
+        toast.error('Пожалуйста, укажите ФИО');
+        return;
+      }
+      if (!contract.signer_phone && !signerInfo.phone) {
+        toast.error('Пожалуйста, укажите телефон');
+        return;
+      }
+    }
+    
+    try {
+      await axios.post(`${API}/sign/${id}/update-signer-info`, {
+        signer_name: signerInfo.name || undefined,
+        signer_phone: signerInfo.phone || undefined,
+        signer_email: signerInfo.email || undefined
+      });
+      
+      // Update local contract state
+      setContract(prev => ({
+        ...prev,
+        signer_name: signerInfo.name || prev.signer_name,
+        signer_phone: signerInfo.phone || prev.signer_phone,
+        signer_email: signerInfo.email || prev.signer_email
+      }));
+      
+      toast.success('Информация сохранена');
+      setStep(2); // Move to upload step
+    } catch (error) {
+      toast.error(t('common.error'));
+    }
+  };
+
   const handleRequestOTP = async (method = 'sms') => {
     try {
       const response = await axios.post(`${API}/sign/${id}/request-otp?method=${method}`);
