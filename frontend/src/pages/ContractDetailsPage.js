@@ -305,45 +305,107 @@ const ContractDetailsPage = () => {
             {/* Signature Details (if signed) */}
             {signature && signature.verified && (
               <div className="border-t pt-6">
-                <h3 className="text-lg font-semibold mb-4">Метаданные подписи</h3>
+                <h3 className="text-lg font-semibold mb-4">Информация о подписании</h3>
                 
-                {/* Signature Hash */}
-                {signature.signature_hash && (
-                  <div className="bg-emerald-50 p-4 rounded-lg border border-emerald-200 mb-4">
-                    <p className="text-sm text-emerald-900 font-mono">
-                      <strong>Код-ключ подписи:</strong> {signature.signature_hash}
-                    </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Tenant Signature */}
+                  <div className="border rounded-lg p-4 bg-neutral-50">
+                    <h4 className="font-semibold mb-3 text-neutral-900">Подпись Нанимателя</h4>
+                    
+                    {signature.signature_hash && (
+                      <div className="bg-blue-50 p-3 rounded border border-blue-200 mb-3">
+                        <p className="text-xs text-blue-700 mb-1">Код-ключ:</p>
+                        <p className="font-mono text-sm font-bold text-blue-900">{signature.signature_hash}</p>
+                      </div>
+                    )}
+                    
+                    <div className="space-y-2 text-sm">
+                      <div>
+                        <span className="text-neutral-500">Имя:</span>
+                        <p className="font-medium">{contract.signer_name}</p>
+                      </div>
+                      <div>
+                        <span className="text-neutral-500">Телефон:</span>
+                        <p className="font-medium">{contract.signer_phone}</p>
+                      </div>
+                      <div>
+                        <span className="text-neutral-500">Метод:</span>
+                        <p className="font-medium capitalize">{signature.verification_method}</p>
+                      </div>
+                      <div>
+                        <span className="text-neutral-500">Время:</span>
+                        <p className="font-medium">{signature.signed_at ? format(new Date(signature.signed_at), 'dd MMM yyyy HH:mm') : 'N/A'}</p>
+                      </div>
+                    </div>
                   </div>
-                )}
+                  
+                  {/* Landlord Signature */}
+                  <div className="border rounded-lg p-4 bg-neutral-50">
+                    <h4 className="font-semibold mb-3 text-neutral-900">Подпись Наймодателя</h4>
+                    
+                    {contract.landlord_signature_hash ? (
+                      <>
+                        <div className="bg-emerald-50 p-3 rounded border border-emerald-200 mb-3">
+                          <p className="text-xs text-emerald-700 mb-1">Код-ключ:</p>
+                          <p className="font-mono text-sm font-bold text-emerald-900">{contract.landlord_signature_hash}</p>
+                        </div>
+                        
+                        <div className="space-y-2 text-sm">
+                          <div>
+                            <span className="text-neutral-500">Статус:</span>
+                            <p className="font-medium text-emerald-600">Утверждено</p>
+                          </div>
+                          {contract.approved_at && (
+                            <div>
+                              <span className="text-neutral-500">Время утверждения:</span>
+                              <p className="font-medium">{format(new Date(contract.approved_at), 'dd MMM yyyy HH:mm')}</p>
+                            </div>
+                          )}
+                        </div>
+                      </>
+                    ) : (
+                      <p className="text-sm text-amber-600">Ожидает утверждения</p>
+                    )}
+                  </div>
+                </div>
                 
                 {/* Document Photo */}
                 {signature.document_upload && (
-                  <div className="mb-4">
-                    <h4 className="font-semibold mb-2">Документ подписанта:</h4>
+                  <div className="mt-6">
+                    <h4 className="font-semibold mb-3">Документ подписанта:</h4>
                     <div className="border rounded-lg p-4 bg-white">
                       <img 
                         src={`data:image/jpeg;base64,${signature.document_upload}`}
                         alt="ID Document"
-                        className="max-w-md mx-auto rounded shadow-md"
+                        className="max-w-lg mx-auto rounded shadow-md cursor-pointer hover:shadow-lg transition-shadow"
+                        onClick={() => window.open(`data:image/jpeg;base64,${signature.document_upload}`, '_blank')}
                         data-testid="signature-document-image"
                       />
                       {signature.document_filename && (
                         <p className="text-xs text-neutral-500 mt-2 text-center">{signature.document_filename}</p>
                       )}
+                      <p className="text-xs text-neutral-400 mt-1 text-center">Нажмите для увеличения</p>
                     </div>
                   </div>
                 )}
-                
-                {/* Other signature details */}
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="text-neutral-500">Метод верификации:</span>
-                    <p className="font-medium capitalize">{signature.verification_method}</p>
-                  </div>
-                  <div>
-                    <span className="text-neutral-500">Время подписания:</span>
-                    <p className="font-medium">{signature.signed_at ? format(new Date(signature.signed_at), 'dd MMM yyyy HH:mm') : 'N/A'}</p>
-                  </div>
+              </div>
+            )}
+            
+            {/* Pending signature - show only tenant signature */}
+            {signature && !signature.verified && contract.status === 'sent' && (
+              <div className="border-t pt-6">
+                <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
+                  <p className="text-amber-900">Ожидается подписание от нанимателя</p>
+                </div>
+              </div>
+            )}
+            
+            {/* Show pending approval message */}
+            {contract.status === 'pending-signature' && (
+              <div className="border-t pt-6">
+                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-4">
+                  <p className="text-blue-900 font-semibold mb-2">Требуется ваше утверждение</p>
+                  <p className="text-sm text-blue-800">Наниматель подписал договор. Проверьте документы и нажмите "Утвердить" для завершения.</p>
                 </div>
               </div>
             )}
