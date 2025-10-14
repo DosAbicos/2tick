@@ -161,6 +161,13 @@ def make_call(phone: str, code: str) -> bool:
     logging.info(f"[MOCK CALL] To: {phone} | Code: {code}")
     return True
 
+def send_email(to_email: str, subject: str, body: str, attachment: bytes = None, filename: str = None) -> bool:
+    """Mocked email sending"""
+    logging.info(f"[MOCK EMAIL] To: {to_email} | Subject: {subject}")
+    if attachment:
+        logging.info(f"[MOCK EMAIL] Attachment: {filename} ({len(attachment)} bytes)")
+    return True
+
 def verify_document_ocr(file_data: str) -> bool:
     """Mocked OCR verification for ID/passport"""
     logging.info(f"[MOCK OCR] Document verification passed")
