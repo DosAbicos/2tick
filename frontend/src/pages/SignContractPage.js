@@ -191,12 +191,96 @@ const SignContractPage = () => {
                   <pre className="whitespace-pre-wrap text-sm" data-testid="contract-preview">{contract.content}</pre>
                 </div>
                 <Button
-                  onClick={() => setStep(2)}
+                  onClick={() => {
+                    if (needsInfo) {
+                      setStep(1.5); // Go to info filling step
+                    } else {
+                      setStep(2); // Go directly to upload
+                    }
+                  }}
                   className="w-full"
                   data-testid="proceed-to-upload-button"
                 >
                   Proceed to Verification
                 </Button>
+              </motion.div>
+            )}
+
+            {/* Step 1.5: Fill Missing Info */}
+            {step === 1.5 && needsInfo && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="space-y-4"
+                data-testid="step-fill-info"
+              >
+                <div className="text-center mb-4">
+                  <h3 className="text-lg font-semibold mb-2">Заполните ваши данные</h3>
+                  <p className="text-neutral-600 text-sm">Для подписания договора необходима дополнительная информация</p>
+                </div>
+                
+                {!contract.signer_name && (
+                  <div>
+                    <Label htmlFor="signer_name">ФИО *</Label>
+                    <Input
+                      id="signer_name"
+                      value={signerInfo.name}
+                      onChange={(e) => setSignerInfo({...signerInfo, name: e.target.value})}
+                      required
+                      data-testid="signer-name-input"
+                      className="mt-1"
+                      placeholder="Иванов Иван Иванович"
+                    />
+                  </div>
+                )}
+                
+                {!contract.signer_phone && (
+                  <div>
+                    <Label htmlFor="signer_phone">Номер телефона *</Label>
+                    <Input
+                      id="signer_phone"
+                      type="tel"
+                      value={signerInfo.phone}
+                      onChange={(e) => setSignerInfo({...signerInfo, phone: e.target.value})}
+                      required
+                      data-testid="signer-phone-input"
+                      className="mt-1"
+                      placeholder="+7 (___) ___-__-__"
+                    />
+                  </div>
+                )}
+                
+                {!contract.signer_email && (
+                  <div>
+                    <Label htmlFor="signer_email">Email</Label>
+                    <Input
+                      id="signer_email"
+                      type="email"
+                      value={signerInfo.email}
+                      onChange={(e) => setSignerInfo({...signerInfo, email: e.target.value})}
+                      data-testid="signer-email-input"
+                      className="mt-1"
+                      placeholder="example@mail.com"
+                    />
+                  </div>
+                )}
+                
+                <div className="flex gap-3">
+                  <Button
+                    onClick={handleSaveSignerInfo}
+                    className="flex-1"
+                    data-testid="save-signer-info-button"
+                  >
+                    Продолжить
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={() => setStep(1)}
+                    data-testid="back-to-view-button"
+                  >
+                    Назад
+                  </Button>
+                </div>
               </motion.div>
             )}
 
