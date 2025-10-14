@@ -317,6 +317,17 @@ async def send_contract(contract_id: str, current_user: dict = Depends(get_curre
     
     return {"message": "Contract sent successfully", "signature_link": signature_link, "mock_otp": otp_code}
 
+@api_router.get("/contracts/{contract_id}/signature")
+async def get_signature(contract_id: str, current_user: dict = Depends(get_current_user)):
+    signature = await db.signatures.find_one({"contract_id": contract_id}, {"_id": 0})
+    if not signature:
+        return None
+    if isinstance(signature.get('created_at'), str):
+        signature['created_at'] = datetime.fromisoformat(signature['created_at'])
+    if isinstance(signature.get('signed_at'), str):
+        signature['signed_at'] = datetime.fromisoformat(signature['signed_at'])
+    return signature
+
 @api_router.delete("/contracts/{contract_id}")
 async def delete_contract(contract_id: str, current_user: dict = Depends(get_current_user)):
     result = await db.contracts.delete_one({"id": contract_id, "creator_id": current_user['user_id']})
