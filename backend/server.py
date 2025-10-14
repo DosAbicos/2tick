@@ -468,26 +468,86 @@ async def download_pdf(contract_id: str, current_user: dict = Depends(get_curren
     p.drawString(50, height - 80, contract['title'])
     
     # Content
-    p.setFont("Helvetica", 12)
+    p.setFont("Helvetica", 10)
     text_lines = contract['content'].split('\n')
     y_position = height - 150
     for line in text_lines:
-        if y_position < 100:
+        if y_position < 250:  # Leave space for signature section
             p.showPage()
             y_position = height - 50
-        p.drawString(50, y_position, line[:80])
-        y_position -= 20
+        # Handle long lines
+        if len(line) > 90:
+            # Split long lines
+            words = line.split(' ')
+            current_line = ''
+            for word in words:
+                if len(current_line + word) < 90:
+                    current_line += word + ' '
+                else:
+                    p.drawString(50, y_position, current_line)
+                    y_position -= 15
+                    current_line = word + ' '
+            if current_line:
+                p.drawString(50, y_position, current_line)
+                y_position -= 15
+        else:
+            p.drawString(50, y_position, line)
+            y_position -= 15
     
-    # Signature metadata
+    # Signature metadata section
     if signature and signature.get('verified'):
-        p.setFont("Helvetica-Bold", 14)
-        p.drawString(50, y_position - 40, "Signature Metadata:")
-        p.setFont("Helvetica", 10)
-        p.drawString(50, y_position - 60, f"Signer: {contract['signer_name']}")
-        p.drawString(50, y_position - 75, f"Phone: {contract['signer_phone']}")
-        p.drawString(50, y_position - 90, f"Verified: {signature.get('signed_at', 'N/A')}")
-        p.drawString(50, y_position - 105, f"Method: {signature.get('verification_method', 'N/A')}")
-        p.drawString(50, y_position - 120, f"Contract ID: {contract_id}")
+        # New page for signature details
+        p.showPage()
+        y_position = height - 50
+        
+        p.setFont("Helvetica-Bold", 16)
+        p.drawString(50, y_position, "МЕТАДАННЫЕ ЭЛЕКТРОННОЙ ПОДПИСИ")
+        y_position -= 40
+        
+        # Signature hash (code-key)
+        if signature.get('signature_hash'):
+            p.setFont("Helvetica-Bold", 14)
+            p.drawString(50, y_position, f"Код-ключ подписи: {signature.get('signature_hash')}")
+            y_position -= 30
+        
+        # Signature details
+        p.setFont("Helvetica", 11)
+        p.drawString(50, y_position, f"Подписант: {contract['signer_name']}")
+        y_position -= 20
+        p.drawString(50, y_position, f"Телефон: {contract['signer_phone']}")
+        y_position -= 20
+        p.drawString(50, y_position, f"Дата и время подписания: {signature.get('signed_at', 'N/A')}")
+        y_position -= 20
+        p.drawString(50, y_position, f"Метод верификации: {signature.get('verification_method', 'N/A')}")
+        y_position -= 20
+        p.drawString(50, y_position, f"ID контракта: {contract_id}")
+        y_position -= 40
+        
+        # Document photo
+        if signature.get('document_upload'):
+            try:
+                p.setFont("Helvetica-Bold", 12)
+                p.drawString(50, y_position, "Документ подписанта:")
+                y_position -= 20
+                
+                # Decode and add image
+                img_data = base64.b64decode(signature['document_upload'])
+                img_buffer = BytesIO(img_data)
+                img = ImageReader(img_buffer)
+                
+                # Add image (scaled to fit)
+                img_width = 300
+                img_height = 200
+                if y_position - img_height < 50:
+                    p.showPage()
+                    y_position = height - 50
+                
+                p.drawImage(img, 50, y_position - img_height, width=img_width, height=img_height, preserveAspectRatio=True, mask='auto')
+                y_position -= (img_height + 20)
+            except Exception as e:
+                logging.error(f"Error adding image to PDF: {str(e)}")
+                p.drawString(50, y_position, "Ошибка загрузки изображения документа")
+                y_position -= 20
     
     p.save()
     buffer.seek(0)
