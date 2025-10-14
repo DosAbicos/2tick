@@ -359,17 +359,57 @@ async def upload_document(contract_id: str, file: UploadFile = File(...)):
     # Read file
     content = await file.read()
     
+    # Check if it's a PDF and convert to image
+    file_data = None
+    filename = file.filename
+    
+    if file.content_type == 'application/pdf' or filename.lower().endswith('.pdf'):
+        try:
+            from pdf2image import convert_from_bytes
+            from PIL import Image as PILImage
+            
+            # Convert PDF to images
+            images = convert_from_bytes(content, first_page=1, last_page=1)
+            
+            if images:
+                # Get first page
+                img = images[0]
+                
+                # Convert to RGB if needed
+                if img.mode != 'RGB':
+                    img = img.convert('RGB')
+                
+                # Resize if too large
+                max_size = (1200, 1600)
+                img.thumbnail(max_size, PILImage.Resampling.LANCZOS)
+                
+                # Save to buffer as JPEG
+                img_buffer = BytesIO()
+                img.save(img_buffer, format='JPEG', quality=85)
+                img_buffer.seek(0)
+                
+                # Encode to base64
+                file_data = base64.b64encode(img_buffer.getvalue()).decode()
+                filename = filename.replace('.pdf', '.jpg')
+                
+                logging.info(f"PDF converted to image successfully")
+        except Exception as e:
+            logging.error(f"Error converting PDF: {str(e)}")
+            raise HTTPException(status_code=400, detail="Error converting PDF document")
+    else:
+        # For images, just encode
+        file_data = base64.b64encode(content).decode()
+    
     # Mock OCR validation
-    if not verify_document_ocr(base64.b64encode(content).decode()):
+    if not verify_document_ocr(file_data):
         raise HTTPException(status_code=400, detail="Document verification failed")
     
     # Store document
-    file_data = base64.b64encode(content).decode()
     await db.signatures.update_one(
         {"contract_id": contract_id},
         {"$set": {
             "document_upload": file_data,
-            "document_filename": file.filename
+            "document_filename": filename
         }},
         upsert=True
     )
