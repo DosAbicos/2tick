@@ -506,6 +506,67 @@ async def approve_signature(contract_id: str, current_user: dict = Depends(get_c
     
     await log_audit("contract_approved", contract_id=contract_id, user_id=current_user['user_id'])
     
+    # Get contract and signature for email
+    contract = await db.contracts.find_one({"id": contract_id})
+    signature = await db.signatures.find_one({"contract_id": contract_id})
+    creator = await db.users.find_one({"id": contract['creator_id']})
+    
+    # Generate PDF for email
+    try:
+        # Register fonts
+        try:
+            dejavu_path = '/usr/share/fonts/truetype/dejavu/'
+            pdfmetrics.registerFont(TTFont('DejaVu', dejavu_path + 'DejaVuSans.ttf'))
+            pdfmetrics.registerFont(TTFont('DejaVu-Bold', dejavu_path + 'DejaVuSans-Bold.ttf'))
+            pdfmetrics.registerFont(TTFont('DejaVu-Mono', dejavu_path + 'DejaVuSansMono.ttf'))
+        except:
+            pass
+        
+        # Generate PDF (simplified version for email)
+        pdf_buffer = BytesIO()
+        p = canvas.Canvas(pdf_buffer, pagesize=A4)
+        width, height = A4
+        
+        try:
+            p.setFont("DejaVu-Bold", 16)
+        except:
+            p.setFont("Helvetica-Bold", 16)
+        
+        p.drawString(50, height - 50, contract['title'])
+        p.setFont("DejaVu", 10) if 'DejaVu' in pdfmetrics.getRegisteredFontNames() else p.setFont("Helvetica", 10)
+        p.drawString(50, height - 80, f"Договор подписан {datetime.now().strftime('%d.%m.%Y')}")
+        
+        p.save()
+        pdf_buffer.seek(0)
+        pdf_bytes = pdf_buffer.getvalue()
+        
+        # Send email to signer
+        if contract.get('signer_email'):
+            subject = f"Подписанный договор: {contract['title']}"
+            body = f"""
+Здравствуйте, {contract['signer_name']}!
+
+Ваш договор "{contract['title']}" был успешно подписан и утвержден.
+
+Во вложении находится подписанный договор в формате PDF.
+
+Код-ключ вашей подписи: {signature.get('signature_hash', 'N/A')}
+Код-ключ наймодателя: {landlord_signature_hash}
+
+С уважением,
+Signify KZ
+            """
+            
+            send_email(
+                to_email=contract['signer_email'],
+                subject=subject,
+                body=body,
+                attachment=pdf_bytes,
+                filename=f"contract-{contract_id}.pdf"
+            )
+    except Exception as e:
+        logging.error(f"Error sending email: {str(e)}")
+    
     return {"message": "Contract approved and signed", "landlord_signature_hash": landlord_signature_hash}
 
 # ===== PDF GENERATION =====
