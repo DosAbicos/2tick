@@ -424,6 +424,33 @@ async def get_contract_for_signing(contract_id: str):
         contract['updated_at'] = datetime.fromisoformat(contract['updated_at'])
     return Contract(**contract)
 
+@api_router.post("/sign/{contract_id}/update-signer-info")
+async def update_signer_info(
+    contract_id: str,
+    signer_name: Optional[str] = None,
+    signer_phone: Optional[str] = None,
+    signer_email: Optional[str] = None
+):
+    contract = await db.contracts.find_one({"id": contract_id})
+    if not contract:
+        raise HTTPException(status_code=404, detail="Contract not found")
+    
+    update_data = {}
+    if signer_name:
+        update_data['signer_name'] = signer_name
+    if signer_phone:
+        update_data['signer_phone'] = signer_phone
+    if signer_email:
+        update_data['signer_email'] = signer_email
+    
+    if update_data:
+        await db.contracts.update_one(
+            {"id": contract_id},
+            {"$set": update_data}
+        )
+    
+    return {"message": "Signer info updated"}
+
 @api_router.post("/sign/{contract_id}/upload-document")
 async def upload_document(contract_id: str, file: UploadFile = File(...)):
     # Read file
