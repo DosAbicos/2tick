@@ -556,11 +556,11 @@ async def update_signer_info(
         raise HTTPException(status_code=404, detail="Contract not found")
     
     update_data = {}
-    if signer_name:
+    if signer_name is not None:
         update_data['signer_name'] = signer_name
-    if signer_phone:
+    if signer_phone is not None:
         update_data['signer_phone'] = signer_phone
-    if signer_email:
+    if signer_email is not None:
         update_data['signer_email'] = signer_email
     
     if update_data:
