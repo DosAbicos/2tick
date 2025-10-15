@@ -111,9 +111,9 @@ class SignifyTester:
             self.log(f"❌ Login failed: {response.status_code} - {response.text}", "ERROR")
             return False
             
-    def test_contract_creation(self):
-        """Test contract creation"""
-        self.log("Testing contract creation...")
+    def test_contract_creation_without_signer(self):
+        """Test contract creation WITHOUT signer info (to test update functionality)"""
+        self.log("Testing contract creation without signer info...")
         
         if not self.auth_token:
             self.log("❌ No auth token available", "ERROR")
@@ -121,13 +121,15 @@ class SignifyTester:
             
         url = f"{API_BASE}/contracts"
         headers = {"Authorization": f"Bearer {self.auth_token}"}
-        response = self.session.post(url, json=TEST_CONTRACT, headers=headers)
+        response = self.session.post(url, json=TEST_CONTRACT_EMPTY, headers=headers)
         
         if response.status_code == 200:
             data = response.json()
             self.contract_id = data.get('id')
-            self.log("✅ Contract creation successful")
+            self.log("✅ Contract creation successful (without signer info)")
             self.log(f"   Contract ID: {self.contract_id}")
+            self.log(f"   Signer name: {data.get('signer_name', 'None')}")
+            self.log(f"   Signer phone: {data.get('signer_phone', 'None')}")
             return True
         else:
             self.log(f"❌ Contract creation failed: {response.status_code} - {response.text}", "ERROR")
