@@ -146,7 +146,7 @@ class SignifyTester:
             
         # Test updating signer info
         url = f"{API_BASE}/sign/{self.contract_id}/update-signer-info"
-        response = self.session.post(url, json=UPDATED_SIGNER_INFO)
+        response = self.session.post(url, data=UPDATED_SIGNER_INFO)
         
         if response.status_code == 200:
             data = response.json()
