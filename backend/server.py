@@ -532,6 +532,70 @@ async def delete_contract(contract_id: str, current_user: dict = Depends(get_cur
     await log_audit("contract_deleted", contract_id=contract_id, user_id=current_user['user_id'])
     return {"message": "Contract deleted"}
 
+@api_router.post("/contracts/{contract_id}/upload-landlord-document")
+async def upload_landlord_document(contract_id: str, file: UploadFile = File(...), current_user: dict = Depends(get_current_user)):
+    """Upload landlord's ID/passport document for a contract"""
+    contract = await db.contracts.find_one({"id": contract_id, "creator_id": current_user['user_id']})
+    if not contract:
+        raise HTTPException(status_code=404, detail="Contract not found")
+    
+    # Read file
+    content = await file.read()
+    
+    # Check if it's a PDF and convert to image
+    file_data = None
+    filename = file.filename
+    
+    if file.content_type == 'application/pdf' or filename.lower().endswith('.pdf'):
+        try:
+            from pdf2image import convert_from_bytes
+            from PIL import Image as PILImage
+            
+            # Convert PDF to images
+            images = convert_from_bytes(content, first_page=1, last_page=1)
+            
+            if images:
+                # Get first page
+                img = images[0]
+                
+                # Convert to RGB if needed
+                if img.mode != 'RGB':
+                    img = img.convert('RGB')
+                
+                # Resize if too large
+                max_size = (1200, 1600)
+                img.thumbnail(max_size, PILImage.Resampling.LANCZOS)
+                
+                # Save to buffer as JPEG
+                img_buffer = BytesIO()
+                img.save(img_buffer, format='JPEG', quality=85)
+                img_buffer.seek(0)
+                
+                # Encode to base64
+                file_data = base64.b64encode(img_buffer.getvalue()).decode()
+                filename = filename.replace('.pdf', '.jpg')
+                
+                logging.info(f"PDF converted to image successfully")
+        except Exception as e:
+            logging.error(f"Error converting PDF: {str(e)}")
+            raise HTTPException(status_code=400, detail="Error converting PDF document")
+    else:
+        # For images, just encode
+        file_data = base64.b64encode(content).decode()
+    
+    # Store document in contract
+    await db.contracts.update_one(
+        {"id": contract_id},
+        {"$set": {
+            "landlord_document_upload": file_data,
+            "landlord_document_filename": filename
+        }}
+    )
+    
+    await log_audit("landlord_document_uploaded", contract_id=contract_id, user_id=current_user['user_id'])
+    
+    return {"message": "Landlord document uploaded successfully"}
+
 # ===== SIGNING ROUTES (PUBLIC) =====
 @api_router.get("/sign/{contract_id}")
 async def get_contract_for_signing(contract_id: str):
