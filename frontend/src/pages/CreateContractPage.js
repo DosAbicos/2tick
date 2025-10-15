@@ -21,6 +21,10 @@ const CreateContractPage = () => {
   const [loading, setLoading] = useState(false);
   const token = localStorage.getItem('token');
   
+  // Manual editing mode
+  const [manualEditMode, setManualEditMode] = useState(false);
+  const [manualContent, setManualContent] = useState('');
+  
   // Template fields
   const [templateData, setTemplateData] = useState({
     // Contract info
