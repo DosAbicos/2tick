@@ -96,6 +96,14 @@ const CreateContractPage = () => {
     });
   };
 
+  const toggleEditMode = () => {
+    if (!manualEditMode) {
+      // Switching to manual mode - copy current content
+      setManualContent(generateContractContent());
+    }
+    setManualEditMode(!manualEditMode);
+  };
+
   const generateContractContent = () => {
     const { 
       contract_number, 
