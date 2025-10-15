@@ -109,6 +109,22 @@ const CreateContractPage = () => {
     setManualEditMode(!manualEditMode);
   };
 
+  const handleLandlordDocUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setLandlordDocument(file);
+    
+    // Create preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setLandlordDocPreview(reader.result);
+    };
+    reader.readAsDataURL(file);
+    
+    toast.success('Документ выбран');
+  };
+
   const generateContractContent = () => {
     const { 
       contract_number, 
