@@ -111,7 +111,8 @@ const SignContractPage = () => {
           ...prev,
           signer_name: response.data.contract.signer_name || prev.signer_name,
           signer_phone: response.data.contract.signer_phone || prev.signer_phone,
-          signer_email: response.data.contract.signer_email || prev.signer_email
+          signer_email: response.data.contract.signer_email || prev.signer_email,
+          content: response.data.contract.content || prev.content // Update content as well
         }));
       }
       
