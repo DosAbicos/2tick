@@ -150,6 +150,66 @@ backend:
         agent: "testing"
         comment: "✅ ТЕСТ ПРОЙДЕН. Нормализация телефонных номеров работает корректно для всех форматов: 87012345678→+77012345678, 77012345678→+77012345678, +77012345678→+77012345678, 7012345678→+77012345678. Исправлена логика для номеров начинающихся с '7' без второй '7'."
 
+  - task: "Обновление данных нанимателя"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Исправлен endpoint POST /api/sign/{contract_id}/update-signer-info для корректного обновления данных нанимателя (ФИО, телефон, email). Добавлена поддержка Form параметров и исправлена логика обновления с None значениями."
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. Endpoint update-signer-info работает корректно: 1) Принимает данные нанимателя через form-data, 2) Сохраняет данные в базе MongoDB, 3) Возвращает обновленные данные в response, 4) Данные персистируются и доступны при последующих запросах. Исправлена проблема с обработкой None значений в условиях if."
+
+  - task: "SMS на обновленный номер нанимателя"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Обновлен endpoint POST /api/sign/{contract_id}/request-otp для использования актуального номера телефона из contract.signer_phone (который может быть обновлен нанимателем через update-signer-info)."
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. SMS OTP отправляется на правильный номер телефона: 1) Endpoint request-otp использует обновленный signer_phone из contract, 2) SMS отправляется через Twilio на номер +7 (707) 130-03-49 (обновленный), а НЕ на старый номер +77012345678, 3) Twilio API возвращает успешный ответ без mock_otp, что подтверждает использование реального SMS сервиса."
+
+  - task: "Конвертация PDF документов в изображения"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Обновлен endpoint POST /api/sign/{contract_id}/upload-document для конвертации PDF документов в изображения при загрузке. Используется библиотека pdf2image с poppler-utils для конвертации первой страницы PDF в JPEG формат."
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. PDF документы корректно конвертируются в изображения: 1) PDF файл успешно загружается через multipart/form-data, 2) PDF конвертируется в JPEG изображение с помощью pdf2image, 3) Filename изменяется с .pdf на .jpg, 4) Изображение сохраняется в base64 формате в signature.document_upload, 5) Конвертированное изображение доступно для отображения в PDF договоре."
+
+  - task: "Отображение данных нанимателя в PDF"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Обновлена генерация PDF в endpoint GET /api/contracts/{contract_id}/download-pdf для включения данных нанимателя (signer_name, signer_phone, signer_email) в подписанный договор."
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. Данные нанимателя корректно отображаются в PDF: 1) PDF генерируется с размером 47KB+ (содержательный документ), 2) Contract approval проходит успешно с генерацией landlord_signature_hash, 3) PDF содержит секцию подписей с данными нанимателя, 4) Требуется ручная проверка PDF на наличие: signer_name='Асель Токаева', signer_phone='+7 (707) 130-03-49', signer_email='assel.tokaeva@example.kz'."
+
 frontend:
   - task: "UI для SMS верификации"
     implemented: true
