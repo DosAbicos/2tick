@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import Header from '@/components/Header';
 import { CheckCircle, FileUp, Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
-import InputMask from 'react-input-mask';
+import { IMaskInput } from 'react-imask';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
