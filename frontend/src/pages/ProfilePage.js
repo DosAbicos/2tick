@@ -52,27 +52,6 @@ const ProfilePage = () => {
     }
   };
 
-  const handleDocumentUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    setUploading(true);
-    const formData = new FormData();
-    formData.append('file', file);
-
-    try {
-      await axios.post(`${API}/auth/upload-document`, formData, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      toast.success('Документ загружен');
-      fetchUser();
-    } catch (error) {
-      toast.error(error.response?.data?.detail || t('common.error'));
-    } finally {
-      setUploading(false);
-    }
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-neutral-50">
