@@ -101,3 +101,74 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Интеграция Twilio для реальной SMS верификации в платформе Signify KZ. Замена mock функций на реальные вызовы Twilio Verify API."
+
+backend:
+  - task: "Twilio SMS OTP - отправка"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Реализована функция send_otp_via_twilio() с использованием Twilio Verify API. Поддерживает SMS и voice calls. Имеет fallback на mock режим если Twilio не настроен. Endpoint /api/sign/{contract_id}/request-otp обновлен для использования новой функции."
+  
+  - task: "Twilio SMS OTP - верификация"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Реализована функция verify_otp_via_twilio() для проверки OTP через Twilio Verify API. Endpoint /api/sign/{contract_id}/verify-otp обновлен. Имеет fallback на mock режим для тестирования."
+  
+  - task: "Нормализация номера телефона"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Добавлена функция normalize_phone() для конвертации телефонных номеров в международный формат (+7...). Обрабатывает форматы: 8..., 7..., +7..., и без префикса."
+
+frontend:
+  - task: "UI для SMS верификации"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/SignContractPage.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Frontend уже существует, изменения не требуются. Пользователь будет тестировать вручную после backend тестирования."
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 0
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Twilio SMS OTP - отправка"
+    - "Twilio SMS OTP - верификация"
+    - "Нормализация номера телефона"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: "Интеграция Twilio завершена. Реализованы функции для отправки и верификации OTP через Twilio Verify API. Обновлены endpoints /api/sign/{contract_id}/request-otp и /api/sign/{contract_id}/verify-otp. Добавлена нормализация телефонных номеров. Все функции имеют fallback на mock режим. Backend перезапущен успешно. Готов к тестированию backend функционала."
