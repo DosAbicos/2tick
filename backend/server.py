@@ -651,6 +651,7 @@ async def request_otp(contract_id: str, method: str = "sms"):
     # Store verification info in signature
     update_data = {
         "verification_method": method,
+        "signer_phone": contract['signer_phone'],
         "otp_requested_at": datetime.now(timezone.utc).isoformat()
     }
     
