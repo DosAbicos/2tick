@@ -32,9 +32,6 @@ const ProfilePage = () => {
       });
       setUser(response.data);
       setIin(response.data.iin || '');
-      if (response.data.document_upload) {
-        setDocumentPreview(`data:image/jpeg;base64,${response.data.document_upload}`);
-      }
     } catch (error) {
       toast.error(t('common.error'));
     } finally {
