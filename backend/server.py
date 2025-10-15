@@ -692,7 +692,8 @@ async def verify_otp(contract_id: str, otp_data: OTPVerify):
             raise HTTPException(status_code=400, detail=verification_result.get("error", "Invalid OTP code"))
     
     # Generate unique signature hash
-    signature_data = f"{contract_id}-{signature['signer_phone']}-{datetime.now(timezone.utc).isoformat()}"
+    signer_phone = signature.get('signer_phone', otp_data.phone)
+    signature_data = f"{contract_id}-{signer_phone}-{datetime.now(timezone.utc).isoformat()}"
     signature_hash = hashlib.sha256(signature_data.encode()).hexdigest()[:16].upper()
     
     # Mark as verified and signed
