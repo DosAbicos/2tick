@@ -641,9 +641,15 @@ async def request_otp(contract_id: str, method: str = "sms"):
     if not contract:
         raise HTTPException(status_code=404, detail="Contract not found")
     
+    # Get the phone number (contract might have been updated by signer)
+    phone_to_use = contract.get('signer_phone')
+    
+    if not phone_to_use:
+        raise HTTPException(status_code=400, detail="Signer phone number is required")
+    
     # Use Twilio Verify API
     channel = "sms" if method == "sms" else "call"
-    result = send_otp_via_twilio(contract['signer_phone'], channel)
+    result = send_otp_via_twilio(phone_to_use, channel)
     
     if not result["success"]:
         raise HTTPException(status_code=500, detail=f"Failed to send OTP: {result.get('error', 'Unknown error')}")
@@ -651,7 +657,7 @@ async def request_otp(contract_id: str, method: str = "sms"):
     # Store verification info in signature
     update_data = {
         "verification_method": method,
-        "signer_phone": contract['signer_phone'],
+        "signer_phone": phone_to_use,
         "otp_requested_at": datetime.now(timezone.utc).isoformat()
     }
     
@@ -665,7 +671,7 @@ async def request_otp(contract_id: str, method: str = "sms"):
         upsert=True
     )
     
-    await log_audit("otp_requested", contract_id=contract_id, details=f"Method: {method}")
+    await log_audit("otp_requested", contract_id=contract_id, details=f"Method: {method}, Phone: {phone_to_use}")
     
     response = {"message": f"OTP sent via {method}"}
     # Include mock OTP only in development/fallback mode
