@@ -216,7 +216,7 @@ Email: ${templateData.tenant_email || '[Email]'}
     try {
       const contractData = {
         title: `Договор № ${templateData.contract_number} от ${templateData.contract_date}`,
-        content: generateContractContent(),
+        content: manualEditMode ? manualContent : generateContractContent(),
         signer_name: templateData.tenant_name,
         signer_phone: templateData.tenant_phone,
         signer_email: templateData.tenant_email,
