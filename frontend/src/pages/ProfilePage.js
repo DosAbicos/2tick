@@ -151,48 +151,6 @@ const ProfilePage = () => {
               <p className="text-xs text-neutral-500 mt-2">12-значный номер</p>
             </CardContent>
           </Card>
-
-          {/* Document Upload */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Удостоверение личности / Паспорт</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {documentPreview ? (
-                <div>
-                  <img
-                    src={documentPreview}
-                    alt="Document"
-                    className="max-w-md rounded border shadow-sm"
-                  />
-                  <p className="text-xs text-neutral-500 mt-2">{user?.document_filename}</p>
-                </div>
-              ) : (
-                <div className="text-center py-8 border-2 border-dashed rounded-lg">
-                  <Upload className="h-12 w-12 text-neutral-300 mx-auto mb-2" />
-                  <p className="text-neutral-600">Документ не загружен</p>
-                </div>
-              )}
-
-              <Label htmlFor="document" className="cursor-pointer">
-                <Button variant="outline" className="w-full" disabled={uploading} asChild>
-                  <span>
-                    <Upload className="mr-2 h-4 w-4" />
-                    {uploading ? t('common.loading') : documentPreview ? 'Загрузить новый документ' : 'Загрузить документ'}
-                  </span>
-                </Button>
-                <Input
-                  id="document"
-                  type="file"
-                  accept="image/*,.pdf"
-                  onChange={handleDocumentUpload}
-                  className="hidden"
-                  data-testid="document-upload-input"
-                />
-              </Label>
-              <p className="text-xs text-neutral-500">Поддерживаются: JPEG, PNG, PDF</p>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </div>
