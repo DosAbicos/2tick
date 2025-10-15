@@ -544,26 +544,26 @@ async def get_contract_for_signing(contract_id: str):
         contract['updated_at'] = datetime.fromisoformat(contract['updated_at'])
     return Contract(**contract)
 
+class SignerInfoUpdate(BaseModel):
+    signer_name: Optional[str] = None
+    signer_phone: Optional[str] = None
+    signer_email: Optional[str] = None
+
 @api_router.post("/sign/{contract_id}/update-signer-info")
-async def update_signer_info(
-    contract_id: str,
-    signer_name: Optional[str] = Form(None),
-    signer_phone: Optional[str] = Form(None),
-    signer_email: Optional[str] = Form(None)
-):
-    logging.info(f"Update signer info called: name={signer_name}, phone={signer_phone}, email={signer_email}")
+async def update_signer_info(contract_id: str, data: SignerInfoUpdate):
+    logging.info(f"Update signer info called: name={data.signer_name}, phone={data.signer_phone}, email={data.signer_email}")
     
     contract = await db.contracts.find_one({"id": contract_id})
     if not contract:
         raise HTTPException(status_code=404, detail="Contract not found")
     
     update_data = {}
-    if signer_name is not None:
-        update_data['signer_name'] = signer_name
-    if signer_phone is not None:
-        update_data['signer_phone'] = signer_phone
-    if signer_email is not None:
-        update_data['signer_email'] = signer_email
+    if data.signer_name:
+        update_data['signer_name'] = data.signer_name
+    if data.signer_phone:
+        update_data['signer_phone'] = data.signer_phone
+    if data.signer_email:
+        update_data['signer_email'] = data.signer_email
     
     logging.info(f"Update data: {update_data}")
     
