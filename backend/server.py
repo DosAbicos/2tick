@@ -564,12 +564,26 @@ async def update_signer_info(
         update_data['signer_email'] = signer_email
     
     if update_data:
+        update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
         await db.contracts.update_one(
             {"id": contract_id},
             {"$set": update_data}
         )
+        
+        await log_audit("signer_info_updated", contract_id=contract_id, 
+                       details=f"Updated: {', '.join(update_data.keys())}")
     
-    return {"message": "Signer info updated"}
+    # Return updated contract
+    updated_contract = await db.contracts.find_one({"id": contract_id})
+    
+    return {
+        "message": "Signer info updated",
+        "contract": {
+            "signer_name": updated_contract.get('signer_name'),
+            "signer_phone": updated_contract.get('signer_phone'),
+            "signer_email": updated_contract.get('signer_email')
+        }
+    }
 
 @api_router.post("/sign/{contract_id}/upload-document")
 async def upload_document(contract_id: str, file: UploadFile = File(...)):
