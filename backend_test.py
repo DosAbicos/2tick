@@ -222,7 +222,7 @@ class SignifyTester:
             return False
             
     def test_otp_verification(self):
-        """Test OTP verification via Twilio"""
+        """Test OTP verification and contract signing"""
         self.log("Testing OTP verification...")
         
         if not self.contract_id:
@@ -236,11 +236,8 @@ class SignifyTester:
         if hasattr(self, 'mock_otp') and self.mock_otp:
             test_codes.append(("mock_otp", self.mock_otp))
             
-        # Test invalid OTP
+        # Test invalid OTP first
         test_codes.append(("invalid_otp", "000000"))
-        
-        # Test real OTP (if user has access to SMS)
-        # Note: In real testing, user would need to provide the received OTP
         
         url = f"{API_BASE}/sign/{self.contract_id}/verify-otp"
         
@@ -250,7 +247,7 @@ class SignifyTester:
             
             verify_data = {
                 "contract_id": self.contract_id,
-                "phone": TEST_CONTRACT["signer_phone"],
+                "phone": UPDATED_SIGNER_INFO["signer_phone"],  # Use updated phone
                 "otp_code": otp_code
             }
             
@@ -259,7 +256,8 @@ class SignifyTester:
             if test_name == "mock_otp" and response.status_code == 200:
                 data = response.json()
                 self.log("   ✅ Mock OTP verification successful")
-                self.log(f"   Signature hash: {data.get('signature_hash')}")
+                self.signature_hash = data.get('signature_hash')
+                self.log(f"   Signature hash: {self.signature_hash}")
                 success = True
             elif test_name == "invalid_otp" and response.status_code == 400:
                 self.log("   ✅ Invalid OTP correctly rejected")
