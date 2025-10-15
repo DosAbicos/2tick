@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
 """
-Backend Testing for Signify KZ - Twilio SMS OTP Integration
-Tests the complete flow: registration -> contract creation -> OTP sending -> OTP verification
+Backend Testing for Signify KZ - User Feedback Fixes Testing
+Tests the 4 specific fixes after user feedback:
+1. SMS goes to updated signer phone number
+2. Signer data displays in contract/PDF
+3. Signer photo displays on approval page
+4. PDF documents convert to images
 """
 
 import requests
 import json
 import time
 import os
+import base64
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -26,13 +31,25 @@ TEST_USER = {
     "language": "ru"
 }
 
-TEST_CONTRACT = {
+# Contract WITHOUT signer info (to test update functionality)
+TEST_CONTRACT_EMPTY = {
     "title": "Договор аренды квартиры в г. Алматы",
-    "content": "Настоящий договор заключается между арендодателем и арендатором на следующих условиях...",
-    "signer_name": "Асель Токаева", 
-    "signer_phone": "+77012345678",  # Kazakhstan mobile number
-    "signer_email": "assel.tokaeva@example.kz",
+    "content": "Настоящий договор заключается между арендодателем и арендатором на следующих условиях: 1. Предмет договора - аренда квартиры по адресу г. Алматы, ул. Абая 150. 2. Срок аренды - 12 месяцев. 3. Арендная плата - 150,000 тенге в месяц.",
     "amount": "150000"
+}
+
+# Updated signer info for testing
+UPDATED_SIGNER_INFO = {
+    "signer_name": "Асель Токаева",
+    "signer_phone": "+7 (707) 130-03-49", 
+    "signer_email": "assel.tokaeva@example.kz"
+}
+
+# Original signer info (different phone to test SMS routing)
+ORIGINAL_SIGNER_INFO = {
+    "signer_name": "Старое Имя",
+    "signer_phone": "+77012345678",
+    "signer_email": "old@example.kz"
 }
 
 # Test phone numbers for normalization
