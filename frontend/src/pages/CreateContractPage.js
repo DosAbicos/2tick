@@ -270,17 +270,36 @@ Email: ${templateData.tenant_email || '[Email]'}
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="flex items-center gap-2">
                 <Eye className="h-5 w-5" />
-                Предпросмотр договора
+                {manualEditMode ? 'Редактировать договор' : 'Предпросмотр договора'}
               </CardTitle>
+              <Button
+                type="button"
+                variant={manualEditMode ? "default" : "outline"}
+                size="sm"
+                onClick={toggleEditMode}
+                className="ml-2"
+              >
+                <Edit3 className="h-4 w-4 mr-2" />
+                {manualEditMode ? 'Вернуться к форме' : 'Редактировать вручную'}
+              </Button>
             </CardHeader>
             <CardContent>
-              <div className="bg-white border rounded-lg p-6 max-h-[800px] overflow-y-auto" data-testid="contract-preview">
-                <div className="prose prose-sm max-w-none">
-                  <pre className="whitespace-pre-wrap text-xs font-['IBM_Plex_Sans'] leading-relaxed text-neutral-800">
-                    {generateContractContent()}
-                  </pre>
+              {manualEditMode ? (
+                <textarea
+                  value={manualContent}
+                  onChange={(e) => setManualContent(e.target.value)}
+                  className="w-full h-[800px] p-4 border rounded-lg font-mono text-xs leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Введите текст договора..."
+                />
+              ) : (
+                <div className="bg-white border rounded-lg p-6 max-h-[800px] overflow-y-auto" data-testid="contract-preview">
+                  <div className="prose prose-sm max-w-none">
+                    <pre className="whitespace-pre-wrap text-xs font-['IBM_Plex_Sans'] leading-relaxed text-neutral-800">
+                      {generateContractContent()}
+                    </pre>
+                  </div>
                 </div>
-              </div>
+              )}
             </CardContent>
           </Card>
 
