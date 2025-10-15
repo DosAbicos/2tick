@@ -24,6 +24,8 @@ from fastapi.responses import StreamingResponse
 import random
 import base64
 import hashlib
+from twilio.rest import Client
+from twilio.base.exceptions import TwilioRestException
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
