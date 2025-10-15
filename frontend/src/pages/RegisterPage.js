@@ -90,17 +90,24 @@ const RegisterPage = () => {
               
               <div>
                 <Label htmlFor="phone">{t('auth.register.phone')}</Label>
-                <Input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  placeholder="+7 (___) ___-__-__"
+                <InputMask
+                  mask="+7 (999) 999-99-99"
                   value={formData.phone}
                   onChange={handleChange}
-                  required
-                  data-testid="phone-input"
-                  className="mt-1"
-                />
+                >
+                  {(inputProps) => (
+                    <Input
+                      {...inputProps}
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                      placeholder="+7 (___) ___-__-__"
+                      required
+                      data-testid="phone-input"
+                      className="mt-1"
+                    />
+                  )}
+                </InputMask>
               </div>
               
               <div>
