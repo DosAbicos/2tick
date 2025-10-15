@@ -35,10 +35,8 @@ TEST_USER = {
 TEST_CONTRACT_EMPTY = {
     "title": "Договор аренды квартиры в г. Алматы",
     "content": "Настоящий договор заключается между арендодателем и арендатором на следующих условиях: 1. Предмет договора - аренда квартиры по адресу г. Алматы, ул. Абая 150. 2. Срок аренды - 12 месяцев. 3. Арендная плата - 150,000 тенге в месяц.",
-    "signer_name": "",  # Empty string instead of None
-    "signer_phone": "",  # Empty string instead of None
-    "signer_email": "",
     "amount": "150000"
+    # Omit signer fields to test None handling
 }
 
 # Updated signer info for testing
