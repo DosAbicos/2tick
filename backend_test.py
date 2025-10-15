@@ -495,12 +495,12 @@ def main():
     results = tester.run_all_tests()
     
     # Exit with appropriate code
-    failed_tests = [k for k, v in results.items() if k != 'twilio_status' and not v]
+    failed_tests = [k for k, v in results.items() if not v]
     if failed_tests:
         print(f"\n❌ {len(failed_tests)} tests failed: {', '.join(failed_tests)}")
         exit(1)
     else:
-        print(f"\n✅ All tests passed! Twilio status: {results.get('twilio_status', 'UNKNOWN')}")
+        print(f"\n✅ All user feedback fixes tested successfully!")
         exit(0)
 
 if __name__ == "__main__":
