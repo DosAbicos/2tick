@@ -241,23 +241,17 @@ const SignContractPage = () => {
                 {!contract.signer_phone && (
                   <div>
                     <Label htmlFor="signer_phone">Номер телефона *</Label>
-                    <InputMask
-                      mask="+7 (999) 999-99-99"
+                    <IMaskInput
+                      mask="+7 (000) 000-00-00"
                       value={signerInfo.phone}
-                      onChange={(e) => setSignerInfo({...signerInfo, phone: e.target.value})}
-                    >
-                      {(inputProps) => (
-                        <Input
-                          {...inputProps}
-                          id="signer_phone"
-                          type="tel"
-                          required
-                          data-testid="signer-phone-input"
-                          className="mt-1"
-                          placeholder="+7 (___) ___-__-__"
-                        />
-                      )}
-                    </InputMask>
+                      onAccept={(value) => setSignerInfo({...signerInfo, phone: value})}
+                      placeholder="+7 (___) ___-__-__"
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1"
+                      id="signer_phone"
+                      type="tel"
+                      required
+                      data-testid="signer-phone-input"
+                    />
                   </div>
                 )}
                 
