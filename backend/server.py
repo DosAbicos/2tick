@@ -169,16 +169,102 @@ def verify_password(password: str, hashed: str) -> bool:
     return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
 
 def generate_otp() -> str:
-    """Generate a 6-digit OTP code (mocked)"""
+    """Generate a 6-digit OTP code (mocked for fallback)"""
     return str(random.randint(100000, 999999))
 
+def normalize_phone(phone: str) -> str:
+    """Normalize phone number to international format"""
+    # Remove spaces, dashes, and parentheses
+    phone = phone.replace(' ', '').replace('-', '').replace('(', '').replace(')', '')
+    
+    # If starts with 8, replace with +7 (Kazakhstan/Russia)
+    if phone.startswith('8'):
+        phone = '+7' + phone[1:]
+    # If starts with 7, add +
+    elif phone.startswith('7') and not phone.startswith('+7'):
+        phone = '+' + phone
+    # If doesn't start with +, assume Kazakhstan and add +7
+    elif not phone.startswith('+'):
+        phone = '+7' + phone
+    
+    return phone
+
+def send_otp_via_twilio(phone: str, channel: str = "sms") -> dict:
+    """Send OTP via Twilio Verify API
+    
+    Args:
+        phone: Phone number in international format
+        channel: 'sms' or 'call'
+    
+    Returns:
+        dict with 'success' bool and 'message' or 'error'
+    """
+    if not twilio_client or not TWILIO_VERIFY_SERVICE_SID:
+        # Fallback to mock
+        otp = generate_otp()
+        logging.warning(f"[MOCK] Twilio not configured. OTP: {otp} for {phone}")
+        return {"success": True, "message": "Mock OTP sent", "mock_otp": otp}
+    
+    try:
+        phone = normalize_phone(phone)
+        verification = twilio_client.verify.v2.services(TWILIO_VERIFY_SERVICE_SID).verifications.create(
+            to=phone,
+            channel=channel  # 'sms' or 'call'
+        )
+        
+        logging.info(f"✅ Twilio OTP sent to {phone} via {channel}. Status: {verification.status}")
+        return {"success": True, "message": f"OTP sent via {channel}", "status": verification.status}
+    
+    except TwilioRestException as e:
+        logging.error(f"❌ Twilio error: {e.msg}")
+        return {"success": False, "error": str(e.msg)}
+    except Exception as e:
+        logging.error(f"❌ Error sending OTP: {str(e)}")
+        return {"success": False, "error": str(e)}
+
+def verify_otp_via_twilio(phone: str, code: str) -> dict:
+    """Verify OTP via Twilio Verify API
+    
+    Args:
+        phone: Phone number in international format
+        code: OTP code to verify
+    
+    Returns:
+        dict with 'success' bool and 'status' or 'error'
+    """
+    if not twilio_client or not TWILIO_VERIFY_SERVICE_SID:
+        # Fallback to mock (always approve for testing)
+        logging.warning(f"[MOCK] Twilio not configured. Accepting OTP: {code}")
+        return {"success": True, "status": "approved"}
+    
+    try:
+        phone = normalize_phone(phone)
+        verification_check = twilio_client.verify.v2.services(TWILIO_VERIFY_SERVICE_SID).verification_checks.create(
+            to=phone,
+            code=code
+        )
+        
+        logging.info(f"✅ Twilio OTP verification for {phone}. Status: {verification_check.status}")
+        
+        if verification_check.status == "approved":
+            return {"success": True, "status": "approved"}
+        else:
+            return {"success": False, "error": "Invalid or expired OTP", "status": verification_check.status}
+    
+    except TwilioRestException as e:
+        logging.error(f"❌ Twilio verification error: {e.msg}")
+        return {"success": False, "error": str(e.msg)}
+    except Exception as e:
+        logging.error(f"❌ Error verifying OTP: {str(e)}")
+        return {"success": False, "error": str(e)}
+
 def send_sms(phone: str, message: str) -> bool:
-    """Mocked SMS sending"""
+    """Legacy mocked SMS sending (kept for backward compatibility)"""
     logging.info(f"[MOCK SMS] To: {phone} | Message: {message}")
     return True
 
 def make_call(phone: str, code: str) -> bool:
-    """Mocked voice call"""
+    """Legacy mocked voice call (kept for backward compatibility)"""
     logging.info(f"[MOCK CALL] To: {phone} | Code: {code}")
     return True
 
