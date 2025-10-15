@@ -358,22 +358,16 @@ Email: ${templateData.tenant_email || '[Email]'}
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="tenant_phone">Телефон</Label>
-                      <InputMask
-                        mask="+7 (999) 999-99-99"
+                      <IMaskInput
+                        mask="+7 (000) 000-00-00"
                         value={templateData.tenant_phone}
-                        onChange={(e) => handleFieldChange('tenant_phone', e.target.value)}
-                      >
-                        {(inputProps) => (
-                          <Input
-                            {...inputProps}
-                            id="tenant_phone"
-                            type="tel"
-                            data-testid="tenant-phone-input"
-                            className="mt-1"
-                            placeholder="+7 (___) ___-__-__"
-                          />
-                        )}
-                      </InputMask>
+                        onAccept={(value) => handleFieldChange('tenant_phone', value)}
+                        placeholder="+7 (___) ___-__-__"
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1"
+                        id="tenant_phone"
+                        type="tel"
+                        data-testid="tenant-phone-input"
+                      />
                     </div>
                     <div>
                       <Label htmlFor="tenant_email">Email</Label>
