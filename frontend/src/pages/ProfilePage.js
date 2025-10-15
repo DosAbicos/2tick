@@ -20,8 +20,6 @@ const ProfilePage = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [iin, setIin] = useState('');
-  const [uploading, setUploading] = useState(false);
-  const [documentPreview, setDocumentPreview] = useState(null);
 
   useEffect(() => {
     fetchUser();
