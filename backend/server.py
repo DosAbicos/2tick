@@ -568,7 +568,39 @@ async def update_signer_info(contract_id: str, data: SignerInfoUpdate):
     logging.info(f"Update data: {update_data}")
     
     if update_data:
+        # Update the content with new signer information
+        current_content = contract.get('content', '')
+        updated_content = current_content
+        
+        # Get current and new values
+        old_name = contract.get('signer_name', '[ФИО]')
+        old_phone = contract.get('signer_phone', '[Телефон]')
+        old_email = contract.get('signer_email', '[Email]')
+        
+        new_name = data.signer_name or old_name
+        new_phone = data.signer_phone or old_phone
+        new_email = data.signer_email or old_email
+        
+        # Replace placeholders or old values with new values
+        if data.signer_name:
+            updated_content = updated_content.replace('[ФИО]', new_name)
+            if old_name and old_name != '[ФИО]':
+                updated_content = updated_content.replace(old_name, new_name)
+        
+        if data.signer_phone:
+            updated_content = updated_content.replace('[Телефон]', new_phone)
+            if old_phone and old_phone != '[Телефон]':
+                updated_content = updated_content.replace(old_phone, new_phone)
+        
+        if data.signer_email:
+            updated_content = updated_content.replace('[Email]', new_email)
+            if old_email and old_email != '[Email]':
+                updated_content = updated_content.replace(old_email, new_email)
+        
+        # Add content to update data
+        update_data['content'] = updated_content
         update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
+        
         await db.contracts.update_one(
             {"id": contract_id},
             {"$set": update_data}
@@ -585,7 +617,8 @@ async def update_signer_info(contract_id: str, data: SignerInfoUpdate):
         "contract": {
             "signer_name": updated_contract.get('signer_name'),
             "signer_phone": updated_contract.get('signer_phone'),
-            "signer_email": updated_contract.get('signer_email')
+            "signer_email": updated_contract.get('signer_email'),
+            "content": updated_contract.get('content')
         }
     }
 
