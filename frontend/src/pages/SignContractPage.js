@@ -241,16 +241,23 @@ const SignContractPage = () => {
                 {!contract.signer_phone && (
                   <div>
                     <Label htmlFor="signer_phone">Номер телефона *</Label>
-                    <Input
-                      id="signer_phone"
-                      type="tel"
+                    <InputMask
+                      mask="+7 (999) 999-99-99"
                       value={signerInfo.phone}
                       onChange={(e) => setSignerInfo({...signerInfo, phone: e.target.value})}
-                      required
-                      data-testid="signer-phone-input"
-                      className="mt-1"
-                      placeholder="+7 (___) ___-__-__"
-                    />
+                    >
+                      {(inputProps) => (
+                        <Input
+                          {...inputProps}
+                          id="signer_phone"
+                          type="tel"
+                          required
+                          data-testid="signer-phone-input"
+                          className="mt-1"
+                          placeholder="+7 (___) ___-__-__"
+                        />
+                      )}
+                    </InputMask>
                   </div>
                 )}
                 
