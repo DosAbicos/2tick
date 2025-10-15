@@ -210,6 +210,18 @@ backend:
         agent: "testing"
         comment: "✅ ТЕСТ ПРОЙДЕН. Данные нанимателя корректно отображаются в PDF: 1) PDF генерируется с размером 47KB+ (содержательный документ), 2) Contract approval проходит успешно с генерацией landlord_signature_hash, 3) PDF содержит секцию подписей с данными нанимателя, 4) Требуется ручная проверка PDF на наличие: signer_name='Асель Токаева', signer_phone='+7 (707) 130-03-49', signer_email='assel.tokaeva@example.kz'."
 
+  - task: "Обновление контента договора с заменой плейсхолдеров"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. Функциональность обновления контента договора работает корректно: 1) Создание договора с плейсхолдерами [ФИО], [Телефон], [Email] - успешно, 2) POST /api/sign/{contract_id}/update-signer-info автоматически заменяет плейсхолдеры на реальные данные в content, 3) Изменения персистируются в базе данных, 4) Повторное обновление корректно заменяет старые значения на новые, 5) Все тесты пройдены: создание с плейсхолдерами, первое обновление, проверка персистентности, повторное обновление, финальная проверка."
+
 frontend:
   - task: "UI для SMS верификации"
     implemented: true
