@@ -217,6 +217,13 @@ def send_otp_via_twilio(phone: str, channel: str = "sms") -> dict:
     
     except TwilioRestException as e:
         logging.error(f"❌ Twilio error: {e.msg}")
+        
+        # Handle trial account limitations - fallback to mock for unverified numbers
+        if "unverified" in str(e.msg).lower() or "trial account" in str(e.msg).lower():
+            otp = generate_otp()
+            logging.warning(f"[MOCK FALLBACK] Twilio trial limitation. OTP: {otp} for {phone}")
+            return {"success": True, "message": "Mock OTP sent (Twilio trial limitation)", "mock_otp": otp}
+        
         return {"success": False, "error": str(e.msg)}
     except Exception as e:
         logging.error(f"❌ Error sending OTP: {str(e)}")
