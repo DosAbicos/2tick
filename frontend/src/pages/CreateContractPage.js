@@ -358,15 +358,22 @@ Email: ${templateData.tenant_email || '[Email]'}
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="tenant_phone">Телефон</Label>
-                      <Input
-                        id="tenant_phone"
-                        type="tel"
+                      <InputMask
+                        mask="+7 (999) 999-99-99"
                         value={templateData.tenant_phone}
                         onChange={(e) => handleFieldChange('tenant_phone', e.target.value)}
-                        data-testid="tenant-phone-input"
-                        className="mt-1"
-                        placeholder="+7 (___) ___-__-__"
-                      />
+                      >
+                        {(inputProps) => (
+                          <Input
+                            {...inputProps}
+                            id="tenant_phone"
+                            type="tel"
+                            data-testid="tenant-phone-input"
+                            className="mt-1"
+                            placeholder="+7 (___) ___-__-__"
+                          />
+                        )}
+                      </InputMask>
                     </div>
                     <div>
                       <Label htmlFor="tenant_email">Email</Label>
