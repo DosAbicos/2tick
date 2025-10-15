@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Header from '@/components/Header';
-import { ArrowLeft, Eye, Edit3 } from 'lucide-react';
+import { ArrowLeft, Eye, Edit3, Upload } from 'lucide-react';
 import { IMaskInput } from 'react-imask';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
