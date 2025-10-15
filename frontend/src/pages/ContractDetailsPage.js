@@ -351,6 +351,12 @@ const ContractDetailsPage = () => {
                         <span className="text-neutral-500">Телефон:</span>
                         <p className="font-medium">{contract.signer_phone}</p>
                       </div>
+                      {contract.signer_email && (
+                        <div>
+                          <span className="text-neutral-500">Email:</span>
+                          <p className="font-medium">{contract.signer_email}</p>
+                        </div>
+                      )}
                       <div>
                         <span className="text-neutral-500">Метод:</span>
                         <p className="font-medium capitalize">{signature.verification_method}</p>
