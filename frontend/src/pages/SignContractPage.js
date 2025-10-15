@@ -99,19 +99,21 @@ const SignContractPage = () => {
     }
     
     try {
-      await axios.post(`${API}/sign/${id}/update-signer-info`, {
+      const response = await axios.post(`${API}/sign/${id}/update-signer-info`, {
         signer_name: signerInfo.name || undefined,
         signer_phone: signerInfo.phone || undefined,
         signer_email: signerInfo.email || undefined
       });
       
-      // Update local contract state
-      setContract(prev => ({
-        ...prev,
-        signer_name: signerInfo.name || prev.signer_name,
-        signer_phone: signerInfo.phone || prev.signer_phone,
-        signer_email: signerInfo.email || prev.signer_email
-      }));
+      // Update local contract state with response from backend
+      if (response.data.contract) {
+        setContract(prev => ({
+          ...prev,
+          signer_name: response.data.contract.signer_name || prev.signer_name,
+          signer_phone: response.data.contract.signer_phone || prev.signer_phone,
+          signer_email: response.data.contract.signer_email || prev.signer_email
+        }));
+      }
       
       toast.success('Информация сохранена');
       setStep(2); // Move to upload step
