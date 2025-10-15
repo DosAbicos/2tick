@@ -137,9 +137,12 @@ const SignContractPage = () => {
     
     setVerifying(true);
     try {
+      // Use the actual phone from contract (which may have been updated by signer)
+      const phoneToUse = contract.signer_phone || signerInfo.phone;
+      
       const response = await axios.post(`${API}/sign/${id}/verify-otp`, {
         contract_id: id,
-        phone: contract.signer_phone,
+        phone: phoneToUse,
         otp_code: otpValue
       });
       
