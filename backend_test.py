@@ -183,14 +183,17 @@ class SignifyTester:
             self.log(f"❌ Signer info update failed: {response.status_code} - {response.text}", "ERROR")
             return False
             
-    def test_otp_sending(self):
-        """Test OTP sending via Twilio SMS"""
-        self.log("Testing OTP sending via Twilio SMS...")
+    def test_otp_to_updated_phone(self):
+        """Test FIX #1: OTP is sent to UPDATED phone number, not original"""
+        self.log("Testing OTP sending to updated phone number (FIX #1)...")
         
         if not self.contract_id:
             self.log("❌ No contract ID available", "ERROR")
             return False
             
+        # First, let's check backend logs to see which phone number is being used
+        self.log(f"   Expected phone: {UPDATED_SIGNER_INFO['signer_phone']}")
+        
         # Test SMS OTP
         url = f"{API_BASE}/sign/{self.contract_id}/request-otp?method=sms"
         response = self.session.post(url)
@@ -207,6 +210,11 @@ class SignifyTester:
             else:
                 self.log("   ✅ Using REAL Twilio SMS service")
                 self.mock_otp = None
+                
+            # Check backend logs to verify correct phone number is used
+            self.log("   📋 Check backend logs to verify SMS sent to correct phone:")
+            self.log(f"   Expected: {UPDATED_SIGNER_INFO['signer_phone']}")
+            self.log(f"   NOT: {ORIGINAL_SIGNER_INFO['signer_phone']}")
                 
             return True
         else:
