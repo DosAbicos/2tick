@@ -551,6 +551,8 @@ async def update_signer_info(
     signer_phone: Optional[str] = None,
     signer_email: Optional[str] = None
 ):
+    logging.info(f"Update signer info called: name={signer_name}, phone={signer_phone}, email={signer_email}")
+    
     contract = await db.contracts.find_one({"id": contract_id})
     if not contract:
         raise HTTPException(status_code=404, detail="Contract not found")
@@ -562,6 +564,8 @@ async def update_signer_info(
         update_data['signer_phone'] = signer_phone
     if signer_email is not None:
         update_data['signer_email'] = signer_email
+    
+    logging.info(f"Update data: {update_data}")
     
     if update_data:
         update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
