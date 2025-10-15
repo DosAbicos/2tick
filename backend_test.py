@@ -420,10 +420,15 @@ startxref
             return False
             
     def run_all_tests(self):
-        """Run all tests in sequence"""
-        self.log("=" * 60)
-        self.log("STARTING SIGNIFY KZ TWILIO SMS OTP INTEGRATION TESTS")
-        self.log("=" * 60)
+        """Run all tests in sequence for user feedback fixes"""
+        self.log("=" * 70)
+        self.log("STARTING SIGNIFY KZ USER FEEDBACK FIXES TESTING")
+        self.log("Testing 4 specific fixes after user feedback:")
+        self.log("1. SMS goes to updated signer phone number")
+        self.log("2. Signer data displays in contract/PDF")
+        self.log("3. Signer photo displays on approval page")
+        self.log("4. PDF documents convert to images")
+        self.log("=" * 70)
         
         results = {}
         
@@ -434,36 +439,53 @@ startxref
             self.log("❌ Cannot proceed without authentication", "ERROR")
             return results
             
-        # Test 2: Contract Creation
-        results['contract_creation'] = self.test_contract_creation()
+        # Test 2: Contract Creation (without signer info)
+        results['contract_creation'] = self.test_contract_creation_without_signer()
         
         if not results['contract_creation']:
             self.log("❌ Cannot proceed without contract", "ERROR")
             return results
             
-        # Test 3: Phone Normalization
-        results['phone_normalization'] = self.test_phone_normalization()
+        # Test 3: Update Signer Info (FIX #1 & #2)
+        results['update_signer_info'] = self.test_update_signer_info()
         
-        # Test 4: OTP Sending
-        results['otp_sending'] = self.test_otp_sending()
+        # Test 4: OTP to Updated Phone (FIX #1)
+        results['otp_to_updated_phone'] = self.test_otp_to_updated_phone()
         
         # Test 5: OTP Verification
         results['otp_verification'] = self.test_otp_verification()
         
-        # Test 6: Twilio Status
-        results['twilio_status'] = self.test_twilio_integration_status()
+        # Test 6: PDF Document Upload (FIX #4)
+        results['pdf_document_upload'] = self.test_pdf_document_upload()
+        
+        # Test 7: Contract Approval and PDF Generation (FIX #2 & #3)
+        results['contract_approval_pdf'] = self.test_contract_approval_and_pdf_generation()
         
         # Summary
-        self.log("=" * 60)
+        self.log("=" * 70)
         self.log("TEST RESULTS SUMMARY")
-        self.log("=" * 60)
+        self.log("=" * 70)
         
         for test_name, result in results.items():
-            if test_name == 'twilio_status':
-                self.log(f"{test_name}: {result}")
-            else:
-                status = "✅ PASS" if result else "❌ FAIL"
-                self.log(f"{test_name}: {status}")
+            status = "✅ PASS" if result else "❌ FAIL"
+            self.log(f"{test_name}: {status}")
+            
+        # Specific fix summary
+        self.log("\n" + "=" * 70)
+        self.log("FIX VERIFICATION SUMMARY")
+        self.log("=" * 70)
+        
+        fix1_status = "✅ PASS" if (results.get('update_signer_info') and results.get('otp_to_updated_phone')) else "❌ FAIL"
+        self.log(f"FIX #1 - SMS to updated phone: {fix1_status}")
+        
+        fix2_status = "✅ PASS" if (results.get('update_signer_info') and results.get('contract_approval_pdf')) else "❌ FAIL"
+        self.log(f"FIX #2 - Signer data in PDF: {fix2_status}")
+        
+        fix3_status = "✅ PASS" if results.get('contract_approval_pdf') else "❌ FAIL"
+        self.log(f"FIX #3 - Signer photo on approval: {fix3_status} (manual verification needed)")
+        
+        fix4_status = "✅ PASS" if results.get('pdf_document_upload') else "❌ FAIL"
+        self.log(f"FIX #4 - PDF to image conversion: {fix4_status}")
                 
         return results
 
