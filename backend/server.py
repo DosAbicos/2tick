@@ -544,8 +544,6 @@ async def get_contract_for_signing(contract_id: str):
         contract['updated_at'] = datetime.fromisoformat(contract['updated_at'])
     return Contract(**contract)
 
-from fastapi import Form
-
 @api_router.post("/sign/{contract_id}/update-signer-info")
 async def update_signer_info(
     contract_id: str,
