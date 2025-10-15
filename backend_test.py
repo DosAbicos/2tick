@@ -65,6 +65,7 @@ class SignifyTester:
         self.session = requests.Session()
         self.auth_token = None
         self.contract_id = None
+        self.signature_hash = None
         
     def log(self, message, level="INFO"):
         print(f"[{level}] {message}")
