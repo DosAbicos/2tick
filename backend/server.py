@@ -40,6 +40,22 @@ JWT_SECRET = os.environ.get('JWT_SECRET', 'signify-kz-secret-key-change-in-produ
 JWT_ALGORITHM = 'HS256'
 JWT_EXPIRATION_HOURS = 24 * 7  # 7 days
 
+# Twilio Configuration
+TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN')
+TWILIO_VERIFY_SERVICE_SID = os.environ.get('TWILIO_VERIFY_SERVICE_SID')
+
+# Initialize Twilio client
+twilio_client = None
+if TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN:
+    try:
+        twilio_client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+        logging.info("✅ Twilio client initialized successfully")
+    except Exception as e:
+        logging.error(f"❌ Failed to initialize Twilio client: {str(e)}")
+else:
+    logging.warning("⚠️ Twilio credentials not found, SMS will be mocked")
+
 # Create the main app
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
