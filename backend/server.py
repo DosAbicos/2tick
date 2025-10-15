@@ -625,23 +625,37 @@ async def request_otp(contract_id: str, method: str = "sms"):
     if not contract:
         raise HTTPException(status_code=404, detail="Contract not found")
     
-    otp_code = generate_otp()
+    # Use Twilio Verify API
+    channel = "sms" if method == "sms" else "call"
+    result = send_otp_via_twilio(contract['signer_phone'], channel)
     
-    if method == "sms":
-        send_sms(contract['signer_phone'], f"Your OTP: {otp_code}")
-    elif method == "call":
-        make_call(contract['signer_phone'], otp_code)
+    if not result["success"]:
+        raise HTTPException(status_code=500, detail=f"Failed to send OTP: {result.get('error', 'Unknown error')}")
     
-    # Store or update OTP
+    # Store verification info in signature
+    update_data = {
+        "verification_method": method,
+        "otp_requested_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    # If mock OTP is present (fallback mode), store it
+    if "mock_otp" in result:
+        update_data["otp_code"] = result["mock_otp"]
+    
     await db.signatures.update_one(
         {"contract_id": contract_id},
-        {"$set": {"otp_code": otp_code, "verification_method": method}},
+        {"$set": update_data},
         upsert=True
     )
     
     await log_audit("otp_requested", contract_id=contract_id, details=f"Method: {method}")
     
-    return {"message": f"OTP sent via {method}", "mock_otp": otp_code}
+    response = {"message": f"OTP sent via {method}"}
+    # Include mock OTP only in development/fallback mode
+    if "mock_otp" in result:
+        response["mock_otp"] = result["mock_otp"]
+    
+    return response
 
 @api_router.post("/sign/{contract_id}/verify-otp")
 async def verify_otp(contract_id: str, otp_data: OTPVerify):
