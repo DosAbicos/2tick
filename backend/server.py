@@ -664,9 +664,16 @@ async def verify_otp(contract_id: str, otp_data: OTPVerify):
     if not signature:
         raise HTTPException(status_code=404, detail="Signature not found")
     
-    # Verify OTP
-    if signature['otp_code'] != otp_data.otp_code:
-        raise HTTPException(status_code=400, detail="Invalid OTP code")
+    # Verify OTP via Twilio
+    verification_result = verify_otp_via_twilio(otp_data.phone, otp_data.otp_code)
+    
+    # If Twilio verification failed, check if we have a mock OTP stored (fallback mode)
+    if not verification_result["success"]:
+        if "otp_code" in signature and signature['otp_code'] == otp_data.otp_code:
+            # Accept mock OTP for testing/fallback
+            logging.info(f"✅ Accepted mock OTP for contract {contract_id}")
+        else:
+            raise HTTPException(status_code=400, detail=verification_result.get("error", "Invalid OTP code"))
     
     # Generate unique signature hash
     signature_data = f"{contract_id}-{signature['signer_phone']}-{datetime.now(timezone.utc).isoformat()}"
