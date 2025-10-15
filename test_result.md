@@ -107,39 +107,48 @@ user_problem_statement: "Интеграция Twilio для реальной SMS
 backend:
   - task: "Twilio SMS OTP - отправка"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Реализована функция send_otp_via_twilio() с использованием Twilio Verify API. Поддерживает SMS и voice calls. Имеет fallback на mock режим если Twilio не настроен. Endpoint /api/sign/{contract_id}/request-otp обновлен для использования новой функции."
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. Twilio SMS OTP отправка работает корректно. Реальные SMS отправляются на верифицированные номера (+16282031334). Для неверифицированных номеров (Kazakhstan +77xxx) корректно срабатывает fallback на mock режим с генерацией OTP. Исправлена обработка ошибок trial аккаунта Twilio."
   
   - task: "Twilio SMS OTP - верификация"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Реализована функция verify_otp_via_twilio() для проверки OTP через Twilio Verify API. Endpoint /api/sign/{contract_id}/verify-otp обновлен. Имеет fallback на mock режим для тестирования."
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. OTP верификация работает корректно для всех сценариев. Mock OTP коды принимаются в fallback режиме. Генерируется уникальный signature_hash при успешной верификации. Исправлена ошибка KeyError с signer_phone в базе данных."
   
   - task: "Нормализация номера телефона"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Добавлена функция normalize_phone() для конвертации телефонных номеров в международный формат (+7...). Обрабатывает форматы: 8..., 7..., +7..., и без префикса."
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. Нормализация телефонных номеров работает корректно для всех форматов: 87012345678→+77012345678, 77012345678→+77012345678, +77012345678→+77012345678, 7012345678→+77012345678. Исправлена логика для номеров начинающихся с '7' без второй '7'."
 
 frontend:
   - task: "UI для SMS верификации"
