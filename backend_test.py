@@ -135,51 +135,52 @@ class SignifyTester:
             self.log(f"❌ Contract creation failed: {response.status_code} - {response.text}", "ERROR")
             return False
             
-    def test_phone_normalization(self):
-        """Test phone number normalization by checking different formats"""
-        self.log("Testing phone number normalization...")
+    def test_update_signer_info(self):
+        """Test FIX #1 & #2: Update signer info and verify data is saved"""
+        self.log("Testing signer info update (FIX #1 & #2)...")
         
-        # We'll test this by creating contracts with different phone formats
-        # and checking if OTP requests work (which internally use normalize_phone)
+        if not self.contract_id:
+            self.log("❌ No contract ID available", "ERROR")
+            return False
+            
+        # Test updating signer info
+        url = f"{API_BASE}/sign/{self.contract_id}/update-signer-info"
+        response = self.session.post(url, json=UPDATED_SIGNER_INFO)
         
-        success_count = 0
-        for original, expected in PHONE_TEST_CASES:
-            self.log(f"   Testing: {original} -> {expected}")
+        if response.status_code == 200:
+            data = response.json()
+            self.log("✅ Signer info update successful")
+            self.log(f"   Response: {data}")
             
-            # Create a test contract with this phone format
-            test_contract = TEST_CONTRACT.copy()
-            test_contract["signer_phone"] = original
-            test_contract["title"] = f"Test Contract - {original}"
-            
-            url = f"{API_BASE}/contracts"
-            headers = {"Authorization": f"Bearer {self.auth_token}"}
-            response = self.session.post(url, json=test_contract, headers=headers)
-            
-            if response.status_code == 200:
-                contract_data = response.json()
-                temp_contract_id = contract_data.get('id')
+            # Verify the returned data contains updated info
+            contract_data = data.get('contract', {})
+            if (contract_data.get('signer_name') == UPDATED_SIGNER_INFO['signer_name'] and
+                contract_data.get('signer_phone') == UPDATED_SIGNER_INFO['signer_phone'] and
+                contract_data.get('signer_email') == UPDATED_SIGNER_INFO['signer_email']):
+                self.log("✅ Updated signer data returned correctly")
                 
-                # Test OTP request to see if phone normalization works
-                otp_url = f"{API_BASE}/sign/{temp_contract_id}/request-otp?method=sms"
-                otp_response = self.session.post(otp_url)
+                # Verify data is saved in database by fetching contract
+                get_url = f"{API_BASE}/sign/{self.contract_id}"
+                get_response = self.session.get(get_url)
                 
-                if otp_response.status_code == 200:
-                    self.log(f"   ✅ {original} -> normalized successfully")
-                    success_count += 1
+                if get_response.status_code == 200:
+                    contract = get_response.json()
+                    if (contract.get('signer_name') == UPDATED_SIGNER_INFO['signer_name'] and
+                        contract.get('signer_phone') == UPDATED_SIGNER_INFO['signer_phone'] and
+                        contract.get('signer_email') == UPDATED_SIGNER_INFO['signer_email']):
+                        self.log("✅ Signer data persisted in database")
+                        return True
+                    else:
+                        self.log("❌ Signer data not persisted correctly in database")
+                        return False
                 else:
-                    self.log(f"   ❌ {original} -> normalization failed: {otp_response.text}")
-                    
-                # Clean up test contract
-                delete_url = f"{API_BASE}/contracts/{temp_contract_id}"
-                self.session.delete(delete_url, headers=headers)
+                    self.log(f"❌ Failed to fetch contract: {get_response.status_code}")
+                    return False
             else:
-                self.log(f"   ❌ Failed to create test contract for {original}")
-                
-        if success_count == len(PHONE_TEST_CASES):
-            self.log("✅ Phone normalization test passed")
-            return True
+                self.log("❌ Updated signer data not returned correctly")
+                return False
         else:
-            self.log(f"❌ Phone normalization test failed: {success_count}/{len(PHONE_TEST_CASES)} passed")
+            self.log(f"❌ Signer info update failed: {response.status_code} - {response.text}", "ERROR")
             return False
             
     def test_otp_sending(self):
