@@ -180,9 +180,12 @@ def normalize_phone(phone: str) -> str:
     # If starts with 8, replace with +7 (Kazakhstan/Russia)
     if phone.startswith('8'):
         phone = '+7' + phone[1:]
-    # If starts with 7, add +
-    elif phone.startswith('7') and not phone.startswith('+7'):
+    # If starts with 77, add + (Kazakhstan mobile)
+    elif phone.startswith('77') and not phone.startswith('+77'):
         phone = '+' + phone
+    # If starts with 7 but not 77, assume it's missing the second 7
+    elif phone.startswith('7') and not phone.startswith('77') and not phone.startswith('+7'):
+        phone = '+7' + phone
     # If doesn't start with +, assume Kazakhstan and add +7
     elif not phone.startswith('+'):
         phone = '+7' + phone
