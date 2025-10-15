@@ -25,6 +25,11 @@ const CreateContractPage = () => {
   const [manualEditMode, setManualEditMode] = useState(false);
   const [manualContent, setManualContent] = useState('');
   
+  // Landlord document upload
+  const [landlordDocument, setLandlordDocument] = useState(null);
+  const [landlordDocPreview, setLandlordDocPreview] = useState(null);
+  const [uploadingDoc, setUploadingDoc] = useState(false);
+  
   // Template fields
   const [templateData, setTemplateData] = useState({
     // Contract info
