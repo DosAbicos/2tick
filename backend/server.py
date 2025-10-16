@@ -503,6 +503,11 @@ async def create_contract(contract_data: ContractCreate, current_user: dict = De
         signer_name=contract_data.signer_name or "",
         signer_phone=contract_data.signer_phone or "",
         signer_email=contract_data.signer_email,
+        move_in_date=contract_data.move_in_date,
+        move_out_date=contract_data.move_out_date,
+        property_address=contract_data.property_address,
+        rent_amount=contract_data.rent_amount,
+        days_count=contract_data.days_count,
         amount=contract_data.amount
     )
     
