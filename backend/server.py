@@ -1055,16 +1055,20 @@ async def download_pdf(contract_id: str, current_user: dict = Depends(get_curren
         p.setFont("Helvetica", 9)
     
     # Convert HTML to text if needed and replace placeholders
-    content_text = contract['content']
-    
-    # Graceful fallback for missing content_type
-    content_type = contract.get('content_type', 'plain')
-    
-    if content_type == 'html':
-        content_text = html_to_text_for_pdf(content_text)
-    
-    # Replace placeholders with actual values
-    content_text = replace_placeholders_in_content(content_text, contract)
+    try:
+        content_text = contract['content']
+        
+        # Graceful fallback for missing content_type
+        content_type = contract.get('content_type', 'plain')
+        
+        if content_type == 'html':
+            content_text = html_to_text_for_pdf(content_text)
+        
+        # Replace placeholders with actual values
+        content_text = replace_placeholders_in_content(content_text, contract)
+    except Exception as e:
+        logging.error(f"Error processing content: {str(e)}")
+        content_text = contract.get('content', 'Error loading content')
     
     lines = content_text.split('\n')
     
