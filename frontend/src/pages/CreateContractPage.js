@@ -296,6 +296,11 @@ Email: ${templateData.tenant_email || '[Email]'}
         signer_name: templateData.tenant_name,
         signer_phone: templateData.tenant_phone,
         signer_email: templateData.tenant_email,
+        move_in_date: templateData.move_in_date,
+        move_out_date: templateData.move_out_date,
+        property_address: templateData.property_address,
+        rent_amount: templateData.rent_amount,
+        days_count: templateData.days_count,
         amount: templateData.rent_amount ? `${parseInt(templateData.rent_amount) * parseInt(templateData.days_count || 1)} ${templateData.rent_currency}` : undefined
       };
       
