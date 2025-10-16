@@ -424,26 +424,6 @@ Email: ${templateData.tenant_email || '[Email]'}
                       <option value="16px">Большой</option>
                       <option value="18px">Огромный</option>
                     </select>
-                    
-                    <div className="w-px bg-gray-300 mx-1" />
-                    
-                    {/* Variables Dropdown */}
-                    <div className="relative">
-                      <select 
-                        onChange={(e) => {
-                          if (e.target.value) {
-                            insertVariable(e.target.value);
-                            e.target.value = '';
-                          }
-                        }} 
-                        className="h-8 px-2 border rounded text-sm bg-blue-50 border-blue-300 text-blue-700 font-medium"
-                      >
-                        <option value="">Вставить переменную</option>
-                        <option value="[ФИО]">👤 [ФИО]</option>
-                        <option value="[Телефон]">📱 [Телефон]</option>
-                        <option value="[Email]">📧 [Email]</option>
-                      </select>
-                    </div>
                   </div>
                   
                   {/* Editor */}
