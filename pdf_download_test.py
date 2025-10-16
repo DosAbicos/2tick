@@ -122,27 +122,23 @@ class PDFDownloadTester:
         """Create signature and approve contract"""
         self.log("Создание подписи и утверждение договора...")
         
-        # Create signature (simulate OTP verification)
-        signature_data = {
-            "contract_id": contract_id,
-            "signer_phone": "+77012345678",
-            "verification_method": "sms",
-            "otp_code": "123456",
-            "verified": True
-        }
-        
         # Request OTP first
         otp_url = f"{API_BASE}/sign/{contract_id}/request-otp"
         otp_response = self.session.post(otp_url, json={"method": "sms"})
         
         if otp_response.status_code == 200:
+            otp_data = otp_response.json()
             self.log("✅ OTP запрошен успешно")
+            
+            # Get the mock OTP if available
+            mock_otp = otp_data.get('mock_otp', '123456')
+            self.log(f"   Используем OTP код: {mock_otp}")
             
             # Verify OTP
             verify_data = {
                 "contract_id": contract_id,
                 "phone": "+77012345678",
-                "otp_code": "123456"
+                "otp_code": mock_otp
             }
             verify_url = f"{API_BASE}/sign/{contract_id}/verify-otp"
             verify_response = self.session.post(verify_url, json=verify_data)
