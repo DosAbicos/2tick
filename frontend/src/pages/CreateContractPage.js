@@ -419,34 +419,6 @@ Email: ${templateData.tenant_email || '[Email]'}
                       placeholder="ФИО представителя"
                     />
                   </div>
-                  <div>
-                    <Label>Удостоверение личности / Паспорт</Label>
-                    {landlordDocPreview && (
-                      <div className="mt-2 mb-3">
-                        <img
-                          src={landlordDocPreview}
-                          alt="Document preview"
-                          className="max-w-xs rounded border shadow-sm"
-                        />
-                      </div>
-                    )}
-                    <Label htmlFor="landlord_doc" className="cursor-pointer">
-                      <Button type="button" variant="outline" className="w-full" asChild>
-                        <span>
-                          <Upload className="mr-2 h-4 w-4" />
-                          {landlordDocument ? 'Изменить документ' : 'Загрузить документ'}
-                        </span>
-                      </Button>
-                      <Input
-                        id="landlord_doc"
-                        type="file"
-                        accept="image/*,.pdf"
-                        onChange={handleLandlordDocUpload}
-                        className="hidden"
-                      />
-                    </Label>
-                    <p className="text-xs text-neutral-500 mt-1">Поддерживаются: JPEG, PNG, PDF</p>
-                  </div>
                 </div>
 
                 {/* Tenant Info */}
