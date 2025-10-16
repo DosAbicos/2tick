@@ -285,10 +285,11 @@ Email: ${templateData.tenant_email || '[Email]'}
     setLoading(true);
     
     try {
-      let contentToSave = manualEditMode ? manualContent : generateContractContent();
+      // Use saved content if available, otherwise generate from form
+      let contentToSave = isContentSaved ? manualContent : generateContractContent();
       
-      // Convert HTML to plain text if in manual edit mode
-      if (manualEditMode && manualContent.includes('<')) {
+      // Convert HTML to plain text if content was manually edited
+      if (isContentSaved && manualContent.includes('<')) {
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = manualContent;
         contentToSave = tempDiv.textContent || tempDiv.innerText || '';
