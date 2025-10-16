@@ -430,7 +430,9 @@ Email: ${templateData.tenant_email || '[Email]'}
                   <div
                     ref={editorRef}
                     contentEditable
+                    dangerouslySetInnerHTML={{ __html: manualContent }}
                     suppressContentEditableWarning
+                    key={manualContent}
                     onBlur={(e) => setManualContent(e.currentTarget.innerHTML)}
                     className="min-h-[700px] p-4 border border-t-0 border-gray-300 rounded-b-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     style={{
@@ -439,14 +441,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                       lineHeight: '1.6',
                       overflowY: 'auto'
                     }}
-                  >
-                    {manualContent.split('<br>').map((line, i) => (
-                      <React.Fragment key={i}>
-                        <span dangerouslySetInnerHTML={{ __html: line }} />
-                        {i < manualContent.split('<br>').length - 1 && <br />}
-                      </React.Fragment>
-                    ))}
-                  </div>
+                  />
                   
                   {/* Legend */}
                   <div className="mt-3 text-xs text-neutral-600 flex gap-3 p-3 bg-neutral-50 rounded border">
