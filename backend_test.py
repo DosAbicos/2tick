@@ -166,140 +166,34 @@ class SignifyTester:
             self.log(f"❌ Contract retrieval failed: {response.status_code} - {response.text}", "ERROR")
             return False
             
-    def test_update_signer_info(self):
-        """Test FIX #1 & #2: Update signer info and verify data is saved"""
-        self.log("Testing signer info update (FIX #1 & #2)...")
+    def test_plain_text_contract_creation(self):
+        """Test contract creation with plain text content_type for comparison"""
+        self.log("Testing plain text contract creation for comparison...")
         
-        if not self.contract_id:
-            self.log("❌ No contract ID available", "ERROR")
+        if not self.auth_token:
+            self.log("❌ No auth token available", "ERROR")
             return False
             
-        # Test updating signer info
-        url = f"{API_BASE}/sign/{self.contract_id}/update-signer-info"
-        response = self.session.post(url, data=UPDATED_SIGNER_INFO)
+        url = f"{API_BASE}/contracts"
+        headers = {"Authorization": f"Bearer {self.auth_token}"}
+        response = self.session.post(url, json=TEST_CONTRACT_PLAIN, headers=headers)
         
         if response.status_code == 200:
             data = response.json()
-            self.log("✅ Signer info update successful")
-            self.log(f"   Response: {data}")
+            self.plain_contract_id = data.get('id')
+            self.log("✅ Plain text contract creation successful")
+            self.log(f"   Contract ID: {self.plain_contract_id}")
+            self.log(f"   Content type: {data.get('content_type')}")
             
-            # Verify the returned data contains updated info
-            contract_data = data.get('contract', {})
-            if (contract_data.get('signer_name') == UPDATED_SIGNER_INFO['signer_name'] and
-                contract_data.get('signer_phone') == UPDATED_SIGNER_INFO['signer_phone'] and
-                contract_data.get('signer_email') == UPDATED_SIGNER_INFO['signer_email']):
-                self.log("✅ Updated signer data returned correctly")
-                
-                # Verify data is saved in database by fetching contract
-                get_url = f"{API_BASE}/sign/{self.contract_id}"
-                get_response = self.session.get(get_url)
-                
-                if get_response.status_code == 200:
-                    contract = get_response.json()
-                    if (contract.get('signer_name') == UPDATED_SIGNER_INFO['signer_name'] and
-                        contract.get('signer_phone') == UPDATED_SIGNER_INFO['signer_phone'] and
-                        contract.get('signer_email') == UPDATED_SIGNER_INFO['signer_email']):
-                        self.log("✅ Signer data persisted in database")
-                        return True
-                    else:
-                        self.log("❌ Signer data not persisted correctly in database")
-                        return False
-                else:
-                    self.log(f"❌ Failed to fetch contract: {get_response.status_code}")
-                    return False
+            # Verify content_type is saved as 'plain'
+            if data.get('content_type') == 'plain':
+                self.log("✅ Content type correctly saved as 'plain'")
+                return True
             else:
-                self.log("❌ Updated signer data not returned correctly")
+                self.log(f"❌ Content type incorrect: {data.get('content_type')}")
                 return False
         else:
-            self.log(f"❌ Signer info update failed: {response.status_code} - {response.text}", "ERROR")
-            return False
-            
-    def test_otp_to_updated_phone(self):
-        """Test FIX #1: OTP is sent to UPDATED phone number, not original"""
-        self.log("Testing OTP sending to updated phone number (FIX #1)...")
-        
-        if not self.contract_id:
-            self.log("❌ No contract ID available", "ERROR")
-            return False
-            
-        # First, let's check backend logs to see which phone number is being used
-        self.log(f"   Expected phone: {UPDATED_SIGNER_INFO['signer_phone']}")
-        
-        # Test SMS OTP
-        url = f"{API_BASE}/sign/{self.contract_id}/request-otp?method=sms"
-        response = self.session.post(url)
-        
-        if response.status_code == 200:
-            data = response.json()
-            self.log("✅ OTP sending successful")
-            self.log(f"   Response: {data}")
-            
-            # Check if it's using real Twilio or mock
-            if "mock_otp" in data:
-                self.log("   ⚠️ Using MOCK mode (Twilio not configured or fallback)")
-                self.mock_otp = data["mock_otp"]
-            else:
-                self.log("   ✅ Using REAL Twilio SMS service")
-                self.mock_otp = None
-                
-            # Check backend logs to verify correct phone number is used
-            self.log("   📋 Check backend logs to verify SMS sent to correct phone:")
-            self.log(f"   Expected: {UPDATED_SIGNER_INFO['signer_phone']}")
-            self.log(f"   NOT: {ORIGINAL_SIGNER_INFO['signer_phone']}")
-                
-            return True
-        else:
-            self.log(f"❌ OTP sending failed: {response.status_code} - {response.text}", "ERROR")
-            return False
-            
-    def test_otp_verification(self):
-        """Test OTP verification and contract signing"""
-        self.log("Testing OTP verification...")
-        
-        if not self.contract_id:
-            self.log("❌ No contract ID available", "ERROR")
-            return False
-            
-        # For testing, we'll use different OTP codes
-        test_codes = []
-        
-        # If we have a mock OTP, test it
-        if hasattr(self, 'mock_otp') and self.mock_otp:
-            test_codes.append(("mock_otp", self.mock_otp))
-            
-        # Test invalid OTP first
-        test_codes.append(("invalid_otp", "000000"))
-        
-        url = f"{API_BASE}/sign/{self.contract_id}/verify-otp"
-        
-        success = False
-        for test_name, otp_code in test_codes:
-            self.log(f"   Testing {test_name}: {otp_code}")
-            
-            verify_data = {
-                "contract_id": self.contract_id,
-                "phone": UPDATED_SIGNER_INFO["signer_phone"],  # Use updated phone
-                "otp_code": otp_code
-            }
-            
-            response = self.session.post(url, json=verify_data)
-            
-            if test_name == "mock_otp" and response.status_code == 200:
-                data = response.json()
-                self.log("   ✅ Mock OTP verification successful")
-                self.signature_hash = data.get('signature_hash')
-                self.log(f"   Signature hash: {self.signature_hash}")
-                success = True
-            elif test_name == "invalid_otp" and response.status_code == 400:
-                self.log("   ✅ Invalid OTP correctly rejected")
-            else:
-                self.log(f"   Response: {response.status_code} - {response.text}")
-                
-        if success:
-            self.log("✅ OTP verification test passed")
-            return True
-        else:
-            self.log("❌ OTP verification test failed - no valid OTP verified")
+            self.log(f"❌ Plain text contract creation failed: {response.status_code} - {response.text}", "ERROR")
             return False
             
     def test_pdf_document_upload_conversion(self):
