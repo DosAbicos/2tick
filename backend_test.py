@@ -104,9 +104,9 @@ class SignifyTester:
             self.log(f"❌ Login failed: {response.status_code} - {response.text}", "ERROR")
             return False
             
-    def test_contract_creation_without_signer(self):
-        """Test contract creation WITHOUT signer info (to test update functionality)"""
-        self.log("Testing contract creation without signer info...")
+    def test_contract_creation_html(self):
+        """Test contract creation with HTML content_type"""
+        self.log("Testing contract creation with HTML formatting...")
         
         if not self.auth_token:
             self.log("❌ No auth token available", "ERROR")
@@ -114,18 +114,56 @@ class SignifyTester:
             
         url = f"{API_BASE}/contracts"
         headers = {"Authorization": f"Bearer {self.auth_token}"}
-        response = self.session.post(url, json=TEST_CONTRACT_EMPTY, headers=headers)
+        response = self.session.post(url, json=TEST_CONTRACT_HTML, headers=headers)
         
         if response.status_code == 200:
             data = response.json()
             self.contract_id = data.get('id')
-            self.log("✅ Contract creation successful (without signer info)")
+            self.log("✅ HTML contract creation successful")
             self.log(f"   Contract ID: {self.contract_id}")
-            self.log(f"   Signer name: {data.get('signer_name', 'None')}")
-            self.log(f"   Signer phone: {data.get('signer_phone', 'None')}")
-            return True
+            self.log(f"   Content type: {data.get('content_type')}")
+            self.log(f"   HTML content preserved: {len(data.get('content', ''))> 100}")
+            
+            # Verify content_type is saved as 'html'
+            if data.get('content_type') == 'html':
+                self.log("✅ Content type correctly saved as 'html'")
+                return True
+            else:
+                self.log(f"❌ Content type incorrect: {data.get('content_type')}")
+                return False
         else:
-            self.log(f"❌ Contract creation failed: {response.status_code} - {response.text}", "ERROR")
+            self.log(f"❌ HTML contract creation failed: {response.status_code} - {response.text}", "ERROR")
+            return False
+            
+    def test_contract_retrieval_html(self):
+        """Test contract retrieval with HTML content_type preservation"""
+        self.log("Testing contract retrieval with HTML content...")
+        
+        if not self.contract_id or not self.auth_token:
+            self.log("❌ No contract ID or auth token available", "ERROR")
+            return False
+            
+        url = f"{API_BASE}/contracts/{self.contract_id}"
+        headers = {"Authorization": f"Bearer {self.auth_token}"}
+        response = self.session.get(url, headers=headers)
+        
+        if response.status_code == 200:
+            data = response.json()
+            self.log("✅ Contract retrieval successful")
+            self.log(f"   Content type: {data.get('content_type')}")
+            
+            # Verify HTML content is preserved
+            content = data.get('content', '')
+            if '<b>' in content and '<br>' in content and data.get('content_type') == 'html':
+                self.log("✅ HTML content and content_type preserved correctly")
+                self.log(f"   HTML tags found: <b>, <br>")
+                return True
+            else:
+                self.log("❌ HTML content or content_type not preserved")
+                self.log(f"   Content preview: {content[:100]}...")
+                return False
+        else:
+            self.log(f"❌ Contract retrieval failed: {response.status_code} - {response.text}", "ERROR")
             return False
             
     def test_update_signer_info(self):
