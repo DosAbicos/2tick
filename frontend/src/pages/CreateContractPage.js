@@ -464,6 +464,36 @@ Email: ${templateData.tenant_email || '[Email]'}
                       />
                     </div>
                   </div>
+                  
+                  <div>
+                    <Label>Удостоверение личности клиента (опционально)</Label>
+                    <p className="text-xs text-neutral-500 mb-2">Если есть документ клиента, можете загрузить. Иначе клиент загрузит сам.</p>
+                    {tenantDocPreview && (
+                      <div className="mt-2 mb-3">
+                        <img
+                          src={tenantDocPreview}
+                          alt="Tenant document preview"
+                          className="max-w-xs rounded border shadow-sm"
+                        />
+                      </div>
+                    )}
+                    <Label htmlFor="tenant_doc" className="cursor-pointer">
+                      <Button type="button" variant="outline" className="w-full" asChild>
+                        <span>
+                          <Upload className="mr-2 h-4 w-4" />
+                          {tenantDocument ? 'Изменить документ клиента' : 'Загрузить документ клиента'}
+                        </span>
+                      </Button>
+                      <Input
+                        id="tenant_doc"
+                        type="file"
+                        accept="image/*,.pdf"
+                        onChange={handleTenantDocUpload}
+                        className="hidden"
+                      />
+                    </Label>
+                    <p className="text-xs text-neutral-500 mt-1">Поддерживаются: JPEG, PNG, PDF</p>
+                  </div>
                 </div>
 
                 {/* Property Details */}
