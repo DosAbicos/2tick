@@ -268,20 +268,18 @@ Email: ${templateData.tenant_email || '[Email]'}
       
       const contractId = response.data.id;
       
-      // Upload landlord document if selected
-      if (landlordDocument) {
+      // Upload tenant document if selected (optional)
+      if (tenantDocument) {
         setUploadingDoc(true);
         const formData = new FormData();
-        formData.append('file', landlordDocument);
+        formData.append('file', tenantDocument);
         
         try {
-          await axios.post(`${API}/contracts/${contractId}/upload-landlord-document`, formData, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          toast.success('Договор и документ успешно созданы');
+          await axios.post(`${API}/sign/${contractId}/upload-document`, formData);
+          toast.success('Договор и документ клиента успешно созданы');
         } catch (docError) {
           console.error('Document upload error:', docError);
-          toast.warning('Договор создан, но документ не загружен');
+          toast.warning('Договор создан, но документ клиента не загружен');
         } finally {
           setUploadingDoc(false);
         }
