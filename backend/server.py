@@ -1018,10 +1018,17 @@ async def download_pdf(contract_id: str, current_user: dict = Depends(get_curren
     except:
         p.setFont("Helvetica", 9)
     
-    # Convert HTML to text if needed
+    # Convert HTML to text if needed and replace placeholders
     content_text = contract['content']
-    if contract.get('content_type') == 'html':
+    
+    # Graceful fallback for missing content_type
+    content_type = contract.get('content_type', 'plain')
+    
+    if content_type == 'html':
         content_text = html_to_text_for_pdf(content_text)
+    
+    # Replace placeholders with actual values
+    content_text = replace_placeholders_in_content(content_text, contract)
     
     lines = content_text.split('\n')
     
