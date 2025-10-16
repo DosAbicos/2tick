@@ -135,6 +135,18 @@ backend:
         agent: "testing"
         comment: "✅ ТЕСТ ПРОЙДЕН. HTML форматирование работает корректно: 1) POST /api/contracts с content_type='html' успешно создает контракт, 2) HTML контент с тегами <b>, <br>, <i>, <u> сохраняется как есть, 3) GET /api/contracts/{contract_id} возвращает content_type='html' и сохраненный HTML контент, 4) Поле content_type корректно сохраняется и возвращается из базы данных, 5) Поддержка как 'html' так и 'plain' типов контента."
   
+  - task: "Замена плейсхолдеров в PDF"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Добавлена функция replace_placeholders_in_content() для замены плейсхолдеров ([ФИО Нанимателя], [Дата заселения], [Цена в сутки] и т.д.) на реальные значения при генерации PDF. Добавлены дополнительные поля в модель Contract (move_in_date, move_out_date, property_address, rent_amount, days_count). Обновлен endpoint download-pdf для вызова функции замены плейсхолдеров. Добавлен graceful fallback для content_type."
+
   - task: "PDF генерация и скачивание"
     implemented: true
     working: true
