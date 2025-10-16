@@ -310,6 +310,15 @@ Email: ${templateData.tenant_email || '[Email]'}
       
       const contractId = response.data.id;
       
+      // Save template to localStorage for future use
+      const templateToSave = {
+        ...templateData,
+        savedContent: isContentSaved ? manualContent : null,
+        isContentSaved: isContentSaved,
+        savedAt: new Date().toISOString()
+      };
+      localStorage.setItem('signify_last_template', JSON.stringify(templateToSave));
+      
       // Upload tenant document if selected (optional)
       if (tenantDocument) {
         setUploadingDoc(true);
