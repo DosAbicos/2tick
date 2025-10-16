@@ -415,20 +415,20 @@ Email: ${templateData.tenant_email || '[Email]'}
                     
                     <div className="w-px bg-gray-300 mx-1" />
                     
-                    <Button type="button" variant="ghost" size="sm" onClick={() => executeCommand('formatBlock', '<h1>')} className="h-8 px-2" title="Заголовок 1">H1</Button>
-                    <Button type="button" variant="ghost" size="sm" onClick={() => executeCommand('formatBlock', '<h2>')} className="h-8 px-2" title="Заголовок 2">H2</Button>
-                    <Button type="button" variant="ghost" size="sm" onClick={() => executeCommand('formatBlock', '<h3>')} className="h-8 px-2" title="Заголовок 3">H3</Button>
+                    <Button type="button" variant="ghost" size="sm" onMouseDown={(e) => { e.preventDefault(); executeCommand('formatBlock', '<h1>'); }} className="h-8 px-2" title="Заголовок 1">H1</Button>
+                    <Button type="button" variant="ghost" size="sm" onMouseDown={(e) => { e.preventDefault(); executeCommand('formatBlock', '<h2>'); }} className="h-8 px-2" title="Заголовок 2">H2</Button>
+                    <Button type="button" variant="ghost" size="sm" onMouseDown={(e) => { e.preventDefault(); executeCommand('formatBlock', '<h3>'); }} className="h-8 px-2" title="Заголовок 3">H3</Button>
                     
                     <div className="w-px bg-gray-300 mx-1" />
                     
-                    <Button type="button" variant="ghost" size="sm" onClick={() => executeCommand('justifyLeft')} className="h-8 w-8 p-0" title="По левому краю"><AlignLeft className="h-4 w-4" /></Button>
-                    <Button type="button" variant="ghost" size="sm" onClick={() => executeCommand('justifyCenter')} className="h-8 w-8 p-0" title="По центру"><AlignCenter className="h-4 w-4" /></Button>
-                    <Button type="button" variant="ghost" size="sm" onClick={() => executeCommand('justifyRight')} className="h-8 w-8 p-0" title="По правому краю"><AlignRight className="h-4 w-4" /></Button>
+                    <Button type="button" variant="ghost" size="sm" onMouseDown={(e) => { e.preventDefault(); executeCommand('justifyLeft'); }} className="h-8 w-8 p-0" title="По левому краю"><AlignLeft className="h-4 w-4" /></Button>
+                    <Button type="button" variant="ghost" size="sm" onMouseDown={(e) => { e.preventDefault(); executeCommand('justifyCenter'); }} className="h-8 w-8 p-0" title="По центру"><AlignCenter className="h-4 w-4" /></Button>
+                    <Button type="button" variant="ghost" size="sm" onMouseDown={(e) => { e.preventDefault(); executeCommand('justifyRight'); }} className="h-8 w-8 p-0" title="По правому краю"><AlignRight className="h-4 w-4" /></Button>
                     
                     <div className="w-px bg-gray-300 mx-1" />
                     
-                    <Button type="button" variant="ghost" size="sm" onClick={() => executeCommand('insertUnorderedList')} className="h-8 px-2" title="Маркированный список">• Список</Button>
-                    <Button type="button" variant="ghost" size="sm" onClick={() => executeCommand('insertOrderedList')} className="h-8 px-2" title="Нумерованный список">1. Список</Button>
+                    <Button type="button" variant="ghost" size="sm" onMouseDown={(e) => { e.preventDefault(); executeCommand('insertUnorderedList'); }} className="h-8 px-2" title="Маркированный список">• Список</Button>
+                    <Button type="button" variant="ghost" size="sm" onMouseDown={(e) => { e.preventDefault(); executeCommand('insertOrderedList'); }} className="h-8 px-2" title="Нумерованный список">1. Список</Button>
                     
                     <div className="w-px bg-gray-300 mx-1" />
                     
