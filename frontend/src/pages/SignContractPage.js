@@ -195,7 +195,20 @@ const SignContractPage = () => {
                 data-testid="step-view-contract"
               >
                 <div className="bg-neutral-50 p-4 rounded-lg border mb-6">
-                  <pre className="whitespace-pre-wrap text-sm" data-testid="contract-preview">{contract.content}</pre>
+                  {contract.content_type === 'html' ? (
+                    <div 
+                      className="prose prose-sm max-w-none"
+                      style={{
+                        fontFamily: 'IBM Plex Sans, sans-serif',
+                        fontSize: '14px',
+                        lineHeight: '1.6'
+                      }}
+                      dangerouslySetInnerHTML={{ __html: contract.content }}
+                      data-testid="contract-preview"
+                    />
+                  ) : (
+                    <pre className="whitespace-pre-wrap text-sm" data-testid="contract-preview">{contract.content}</pre>
+                  )}
                 </div>
                 <Button
                   onClick={() => {
