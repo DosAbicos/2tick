@@ -366,6 +366,9 @@ Email: ${templateData.tenant_email || '[Email]'}
               <CardTitle className="flex items-center gap-2">
                 <Eye className="h-5 w-5" />
                 {manualEditMode ? 'Редактировать договор' : 'Предпросмотр договора'}
+                {isContentSaved && !manualEditMode && (
+                  <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">✓ Отредактировано</span>
+                )}
               </CardTitle>
               <div className="flex gap-2">
                 {manualEditMode && (
