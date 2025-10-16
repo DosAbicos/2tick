@@ -114,8 +114,6 @@ const CreateContractPage = () => {
     });
   };
 
-  const editorRef = useRef(null);
-
   const toggleEditMode = () => {
     if (!manualEditMode) {
       // Switching to manual mode - copy current content and highlight variables
@@ -131,11 +129,11 @@ const CreateContractPage = () => {
   };
 
   const handleSaveContent = () => {
-    if (editorRef.current) {
-      const content = editorRef.current.getContent();
-      setManualContent(content);
-      toast.success('Изменения сохранены в редакторе');
-    }
+    toast.success('Изменения сохранены в редакторе');
+  };
+
+  const onSummernoteChange = (content) => {
+    setManualContent(content);
   };
 
   const handleTenantDocUpload = (e) => {
