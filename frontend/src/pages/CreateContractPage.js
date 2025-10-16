@@ -388,51 +388,61 @@ Email: ${templateData.tenant_email || '[Email]'}
             <CardContent>
               {manualEditMode ? (
                 <div className="editor-container">
-                  <ReactSummernote
-                    value={manualContent}
-                    options={{
-                      height: 700,
-                      dialogsInBody: true,
-                      tooltip: false,
-                      toolbar: [
-                        ['style', ['style']],
-                        ['font', ['bold', 'italic', 'underline', 'clear']],
-                        ['fontsize', ['fontsize']],
-                        ['color', ['color']],
-                        ['para', ['ul', 'ol', 'paragraph']],
-                        ['height', ['height']],
-                        ['table', ['table']],
-                        ['insert', ['link']],
-                        ['view', ['fullscreen', 'codeview']],
-                        ['help', ['help']]
-                      ],
-                      fontSizes: ['8', '10', '12', '14', '16', '18', '20', '24', '36', '48'],
-                      placeholder: 'Введите текст договора...',
-                      styleTags: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
-                      disableDragAndDrop: true,
+                  {/* Toolbar */}
+                  <div className="bg-gray-50 border border-gray-300 rounded-t-lg p-2 flex flex-wrap gap-1">
+                    <Button type="button" variant="ghost" size="sm" onClick={() => executeCommand('bold')} className="h-8 w-8 p-0" title="Жирный"><Bold className="h-4 w-4" /></Button>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => executeCommand('italic')} className="h-8 w-8 p-0" title="Курсив"><Italic className="h-4 w-4" /></Button>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => executeCommand('underline')} className="h-8 w-8 p-0" title="Подчеркнутый"><Underline className="h-4 w-4" /></Button>
+                    
+                    <div className="w-px bg-gray-300 mx-1" />
+                    
+                    <Button type="button" variant="ghost" size="sm" onClick={() => executeCommand('formatBlock', '<h1>')} className="h-8 px-2" title="Заголовок 1">H1</Button>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => executeCommand('formatBlock', '<h2>')} className="h-8 px-2" title="Заголовок 2">H2</Button>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => executeCommand('formatBlock', '<h3>')} className="h-8 px-2" title="Заголовок 3">H3</Button>
+                    
+                    <div className="w-px bg-gray-300 mx-1" />
+                    
+                    <Button type="button" variant="ghost" size="sm" onClick={() => executeCommand('justifyLeft')} className="h-8 w-8 p-0" title="По левому краю"><AlignLeft className="h-4 w-4" /></Button>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => executeCommand('justifyCenter')} className="h-8 w-8 p-0" title="По центру"><AlignCenter className="h-4 w-4" /></Button>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => executeCommand('justifyRight')} className="h-8 w-8 p-0" title="По правому краю"><AlignRight className="h-4 w-4" /></Button>
+                    
+                    <div className="w-px bg-gray-300 mx-1" />
+                    
+                    <Button type="button" variant="ghost" size="sm" onClick={() => executeCommand('insertUnorderedList')} className="h-8 px-2" title="Маркированный список">• Список</Button>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => executeCommand('insertOrderedList')} className="h-8 px-2" title="Нумерованный список">1. Список</Button>
+                    
+                    <div className="w-px bg-gray-300 mx-1" />
+                    
+                    <select onChange={(e) => changeFontSize(e.target.value)} className="h-8 px-2 border rounded text-sm" defaultValue="14px">
+                      <option value="12px">Маленький</option>
+                      <option value="14px">Обычный</option>
+                      <option value="16px">Большой</option>
+                      <option value="18px">Огромный</option>
+                    </select>
+                  </div>
+                  
+                  {/* Editor */}
+                  <div
+                    ref={editorRef}
+                    contentEditable
+                    dangerouslySetInnerHTML={{ __html: manualContent }}
+                    onInput={(e) => setManualContent(e.currentTarget.innerHTML)}
+                    className="min-h-[700px] p-4 border border-t-0 border-gray-300 rounded-b-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{
+                      fontFamily: 'IBM Plex Sans, sans-serif',
+                      fontSize: '14px',
+                      lineHeight: '1.6',
+                      overflowY: 'auto'
                     }}
-                    onChange={onSummernoteChange}
                   />
                   
-                  {/* Legend for variables */}
+                  {/* Legend */}
                   <div className="mt-3 text-xs text-neutral-600 flex gap-3 p-3 bg-neutral-50 rounded border">
                     <span className="font-semibold">Переменные подсвечены:</span>
                     <span className="bg-yellow-50 border border-yellow-200 px-2 py-1 rounded">[ФИО]</span>
                     <span className="bg-blue-50 border border-blue-200 px-2 py-1 rounded">[Телефон]</span>
                     <span className="bg-green-50 border border-green-200 px-2 py-1 rounded">[Email]</span>
                   </div>
-                  
-                  <style>{`
-                    .note-editor.note-frame {
-                      border: 1px solid #e5e7eb;
-                      border-radius: 8px;
-                    }
-                    .note-editable {
-                      font-family: 'IBM Plex Sans', sans-serif;
-                      font-size: 14px;
-                      line-height: 1.6;
-                    }
-                  `}</style>
                 </div>
               ) : (
                 <div className="bg-white border rounded-lg p-6 max-h-[800px] overflow-y-auto" data-testid="contract-preview">
