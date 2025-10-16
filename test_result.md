@@ -105,6 +105,42 @@
 user_problem_statement: "Исправление 4 критических проблем: 1) Скачивание PDF контрактов, 2) Конвертация PDF документов в изображения, 3) Ошибка мета-тегов на мобильных, 4) Сохранение форматирования текста из rich text editor."
 
 backend:
+  - task: "Установка poppler-utils для PDF конвертации"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Установлен poppler-utils через apt-get. Библиотека pdf2image теперь может конвертировать PDF в изображения. Проверено что pdf2image импортируется без ошибок."
+  
+  - task: "Поддержка HTML форматирования в контрактах"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Добавлено поле content_type в модель Contract ('plain' или 'html'). Добавлена функция html_to_text_for_pdf() для конвертации HTML в текст при генерации PDF. Обновлен endpoint создания контракта для сохранения content_type. Обновлен endpoint download-pdf для обработки HTML контента."
+  
+  - task: "PDF генерация и скачивание"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Endpoint /api/contracts/{contract_id}/download-pdf обновлен для поддержки HTML контента. При content_type='html' контент конвертируется в текст с сохранением структуры перед генерацией PDF."
+
   - task: "Twilio SMS OTP - отправка"
     implemented: true
     working: true
