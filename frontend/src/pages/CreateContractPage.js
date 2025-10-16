@@ -438,7 +438,7 @@ Email: ${templateData.tenant_email || '[Email]'}
               {manualEditMode ? (
                 <div className="editor-container">
                   {/* Toolbar */}
-                  <div className="bg-gray-50 border border-gray-300 rounded-t-lg p-2 flex flex-wrap gap-1">
+                  <div className="bg-gray-50 border border-gray-300 rounded-t-lg p-2 flex flex-wrap gap-1 items-center">
                     <Button type="button" variant="ghost" size="sm" onClick={() => executeCommand('bold')} className="h-8 w-8 p-0" title="Жирный"><Bold className="h-4 w-4" /></Button>
                     <Button type="button" variant="ghost" size="sm" onClick={() => executeCommand('italic')} className="h-8 w-8 p-0" title="Курсив"><Italic className="h-4 w-4" /></Button>
                     <Button type="button" variant="ghost" size="sm" onClick={() => executeCommand('underline')} className="h-8 w-8 p-0" title="Подчеркнутый"><Underline className="h-4 w-4" /></Button>
@@ -468,6 +468,26 @@ Email: ${templateData.tenant_email || '[Email]'}
                       <option value="16px">Большой</option>
                       <option value="18px">Огромный</option>
                     </select>
+                    
+                    <div className="w-px bg-gray-300 mx-1" />
+                    
+                    {/* Variables Dropdown */}
+                    <div className="relative">
+                      <select 
+                        onChange={(e) => {
+                          if (e.target.value) {
+                            insertVariable(e.target.value);
+                            e.target.value = '';
+                          }
+                        }} 
+                        className="h-8 px-2 border rounded text-sm bg-blue-50 border-blue-300 text-blue-700 font-medium"
+                      >
+                        <option value="">Вставить переменную</option>
+                        <option value="[ФИО]">👤 [ФИО]</option>
+                        <option value="[Телефон]">📱 [Телефон]</option>
+                        <option value="[Email]">📧 [Email]</option>
+                      </select>
+                    </div>
                   </div>
                   
                   {/* Editor */}
