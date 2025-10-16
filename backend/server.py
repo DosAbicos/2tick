@@ -329,26 +329,45 @@ def html_to_text_for_pdf(html_content: str) -> str:
 
 def replace_placeholders_in_content(content: str, contract: dict) -> str:
     """Replace placeholders in contract content with actual values"""
-    # Get values from contract or use placeholders
-    signer_name = contract.get('signer_name', '[ФИО Нанимателя]')
-    signer_phone = contract.get('signer_phone', '[Телефон]')
-    signer_email = contract.get('signer_email', '[Email]')
-    move_in_date = contract.get('move_in_date', '[Дата заселения]')
-    move_out_date = contract.get('move_out_date', '[Дата выселения]')
-    property_address = contract.get('property_address', '[Адрес квартиры]')
-    rent_amount = contract.get('rent_amount', '[Цена в сутки]')
-    days_count = contract.get('days_count', '[Количество суток]')
+    # Get values from contract or use placeholders, ensure all are strings
+    signer_name = str(contract.get('signer_name', '')) if contract.get('signer_name') else '[ФИО Нанимателя]'
+    signer_phone = str(contract.get('signer_phone', '')) if contract.get('signer_phone') else '[Телефон]'
+    signer_email = str(contract.get('signer_email', '')) if contract.get('signer_email') else '[Email]'
+    move_in_date = str(contract.get('move_in_date', '')) if contract.get('move_in_date') else '[Дата заселения]'
+    move_out_date = str(contract.get('move_out_date', '')) if contract.get('move_out_date') else '[Дата выселения]'
+    property_address = str(contract.get('property_address', '')) if contract.get('property_address') else '[Адрес квартиры]'
+    rent_amount = str(contract.get('rent_amount', '')) if contract.get('rent_amount') else '[Цена в сутки]'
+    days_count = str(contract.get('days_count', '')) if contract.get('days_count') else '[Количество суток]'
     
-    # Replace placeholders
-    content = content.replace('[ФИО Нанимателя]', signer_name or '[ФИО Нанимателя]')
-    content = content.replace('[ФИО]', signer_name or '[ФИО]')
-    content = content.replace('[Телефон]', signer_phone or '[Телефон]')
-    content = content.replace('[Email]', signer_email or '[Email]')
-    content = content.replace('[Дата заселения]', move_in_date or '[Дата заселения]')
-    content = content.replace('[Дата выселения]', move_out_date or '[Дата выселения]')
-    content = content.replace('[Адрес квартиры]', property_address or '[Адрес квартиры]')
-    content = content.replace('[Цена в сутки]', rent_amount or '[Цена в сутки]')
-    content = content.replace('[Количество суток]', days_count or '[Количество суток]')
+    # Ensure content is string
+    if not isinstance(content, str):
+        content = str(content)
+    
+    # Replace placeholders only if we have actual values (not empty strings)
+    if signer_name and signer_name != '[ФИО Нанимателя]':
+        content = content.replace('[ФИО Нанимателя]', signer_name)
+        content = content.replace('[ФИО]', signer_name)
+    
+    if signer_phone and signer_phone != '[Телефон]':
+        content = content.replace('[Телефон]', signer_phone)
+    
+    if signer_email and signer_email != '[Email]':
+        content = content.replace('[Email]', signer_email)
+    
+    if move_in_date and move_in_date != '[Дата заселения]':
+        content = content.replace('[Дата заселения]', move_in_date)
+    
+    if move_out_date and move_out_date != '[Дата выселения]':
+        content = content.replace('[Дата выселения]', move_out_date)
+    
+    if property_address and property_address != '[Адрес квартиры]':
+        content = content.replace('[Адрес квартиры]', property_address)
+    
+    if rent_amount and rent_amount != '[Цена в сутки]':
+        content = content.replace('[Цена в сутки]', rent_amount)
+    
+    if days_count and days_count != '[Количество суток]':
+        content = content.replace('[Количество суток]', days_count)
     
     return content
 
