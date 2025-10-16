@@ -376,12 +376,39 @@ Email: ${templateData.tenant_email || '[Email]'}
             </CardHeader>
             <CardContent>
               {manualEditMode ? (
-                <textarea
-                  value={manualContent}
-                  onChange={(e) => setManualContent(e.target.value)}
-                  className="w-full h-[800px] p-4 border rounded-lg font-mono text-xs leading-relaxed resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Введите текст договора..."
-                />
+                <div className="quill-container">
+                  <ReactQuill
+                    theme="snow"
+                    value={manualContent}
+                    onChange={setManualContent}
+                    modules={quillModules}
+                    formats={quillFormats}
+                    style={{ height: '700px', marginBottom: '50px' }}
+                    placeholder="Введите текст договора..."
+                  />
+                  <style>{`
+                    .quill-container .ql-editor {
+                      font-family: 'IBM Plex Sans', sans-serif;
+                      font-size: 14px;
+                      line-height: 1.6;
+                      min-height: 700px;
+                    }
+                    .contract-variable {
+                      font-weight: 600;
+                      padding: 2px 6px;
+                      border-radius: 3px;
+                    }
+                    .ql-toolbar {
+                      border-top-left-radius: 8px;
+                      border-top-right-radius: 8px;
+                      background: #f8fafc;
+                    }
+                    .ql-container {
+                      border-bottom-left-radius: 8px;
+                      border-bottom-right-radius: 8px;
+                    }
+                  `}</style>
+                </div>
               ) : (
                 <div className="bg-white border rounded-lg p-6 max-h-[800px] overflow-y-auto" data-testid="contract-preview">
                   <div className="prose prose-sm max-w-none">
