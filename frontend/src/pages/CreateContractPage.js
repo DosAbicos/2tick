@@ -110,38 +110,74 @@ const CreateContractPage = () => {
     });
   };
 
+  const textareaRef = useRef(null);
+  const [fontSize, setFontSize] = useState('14px');
+
   const toggleEditMode = () => {
     if (!manualEditMode) {
       // Switching to manual mode - copy current content
-      const content = generateContractContent();
-      // Highlight variables in content
-      const highlightedContent = content
-        .replace(/\[ФИО\]/g, '<span class="contract-variable" style="background-color: #fef3c7; padding: 2px 6px; border-radius: 3px; font-weight: 600; color: #92400e;">[ФИО]</span>')
-        .replace(/\[Телефон\]/g, '<span class="contract-variable" style="background-color: #dbeafe; padding: 2px 6px; border-radius: 3px; font-weight: 600; color: #1e40af;">[Телефон]</span>')
-        .replace(/\[Email\]/g, '<span class="contract-variable" style="background-color: #dcfce7; padding: 2px 6px; border-radius: 3px; font-weight: 600; color: #166534;">[Email]</span>');
-      setManualContent(highlightedContent.replace(/\n/g, '<br>'));
+      setManualContent(generateContractContent());
     }
     setManualEditMode(!manualEditMode);
   };
 
-  // Quill editor configuration
-  const quillModules = useMemo(() => ({
-    toolbar: [
-      [{ 'header': [1, 2, 3, false] }],
-      [{ 'size': ['small', false, 'large', 'huge'] }],
-      ['bold', 'italic', 'underline'],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      [{ 'align': [] }],
-      ['clean']
-    ]
-  }), []);
+  // Text formatting functions
+  const applyFormat = (format) => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
 
-  const quillFormats = [
-    'header', 'size',
-    'bold', 'italic', 'underline',
-    'list', 'bullet',
-    'align'
-  ];
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = manualContent.substring(start, end);
+    
+    if (!selectedText) {
+      toast.info('Выделите текст для форматирования');
+      return;
+    }
+
+    let formattedText = selectedText;
+    
+    switch (format) {
+      case 'bold':
+        formattedText = `**${selectedText}**`;
+        break;
+      case 'italic':
+        formattedText = `*${selectedText}*`;
+        break;
+      case 'underline':
+        formattedText = `__${selectedText}__`;
+        break;
+      case 'h1':
+        formattedText = `# ${selectedText}`;
+        break;
+      case 'h2':
+        formattedText = `## ${selectedText}`;
+        break;
+      case 'h3':
+        formattedText = `### ${selectedText}`;
+        break;
+      default:
+        break;
+    }
+
+    const newContent = 
+      manualContent.substring(0, start) + 
+      formattedText + 
+      manualContent.substring(end);
+    
+    setManualContent(newContent);
+    
+    // Restore focus and selection
+    setTimeout(() => {
+      textarea.focus();
+      textarea.selectionStart = start;
+      textarea.selectionEnd = start + formattedText.length;
+    }, 0);
+  };
+
+  const changeFontSize = (size) => {
+    setFontSize(size);
+  };
 
   const handleTenantDocUpload = (e) => {
     const file = e.target.files[0];
