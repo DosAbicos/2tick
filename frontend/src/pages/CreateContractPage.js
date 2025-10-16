@@ -449,11 +449,23 @@ Email: ${templateData.tenant_email || '[Email]'}
                 </div>
               ) : (
                 <div className="bg-white border rounded-lg p-6 max-h-[800px] overflow-y-auto" data-testid="contract-preview">
-                  <div className="prose prose-sm max-w-none">
-                    <pre className="whitespace-pre-wrap text-xs font-['IBM_Plex_Sans'] leading-relaxed text-neutral-800">
-                      {generateContractContent()}
-                    </pre>
-                  </div>
+                  {isContentSaved ? (
+                    <div 
+                      className="prose prose-sm max-w-none"
+                      style={{
+                        fontFamily: 'IBM Plex Sans, sans-serif',
+                        fontSize: '14px',
+                        lineHeight: '1.6'
+                      }}
+                      dangerouslySetInnerHTML={{ __html: manualContent }}
+                    />
+                  ) : (
+                    <div className="prose prose-sm max-w-none">
+                      <pre className="whitespace-pre-wrap text-xs font-['IBM_Plex_Sans'] leading-relaxed text-neutral-800">
+                        {generateContractContent()}
+                      </pre>
+                    </div>
+                  )}
                 </div>
               )}
             </CardContent>
