@@ -129,6 +129,7 @@ class PDFDownloadTester:
         if otp_response.status_code == 200:
             otp_data = otp_response.json()
             self.log("✅ OTP запрошен успешно")
+            self.log(f"   OTP Response: {otp_data}")
             
             # Get the mock OTP if available
             mock_otp = otp_data.get('mock_otp', '123456')
