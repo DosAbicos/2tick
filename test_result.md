@@ -137,15 +137,18 @@ backend:
   
   - task: "PDF генерация и скачивание"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Endpoint /api/contracts/{contract_id}/download-pdf обновлен для поддержки HTML контента. При content_type='html' контент конвертируется в текст с сохранением структуры перед генерацией PDF."
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. PDF генерация с HTML контентом работает корректно: 1) Контракт с HTML контентом успешно создается и подписывается, 2) GET /api/contracts/{contract_id}/download-pdf генерирует PDF размером 47KB+ без ошибок, 3) HTML контент конвертируется в текст через функцию html_to_text_for_pdf(), 4) PDF содержит читаемый текст без HTML тегов, 5) Функция html_to_text_for_pdf() корректно обрабатывает <b>, <br>, <i>, <u> теги и HTML entities."
 
   - task: "Twilio SMS OTP - отправка"
     implemented: true
