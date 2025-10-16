@@ -137,15 +137,18 @@ backend:
   
   - task: "Замена плейсхолдеров в PDF"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Добавлена функция replace_placeholders_in_content() для замены плейсхолдеров ([ФИО Нанимателя], [Дата заселения], [Цена в сутки] и т.д.) на реальные значения при генерации PDF. Добавлены дополнительные поля в модель Contract (move_in_date, move_out_date, property_address, rent_amount, days_count). Обновлен endpoint download-pdf для вызова функции замены плейсхолдеров. Добавлен graceful fallback для content_type."
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. Замена плейсхолдеров в PDF работает корректно: 1) POST /api/contracts с дополнительными полями (move_in_date, move_out_date, property_address, rent_amount, days_count) успешно создает контракт, 2) Все дополнительные поля корректно сохраняются в базе данных, 3) GET /api/contracts/{contract_id}/download-pdf генерирует PDF размером 46KB+ с заменой плейсхолдеров, 4) Функция replace_placeholders_in_content() корректно заменяет [ФИО Нанимателя]→'Иванов Иван', [Адрес квартиры]→'г. Алматы, ул. Абая 1', [Дата заселения]→'2024-01-15', [Дата выселения]→'2024-01-20', [Цена в сутки]→'15000', 5) Плейсхолдеры сохраняются в исходном контенте договора (правильное поведение), но заменяются при генерации PDF, 6) Graceful fallback для content_type работает корректно."
 
   - task: "PDF генерация и скачивание"
     implemented: true
