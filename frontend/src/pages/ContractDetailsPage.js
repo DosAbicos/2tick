@@ -195,6 +195,19 @@ const ContractDetailsPage = () => {
               </div>
               
               <div className="flex gap-2">
+                {/* Редактировать - только для draft и sent */}
+                {(contract.status === 'draft' || contract.status === 'sent') && (
+                  <Button
+                    onClick={() => navigate(`/contracts/edit/${id}`)}
+                    variant="outline"
+                    data-testid="edit-contract-button"
+                  >
+                    <Edit3 className="mr-2 h-4 w-4" />
+                    Редактировать
+                  </Button>
+                )}
+                
+                {/* Отправить ссылку - только для draft и sent */}
                 {(contract.status === 'draft' || contract.status === 'sent') && (
                   <Button
                     onClick={handleSendContract}
@@ -202,20 +215,22 @@ const ContractDetailsPage = () => {
                     data-testid="send-contract-button"
                   >
                     <Send className="mr-2 h-4 w-4" />
-                    {sendingContract ? t('common.loading') : t('contract.send')}
+                    {sendingContract ? t('common.loading') : 'Отправить ссылку'}
                   </Button>
                 )}
                 
+                {/* Утвердить - только для pending-signature */}
                 {contract.status === 'pending-signature' && (
                   <Button
                     onClick={handleApprove}
                     data-testid="approve-contract-button"
                   >
                     <CheckCircle className="mr-2 h-4 w-4" />
-                    {t('contract.approve')}
+                    Утвердить
                   </Button>
                 )}
                 
+                {/* Скачать PDF - только для signed */}
                 {contract.status === 'signed' && (
                   <Button
                     onClick={handleDownloadPDF}
