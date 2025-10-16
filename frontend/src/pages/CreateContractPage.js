@@ -323,16 +323,29 @@ Email: ${templateData.tenant_email || '[Email]'}
                 <Eye className="h-5 w-5" />
                 {manualEditMode ? 'Редактировать договор' : 'Предпросмотр договора'}
               </CardTitle>
-              <Button
-                type="button"
-                variant={manualEditMode ? "default" : "outline"}
-                size="sm"
-                onClick={toggleEditMode}
-                className="ml-2"
-              >
-                <Edit3 className="h-4 w-4 mr-2" />
-                {manualEditMode ? 'Вернуться к форме' : 'Редактировать вручную'}
-              </Button>
+              <div className="flex gap-2">
+                {manualEditMode && (
+                  <Button
+                    type="button"
+                    variant="default"
+                    size="sm"
+                    onClick={() => {
+                      toast.success('Изменения сохранены');
+                    }}
+                  >
+                    Сохранить
+                  </Button>
+                )}
+                <Button
+                  type="button"
+                  variant={manualEditMode ? "outline" : "outline"}
+                  size="sm"
+                  onClick={toggleEditMode}
+                >
+                  <Edit3 className="h-4 w-4 mr-2" />
+                  {manualEditMode ? 'Вернуться к форме' : 'Редактировать вручную'}
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
               {manualEditMode ? (
