@@ -9,8 +9,9 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Header from '@/components/Header';
-import { ArrowLeft, Eye, Edit3, Upload, Bold, Italic, Underline, List, AlignLeft, AlignCenter, AlignRight, Type } from 'lucide-react';
+import { ArrowLeft, Eye, Edit3, Upload } from 'lucide-react';
 import { IMaskInput } from 'react-imask';
+import { Editor } from '@tinymce/tinymce-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
