@@ -277,8 +277,24 @@ const ContractDetailsPage = () => {
                     className="flex-1"
                     onClick={() => {
                       const fullLink = `${window.location.origin}${contract.signature_link}`;
-                      navigator.clipboard.writeText(fullLink);
-                      toast.success('Ссылка скопирована в буфер обмена!');
+                      
+                      // Fallback method for clipboard
+                      const textArea = document.createElement('textarea');
+                      textArea.value = fullLink;
+                      textArea.style.position = 'fixed';
+                      textArea.style.left = '-999999px';
+                      document.body.appendChild(textArea);
+                      textArea.focus();
+                      textArea.select();
+                      
+                      try {
+                        document.execCommand('copy');
+                        toast.success('Ссылка скопирована в буфер обмена!');
+                      } catch (err) {
+                        toast.error('Не удалось скопировать. Попробуйте вручную.');
+                      }
+                      
+                      document.body.removeChild(textArea);
                     }}
                     data-testid="copy-signature-link-button"
                   >
