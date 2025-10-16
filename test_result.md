@@ -119,6 +119,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "✅ ТЕСТ ПРОЙДЕН. poppler-utils работает корректно: 1) PDF документы успешно загружаются через /api/sign/{contract_id}/upload-document, 2) PDF конвертируется в JPEG изображение с помощью pdf2image, 3) Filename изменяется с .pdf на .jpg, 4) Конвертированное изображение сохраняется в base64 формате в signature.document_upload, 5) Конвертация происходит без ошибок poppler."
+      - working: true
+        agent: "testing"
+        comment: "✅ ПОВТОРНЫЙ ТЕСТ ПРОЙДЕН. После переустановки poppler-utils все функции работают корректно: 1) PDF документы успешно загружаются и конвертируются без ошибок 'Unable to get page count', 2) Конвертация PDF в изображения работает стабильно, 3) Все тесты пользовательских проблем пройдены успешно."
   
   - task: "Поддержка HTML форматирования в контрактах"
     implemented: true
