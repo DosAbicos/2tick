@@ -24,6 +24,7 @@ const CreateContractPage = () => {
   // Manual editing mode
   const [manualEditMode, setManualEditMode] = useState(false);
   const [manualContent, setManualContent] = useState('');
+  const [isContentSaved, setIsContentSaved] = useState(false);
   
   // Tenant document upload (optional for landlord to upload)
   const [tenantDocument, setTenantDocument] = useState(null);
