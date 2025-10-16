@@ -139,18 +139,58 @@ const CreateContractPage = () => {
     }
   };
 
+  const saveSelection = () => {
+    const sel = window.getSelection();
+    if (sel.rangeCount > 0) {
+      return sel.getRangeAt(0);
+    }
+    return null;
+  };
+
+  const restoreSelection = (range) => {
+    if (range) {
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+  };
+
   const executeCommand = (command, value = null) => {
+    const range = saveSelection();
     document.execCommand(command, false, value);
-    editorRef.current?.focus();
+    if (range) {
+      setTimeout(() => restoreSelection(range), 0);
+    }
   };
 
   const changeFontSize = (size) => {
+    const range = saveSelection();
     executeCommand('fontSize', '7');
     const fontElements = editorRef.current?.querySelectorAll('font[size="7"]');
     fontElements?.forEach(el => {
       el.removeAttribute('size');
       el.style.fontSize = size;
     });
+    if (range) {
+      setTimeout(() => restoreSelection(range), 0);
+    }
+  };
+
+  const insertVariable = (variable) => {
+    const range = saveSelection();
+    const colors = {
+      '[ФИО]': { bg: '#fef3c7', color: '#92400e' },
+      '[Телефон]': { bg: '#dbeafe', color: '#1e40af' },
+      '[Email]': { bg: '#dcfce7', color: '#166534' }
+    };
+    const style = colors[variable];
+    const html = `<span style="background-color: ${style.bg}; padding: 2px 6px; border-radius: 3px; font-weight: 600; color: ${style.color};">${variable}</span>&nbsp;`;
+    document.execCommand('insertHTML', false, html);
+    if (range) {
+      setTimeout(() => {
+        editorRef.current?.focus();
+      }, 0);
+    }
   };
 
   const handleTenantDocUpload = (e) => {
