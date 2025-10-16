@@ -130,8 +130,10 @@ const CreateContractPage = () => {
 
   const handleSaveContent = () => {
     if (editorRef.current) {
-      setManualContent(editorRef.current.innerHTML);
-      toast.success('Изменения сохранены');
+      const savedContent = editorRef.current.innerHTML;
+      setManualContent(savedContent);
+      setIsContentSaved(true);
+      toast.success('Изменения сохранены! Теперь можете вернуться к форме.');
     }
   };
 
