@@ -108,6 +108,7 @@ class Contract(BaseModel):
 class ContractCreate(BaseModel):
     title: str
     content: str
+    content_type: str = "plain"  # "plain" or "html"
     signer_name: Optional[str] = None  # Can be filled by signer
     signer_phone: Optional[str] = None  # Can be filled by signer
     signer_email: Optional[str] = None
