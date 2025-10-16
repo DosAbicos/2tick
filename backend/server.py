@@ -293,6 +293,28 @@ def send_email(to_email: str, subject: str, body: str, attachment: bytes = None,
         logging.info(f"[MOCK EMAIL] Attachment: {filename} ({len(attachment)} bytes)")
     return True
 
+def html_to_text_for_pdf(html_content: str) -> str:
+    """Convert HTML content to text while preserving basic formatting"""
+    import re
+    
+    # Replace <br> and </p> with newlines
+    text = html_content.replace('<br>', '\n').replace('<br/>', '\n').replace('<br />', '\n')
+    text = re.sub(r'</p>', '\n', text, flags=re.IGNORECASE)
+    text = re.sub(r'</div>', '\n', text, flags=re.IGNORECASE)
+    text = re.sub(r'</h[1-6]>', '\n', text, flags=re.IGNORECASE)
+    
+    # Remove all other HTML tags
+    text = re.sub(r'<[^>]+>', '', text)
+    
+    # Decode HTML entities
+    import html
+    text = html.unescape(text)
+    
+    # Clean up multiple newlines (keep max 2)
+    text = re.sub(r'\n{3,}', '\n\n', text)
+    
+    return text.strip()
+
 def verify_document_ocr(file_data: str) -> bool:
     """Mocked OCR verification for ID/passport"""
     logging.info(f"[MOCK OCR] Document verification passed")
