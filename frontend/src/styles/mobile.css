@@ -1,0 +1,221 @@
+/* Mobile-first responsive design for Signify KZ */
+
+/* Base mobile styles (up to 640px) */
+@media (max-width: 640px) {
+  /* Global adjustments */
+  body {
+    font-size: 14px;
+  }
+
+  /* Header adjustments */
+  header {
+    padding: 0.75rem 1rem !important;
+  }
+
+  header h1 {
+    font-size: 1.25rem !important;
+  }
+
+  /* Container padding */
+  .max-w-7xl,
+  .max-w-6xl,
+  .max-w-5xl,
+  .max-w-\[1600px\] {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  /* Grid to single column */
+  .grid-cols-2 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .lg\:grid-cols-2 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Forms */
+  input,
+  textarea,
+  select {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+    padding: 0.75rem !important;
+  }
+
+  /* Buttons */
+  button {
+    padding: 0.75rem 1.5rem !important;
+    font-size: 14px !important;
+  }
+
+  button svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  /* Cards */
+  .card,
+  [class*="Card"] {
+    margin-bottom: 1rem !important;
+  }
+
+  /* Contract preview - make it scrollable */
+  .lg\:sticky {
+    position: relative !important;
+    top: auto !important;
+  }
+
+  /* Toolbar buttons - smaller on mobile */
+  .editor-container .flex.gap-2 {
+    gap: 0.25rem !important;
+  }
+
+  .editor-container button {
+    padding: 0.5rem !important;
+  }
+
+  /* Hide toolbar text on mobile */
+  .editor-container .ml-auto {
+    display: none !important;
+  }
+
+  /* Table responsive */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  /* Dashboard cards */
+  .dashboard-card {
+    padding: 1rem !important;
+  }
+
+  /* Modal full screen on mobile */
+  [role="dialog"] {
+    max-width: 100% !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    min-height: 100vh !important;
+  }
+
+  /* File upload button */
+  input[type="file"] + label button {
+    width: 100% !important;
+  }
+
+  /* Signature page adjustments */
+  .signature-page .space-y-4 {
+    gap: 1rem !important;
+  }
+
+  /* OTP input */
+  .otp-input {
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+    font-size: 1.25rem !important;
+  }
+
+  /* Contract details - stack vertically */
+  .contract-details .grid-cols-2 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Action buttons - stack on mobile */
+  .flex.gap-2 {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+
+  .flex.gap-2 > button {
+    width: 100% !important;
+  }
+
+  /* Navigation - horizontal scroll */
+  nav {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Tablet styles (641px to 1024px) */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .max-w-\[1600px\] {
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+  }
+
+  input,
+  textarea,
+  select {
+    font-size: 15px !important;
+  }
+}
+
+/* Touch-specific improvements */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger touch targets */
+  button,
+  a,
+  input[type="checkbox"],
+  input[type="radio"] {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+
+  /* Prevent double-tap zoom */
+  * {
+    touch-action: manipulation;
+  }
+
+  /* Better scrolling */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Landscape mobile */
+@media (max-width: 896px) and (orientation: landscape) {
+  /* Reduce header size in landscape */
+  header {
+    padding: 0.5rem 1rem !important;
+  }
+
+  /* Adjust modal heights */
+  [role="dialog"] {
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+  }
+}
+
+/* Very small screens (up to 375px) */
+@media (max-width: 375px) {
+  body {
+    font-size: 13px;
+  }
+
+  h1 {
+    font-size: 1.5rem !important;
+  }
+
+  h2 {
+    font-size: 1.25rem !important;
+  }
+
+  h3 {
+    font-size: 1.1rem !important;
+  }
+
+  /* Smaller padding */
+  .p-8 {
+    padding: 1rem !important;
+  }
+
+  .p-6 {
+    padding: 0.75rem !important;
+  }
+
+  .p-4 {
+    padding: 0.5rem !important;
+  }
+}
