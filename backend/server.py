@@ -118,6 +118,12 @@ class ContractCreate(BaseModel):
     signer_name: Optional[str] = None  # Can be filled by signer
     signer_phone: Optional[str] = None  # Can be filled by signer
     signer_email: Optional[str] = None
+    # Additional form fields
+    move_in_date: Optional[str] = None
+    move_out_date: Optional[str] = None
+    property_address: Optional[str] = None
+    rent_amount: Optional[str] = None
+    days_count: Optional[str] = None
     amount: Optional[str] = None
 
 class Signature(BaseModel):
