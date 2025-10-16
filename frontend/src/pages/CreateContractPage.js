@@ -376,55 +376,28 @@ Email: ${templateData.tenant_email || '[Email]'}
             <CardContent>
               {manualEditMode ? (
                 <div className="editor-container">
-                  <Editor
-                    apiKey="no-api-key"
-                    onInit={(evt, editor) => editorRef.current = editor}
+                  <ReactSummernote
                     value={manualContent}
-                    onEditorChange={(content) => setManualContent(content)}
-                    init={{
+                    options={{
                       height: 700,
-                      menubar: true,
-                      plugins: [
-                        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                        'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+                      dialogsInBody: true,
+                      toolbar: [
+                        ['style', ['style']],
+                        ['font', ['bold', 'italic', 'underline', 'clear']],
+                        ['fontsize', ['fontsize']],
+                        ['color', ['color']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['height', ['height']],
+                        ['table', ['table']],
+                        ['insert', ['link']],
+                        ['view', ['fullscreen', 'codeview']],
+                        ['help', ['help']]
                       ],
-                      toolbar: 'undo redo | blocks | ' +
-                        'bold italic underline strikethrough | fontsize | alignleft aligncenter ' +
-                        'alignright alignjustify | bullist numlist outdent indent | ' +
-                        'removeformat | help',
-                      font_size_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt 48pt',
-                      content_style: `
-                        body { 
-                          font-family: IBM Plex Sans, sans-serif; 
-                          font-size: 14px; 
-                          line-height: 1.6;
-                        }
-                        span[style*="background-color: #fef3c7"] {
-                          background-color: #fef3c7 !important;
-                          padding: 2px 6px;
-                          border-radius: 3px;
-                          font-weight: 600;
-                          color: #92400e;
-                        }
-                        span[style*="background-color: #dbeafe"] {
-                          background-color: #dbeafe !important;
-                          padding: 2px 6px;
-                          border-radius: 3px;
-                          font-weight: 600;
-                          color: #1e40af;
-                        }
-                        span[style*="background-color: #dcfce7"] {
-                          background-color: #dcfce7 !important;
-                          padding: 2px 6px;
-                          border-radius: 3px;
-                          font-weight: 600;
-                          color: #166534;
-                        }
-                      `,
-                      language: 'ru',
-                      placeholder: 'Введите текст договора...'
+                      fontSizes: ['8', '10', '12', '14', '16', '18', '20', '24', '36', '48'],
+                      placeholder: 'Введите текст договора...',
+                      styleTags: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
                     }}
+                    onChange={onSummernoteChange}
                   />
                   
                   {/* Legend for variables */}
@@ -434,6 +407,18 @@ Email: ${templateData.tenant_email || '[Email]'}
                     <span className="bg-blue-50 border border-blue-200 px-2 py-1 rounded">[Телефон]</span>
                     <span className="bg-green-50 border border-green-200 px-2 py-1 rounded">[Email]</span>
                   </div>
+                  
+                  <style>{`
+                    .note-editor.note-frame {
+                      border: 1px solid #e5e7eb;
+                      border-radius: 8px;
+                    }
+                    .note-editable {
+                      font-family: 'IBM Plex Sans', sans-serif;
+                      font-size: 14px;
+                      line-height: 1.6;
+                    }
+                  `}</style>
                 </div>
               ) : (
                 <div className="bg-white border rounded-lg p-6 max-h-[800px] overflow-y-auto" data-testid="contract-preview">
