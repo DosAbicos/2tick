@@ -270,14 +270,15 @@ Email: ${templateData.tenant_email || '[Email]'}
     setLoading(true);
     
     try {
-      // Convert HTML to plain text if in manual edit mode
       let contentToSave = manualEditMode ? manualContent : generateContractContent();
       
+      // Convert HTML to plain text if in manual edit mode
       if (manualEditMode && manualContent.includes('<')) {
-        // Strip HTML tags but preserve line breaks
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = manualContent;
         contentToSave = tempDiv.textContent || tempDiv.innerText || '';
+        // Preserve paragraph breaks
+        contentToSave = contentToSave.replace(/\n\n+/g, '\n\n');
       }
       
       const contractData = {
