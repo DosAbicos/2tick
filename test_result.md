@@ -348,13 +348,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Установка poppler-utils для PDF конвертации"
-    - "Поддержка HTML форматирования в контрактах"
+    - "Замена плейсхолдеров в PDF"
     - "PDF генерация и скачивание"
-    - "Мета-теги для мобильных устройств"
-    - "Rich Text Editor - сохранение HTML форматирования"
-    - "Отображение HTML контента при подписании"
-    - "Отображение HTML контента в деталях контракта"
+    - "Установка poppler-utils для PDF конвертации"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
