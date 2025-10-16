@@ -382,6 +382,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                     options={{
                       height: 700,
                       dialogsInBody: true,
+                      tooltip: false,
                       toolbar: [
                         ['style', ['style']],
                         ['font', ['bold', 'italic', 'underline', 'clear']],
@@ -397,6 +398,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                       fontSizes: ['8', '10', '12', '14', '16', '18', '20', '24', '36', '48'],
                       placeholder: 'Введите текст договора...',
                       styleTags: ['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+                      disableDragAndDrop: true,
                     }}
                     onChange={onSummernoteChange}
                   />
