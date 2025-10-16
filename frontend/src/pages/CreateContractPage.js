@@ -116,14 +116,16 @@ const CreateContractPage = () => {
 
   const toggleEditMode = () => {
     if (!manualEditMode) {
-      // Switching to manual mode - copy current content and highlight variables
-      const content = generateContractContent();
-      const highlightedContent = content
-        .replace(/\[ФИО\]/g, '<span style="background-color: #fef3c7; padding: 2px 6px; border-radius: 3px; font-weight: 600; color: #92400e;">[ФИО]</span>')
-        .replace(/\[Телефон\]/g, '<span style="background-color: #dbeafe; padding: 2px 6px; border-radius: 3px; font-weight: 600; color: #1e40af;">[Телефон]</span>')
-        .replace(/\[Email\]/g, '<span style="background-color: #dcfce7; padding: 2px 6px; border-radius: 3px; font-weight: 600; color: #166534;">[Email]</span>')
-        .replace(/\n/g, '<br>');
-      setManualContent(highlightedContent);
+      // If content was already saved, use it; otherwise generate new
+      if (!isContentSaved) {
+        const content = generateContractContent();
+        const highlightedContent = content
+          .replace(/\[ФИО\]/g, '<span style="background-color: #fef3c7; padding: 2px 6px; border-radius: 3px; font-weight: 600; color: #92400e;">[ФИО]</span>')
+          .replace(/\[Телефон\]/g, '<span style="background-color: #dbeafe; padding: 2px 6px; border-radius: 3px; font-weight: 600; color: #1e40af;">[Телефон]</span>')
+          .replace(/\[Email\]/g, '<span style="background-color: #dcfce7; padding: 2px 6px; border-radius: 3px; font-weight: 600; color: #166534;">[Email]</span>')
+          .replace(/\n/g, '<br>');
+        setManualContent(highlightedContent);
+      }
     }
     setManualEditMode(!manualEditMode);
   };
