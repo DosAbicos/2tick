@@ -280,9 +280,19 @@ Email: ${templateData.tenant_email || '[Email]'}
     setLoading(true);
     
     try {
+      // Convert HTML to plain text if in manual edit mode
+      let contentToSave = manualEditMode ? manualContent : generateContractContent();
+      
+      if (manualEditMode && manualContent.includes('<')) {
+        // Strip HTML tags but preserve line breaks
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = manualContent;
+        contentToSave = tempDiv.textContent || tempDiv.innerText || '';
+      }
+      
       const contractData = {
         title: `Договор № ${templateData.contract_number} от ${templateData.contract_date}`,
-        content: manualEditMode ? manualContent : generateContractContent(),
+        content: contentToSave,
         signer_name: templateData.tenant_name,
         signer_phone: templateData.tenant_phone,
         signer_email: templateData.tenant_email,
