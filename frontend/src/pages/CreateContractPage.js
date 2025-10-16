@@ -111,6 +111,8 @@ const CreateContractPage = () => {
     });
   };
 
+  const editorRef = useRef(null);
+
   const toggleEditMode = () => {
     if (!manualEditMode) {
       // Switching to manual mode - copy current content and highlight variables
@@ -126,11 +128,24 @@ const CreateContractPage = () => {
   };
 
   const handleSaveContent = () => {
-    toast.success('Изменения сохранены в редакторе');
+    if (editorRef.current) {
+      setManualContent(editorRef.current.innerHTML);
+      toast.success('Изменения сохранены');
+    }
   };
 
-  const onSummernoteChange = (content) => {
-    setManualContent(content);
+  const executeCommand = (command, value = null) => {
+    document.execCommand(command, false, value);
+    editorRef.current?.focus();
+  };
+
+  const changeFontSize = (size) => {
+    executeCommand('fontSize', '7');
+    const fontElements = editorRef.current?.querySelectorAll('font[size="7"]');
+    fontElements?.forEach(el => {
+      el.removeAttribute('size');
+      el.style.fontSize = size;
+    });
   };
 
   const handleTenantDocUpload = (e) => {
