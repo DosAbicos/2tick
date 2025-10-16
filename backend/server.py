@@ -993,7 +993,12 @@ async def download_pdf(contract_id: str, current_user: dict = Depends(get_curren
     except:
         p.setFont("Helvetica", 9)
     
-    lines = contract['content'].split('\n')
+    # Convert HTML to text if needed
+    content_text = contract['content']
+    if contract.get('content_type') == 'html':
+        content_text = html_to_text_for_pdf(content_text)
+    
+    lines = content_text.split('\n')
     
     for line in lines:
         # Check if we need new page
