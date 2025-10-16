@@ -288,11 +288,19 @@ Email: ${templateData.tenant_email || '[Email]'}
       
       // Convert HTML to plain text if content was manually edited
       if (isContentSaved && manualContent.includes('<')) {
+        // Replace <br> with newlines first
+        let htmlContent = manualContent
+          .replace(/<br\s*\/?>/gi, '\n')
+          .replace(/<\/p>/gi, '\n')
+          .replace(/<\/div>/gi, '\n')
+          .replace(/<\/h[1-6]>/gi, '\n');
+        
         const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = manualContent;
+        tempDiv.innerHTML = htmlContent;
         contentToSave = tempDiv.textContent || tempDiv.innerText || '';
-        // Preserve paragraph breaks
-        contentToSave = contentToSave.replace(/\n\n+/g, '\n\n');
+        
+        // Clean up multiple newlines but keep structure
+        contentToSave = contentToSave.replace(/\n{3,}/g, '\n\n');
       }
       
       const contractData = {
