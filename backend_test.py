@@ -419,7 +419,7 @@ def main():
         print(f"\n❌ {len(failed_tests)} tests failed: {', '.join(failed_tests)}")
         exit(1)
     else:
-        print(f"\n✅ All user feedback fixes tested successfully!")
+        print(f"\n✅ All HTML formatting and PDF generation fixes tested successfully!")
         exit(0)
 
 if __name__ == "__main__":
