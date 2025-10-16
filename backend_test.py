@@ -31,35 +31,27 @@ TEST_USER = {
     "language": "ru"
 }
 
-# Contract WITHOUT signer info (to test update functionality)
-TEST_CONTRACT_EMPTY = {
-    "title": "Договор аренды квартиры в г. Алматы",
-    "content": "Настоящий договор заключается между арендодателем и арендатором на следующих условиях: 1. Предмет договора - аренда квартиры по адресу г. Алматы, ул. Абая 150. 2. Срок аренды - 12 месяцев. 3. Арендная плата - 150,000 тенге в месяц.",
-    "amount": "150000"
-    # Omit signer fields to test None handling
-}
-
-# Updated signer info for testing
-UPDATED_SIGNER_INFO = {
-    "signer_name": "Асель Токаева",
-    "signer_phone": "+7 (707) 130-03-49", 
-    "signer_email": "assel.tokaeva@example.kz"
-}
-
-# Original signer info (different phone to test SMS routing)
-ORIGINAL_SIGNER_INFO = {
-    "signer_name": "Старое Имя",
+# Test contract with HTML formatting
+TEST_CONTRACT_HTML = {
+    "title": "Договор аренды с HTML форматированием",
+    "content": "<b>Важно</b><br>Настоящий договор заключается между <i>арендодателем</i> и <u>арендатором</u> на следующих условиях:<br><br>1. <b>Предмет договора</b> - аренда квартиры по адресу г. Алматы, ул. Абая 150.<br>2. <b>Срок аренды</b> - 12 месяцев.<br>3. <b>Арендная плата</b> - 150,000 тенге в месяц.<br><br><i>Подпись сторон обязательна.</i>",
+    "content_type": "html",
+    "signer_name": "Тестовый Наниматель",
     "signer_phone": "+77012345678",
-    "signer_email": "old@example.kz"
+    "signer_email": "test.signer@example.com",
+    "amount": "150000"
 }
 
-# Test phone numbers for normalization
-PHONE_TEST_CASES = [
-    ("87012345678", "+77012345678"),    # 8 prefix -> +7
-    ("77012345678", "+77012345678"),    # 7 prefix -> +7  
-    ("+77012345678", "+77012345678"),   # Already normalized
-    ("7012345678", "+77012345678"),     # No prefix -> +7
-]
+# Test contract with plain text
+TEST_CONTRACT_PLAIN = {
+    "title": "Договор аренды обычный текст",
+    "content": "Настоящий договор заключается между арендодателем и арендатором на следующих условиях: 1. Предмет договора - аренда квартиры. 2. Срок аренды - 12 месяцев. 3. Арендная плата - 150,000 тенге в месяц.",
+    "content_type": "plain",
+    "signer_name": "Тестовый Наниматель",
+    "signer_phone": "+77012345678",
+    "signer_email": "test.signer@example.com",
+    "amount": "150000"
+}
 
 class SignifyTester:
     def __init__(self):
