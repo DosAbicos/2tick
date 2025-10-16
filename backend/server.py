@@ -91,6 +91,7 @@ class Contract(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     title: str
     content: str
+    content_type: str = "plain"  # "plain" or "html"
     creator_id: str
     signer_name: str
     signer_phone: str
