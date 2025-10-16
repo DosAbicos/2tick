@@ -342,14 +342,14 @@ startxref
             return False
             
     def run_all_tests(self):
-        """Run all tests in sequence for user feedback fixes"""
+        """Run all tests for HTML formatting and PDF generation fixes"""
         self.log("=" * 70)
-        self.log("STARTING SIGNIFY KZ USER FEEDBACK FIXES TESTING")
-        self.log("Testing 4 specific fixes after user feedback:")
-        self.log("1. SMS goes to updated signer phone number")
-        self.log("2. Signer data displays in contract/PDF")
-        self.log("3. Signer photo displays on approval page")
-        self.log("4. PDF documents convert to images")
+        self.log("STARTING SIGNIFY KZ HTML FORMATTING & PDF GENERATION TESTING")
+        self.log("Testing 4 critical fixes:")
+        self.log("1. poppler-utils installation for PDF conversion")
+        self.log("2. HTML formatting support in contracts (content_type field)")
+        self.log("3. PDF generation with HTML content conversion")
+        self.log("4. PDF-to-Image conversion functionality")
         self.log("=" * 70)
         
         results = {}
@@ -361,27 +361,24 @@ startxref
             self.log("❌ Cannot proceed without authentication", "ERROR")
             return results
             
-        # Test 2: Contract Creation (without signer info)
-        results['contract_creation'] = self.test_contract_creation_without_signer()
+        # Test 2: HTML Contract Creation
+        results['html_contract_creation'] = self.test_contract_creation_html()
         
-        if not results['contract_creation']:
-            self.log("❌ Cannot proceed without contract", "ERROR")
+        if not results['html_contract_creation']:
+            self.log("❌ Cannot proceed without HTML contract", "ERROR")
             return results
             
-        # Test 3: Update Signer Info (FIX #1 & #2)
-        results['update_signer_info'] = self.test_update_signer_info()
+        # Test 3: HTML Contract Retrieval
+        results['html_contract_retrieval'] = self.test_contract_retrieval_html()
         
-        # Test 4: OTP to Updated Phone (FIX #1)
-        results['otp_to_updated_phone'] = self.test_otp_to_updated_phone()
+        # Test 4: Plain Text Contract Creation (for comparison)
+        results['plain_contract_creation'] = self.test_plain_text_contract_creation()
         
-        # Test 5: OTP Verification
-        results['otp_verification'] = self.test_otp_verification()
+        # Test 5: PDF Document Upload and Conversion (poppler-utils test)
+        results['pdf_document_conversion'] = self.test_pdf_document_upload_conversion()
         
-        # Test 6: PDF Document Upload (FIX #4)
-        results['pdf_document_upload'] = self.test_pdf_document_upload()
-        
-        # Test 7: Contract Approval and PDF Generation (FIX #2 & #3)
-        results['contract_approval_pdf'] = self.test_contract_approval_and_pdf_generation()
+        # Test 6: Contract Approval and PDF Generation with HTML
+        results['html_pdf_generation'] = self.test_contract_approval_and_pdf_generation_html()
         
         # Summary
         self.log("=" * 70)
@@ -394,20 +391,20 @@ startxref
             
         # Specific fix summary
         self.log("\n" + "=" * 70)
-        self.log("FIX VERIFICATION SUMMARY")
+        self.log("CRITICAL FIX VERIFICATION SUMMARY")
         self.log("=" * 70)
         
-        fix1_status = "✅ PASS" if (results.get('update_signer_info') and results.get('otp_to_updated_phone')) else "❌ FAIL"
-        self.log(f"FIX #1 - SMS to updated phone: {fix1_status}")
+        poppler_status = "✅ PASS" if results.get('pdf_document_conversion') else "❌ FAIL"
+        self.log(f"FIX #1 - poppler-utils installation: {poppler_status}")
         
-        fix2_status = "✅ PASS" if (results.get('update_signer_info') and results.get('contract_approval_pdf')) else "❌ FAIL"
-        self.log(f"FIX #2 - Signer data in PDF: {fix2_status}")
+        html_support_status = "✅ PASS" if (results.get('html_contract_creation') and results.get('html_contract_retrieval')) else "❌ FAIL"
+        self.log(f"FIX #2 - HTML formatting support: {html_support_status}")
         
-        fix3_status = "✅ PASS" if results.get('contract_approval_pdf') else "❌ FAIL"
-        self.log(f"FIX #3 - Signer photo on approval: {fix3_status} (manual verification needed)")
+        pdf_html_status = "✅ PASS" if results.get('html_pdf_generation') else "❌ FAIL"
+        self.log(f"FIX #3 - PDF generation with HTML: {pdf_html_status}")
         
-        fix4_status = "✅ PASS" if results.get('pdf_document_upload') else "❌ FAIL"
-        self.log(f"FIX #4 - PDF to image conversion: {fix4_status}")
+        pdf_conversion_status = "✅ PASS" if results.get('pdf_document_conversion') else "❌ FAIL"
+        self.log(f"FIX #4 - PDF-to-Image conversion: {pdf_conversion_status}")
                 
         return results
 
