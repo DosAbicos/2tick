@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Интеграция Twilio для реальной SMS верификации в платформе Signify KZ. Замена mock функций на реальные вызовы Twilio Verify API."
+user_problem_statement: "Исправление 4 критических проблем: 1) Скачивание PDF контрактов, 2) Конвертация PDF документов в изображения, 3) Ошибка мета-тегов на мобильных, 4) Сохранение форматирования текста из rich text editor."
 
 backend:
   - task: "Twilio SMS OTP - отправка"
