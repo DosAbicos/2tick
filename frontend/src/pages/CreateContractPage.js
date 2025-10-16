@@ -286,26 +286,13 @@ Email: ${templateData.tenant_email || '[Email]'}
       // Use saved content if available, otherwise generate from form
       let contentToSave = isContentSaved ? manualContent : generateContractContent();
       
-      // Convert HTML to plain text if content was manually edited
-      if (isContentSaved && manualContent.includes('<')) {
-        // Replace <br> with newlines first
-        let htmlContent = manualContent
-          .replace(/<br\s*\/?>/gi, '\n')
-          .replace(/<\/p>/gi, '\n')
-          .replace(/<\/div>/gi, '\n')
-          .replace(/<\/h[1-6]>/gi, '\n');
-        
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = htmlContent;
-        contentToSave = tempDiv.textContent || tempDiv.innerText || '';
-        
-        // Clean up multiple newlines but keep structure
-        contentToSave = contentToSave.replace(/\n{3,}/g, '\n\n');
-      }
+      // Store metadata about whether content is HTML or plain text
+      const isHtmlContent = isContentSaved && manualContent.includes('<');
       
       const contractData = {
         title: `Договор № ${templateData.contract_number} от ${templateData.contract_date}`,
         content: contentToSave,
+        content_type: isHtmlContent ? 'html' : 'plain', // Add metadata
         signer_name: templateData.tenant_name,
         signer_phone: templateData.tenant_phone,
         signer_email: templateData.tenant_email,
