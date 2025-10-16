@@ -18,7 +18,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import Header from '@/components/Header';
-import { ArrowLeft, Send, Download, Trash2, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Send, Download, Trash2, CheckCircle, Edit3 } from 'lucide-react';
 import { format } from 'date-fns';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
