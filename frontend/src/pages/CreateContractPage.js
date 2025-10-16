@@ -409,9 +409,9 @@ Email: ${templateData.tenant_email || '[Email]'}
                 <div className="editor-container">
                   {/* Toolbar */}
                   <div className="bg-gray-50 border border-gray-300 rounded-t-lg p-2 flex flex-wrap gap-1 items-center">
-                    <Button type="button" variant="ghost" size="sm" onClick={() => executeCommand('bold')} className="h-8 w-8 p-0" title="Жирный"><Bold className="h-4 w-4" /></Button>
-                    <Button type="button" variant="ghost" size="sm" onClick={() => executeCommand('italic')} className="h-8 w-8 p-0" title="Курсив"><Italic className="h-4 w-4" /></Button>
-                    <Button type="button" variant="ghost" size="sm" onClick={() => executeCommand('underline')} className="h-8 w-8 p-0" title="Подчеркнутый"><Underline className="h-4 w-4" /></Button>
+                    <Button type="button" variant="ghost" size="sm" onMouseDown={(e) => { e.preventDefault(); executeCommand('bold'); }} className="h-8 w-8 p-0" title="Жирный"><Bold className="h-4 w-4" /></Button>
+                    <Button type="button" variant="ghost" size="sm" onMouseDown={(e) => { e.preventDefault(); executeCommand('italic'); }} className="h-8 w-8 p-0" title="Курсив"><Italic className="h-4 w-4" /></Button>
+                    <Button type="button" variant="ghost" size="sm" onMouseDown={(e) => { e.preventDefault(); executeCommand('underline'); }} className="h-8 w-8 p-0" title="Подчеркнутый"><Underline className="h-4 w-4" /></Button>
                     
                     <div className="w-px bg-gray-300 mx-1" />
                     
