@@ -30,10 +30,20 @@ const CreateContractPage = () => {
   const [landlordDocPreview, setLandlordDocPreview] = useState(null);
   const [uploadingDoc, setUploadingDoc] = useState(false);
   
+  // Generate unique contract number
+  const generateContractNumber = () => {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+    return `${year}${month}${day}-${random}`;
+  };
+
   // Template fields
   const [templateData, setTemplateData] = useState({
     // Contract info
-    contract_number: '01a',
+    contract_number: generateContractNumber(),
     contract_date: new Date().toISOString().split('T')[0],
     
     // Landlord (Creator) info
