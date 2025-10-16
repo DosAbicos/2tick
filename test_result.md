@@ -259,6 +259,54 @@ backend:
         comment: "✅ ТЕСТ ПРОЙДЕН. Функциональность обновления контента договора работает корректно: 1) Создание договора с плейсхолдерами [ФИО], [Телефон], [Email] - успешно, 2) POST /api/sign/{contract_id}/update-signer-info автоматически заменяет плейсхолдеры на реальные данные в content, 3) Изменения персистируются в базе данных, 4) Повторное обновление корректно заменяет старые значения на новые, 5) Все тесты пройдены: создание с плейсхолдерами, первое обновление, проверка персистентности, повторное обновление, финальная проверка."
 
 frontend:
+  - task: "Мета-теги для мобильных устройств"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/public/index.html"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Добавлены недостающие Open Graph и Twitter мета-теги в index.html. Это исправляет JavaScript ошибку 'null is not an object' при доступе к мета-тегам на мобильных устройствах."
+  
+  - task: "Rich Text Editor - сохранение HTML форматирования"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/CreateContractPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Изменена логика сохранения контракта: теперь HTML контент сохраняется как есть (не конвертируется в plain text). Добавлен параметр content_type='html' при сохранении отредактированного контента. Форматирование (bold, italic, etc) теперь сохраняется в базе данных."
+  
+  - task: "Отображение HTML контента при подписании"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/SignContractPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Добавлена поддержка отображения HTML контента на странице подписания. Если content_type='html', контент рендерится через dangerouslySetInnerHTML с сохранением форматирования."
+  
+  - task: "Отображение HTML контента в деталях контракта"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/ContractDetailsPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Добавлена поддержка отображения HTML контента на странице деталей контракта. Если content_type='html', контент рендерится с сохранением форматирования."
+
   - task: "UI для SMS верификации"
     implemented: true
     working: "NA"
