@@ -96,6 +96,12 @@ class Contract(BaseModel):
     signer_name: str
     signer_phone: str
     signer_email: Optional[str] = None
+    # Additional form fields for placeholder replacement
+    move_in_date: Optional[str] = None
+    move_out_date: Optional[str] = None
+    property_address: Optional[str] = None
+    rent_amount: Optional[str] = None
+    days_count: Optional[str] = None
     status: str = "draft"  # draft, sent, pending-signature, signed, declined
     amount: Optional[str] = None
     file_data: Optional[str] = None  # base64 encoded file
