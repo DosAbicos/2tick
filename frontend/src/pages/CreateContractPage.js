@@ -116,10 +116,35 @@ const CreateContractPage = () => {
   const toggleEditMode = () => {
     if (!manualEditMode) {
       // Switching to manual mode - copy current content
-      setManualContent(generateContractContent());
+      const content = generateContractContent();
+      // Highlight variables in content
+      const highlightedContent = content
+        .replace(/\[ФИО\]/g, '<span class="contract-variable" style="background-color: #fef3c7; padding: 2px 6px; border-radius: 3px; font-weight: 600; color: #92400e;">[ФИО]</span>')
+        .replace(/\[Телефон\]/g, '<span class="contract-variable" style="background-color: #dbeafe; padding: 2px 6px; border-radius: 3px; font-weight: 600; color: #1e40af;">[Телефон]</span>')
+        .replace(/\[Email\]/g, '<span class="contract-variable" style="background-color: #dcfce7; padding: 2px 6px; border-radius: 3px; font-weight: 600; color: #166534;">[Email]</span>');
+      setManualContent(highlightedContent.replace(/\n/g, '<br>'));
     }
     setManualEditMode(!manualEditMode);
   };
+
+  // Quill editor configuration
+  const quillModules = useMemo(() => ({
+    toolbar: [
+      [{ 'header': [1, 2, 3, false] }],
+      [{ 'size': ['small', false, 'large', 'huge'] }],
+      ['bold', 'italic', 'underline'],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      [{ 'align': [] }],
+      ['clean']
+    ]
+  }), []);
+
+  const quillFormats = [
+    'header', 'size',
+    'bold', 'italic', 'underline',
+    'list', 'bullet',
+    'align'
+  ];
 
   const handleTenantDocUpload = (e) => {
     const file = e.target.files[0];
