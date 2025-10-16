@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-Backend Testing for Signify KZ - User Feedback Fixes Testing
-Tests the 4 specific fixes after user feedback:
-1. SMS goes to updated signer phone number
-2. Signer data displays in contract/PDF
-3. Signer photo displays on approval page
-4. PDF documents convert to images
+Backend Testing for Signify KZ - HTML Formatting and PDF Generation Fixes
+Tests the 4 critical fixes:
+1. poppler-utils installation for PDF conversion
+2. HTML formatting support in contracts (content_type field)
+3. PDF generation with HTML content conversion
+4. PDF-to-Image conversion functionality
 """
 
 import requests
@@ -24,10 +24,10 @@ API_BASE = f"{BACKEND_URL}/api"
 
 # Test data - using realistic Kazakhstan data
 TEST_USER = {
-    "email": "creator.test@signify.kz",
-    "password": "SecurePass123!",
-    "full_name": "Айдар Назарбаев",
-    "phone": "+77771234567",
+    "email": "test@example.com",
+    "password": "test123",
+    "full_name": "Тестовый Пользователь",
+    "phone": "+77012345678",
     "language": "ru"
 }
 
