@@ -356,9 +356,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                     type="button"
                     variant="default"
                     size="sm"
-                    onClick={() => {
-                      toast.success('Изменения сохранены');
-                    }}
+                    onClick={handleSaveContent}
                   >
                     Сохранить
                   </Button>
