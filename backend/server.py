@@ -439,6 +439,7 @@ async def create_contract(contract_data: ContractCreate, current_user: dict = De
     contract = Contract(
         title=contract_data.title,
         content=contract_data.content,
+        content_type=contract_data.content_type,
         creator_id=current_user['user_id'],
         signer_name=contract_data.signer_name or "",
         signer_phone=contract_data.signer_phone or "",
