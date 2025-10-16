@@ -377,114 +377,60 @@ Email: ${templateData.tenant_email || '[Email]'}
             <CardContent>
               {manualEditMode ? (
                 <div className="editor-container">
-                  {/* Toolbar */}
-                  <div className="bg-neutral-50 border border-neutral-200 rounded-t-lg p-3 flex flex-wrap gap-2">
-                    <div className="flex gap-1 border-r pr-2">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => applyFormat('bold')}
-                        title="Жирный"
-                        className="h-8 w-8 p-0"
-                      >
-                        <Bold className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => applyFormat('italic')}
-                        title="Курсив"
-                        className="h-8 w-8 p-0"
-                      >
-                        <Italic className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => applyFormat('underline')}
-                        title="Подчеркнутый"
-                        className="h-8 w-8 p-0"
-                      >
-                        <Underline className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    
-                    <div className="flex gap-1 border-r pr-2">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => applyFormat('h1')}
-                        title="Заголовок 1"
-                        className="h-8 px-2"
-                      >
-                        <span className="text-lg font-bold">H1</span>
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => applyFormat('h2')}
-                        title="Заголовок 2"
-                        className="h-8 px-2"
-                      >
-                        <span className="text-base font-bold">H2</span>
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => applyFormat('h3')}
-                        title="Заголовок 3"
-                        className="h-8 px-2"
-                      >
-                        <span className="text-sm font-bold">H3</span>
-                      </Button>
-                    </div>
-                    
-                    <div className="flex gap-1 items-center">
-                      <Type className="h-4 w-4 text-neutral-500" />
-                      <select
-                        value={fontSize}
-                        onChange={(e) => changeFontSize(e.target.value)}
-                        className="h-8 px-2 border rounded text-sm"
-                      >
-                        <option value="12px">Маленький</option>
-                        <option value="14px">Обычный</option>
-                        <option value="16px">Большой</option>
-                        <option value="18px">Огромный</option>
-                      </select>
-                    </div>
-                    
-                    <div className="ml-auto text-xs text-neutral-500 flex items-center gap-2">
-                      <span className="bg-yellow-100 px-2 py-1 rounded">**текст** = жирный</span>
-                      <span className="bg-blue-100 px-2 py-1 rounded">*текст* = курсив</span>
-                      <span className="bg-green-100 px-2 py-1 rounded">__текст__ = подчеркнутый</span>
-                    </div>
-                  </div>
-                  
-                  {/* Textarea with highlighting */}
-                  <div className="relative">
-                    <textarea
-                      ref={textareaRef}
-                      value={manualContent}
-                      onChange={(e) => setManualContent(e.target.value)}
-                      className="w-full h-[700px] p-4 border border-t-0 border-neutral-200 rounded-b-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      style={{ 
-                        fontFamily: 'IBM Plex Sans, sans-serif',
-                        fontSize: fontSize,
-                        lineHeight: '1.6'
-                      }}
-                      placeholder="Введите текст договора... Используйте кнопки выше для форматирования."
-                    />
-                  </div>
+                  <Editor
+                    apiKey="no-api-key"
+                    onInit={(evt, editor) => editorRef.current = editor}
+                    value={manualContent}
+                    onEditorChange={(content) => setManualContent(content)}
+                    init={{
+                      height: 700,
+                      menubar: true,
+                      plugins: [
+                        'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                        'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                        'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+                      ],
+                      toolbar: 'undo redo | blocks | ' +
+                        'bold italic underline strikethrough | fontsize | alignleft aligncenter ' +
+                        'alignright alignjustify | bullist numlist outdent indent | ' +
+                        'removeformat | help',
+                      font_size_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt 48pt',
+                      content_style: `
+                        body { 
+                          font-family: IBM Plex Sans, sans-serif; 
+                          font-size: 14px; 
+                          line-height: 1.6;
+                        }
+                        span[style*="background-color: #fef3c7"] {
+                          background-color: #fef3c7 !important;
+                          padding: 2px 6px;
+                          border-radius: 3px;
+                          font-weight: 600;
+                          color: #92400e;
+                        }
+                        span[style*="background-color: #dbeafe"] {
+                          background-color: #dbeafe !important;
+                          padding: 2px 6px;
+                          border-radius: 3px;
+                          font-weight: 600;
+                          color: #1e40af;
+                        }
+                        span[style*="background-color: #dcfce7"] {
+                          background-color: #dcfce7 !important;
+                          padding: 2px 6px;
+                          border-radius: 3px;
+                          font-weight: 600;
+                          color: #166534;
+                        }
+                      `,
+                      language: 'ru',
+                      placeholder: 'Введите текст договора...'
+                    }}
+                  />
                   
                   {/* Legend for variables */}
-                  <div className="mt-2 text-xs text-neutral-600 flex gap-3">
-                    <span>Переменные:</span>
+                  <div className="mt-3 text-xs text-neutral-600 flex gap-3 p-3 bg-neutral-50 rounded border">
+                    <span className="font-semibold">Переменные подсвечены:</span>
                     <span className="bg-yellow-50 border border-yellow-200 px-2 py-1 rounded">[ФИО]</span>
                     <span className="bg-blue-50 border border-blue-200 px-2 py-1 rounded">[Телефон]</span>
                     <span className="bg-green-50 border border-green-200 px-2 py-1 rounded">[Email]</span>
