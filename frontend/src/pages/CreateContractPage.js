@@ -136,41 +136,19 @@ const CreateContractPage = () => {
     }
   };
 
-  const saveSelection = () => {
-    const sel = window.getSelection();
-    if (sel.rangeCount > 0) {
-      return sel.getRangeAt(0);
-    }
-    return null;
-  };
-
-  const restoreSelection = (range) => {
-    if (range) {
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(range);
-    }
-  };
-
   const executeCommand = (command, value = null) => {
-    const range = saveSelection();
+    editorRef.current?.focus();
     document.execCommand(command, false, value);
-    if (range) {
-      setTimeout(() => restoreSelection(range), 0);
-    }
   };
 
   const changeFontSize = (size) => {
-    const range = saveSelection();
-    executeCommand('fontSize', '7');
+    editorRef.current?.focus();
+    document.execCommand('fontSize', '7');
     const fontElements = editorRef.current?.querySelectorAll('font[size="7"]');
     fontElements?.forEach(el => {
       el.removeAttribute('size');
       el.style.fontSize = size;
     });
-    if (range) {
-      setTimeout(() => restoreSelection(range), 0);
-    }
   };
 
   const insertVariable = (variable) => {
