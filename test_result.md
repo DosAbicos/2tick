@@ -111,11 +111,14 @@ backend:
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "Установлен poppler-utils через apt-get. Библиотека pdf2image теперь может конвертировать PDF в изображения. Проверено что pdf2image импортируется без ошибок."
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. poppler-utils работает корректно: 1) PDF документы успешно загружаются через /api/sign/{contract_id}/upload-document, 2) PDF конвертируется в JPEG изображение с помощью pdf2image, 3) Filename изменяется с .pdf на .jpg, 4) Конвертированное изображение сохраняется в base64 формате в signature.document_upload, 5) Конвертация происходит без ошибок poppler."
   
   - task: "Поддержка HTML форматирования в контрактах"
     implemented: true
