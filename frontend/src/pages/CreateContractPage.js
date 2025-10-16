@@ -14,6 +14,7 @@ import { IMaskInput } from 'react-imask';
 import ReactSummernote from 'react-summernote';
 import 'react-summernote/dist/react-summernote.css';
 import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
