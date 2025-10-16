@@ -315,6 +315,31 @@ def html_to_text_for_pdf(html_content: str) -> str:
     
     return text.strip()
 
+def replace_placeholders_in_content(content: str, contract: dict) -> str:
+    """Replace placeholders in contract content with actual values"""
+    # Get values from contract or use placeholders
+    signer_name = contract.get('signer_name', '[ФИО Нанимателя]')
+    signer_phone = contract.get('signer_phone', '[Телефон]')
+    signer_email = contract.get('signer_email', '[Email]')
+    move_in_date = contract.get('move_in_date', '[Дата заселения]')
+    move_out_date = contract.get('move_out_date', '[Дата выселения]')
+    property_address = contract.get('property_address', '[Адрес квартиры]')
+    rent_amount = contract.get('rent_amount', '[Цена в сутки]')
+    days_count = contract.get('days_count', '[Количество суток]')
+    
+    # Replace placeholders
+    content = content.replace('[ФИО Нанимателя]', signer_name or '[ФИО Нанимателя]')
+    content = content.replace('[ФИО]', signer_name or '[ФИО]')
+    content = content.replace('[Телефон]', signer_phone or '[Телефон]')
+    content = content.replace('[Email]', signer_email or '[Email]')
+    content = content.replace('[Дата заселения]', move_in_date or '[Дата заселения]')
+    content = content.replace('[Дата выселения]', move_out_date or '[Дата выселения]')
+    content = content.replace('[Адрес квартиры]', property_address or '[Адрес квартиры]')
+    content = content.replace('[Цена в сутки]', rent_amount or '[Цена в сутки]')
+    content = content.replace('[Количество суток]', days_count or '[Количество суток]')
+    
+    return content
+
 def verify_document_ocr(file_data: str) -> bool:
     """Mocked OCR verification for ID/passport"""
     logging.info(f"[MOCK OCR] Document verification passed")
