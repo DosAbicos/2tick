@@ -407,6 +407,16 @@ Email: ${templateData.tenant_email || '[Email]'}
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-neutral-900">{t('contract.create.title')}</h1>
           <p className="text-neutral-600 mt-2">Заполните поля справа, договор автоматически обновится слева</p>
+          <div className="mt-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={loadLastTemplate}
+              className="text-sm"
+            >
+              📋 Загрузить последний шаблон
+            </Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
