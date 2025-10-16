@@ -119,13 +119,10 @@ const CreateContractPage = () => {
       // If content was already saved, use it; otherwise generate new
       if (!isContentSaved) {
         const content = generateContractContent();
-        const highlightedContent = content
-          .replace(/\[ФИО\]/g, '<span style="background-color: #fef3c7; padding: 2px 6px; border-radius: 3px; font-weight: 600; color: #92400e;">[ФИО]</span>')
-          .replace(/\[Телефон\]/g, '<span style="background-color: #dbeafe; padding: 2px 6px; border-radius: 3px; font-weight: 600; color: #1e40af;">[Телефон]</span>')
-          .replace(/\[Email\]/g, '<span style="background-color: #dcfce7; padding: 2px 6px; border-radius: 3px; font-weight: 600; color: #166534;">[Email]</span>')
-          .replace(/\n/g, '<br>');
-        setManualContent(highlightedContent);
+        // Просто конвертируем переносы строк в <br>, БЕЗ подсветки
+        setManualContent(content.replace(/\n/g, '<br>'));
       }
+      // Если isContentSaved = true, manualContent уже содержит сохраненный контент
     }
     setManualEditMode(!manualEditMode);
   };
