@@ -114,6 +114,49 @@ const CreateContractPage = () => {
 
   const editorRef = useRef(null);
 
+  const loadLastTemplate = () => {
+    try {
+      const savedTemplate = localStorage.getItem('signify_last_template');
+      if (!savedTemplate) {
+        toast.info('Нет сохраненного шаблона');
+        return;
+      }
+      
+      const template = JSON.parse(savedTemplate);
+      
+      // Restore template data (excluding contract_number and contract_date)
+      setTemplateData(prev => ({
+        ...prev,
+        landlord_name: template.landlord_name || prev.landlord_name,
+        landlord_representative: template.landlord_representative || prev.landlord_representative,
+        tenant_name: template.tenant_name || '',
+        tenant_phone: template.tenant_phone || '',
+        tenant_email: template.tenant_email || '',
+        property_address: template.property_address || prev.property_address,
+        rent_amount: template.rent_amount || prev.rent_amount,
+        rent_currency: template.rent_currency || prev.rent_currency,
+        security_deposit: template.security_deposit || prev.security_deposit,
+        move_in_date: template.move_in_date || prev.move_in_date,
+        move_out_date: template.move_out_date || prev.move_out_date,
+        days_count: template.days_count || prev.days_count,
+        payment_method: template.payment_method || prev.payment_method,
+        contract_type: template.contract_type || prev.contract_type
+      }));
+      
+      // Restore saved content if exists
+      if (template.isContentSaved && template.savedContent) {
+        setManualContent(template.savedContent);
+        setIsContentSaved(true);
+      }
+      
+      const savedDate = new Date(template.savedAt).toLocaleString('ru-RU');
+      toast.success(`Шаблон загружен (сохранен ${savedDate})`);
+    } catch (error) {
+      console.error('Error loading template:', error);
+      toast.error('Ошибка при загрузке шаблона');
+    }
+  };
+
   const toggleEditMode = () => {
     if (!manualEditMode) {
       // If content was already saved, use it; otherwise generate new
