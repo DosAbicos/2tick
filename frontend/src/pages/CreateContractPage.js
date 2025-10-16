@@ -152,7 +152,7 @@ const CreateContractPage = () => {
   };
 
   const insertVariable = (variable) => {
-    const range = saveSelection();
+    editorRef.current?.focus();
     const colors = {
       '[ФИО]': { bg: '#fef3c7', color: '#92400e' },
       '[Телефон]': { bg: '#dbeafe', color: '#1e40af' },
@@ -161,11 +161,6 @@ const CreateContractPage = () => {
     const style = colors[variable];
     const html = `<span style="background-color: ${style.bg}; padding: 2px 6px; border-radius: 3px; font-weight: 600; color: ${style.color};">${variable}</span>&nbsp;`;
     document.execCommand('insertHTML', false, html);
-    if (range) {
-      setTimeout(() => {
-        editorRef.current?.focus();
-      }, 0);
-    }
   };
 
   const handleTenantDocUpload = (e) => {
