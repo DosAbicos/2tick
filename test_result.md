@@ -326,7 +326,14 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Установка poppler-utils для PDF конвертации"
+    - "Поддержка HTML форматирования в контрактах"
+    - "PDF генерация и скачивание"
+    - "Мета-теги для мобильных устройств"
+    - "Rich Text Editor - сохранение HTML форматирования"
+    - "Отображение HTML контента при подписании"
+    - "Отображение HTML контента в деталях контракта"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
