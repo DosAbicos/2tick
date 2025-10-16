@@ -353,10 +353,7 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus:
-    - "Замена плейсхолдеров в PDF"
-    - "PDF генерация и скачивание"
-    - "Установка poppler-utils для PDF конвертации"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
