@@ -1134,7 +1134,9 @@ async def approve_signature(contract_id: str, current_user: dict = Depends(get_c
     logging.info(f"🔥 DEBUG: Contract email: {contract.get('signer_email')}")
     
     # Generate PDF for email
+    print(f"🔥 DEBUG: Starting PDF generation...")
     try:
+        print(f"🔥 DEBUG: Inside try block")
         # Register fonts
         try:
             dejavu_path = '/usr/share/fonts/truetype/dejavu/'
