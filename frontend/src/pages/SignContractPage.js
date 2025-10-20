@@ -133,6 +133,43 @@ const SignContractPage = () => {
     }
   };
 
+  const handleRequestCallOTP = async () => {
+    setRequestingCall(true);
+    try {
+      const response = await axios.post(`${API}/sign/${id}/request-call-otp`);
+      toast.success(response.data.message);
+      setCallHint(response.data.hint);
+      setVerificationMethod('call');
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Ошибка при звонке');
+    } finally {
+      setRequestingCall(false);
+    }
+  };
+
+  const handleVerifyCallOTP = async () => {
+    if (callCode.length !== 4) {
+      toast.error('Введите 4 цифры');
+      return;
+    }
+    
+    setVerifying(true);
+    try {
+      const response = await axios.post(`${API}/sign/${id}/verify-call-otp`, {
+        code: callCode
+      });
+      
+      if (response.data.verified) {
+        toast.success('Верификация успешна!');
+        setStep(4); // Move to success
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Неверный код');
+    } finally {
+      setVerifying(false);
+    }
+  };
+
   const handleVerifyOTP = async () => {
     if (otpValue.length !== 6) {
       toast.error('Please enter 6-digit code');
