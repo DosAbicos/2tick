@@ -1007,6 +1007,45 @@ async def request_call_otp(contract_id: str):
         }
 
 @api_router.post("/sign/{contract_id}/verify-call-otp")
+async def verify_call_otp(contract_id: str, data: dict):
+    """Verify the last 4 digits entered by user"""
+    entered_code = data.get('code', '').strip()
+    
+    if not entered_code or len(entered_code) != 4:
+        raise HTTPException(status_code=400, detail="Введите 4 цифры")
+    
+    # Find verification record
+    verification = await db.verifications.find_one({
+        "contract_id": contract_id,
+        "method": "call",
+        "verified": False
+    })
+    
+    if not verification:
+        raise HTTPException(status_code=404, detail="Verification not found")
+    
+    # Check if expired
+    expires_at = datetime.fromisoformat(verification['expires_at'])
+    if datetime.now(timezone.utc) > expires_at:
+        raise HTTPException(status_code=400, detail="Код истек. Запросите новый звонок.")
+    
+    # Verify code
+    expected_code = verification['expected_code']
+    if entered_code == expected_code:
+        # Mark as verified
+        await db.verifications.update_one(
+            {"_id": verification['_id']},
+            {"$set": {"verified": True}}
+        )
+        
+        logging.info(f"✅ Call OTP verified for contract {contract_id}")
+        
+        return {"message": "Верификация успешна!", "verified": True}
+    else:
+        logging.warning(f"❌ Wrong code entered: {entered_code}, expected: {expected_code}")
+        raise HTTPException(status_code=400, detail="Неверный код. Проверьте последние 4 цифры номера.")
+
+@api_router.post("/sign/{contract_id}/verify-otp")
 async def verify_otp(contract_id: str, otp_data: OTPVerify):
     # Find signature
     signature = await db.signatures.find_one({"contract_id": contract_id})
