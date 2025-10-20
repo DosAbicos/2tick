@@ -306,6 +306,8 @@ def make_call(phone: str, code: str) -> bool:
 
 def send_email(to_email: str, subject: str, body: str, attachment: bytes = None, filename: str = None) -> bool:
     """Send email via SendGrid with optional PDF attachment"""
+    logging.info(f"📧 Attempting to send email to {to_email}, subject: {subject}")
+    
     if not SENDGRID_API_KEY:
         logging.warning("[MOCK EMAIL] SendGrid not configured")
         logging.info(f"[MOCK EMAIL] To: {to_email} | Subject: {subject}")
@@ -318,6 +320,9 @@ def send_email(to_email: str, subject: str, body: str, attachment: bytes = None,
         from sendgrid.helpers.mail import Mail, Attachment, FileContent, FileName, FileType, Disposition
         import base64
         
+        logging.info(f"📧 SendGrid API Key present: {SENDGRID_API_KEY[:10]}...")
+        logging.info(f"📧 Sender Email: {SENDER_EMAIL}")
+        
         # Create email message
         message = Mail(
             from_email=SENDER_EMAIL,
@@ -329,6 +334,7 @@ def send_email(to_email: str, subject: str, body: str, attachment: bytes = None,
         # Add PDF attachment if provided
         if attachment and filename:
             encoded_file = base64.b64encode(attachment).decode()
+            logging.info(f"📎 Attachment size: {len(attachment)} bytes, filename: {filename}")
             
             attached_file = Attachment(
                 FileContent(encoded_file),
@@ -342,15 +348,20 @@ def send_email(to_email: str, subject: str, body: str, attachment: bytes = None,
         sg = SendGridAPIClient(SENDGRID_API_KEY)
         response = sg.send(message)
         
+        logging.info(f"📧 SendGrid Response Status: {response.status_code}")
+        logging.info(f"📧 SendGrid Response Headers: {response.headers}")
+        
         if response.status_code in [200, 202]:
             logging.info(f"✅ Email sent successfully to {to_email}")
             return True
         else:
-            logging.error(f"❌ Email failed: {response.status_code}")
+            logging.error(f"❌ Email failed: {response.status_code}, body: {response.body}")
             return False
             
     except Exception as e:
         logging.error(f"❌ SendGrid error: {str(e)}")
+        import traceback
+        logging.error(traceback.format_exc())
         return False
 
 def html_to_text_for_pdf(html_content: str) -> str:
