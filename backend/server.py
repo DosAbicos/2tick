@@ -1028,19 +1028,67 @@ async def approve_signature(contract_id: str, current_user: dict = Depends(get_c
         
         # Send email to signer
         if contract.get('signer_email'):
-            subject = f"Подписанный договор: {contract['title']}"
+            subject = f"✅ Подписанный договор: {contract['title']}"
+            
+            # Create beautiful HTML email
             body = f"""
-Здравствуйте, {contract['signer_name']}!
-
-Ваш договор "{contract['title']}" был успешно подписан и утвержден.
-
-Во вложении находится подписанный договор в формате PDF.
-
-Код-ключ вашей подписи: {signature.get('signature_hash', 'N/A')}
-Код-ключ наймодателя: {landlord_signature_hash}
-
-С уважением,
-Signify KZ
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+        .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+        .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+        .content {{ background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; }}
+        .footer {{ background: #f8f9fa; padding: 20px; text-align: center; border-radius: 0 0 10px 10px; font-size: 12px; color: #666; }}
+        .signature-box {{ background: #f0f4ff; padding: 15px; border-left: 4px solid #667eea; margin: 20px 0; }}
+        .button {{ display: inline-block; background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 10px 0; }}
+        h2 {{ color: #667eea; }}
+        .code {{ font-family: monospace; font-size: 18px; font-weight: bold; color: #764ba2; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎉 Договор успешно подписан!</h1>
+        </div>
+        
+        <div class="content">
+            <h2>Здравствуйте, {contract['signer_name']}!</h2>
+            
+            <p>Поздравляем! Ваш договор <strong>"{contract['title']}"</strong> был успешно подписан и утвержден наймодателем.</p>
+            
+            <p>Во вложении к этому письму находится подписанный договор в формате PDF.</p>
+            
+            <div class="signature-box">
+                <h3>📝 Информация о подписях:</h3>
+                <p><strong>Код-ключ вашей подписи:</strong><br>
+                <span class="code">{signature.get('signature_hash', 'N/A')}</span></p>
+                
+                <p><strong>Код-ключ наймодателя:</strong><br>
+                <span class="code">{landlord_signature_hash}</span></p>
+                
+                <p style="font-size: 12px; color: #666; margin-top: 15px;">
+                Эти ключи подтверждают подлинность подписей и могут быть использованы для проверки договора.
+                </p>
+            </div>
+            
+            <p><strong>Дата подписания:</strong> {datetime.now().strftime('%d.%m.%Y')}</p>
+            
+            <p style="margin-top: 30px;">Если у вас возникли вопросы, пожалуйста, свяжитесь с наймодателем или нашей службой поддержки.</p>
+        </div>
+        
+        <div class="footer">
+            <p>С уважением,<br><strong>Команда Signify KZ</strong></p>
+            <p style="margin-top: 10px;">
+                Платформа для дистанционного подписания договоров<br>
+                <a href="https://signify-kz.com" style="color: #667eea;">signify-kz.com</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
             """
             
             send_email(
