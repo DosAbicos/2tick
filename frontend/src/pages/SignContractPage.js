@@ -403,54 +403,114 @@ const SignContractPage = () => {
                 <div className="text-center">
                   <Phone className="h-12 w-12 text-primary mx-auto mb-4" />
                   <h3 className="text-lg font-semibold mb-2">{t('signing.verify_phone')}</h3>
-                  <p className="text-neutral-600 text-sm mb-4">{t('signing.enter_otp')}</p>
-                  {mockOtp && (
+                  <p className="text-neutral-600 text-sm mb-4">
+                    {verificationMethod === 'sms' ? t('signing.enter_otp') : 'Введите последние 4 цифры входящего номера'}
+                  </p>
+                  {mockOtp && verificationMethod === 'sms' && (
                     <div className="bg-amber-50 p-3 rounded-lg border border-amber-200 mb-4">
                       <p className="text-sm text-amber-900">Mock OTP Code: <strong>{mockOtp}</strong></p>
                     </div>
                   )}
+                  {callHint && verificationMethod === 'call' && (
+                    <div className="bg-blue-50 p-3 rounded-lg border border-blue-200 mb-4">
+                      <p className="text-sm text-blue-900">{callHint}</p>
+                    </div>
+                  )}
                 </div>
                 
-                <div className="flex justify-center">
-                  <InputOTP
-                    maxLength={6}
-                    value={otpValue}
-                    onChange={setOtpValue}
-                    data-testid="otp-input"
-                  >
-                    <InputOTPGroup>
-                      {[0, 1, 2, 3, 4, 5].map((index) => (
-                        <InputOTPSlot key={index} index={index} />
-                      ))}
-                    </InputOTPGroup>
-                  </InputOTP>
-                </div>
-                
-                <div className="flex justify-between items-center">
-                  <button
-                    onClick={() => handleRequestOTP('sms')}
-                    className="text-sm text-primary hover:underline"
-                    data-testid="resend-otp-link"
-                  >
-                    {t('signing.resend')}
-                  </button>
-                  <button
-                    onClick={() => handleRequestOTP('call')}
-                    className="text-sm text-neutral-600 hover:underline"
-                    data-testid="call-option-link"
-                  >
-                    Call me instead
-                  </button>
-                </div>
-                
-                <Button
-                  onClick={handleVerifyOTP}
-                  disabled={verifying || otpValue.length !== 6}
-                  className="w-full"
-                  data-testid="otp-verify-button"
-                >
-                  {verifying ? t('common.loading') : t('signing.verify')}
-                </Button>
+                {verificationMethod === 'sms' ? (
+                  <>
+                    <div className="flex justify-center">
+                      <InputOTP
+                        maxLength={6}
+                        value={otpValue}
+                        onChange={setOtpValue}
+                        data-testid="otp-input"
+                      >
+                        <InputOTPGroup>
+                          {[0, 1, 2, 3, 4, 5].map((index) => (
+                            <InputOTPSlot key={index} index={index} />
+                          ))}
+                        </InputOTPGroup>
+                      </InputOTP>
+                    </div>
+                    
+                    <div className="flex justify-between items-center">
+                      <button
+                        onClick={() => handleRequestOTP('sms')}
+                        className="text-sm text-primary hover:underline"
+                        data-testid="resend-otp-link"
+                      >
+                        {t('signing.resend')}
+                      </button>
+                      <button
+                        onClick={handleRequestCallOTP}
+                        disabled={requestingCall}
+                        className="text-sm text-neutral-600 hover:underline flex items-center gap-1"
+                        data-testid="call-option-link"
+                      >
+                        <Phone className="h-4 w-4" />
+                        {requestingCall ? 'Звоним...' : 'Позвонить мне'}
+                      </button>
+                    </div>
+                    
+                    <Button
+                      onClick={handleVerifyOTP}
+                      disabled={verifying || otpValue.length !== 6}
+                      className="w-full"
+                      data-testid="otp-verify-button"
+                    >
+                      {verifying ? t('common.loading') : t('signing.verify')}
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-2">
+                          Последние 4 цифры номера
+                        </label>
+                        <input
+                          type="text"
+                          maxLength={4}
+                          value={callCode}
+                          onChange={(e) => setCallCode(e.target.value.replace(/\D/g, ''))}
+                          className="w-full px-4 py-3 text-center text-2xl tracking-widest border rounded-lg"
+                          placeholder="_ _ _ _"
+                          data-testid="call-code-input"
+                        />
+                      </div>
+                      
+                      <div className="flex justify-between items-center text-sm">
+                        <button
+                          onClick={() => {
+                            setVerificationMethod('sms');
+                            setCallCode('');
+                          }}
+                          className="text-primary hover:underline"
+                        >
+                          ← SMS вместо звонка
+                        </button>
+                        <button
+                          onClick={handleRequestCallOTP}
+                          disabled={requestingCall}
+                          className="text-neutral-600 hover:underline"
+                        >
+                          {requestingCall ? 'Звоним...' : 'Перезвонить'}
+                        </button>
+                      </div>
+                      
+                      <Button
+                        onClick={handleVerifyCallOTP}
+                        disabled={verifying || callCode.length !== 4}
+                        className="w-full"
+                        data-testid="call-verify-button"
+                      >
+                        {verifying ? 'Проверяем...' : 'Подтвердить'}
+                      </Button>
+                    </div>
+                  </>
+                )}
               </motion.div>
             )}
 
