@@ -303,11 +303,53 @@ def make_call(phone: str, code: str) -> bool:
     return True
 
 def send_email(to_email: str, subject: str, body: str, attachment: bytes = None, filename: str = None) -> bool:
-    """Mocked email sending"""
-    logging.info(f"[MOCK EMAIL] To: {to_email} | Subject: {subject}")
-    if attachment:
-        logging.info(f"[MOCK EMAIL] Attachment: {filename} ({len(attachment)} bytes)")
-    return True
+    """Send email via SendGrid with optional PDF attachment"""
+    if not SENDGRID_API_KEY:
+        logging.warning("[MOCK EMAIL] SendGrid not configured")
+        logging.info(f"[MOCK EMAIL] To: {to_email} | Subject: {subject}")
+        if attachment:
+            logging.info(f"[MOCK EMAIL] Attachment: {filename} ({len(attachment)} bytes)")
+        return True
+    
+    try:
+        from sendgrid import SendGridAPIClient
+        from sendgrid.helpers.mail import Mail, Attachment, FileContent, FileName, FileType, Disposition
+        import base64
+        
+        # Create email message
+        message = Mail(
+            from_email=SENDER_EMAIL,
+            to_emails=to_email,
+            subject=subject,
+            html_content=body
+        )
+        
+        # Add PDF attachment if provided
+        if attachment and filename:
+            encoded_file = base64.b64encode(attachment).decode()
+            
+            attached_file = Attachment(
+                FileContent(encoded_file),
+                FileName(filename),
+                FileType('application/pdf'),
+                Disposition('attachment')
+            )
+            message.attachment = attached_file
+        
+        # Send email
+        sg = SendGridAPIClient(SENDGRID_API_KEY)
+        response = sg.send(message)
+        
+        if response.status_code in [200, 202]:
+            logging.info(f"✅ Email sent successfully to {to_email}")
+            return True
+        else:
+            logging.error(f"❌ Email failed: {response.status_code}")
+            return False
+            
+    except Exception as e:
+        logging.error(f"❌ SendGrid error: {str(e)}")
+        return False
 
 def html_to_text_for_pdf(html_content: str) -> str:
     """Convert HTML content to text while preserving basic formatting"""
