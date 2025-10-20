@@ -28,6 +28,12 @@ const SignContractPage = () => {
   const [mockOtp, setMockOtp] = useState('');
   const [signatureHash, setSignatureHash] = useState('');
   
+  // Call OTP states
+  const [verificationMethod, setVerificationMethod] = useState('sms'); // 'sms' or 'call'
+  const [callCode, setCallCode] = useState('');
+  const [callHint, setCallHint] = useState('');
+  const [requestingCall, setRequestingCall] = useState(false);
+  
   // Signer info form
   const [signerInfo, setSignerInfo] = useState({
     name: '',
