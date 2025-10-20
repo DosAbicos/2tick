@@ -1044,7 +1044,7 @@ async def verify_call_otp(contract_id: str, data: dict):
     # Verify code
     expected_code = verification['expected_code']
     if entered_code == expected_code:
-        # Mark as verified
+        # Mark verification as verified
         await db.verifications.update_one(
             {"_id": verification['_id']},
             {"$set": {"verified": True}}
@@ -1052,7 +1052,39 @@ async def verify_call_otp(contract_id: str, data: dict):
         
         logging.info(f"✅ Call OTP verified for contract {contract_id}")
         
-        return {"message": "Верификация успешна!", "verified": True}
+        # Now SIGN the contract (same as SMS OTP)
+        # Find signature
+        signature = await db.signatures.find_one({"contract_id": contract_id})
+        if not signature:
+            raise HTTPException(status_code=404, detail="Signature not found")
+        
+        # Generate unique signature hash
+        signer_phone = signature.get('signer_phone', verification['phone'])
+        signature_data = f"{contract_id}-{signer_phone}-{datetime.now(timezone.utc).isoformat()}"
+        signature_hash = hashlib.sha256(signature_data.encode()).hexdigest()[:16].upper()
+        
+        # Mark signature as verified and signed
+        await db.signatures.update_one(
+            {"contract_id": contract_id},
+            {"$set": {
+                "verified": True,
+                "signed_at": datetime.now(timezone.utc).isoformat(),
+                "signature_hash": signature_hash
+            }}
+        )
+        
+        # Update contract status to pending-signature (waiting for landlord approval)
+        await db.contracts.update_one(
+            {"id": contract_id},
+            {"$set": {
+                "status": "pending-signature",
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }}
+        )
+        
+        await log_audit("signature_verified", contract_id=contract_id)
+        
+        return {"message": "Договор успешно подписан!", "verified": True, "signature_hash": signature_hash}
     else:
         logging.warning(f"❌ Wrong code entered: {entered_code}, expected: {expected_code}")
         raise HTTPException(status_code=400, detail="Неверный код. Проверьте последние 4 цифры номера.")
