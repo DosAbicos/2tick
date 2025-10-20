@@ -306,15 +306,18 @@ def make_call(phone: str, code: str) -> bool:
 
 def send_email(to_email: str, subject: str, body: str, attachment: bytes = None, filename: str = None) -> bool:
     """Send email via SendGrid with optional PDF attachment"""
+    print(f"🔥 DEBUG send_email: API Key present: {bool(SENDGRID_API_KEY)}, length: {len(SENDGRID_API_KEY) if SENDGRID_API_KEY else 0}")
     logging.info(f"📧 Attempting to send email to {to_email}, subject: {subject}")
     
     if not SENDGRID_API_KEY:
+        print(f"🔥 DEBUG: MOCK MODE - API KEY IS EMPTY!")
         logging.warning("[MOCK EMAIL] SendGrid not configured")
         logging.info(f"[MOCK EMAIL] To: {to_email} | Subject: {subject}")
         if attachment:
             logging.info(f"[MOCK EMAIL] Attachment: {filename} ({len(attachment)} bytes)")
         return True
     
+    print(f"🔥 DEBUG: Real SendGrid mode, attempting to send...")
     try:
         from sendgrid import SendGridAPIClient
         from sendgrid.helpers.mail import Mail, Attachment, FileContent, FileName, FileType, Disposition
