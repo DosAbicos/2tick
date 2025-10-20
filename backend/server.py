@@ -1217,8 +1217,11 @@ async def approve_signature(contract_id: str, current_user: dict = Depends(get_c
                 attachment=pdf_bytes,
                 filename=f"contract-{contract_id}.pdf"
             )
+            logging.info(f"✅ Email sent to {contract['signer_email']} with PDF attachment")
     except Exception as e:
-        logging.error(f"Error sending email: {str(e)}")
+        logging.error(f"❌ Error generating PDF or sending email: {str(e)}")
+        import traceback
+        logging.error(traceback.format_exc())
     
     return {"message": "Contract approved and signed", "landlord_signature_hash": landlord_signature_hash}
 
