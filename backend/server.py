@@ -1229,17 +1229,21 @@ async def approve_signature(contract_id: str, current_user: dict = Depends(get_c
 </html>
             """
             
-            send_email(
+            print(f"🔥 DEBUG: About to call send_email to {contract['signer_email']}")
+            result = send_email(
                 to_email=contract['signer_email'],
                 subject=subject,
                 body=body,
                 attachment=pdf_bytes,
                 filename=f"contract-{contract_id}.pdf"
             )
+            print(f"🔥 DEBUG: send_email result: {result}")
             logging.info(f"✅ Email sent to {contract['signer_email']} with PDF attachment")
     except Exception as e:
+        print(f"🔥 DEBUG: Exception in try block: {str(e)}")
         logging.error(f"❌ Error generating PDF or sending email: {str(e)}")
         import traceback
+        print(traceback.format_exc())
         logging.error(traceback.format_exc())
     
     return {"message": "Contract approved and signed", "landlord_signature_hash": landlord_signature_hash}
