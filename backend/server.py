@@ -940,7 +940,7 @@ async def request_call_otp(contract_id: str):
         raise HTTPException(status_code=400, detail="Signer phone not found")
     
     # Normalize phone to E.164 format
-    phone = normalize_phone_number(phone)
+    phone = normalize_phone(phone)
     
     try:
         # Make call via Twilio - phone will ring and disconnect
