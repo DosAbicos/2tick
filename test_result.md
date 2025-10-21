@@ -105,6 +105,18 @@
 user_problem_statement: "Добавление двух новых функций: 1) Верификация через входящий звонок (пользователь вводит последние 4 цифры caller ID), 2) Автоматическая отправка подписанного договора на email через SendGrid после утверждения наймодателем."
 
 backend:
+  - task: "Новый Telegram Deep Link подход для верификации"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "🎉 НОВЫЙ TELEGRAM DEEP LINK ПОДХОД РАБОТАЕТ ИДЕАЛЬНО! Проведено полное тестирование нового механизма верификации: ✅ 1) GET /api/sign/{contract_id}/telegram-deep-link возвращает deep_link формата https://t.me/twotick_bot?start={contract_id}, ✅ 2) В БД создается запись verifications с contract_id и pre-generated otp_code, ✅ 3) Deep link содержит contract_id для передачи боту, ✅ 4) OTP создается при запросе deep link (НЕ при verify), ✅ 5) POST /api/sign/{contract_id}/verify-telegram-otp с полученным otp_code работает корректно, ✅ 6) verified=true и signature_hash создается успешно. ✅ ИСПРАВЛЕНА ПРОБЛЕМА: Обновлена логика verify_telegram_otp для обработки deep link записей без telegram_username. ✅ ВСЕ ТРЕБОВАНИЯ ВЫПОЛНЕНЫ: Deep link содержит contract_id, OTP pre-generated, verify работает с pre-generated OTP."
+
   - task: "Установка poppler-utils для PDF конвертации"
     implemented: true
     working: true
