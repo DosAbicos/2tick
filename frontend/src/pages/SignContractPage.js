@@ -492,6 +492,18 @@ const SignContractPage = () => {
                     
                     <div className="space-y-3">
                       <Button
+                        onClick={() => {
+                          setVerificationMethod('sms');
+                          handleRequestOTP('sms');
+                        }}
+                        disabled={smsCooldown > 0}
+                        className="w-full"
+                        variant="outline"
+                      >
+                        📱 {smsCooldown > 0 ? `SMS через ${smsCooldown}с` : 'SMS код (6 цифр)'}
+                      </Button>
+                      
+                      <Button
                         onClick={handleRequestCallOTP}
                         disabled={requestingCall || callCooldown > 0}
                         className="w-full"
@@ -515,10 +527,64 @@ const SignContractPage = () => {
                           className="w-full"
                           variant="outline"
                         >
-                          📱 {requestingTelegram ? 'Отправляем...' : telegramCooldown > 0 ? `Telegram через ${telegramCooldown}с` : 'Отправить код в Telegram'}
+                          💬 {requestingTelegram ? 'Отправляем...' : telegramCooldown > 0 ? `Telegram через ${telegramCooldown}с` : 'Отправить код в Telegram'}
                         </Button>
                       </div>
                     </div>
+                  </div>
+                ) : verificationMethod === 'sms' ? (
+                  // SMS verification
+                  <div className="space-y-4">
+                    <div className="text-center">
+                      <div className="text-4xl mb-4">📱</div>
+                      <h3 className="text-lg font-semibold mb-2">Введите SMS код</h3>
+                      {mockOtp && (
+                        <div className="bg-amber-50 p-3 rounded-lg border border-amber-200 mb-4">
+                          <p className="text-sm text-amber-900">Mock code: <strong>{mockOtp}</strong></p>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="flex justify-center">
+                      <InputOTP
+                        maxLength={6}
+                        value={otpValue}
+                        onChange={setOtpValue}
+                        data-testid="otp-input"
+                      >
+                        <InputOTPGroup>
+                          {[0, 1, 2, 3, 4, 5].map((index) => (
+                            <InputOTPSlot key={index} index={index} />
+                          ))}
+                        </InputOTPGroup>
+                      </InputOTP>
+                    </div>
+                    
+                    <div className="flex gap-3">
+                      <Button
+                        variant="outline"
+                        onClick={() => setVerificationMethod('')}
+                        className="flex-1"
+                      >
+                        ← Назад
+                      </Button>
+                      <Button
+                        onClick={handleVerifyOTP}
+                        disabled={verifying || otpValue.length !== 6}
+                        className="flex-1"
+                        data-testid="otp-verify-button"
+                      >
+                        {verifying ? 'Проверяем...' : 'Подтвердить'}
+                      </Button>
+                    </div>
+                    
+                    <button
+                      onClick={() => handleRequestOTP('sms')}
+                      disabled={smsCooldown > 0}
+                      className="w-full text-sm text-primary hover:underline disabled:opacity-50"
+                    >
+                      {smsCooldown > 0 ? `Повторить через ${smsCooldown}с` : 'Отправить код повторно'}
+                    </button>
                   </div>
                 ) : verificationMethod === 'call' ? (
                   // Call verification
