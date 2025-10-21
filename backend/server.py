@@ -547,6 +547,61 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
                 p.drawString(50, y_position, line.strip())
                 y_position -= 12
     
+    # Add ID document photo if available
+    if signature and signature.get('document_upload'):
+        y_position -= 40
+        if y_position < 300:  # Need space for image
+            p.showPage()
+            y_position = height - 50
+        
+        try:
+            p.setFont("DejaVu-Bold", 12)
+        except:
+            p.setFont("Helvetica-Bold", 12)
+        
+        p.drawString(50, y_position, "Удостоверение личности:")
+        y_position -= 20
+        
+        try:
+            # Decode base64 image
+            import base64
+            from PIL import Image
+            
+            doc_data = signature['document_upload']
+            if doc_data.startswith('data:'):
+                doc_data = doc_data.split(',')[1]
+            
+            image_bytes = base64.b64decode(doc_data)
+            image = Image.open(BytesIO(image_bytes))
+            
+            # Resize image to fit PDF (max 400px wide)
+            max_width = 400
+            ratio = max_width / float(image.size[0])
+            new_height = int(float(image.size[1]) * ratio)
+            
+            # Convert to RGB if needed
+            if image.mode != 'RGB':
+                image = image.convert('RGB')
+            
+            # Save to buffer
+            img_buffer = BytesIO()
+            image.save(img_buffer, format='JPEG')
+            img_buffer.seek(0)
+            
+            # Draw image
+            img_reader = ImageReader(img_buffer)
+            p.drawImage(img_reader, 50, y_position - new_height, width=max_width, height=new_height, preserveAspectRatio=True)
+            
+            y_position -= (new_height + 30)
+            
+            logging.info("✅ ID document image added to PDF")
+            
+        except Exception as e:
+            logging.error(f"Error adding document image to PDF: {str(e)}")
+            p.setFont("DejaVu", 9)
+            p.drawString(50, y_position, "Ошибка загрузки изображения")
+            y_position -= 30
+    
     # Signatures section
     if signature or landlord_signature_hash:
         y_position -= 40
