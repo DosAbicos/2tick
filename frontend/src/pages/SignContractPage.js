@@ -191,6 +191,47 @@ const SignContractPage = () => {
     }
   };
 
+  const handleRequestTelegramOTP = async () => {
+    if (telegramCooldown > 0 || !telegramUsername.trim()) return;
+    
+    setRequestingTelegram(true);
+    try {
+      const response = await axios.post(`${API}/sign/${id}/request-telegram-otp`, {
+        telegram_username: telegramUsername
+      });
+      toast.success(response.data.message);
+      setVerificationMethod('telegram');
+      setTelegramCooldown(60);
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Ошибка Telegram');
+    } finally {
+      setRequestingTelegram(false);
+    }
+  };
+
+  const handleVerifyTelegramOTP = async () => {
+    if (telegramCode.length !== 6) {
+      toast.error('Введите 6-значный код');
+      return;
+    }
+    
+    setVerifying(true);
+    try {
+      const response = await axios.post(`${API}/sign/${id}/verify-telegram-otp`, {
+        code: telegramCode
+      });
+      
+      if (response.data.verified) {
+        toast.success('Верификация успешна!');
+        setStep(4);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Неверный код');
+    } finally {
+      setVerifying(false);
+    }
+  };
+
   const handleVerifyCallOTP = async () => {
     if (callCode.length !== 4) {
       toast.error('Введите 4 цифры');
