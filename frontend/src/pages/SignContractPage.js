@@ -29,14 +29,20 @@ const SignContractPage = () => {
   const [signatureHash, setSignatureHash] = useState('');
   
   // Call OTP states
-  const [verificationMethod, setVerificationMethod] = useState('sms'); // 'sms' or 'call'
+  const [verificationMethod, setVerificationMethod] = useState(''); // 'sms', 'call', or 'telegram'
   const [callCode, setCallCode] = useState('');
   const [callHint, setCallHint] = useState('');
   const [requestingCall, setRequestingCall] = useState(false);
   
+  // Telegram states
+  const [telegramUsername, setTelegramUsername] = useState('');
+  const [telegramCode, setTelegramCode] = useState('');
+  const [requestingTelegram, setRequestingTelegram] = useState(false);
+  
   // Cooldown states
   const [smsCooldown, setSmsCooldown] = useState(0);
   const [callCooldown, setCallCooldown] = useState(0);
+  const [telegramCooldown, setTelegramCooldown] = useState(0);
   
   // Signer info form
   const [signerInfo, setSignerInfo] = useState({
