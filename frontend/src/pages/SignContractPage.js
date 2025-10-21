@@ -490,118 +490,134 @@ const SignContractPage = () => {
                 className="space-y-6"
                 data-testid="step-verify-otp"
               >
-                <div className="text-center">
-                  <Phone className="h-12 w-12 text-primary mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">{t('signing.verify_phone')}</h3>
-                  <p className="text-neutral-600 text-sm mb-4">
-                    {verificationMethod === 'sms' ? t('signing.enter_otp') : 'Введите последние 4 цифры входящего номера'}
-                  </p>
-                  {mockOtp && verificationMethod === 'sms' && (
-                    <div className="bg-amber-50 p-3 rounded-lg border border-amber-200 mb-4">
-                      <p className="text-sm text-amber-900">Mock OTP Code: <strong>{mockOtp}</strong></p>
-                    </div>
-                  )}
-                  {callHint && verificationMethod === 'call' && (
-                    <div className="bg-blue-50 p-3 rounded-lg border border-blue-200 mb-4">
-                      <p className="text-sm text-blue-900">{callHint}</p>
-                    </div>
-                  )}
-                </div>
-                
-                {verificationMethod === 'sms' ? (
-                  <>
-                    <div className="flex justify-center">
-                      <InputOTP
-                        maxLength={6}
-                        value={otpValue}
-                        onChange={setOtpValue}
-                        data-testid="otp-input"
-                      >
-                        <InputOTPGroup>
-                          {[0, 1, 2, 3, 4, 5].map((index) => (
-                            <InputOTPSlot key={index} index={index} />
-                          ))}
-                        </InputOTPGroup>
-                      </InputOTP>
-                    </div>
+                {!verificationMethod ? (
+                  // Method selection
+                  <div className="text-center">
+                    <Phone className="h-12 w-12 text-primary mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold mb-2">Выберите способ верификации</h3>
+                    <p className="text-neutral-600 text-sm mb-6">
+                      Как удобнее подтвердить подписание?
+                    </p>
                     
-                    <div className="flex justify-between items-center">
-                      <button
-                        onClick={() => handleRequestOTP('sms')}
-                        disabled={smsCooldown > 0}
-                        className="text-sm text-primary hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
-                        data-testid="resend-otp-link"
-                      >
-                        {smsCooldown > 0 ? `Повторить через ${smsCooldown}с` : t('signing.resend')}
-                      </button>
-                      <button
+                    <div className="space-y-3">
+                      <Button
                         onClick={handleRequestCallOTP}
                         disabled={requestingCall || callCooldown > 0}
-                        className="text-sm text-neutral-600 hover:underline flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
-                        data-testid="call-option-link"
+                        className="w-full"
+                        variant="outline"
                       >
-                        <Phone className="h-4 w-4" />
-                        {requestingCall ? 'Звоним...' : callCooldown > 0 ? `Позвонить через ${callCooldown}с` : 'Позвонить мне'}
-                      </button>
-                    </div>
-                    
-                    <Button
-                      onClick={handleVerifyOTP}
-                      disabled={verifying || otpValue.length !== 6}
-                      className="w-full"
-                      data-testid="otp-verify-button"
-                    >
-                      {verifying ? t('common.loading') : t('signing.verify')}
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-2">
-                          Последние 4 цифры номера
-                        </label>
+                        <Phone className="h-4 w-4 mr-2" />
+                        {requestingCall ? 'Звоним...' : callCooldown > 0 ? `Звонок через ${callCooldown}с` : 'Входящий звонок (4 цифры)'}
+                      </Button>
+                      
+                      <div className="space-y-2">
                         <input
                           type="text"
-                          maxLength={4}
-                          value={callCode}
-                          onChange={(e) => setCallCode(e.target.value.replace(/\D/g, ''))}
-                          className="w-full px-4 py-3 text-center text-2xl tracking-widest border rounded-lg"
-                          placeholder="_ _ _ _"
-                          data-testid="call-code-input"
+                          placeholder="Telegram username (без @)"
+                          value={telegramUsername}
+                          onChange={(e) => setTelegramUsername(e.target.value)}
+                          className="w-full px-4 py-2 border rounded-lg"
                         />
-                      </div>
-                      
-                      <div className="flex justify-between items-center text-sm">
-                        <button
-                          onClick={() => {
-                            setVerificationMethod('sms');
-                            setCallCode('');
-                          }}
-                          className="text-primary hover:underline"
+                        <Button
+                          onClick={handleRequestTelegramOTP}
+                          disabled={requestingTelegram || telegramCooldown > 0 || !telegramUsername.trim()}
+                          className="w-full"
+                          variant="outline"
                         >
-                          ← SMS вместо звонка
-                        </button>
-                        <button
-                          onClick={handleRequestCallOTP}
-                          disabled={requestingCall || callCooldown > 0}
-                          className="text-neutral-600 hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          {requestingCall ? 'Звоним...' : callCooldown > 0 ? `Перезвонить через ${callCooldown}с` : 'Перезвонить'}
-                        </button>
+                          📱 {requestingTelegram ? 'Отправляем...' : telegramCooldown > 0 ? `Telegram через ${telegramCooldown}с` : 'Отправить код в Telegram'}
+                        </Button>
                       </div>
-                      
+                    </div>
+                  </div>
+                ) : verificationMethod === 'call' ? (
+                  // Call verification
+                  <div className="space-y-4">
+                    <div className="text-center">
+                      <Phone className="h-12 w-12 text-primary mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold mb-2">Введите последние 4 цифры</h3>
+                      {callHint && (
+                        <div className="bg-blue-50 p-3 rounded-lg border border-blue-200 mb-4">
+                          <p className="text-sm text-blue-900">{callHint}</p>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <input
+                      type="text"
+                      maxLength={4}
+                      value={callCode}
+                      onChange={(e) => setCallCode(e.target.value.replace(/\D/g, ''))}
+                      className="w-full px-4 py-3 text-center text-2xl tracking-widest border rounded-lg"
+                      placeholder="_ _ _ _"
+                      data-testid="call-code-input"
+                    />
+                    
+                    <div className="flex gap-3">
+                      <Button
+                        variant="outline"
+                        onClick={() => setVerificationMethod('')}
+                        className="flex-1"
+                      >
+                        ← Назад
+                      </Button>
                       <Button
                         onClick={handleVerifyCallOTP}
                         disabled={verifying || callCode.length !== 4}
-                        className="w-full"
+                        className="flex-1"
                         data-testid="call-verify-button"
                       >
                         {verifying ? 'Проверяем...' : 'Подтвердить'}
                       </Button>
                     </div>
-                  </>
-                )}
+                  </div>
+                ) : verificationMethod === 'telegram' ? (
+                  // Telegram verification
+                  <div className="space-y-4">
+                    <div className="text-center">
+                      <div className="text-4xl mb-4">📱</div>
+                      <h3 className="text-lg font-semibold mb-2">Введите код из Telegram</h3>
+                      <p className="text-sm text-neutral-600 mb-4">
+                        Код отправлен в @{telegramUsername}
+                      </p>
+                    </div>
+                    
+                    <input
+                      type="text"
+                      maxLength={6}
+                      value={telegramCode}
+                      onChange={(e) => setTelegramCode(e.target.value.replace(/\D/g, ''))}
+                      className="w-full px-4 py-3 text-center text-2xl tracking-widest border rounded-lg"
+                      placeholder="_ _ _ _ _ _"
+                      data-testid="telegram-code-input"
+                    />
+                    
+                    <div className="flex gap-3">
+                      <Button
+                        variant="outline"
+                        onClick={() => setVerificationMethod('')}
+                        className="flex-1"
+                      >
+                        ← Назад
+                      </Button>
+                      <Button
+                        onClick={handleVerifyTelegramOTP}
+                        disabled={verifying || telegramCode.length !== 6}
+                        className="flex-1"
+                        data-testid="telegram-verify-button"
+                      >
+                        {verifying ? 'Проверяем...' : 'Подтвердить'}
+                      </Button>
+                    </div>
+                    
+                    <button
+                      onClick={handleRequestTelegramOTP}
+                      disabled={telegramCooldown > 0}
+                      className="w-full text-sm text-primary hover:underline disabled:opacity-50"
+                    >
+                      {telegramCooldown > 0 ? `Повторить через ${telegramCooldown}с` : 'Отправить код повторно'}
+                    </button>
+                  </div>
+                ) : null}}
               </motion.div>
             )}
 
