@@ -58,6 +58,10 @@ SMTP_PORT = int(os.environ.get('SMTP_PORT', '25'))
 SMTP_USER = os.environ.get('SMTP_USER', 'noreply@2tick.kz')
 SMTP_PASSWORD = os.environ.get('SMTP_PASSWORD', '')
 
+# Telegram Bot Configuration
+TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
+TELEGRAM_BOT_USERNAME = os.environ.get('TELEGRAM_BOT_USERNAME', 'twotick_bot')
+
 # Initialize Twilio client
 twilio_client = None
 if TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN:
