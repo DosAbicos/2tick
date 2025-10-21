@@ -1383,32 +1383,10 @@ async def approve_signature(contract_id: str, current_user: dict = Depends(get_c
     print(f"🔥 DEBUG: Starting PDF generation...")
     try:
         print(f"🔥 DEBUG: Inside try block")
-        # Register fonts
-        try:
-            dejavu_path = '/usr/share/fonts/truetype/dejavu/'
-            pdfmetrics.registerFont(TTFont('DejaVu', dejavu_path + 'DejaVuSans.ttf'))
-            pdfmetrics.registerFont(TTFont('DejaVu-Bold', dejavu_path + 'DejaVuSans-Bold.ttf'))
-            pdfmetrics.registerFont(TTFont('DejaVu-Mono', dejavu_path + 'DejaVuSansMono.ttf'))
-        except:
-            pass
         
-        # Generate PDF (simplified version for email)
-        pdf_buffer = BytesIO()
-        p = canvas.Canvas(pdf_buffer, pagesize=A4)
-        width, height = A4
-        
-        try:
-            p.setFont("DejaVu-Bold", 16)
-        except:
-            p.setFont("Helvetica-Bold", 16)
-        
-        p.drawString(50, height - 50, contract['title'])
-        p.setFont("DejaVu", 10) if 'DejaVu' in pdfmetrics.getRegisteredFontNames() else p.setFont("Helvetica", 10)
-        p.drawString(50, height - 80, f"Договор подписан {datetime.now().strftime('%d.%m.%Y')}")
-        
-        p.save()
-        pdf_buffer.seek(0)
-        pdf_bytes = pdf_buffer.getvalue()
+        # Use the centralized PDF generation function
+        pdf_bytes = generate_contract_pdf(contract, signature, landlord_signature_hash)
+        print(f"🔥 DEBUG: PDF generated, size: {len(pdf_bytes)} bytes")
         
         # Send email to signer
         if contract.get('signer_email'):
