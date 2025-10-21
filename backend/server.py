@@ -1568,18 +1568,27 @@ async def approve_signature(contract_id: str, current_user: dict = Depends(get_c
 # ===== PDF GENERATION =====
 @api_router.get("/contracts/{contract_id}/download-pdf")
 async def download_pdf(contract_id: str, current_user: dict = Depends(get_current_user)):
+    print(f"🔥 DEBUG: download_pdf called for contract {contract_id}")
+    
     contract = await db.contracts.find_one({"id": contract_id})
     if not contract:
+        print(f"❌ Contract not found: {contract_id}")
         raise HTTPException(status_code=404, detail="Contract not found")
     
+    print(f"✅ Contract found: {contract['title']}")
+    
     signature = await db.signatures.find_one({"contract_id": contract_id})
+    print(f"✅ Signature: {bool(signature)}")
     
     # Get landlord signature hash if contract is signed/approved
     landlord_signature_hash = contract.get('landlord_signature_hash')
+    print(f"✅ Landlord hash: {bool(landlord_signature_hash)}")
     
     # Generate PDF using centralized function
     try:
+        print(f"🔥 Generating PDF...")
         pdf_bytes = generate_contract_pdf(contract, signature, landlord_signature_hash)
+        print(f"✅ PDF generated: {len(pdf_bytes)} bytes")
         
         return Response(
             content=pdf_bytes,
@@ -1587,8 +1596,10 @@ async def download_pdf(contract_id: str, current_user: dict = Depends(get_curren
             headers={"Content-Disposition": f"attachment; filename=contract-{contract_id}.pdf"}
         )
     except Exception as e:
+        print(f"❌ PDF generation error: {str(e)}")
         logging.error(f"Error generating PDF: {str(e)}")
         import traceback
+        print(traceback.format_exc())
         logging.error(traceback.format_exc())
         raise HTTPException(status_code=500, detail=f"Error generating PDF: {str(e)}")
 
