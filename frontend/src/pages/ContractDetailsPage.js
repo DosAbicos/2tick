@@ -32,6 +32,7 @@ const ContractDetailsPage = () => {
   const [signature, setSignature] = useState(null);
   const [loading, setLoading] = useState(true);
   const [sendingContract, setSendingContract] = useState(false);
+  const [approving, setApproving] = useState(false);
   const token = localStorage.getItem('token');
 
   useEffect(() => {
