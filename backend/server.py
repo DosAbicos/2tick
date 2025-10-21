@@ -312,28 +312,100 @@ def make_call(phone: str, code: str) -> bool:
     return True
 
 def send_email(to_email: str, subject: str, body: str, attachment: bytes = None, filename: str = None) -> bool:
-    """Send email via SendGrid with optional PDF attachment"""
-    print(f"🔥 DEBUG send_email: API Key present: {bool(SENDGRID_API_KEY)}, length: {len(SENDGRID_API_KEY) if SENDGRID_API_KEY else 0}")
+    """Send email via SMTP (primary) or SendGrid (fallback)"""
+    print(f"🔥 DEBUG send_email: to={to_email}, USE_SMTP={USE_SMTP}")
     logging.info(f"📧 Attempting to send email to {to_email}, subject: {subject}")
     
+    # Try SMTP first if enabled
+    if USE_SMTP and SMTP_HOST and SMTP_PASSWORD:
+        print(f"🔥 DEBUG: Using SMTP mode - {SMTP_HOST}:{SMTP_PORT}")
+        try:
+            import smtplib
+            from email.mime.multipart import MIMEMultipart
+            from email.mime.text import MIMEText
+            from email.mime.application import MIMEApplication
+            
+            # Create message
+            msg = MIMEMultipart()
+            msg['From'] = SENDER_EMAIL
+            msg['To'] = to_email
+            msg['Subject'] = subject
+            
+            # Attach HTML body
+            msg.attach(MIMEText(body, 'html', 'utf-8'))
+            
+            # Attach PDF if provided
+            if attachment and filename:
+                pdf_attachment = MIMEApplication(attachment, _subtype='pdf')
+                pdf_attachment.add_header('Content-Disposition', 'attachment', filename=filename)
+                msg.attach(pdf_attachment)
+                print(f"📎 PDF attached: {filename} ({len(attachment)} bytes)")
+            
+            # Try different ports and methods
+            smtp_sent = False
+            errors = []
+            
+            # Try port 587 with STARTTLS first (most reliable)
+            for port, use_tls in [(587, True), (SMTP_PORT, False), (465, 'SSL')]:
+                try:
+                    print(f"🔥 Trying SMTP port {port}, TLS={use_tls}")
+                    
+                    if use_tls == 'SSL':
+                        # SSL connection (port 465)
+                        import ssl
+                        context = ssl.create_default_context()
+                        server = smtplib.SMTP_SSL(SMTP_HOST, port, context=context, timeout=10)
+                    else:
+                        # Regular connection
+                        server = smtplib.SMTP(SMTP_HOST, port, timeout=10)
+                        server.ehlo()
+                        
+                        if use_tls:
+                            # STARTTLS (port 587)
+                            server.starttls()
+                            server.ehlo()
+                    
+                    # Login and send
+                    server.login(SMTP_USER, SMTP_PASSWORD)
+                    server.send_message(msg)
+                    server.quit()
+                    
+                    print(f"✅ SMTP email sent successfully via port {port}!")
+                    logging.info(f"✅ SMTP email sent to {to_email}")
+                    smtp_sent = True
+                    break
+                    
+                except Exception as e:
+                    error_msg = f"Port {port}: {str(e)}"
+                    errors.append(error_msg)
+                    print(f"❌ {error_msg}")
+                    continue
+            
+            if smtp_sent:
+                return True
+            else:
+                print(f"❌ All SMTP ports failed: {errors}")
+                logging.error(f"SMTP failed on all ports: {errors}")
+                # Fall through to SendGrid
+                
+        except Exception as e:
+            print(f"❌ SMTP error: {str(e)}")
+            logging.error(f"SMTP error: {str(e)}")
+            import traceback
+            print(traceback.format_exc())
+            # Fall through to SendGrid
+    
+    # Fallback to SendGrid
+    print(f"🔥 DEBUG: Falling back to SendGrid")
     if not SENDGRID_API_KEY:
-        print(f"🔥 DEBUG: MOCK MODE - API KEY IS EMPTY!")
-        logging.warning("[MOCK EMAIL] SendGrid not configured")
-        logging.info(f"[MOCK EMAIL] To: {to_email} | Subject: {subject}")
-        if attachment:
-            logging.info(f"[MOCK EMAIL] Attachment: {filename} ({len(attachment)} bytes)")
+        logging.warning("[MOCK EMAIL] No email service configured")
         return True
     
-    print(f"🔥 DEBUG: Real SendGrid mode, attempting to send...")
     try:
         from sendgrid import SendGridAPIClient
         from sendgrid.helpers.mail import Mail, Attachment, FileContent, FileName, FileType, Disposition
         import base64
         
-        logging.info(f"📧 SendGrid API Key present: {SENDGRID_API_KEY[:10]}...")
-        logging.info(f"📧 Sender Email: {SENDER_EMAIL}")
-        
-        # Create email message
         message = Mail(
             from_email=SENDER_EMAIL,
             to_emails=to_email,
@@ -341,11 +413,8 @@ def send_email(to_email: str, subject: str, body: str, attachment: bytes = None,
             html_content=body
         )
         
-        # Add PDF attachment if provided
         if attachment and filename:
             encoded_file = base64.b64encode(attachment).decode()
-            logging.info(f"📎 Attachment size: {len(attachment)} bytes, filename: {filename}")
-            
             attached_file = Attachment(
                 FileContent(encoded_file),
                 FileName(filename),
@@ -354,24 +423,18 @@ def send_email(to_email: str, subject: str, body: str, attachment: bytes = None,
             )
             message.attachment = attached_file
         
-        # Send email
         sg = SendGridAPIClient(SENDGRID_API_KEY)
         response = sg.send(message)
         
-        logging.info(f"📧 SendGrid Response Status: {response.status_code}")
-        logging.info(f"📧 SendGrid Response Headers: {response.headers}")
-        
         if response.status_code in [200, 202]:
-            logging.info(f"✅ Email sent successfully to {to_email}")
+            logging.info(f"✅ SendGrid email sent to {to_email}")
             return True
         else:
-            logging.error(f"❌ Email failed: {response.status_code}, body: {response.body}")
+            logging.error(f"❌ SendGrid failed: {response.status_code}")
             return False
             
     except Exception as e:
         logging.error(f"❌ SendGrid error: {str(e)}")
-        import traceback
-        logging.error(traceback.format_exc())
         return False
 
 def html_to_text_for_pdf(html_content: str) -> str:
