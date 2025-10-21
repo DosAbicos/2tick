@@ -41,7 +41,7 @@ def save_chat_ids(chat_ids):
         print(f"Error saving chat IDs: {e}")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Команда /start with deep link support"""
+    """Команда /start with deep link support and code regeneration"""
     username = update.effective_user.username
     chat_id = update.effective_chat.id
     
@@ -57,42 +57,80 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         contract_id = context.args[0]
         print(f"🔗 Deep link detected: contract_id={contract_id}")
         
-        # Find the OTP for this contract
         try:
-            verification = await db.verifications.find_one({
-                "contract_id": contract_id,
-                "method": "telegram",
-                "verified": False
-            }, sort=[("created_at", -1)])
+            from datetime import datetime, timezone, timedelta
+            import random
             
-            if verification:
-                otp_code = verification['otp_code']
-                
+            # Check if user has received codes for this contract before
+            previous_verifications = await db.verifications.count_documents({
+                "contract_id": contract_id,
+                "method": "telegram"
+            })
+            
+            is_first_time = previous_verifications == 0
+            
+            # Send welcome message on first time only
+            if is_first_time:
                 await update.message.reply_text(
-                    f"🔐 *Signify KZ - Код подтверждения*\n\n"
-                    f"Ваш код для подписания договора:\n"
-                    f"`{otp_code}`\n\n"
-                    f"Скопируйте этот код и вернитесь на сайт для подтверждения.\n\n"
-                    f"⚠️ Код действителен 10 минут.",
+                    "🎉 *Добро пожаловать в Signify KZ!*\n\n"
+                    "Этот бот поможет вам подписать договор безопасно и удобно.\n\n"
+                    "Сейчас я отправлю вам код подтверждения...",
                     parse_mode='Markdown'
                 )
-                print(f"✅ Sent OTP {otp_code} to {username} for contract {contract_id}")
-            else:
-                await update.message.reply_text(
-                    "❌ Код не найден. Пожалуйста, попробуйте снова с сайта."
+                # Small delay for better UX
+                await asyncio.sleep(1)
+            
+            # Generate NEW code every time /start is pressed
+            new_otp_code = f"{random.randint(100000, 999999)}"
+            
+            # Store new verification
+            verification_data = {
+                "contract_id": contract_id,
+                "otp_code": new_otp_code,
+                "method": "telegram",
+                "created_at": datetime.now(timezone.utc).isoformat(),
+                "expires_at": (datetime.now(timezone.utc) + timedelta(minutes=10)).isoformat(),
+                "verified": False
+            }
+            
+            await db.verifications.insert_one(verification_data)
+            
+            # Send the code
+            if is_first_time:
+                message = (
+                    f"🔐 *Ваш код подтверждения:*\n\n"
+                    f"`{new_otp_code}`\n\n"
+                    f"📋 Нажмите на код чтобы скопировать\n"
+                    f"🔄 Вернитесь на сайт и вставьте код\n\n"
+                    f"⚠️ Код действителен 10 минут\n\n"
+                    f"💡 Если нужен новый код - просто нажмите /start снова"
                 )
-                print(f"❌ No verification found for contract {contract_id}")
+            else:
+                message = (
+                    f"🔐 *Новый код подтверждения:*\n\n"
+                    f"`{new_otp_code}`\n\n"
+                    f"📋 Нажмите на код чтобы скопировать\n\n"
+                    f"⚠️ Код действителен 10 минут"
+                )
+            
+            await update.message.reply_text(message, parse_mode='Markdown')
+            
+            print(f"✅ Generated and sent NEW OTP {new_otp_code} to {username} for contract {contract_id} (Attempt #{previous_verifications + 1})")
+            
         except Exception as e:
-            print(f"❌ Error fetching OTP: {e}")
+            print(f"❌ Error generating OTP: {e}")
+            import traceback
+            print(traceback.format_exc())
             await update.message.reply_text(
-                "❌ Ошибка при получении кода. Попробуйте снова."
+                "❌ Ошибка при генерации кода. Попробуйте снова с сайта."
             )
     else:
         # Regular /start without deep link
         await update.message.reply_text(
-            "✅ Добро пожаловать в Signify KZ!\n\n"
-            "Этот бот будет отправлять вам коды подтверждения для подписания договоров.\n\n"
-            "Для получения кода нажмите кнопку 'Telegram' на сайте при подписании договора."
+            "✅ *Добро пожаловать в Signify KZ!*\n\n"
+            "Этот бот отправляет коды подтверждения для подписания договоров.\n\n"
+            "🔗 Для получения кода нажмите кнопку *'Получить код в Telegram'* на сайте при подписании договора.",
+            parse_mode='Markdown'
         )
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
