@@ -707,7 +707,7 @@ class SignifyKZTester:
     
     def run_all_tests(self):
         """Run all verification tests"""
-        logger.info("🚀 Starting Signify KZ Backend Testing - All Three Verification Methods")
+        logger.info("🚀 Starting Signify KZ Backend Testing - All Verification Methods + NEW Telegram Deep Link")
         logger.info(f"Backend URL: {self.backend_url}")
         
         # Initialize
@@ -717,6 +717,9 @@ class SignifyKZTester:
         
         # Test results
         results = {}
+        
+        # Test NEW Telegram Deep Link verification (Priority 1 - NEW FEATURE)
+        results['telegram_deep_link'] = self.test_telegram_deep_link_verification()
         
         # Test SMS verification (Priority 1)
         results['sms'] = self.test_sms_verification()
@@ -742,8 +745,8 @@ class SignifyKZTester:
             status = "✅ PASS" if result else "❌ FAIL"
             logger.info(f"{status} {test_name.upper().replace('_', ' ')} VERIFICATION")
         
-        # Critical tests (must pass)
-        critical_tests = ['sms', 'call', 'pdf_conversion', 'pdf_download']
+        # Critical tests (must pass) - including new Telegram Deep Link
+        critical_tests = ['telegram_deep_link', 'sms', 'call', 'pdf_conversion', 'pdf_download']
         critical_passed = all(results.get(test, False) for test in critical_tests)
         
         if critical_passed:
@@ -756,6 +759,12 @@ class SignifyKZTester:
             logger.info("🎉 TELEGRAM VERIFICATION ALSO WORKING!")
         else:
             logger.info("⚠️  TELEGRAM VERIFICATION NOT WORKING (Expected if bot not configured)")
+        
+        # Special note for new feature
+        if results.get('telegram_deep_link'):
+            logger.info("🎉 NEW TELEGRAM DEEP LINK APPROACH WORKING!")
+        else:
+            logger.info("🚨 NEW TELEGRAM DEEP LINK APPROACH FAILED!")
         
         return results
 
