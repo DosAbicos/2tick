@@ -62,19 +62,22 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             import random
             
             # Check if user has received codes for this contract before
-            previous_verifications = await db.verifications.count_documents({
+            # Count BEFORE generating new code
+            existing_codes_count = await db.verifications.count_documents({
                 "contract_id": contract_id,
                 "method": "telegram"
             })
             
-            is_first_time = previous_verifications == 0
+            is_first_time = (existing_codes_count == 0)
+            
+            print(f"📊 Contract {contract_id}: existing codes = {existing_codes_count}, is_first_time = {is_first_time}")
             
             # Send welcome message on first time only
             if is_first_time:
                 await update.message.reply_text(
-                    "🎉 *Добро пожаловать в Signify KZ!*\n\n"
-                    "Этот бот поможет вам подписать договор безопасно и удобно.\n\n"
-                    "Сейчас я отправлю вам код подтверждения...",
+                    "✅ *Добро пожаловать в Signify KZ!*\n\n"
+                    "Этот бот отправляет коды подтверждения для подписания договоров.\n\n"
+                    "Сейчас я отправлю вам код...",
                     parse_mode='Markdown'
                 )
                 # Small delay for better UX
