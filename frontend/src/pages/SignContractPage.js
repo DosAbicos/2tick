@@ -519,14 +519,16 @@ const SignContractPage = () => {
                             const response = await axios.get(`${API}/sign/${id}/telegram-deep-link`);
                             const deepLink = response.data.deep_link;
                             
-                            // Open Telegram bot with deep link
-                            window.open(deepLink, '_blank');
-                            
-                            // Set verification method to show code input
+                            // Set verification method to show code input FIRST
                             setVerificationMethod('telegram');
                             setTelegramCooldown(60);
                             
-                            toast.success('Откройте Telegram и скопируйте код');
+                            // Open Telegram using location.href for better compatibility
+                            setTimeout(() => {
+                              window.location.href = deepLink;
+                            }, 100);
+                            
+                            toast.success('Переходим в Telegram...');
                           } catch (error) {
                             toast.error('Ошибка при открытии Telegram');
                           }
