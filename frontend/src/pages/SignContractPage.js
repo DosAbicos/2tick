@@ -34,6 +34,10 @@ const SignContractPage = () => {
   const [callHint, setCallHint] = useState('');
   const [requestingCall, setRequestingCall] = useState(false);
   
+  // Cooldown states
+  const [smsCooldown, setSmsCooldown] = useState(0);
+  const [callCooldown, setCallCooldown] = useState(0);
+  
   // Signer info form
   const [signerInfo, setSignerInfo] = useState({
     name: '',
@@ -41,6 +45,21 @@ const SignContractPage = () => {
     email: ''
   });
   const [needsInfo, setNeedsInfo] = useState(false);
+
+  // Cooldown timer
+  useEffect(() => {
+    if (smsCooldown > 0) {
+      const timer = setTimeout(() => setSmsCooldown(smsCooldown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [smsCooldown]);
+
+  useEffect(() => {
+    if (callCooldown > 0) {
+      const timer = setTimeout(() => setCallCooldown(callCooldown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [callCooldown]);
 
   useEffect(() => {
     fetchContract();
