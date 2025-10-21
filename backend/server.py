@@ -1556,7 +1556,9 @@ async def verify_telegram_otp(contract_id: str, data: dict):
         if not signature:
             raise HTTPException(status_code=404, detail="Signature not found")
         
-        signature_data = f"{contract_id}-{verification['telegram_username']}-{datetime.now(timezone.utc).isoformat()}"
+        # Handle both deep link and username-based telegram verification
+        telegram_identifier = verification.get('telegram_username', 'deep_link_user')
+        signature_data = f"{contract_id}-{telegram_identifier}-{datetime.now(timezone.utc).isoformat()}"
         signature_hash = hashlib.sha256(signature_data.encode()).hexdigest()[:16].upper()
         
         await db.signatures.update_one(
