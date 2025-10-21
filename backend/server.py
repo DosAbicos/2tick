@@ -1535,7 +1535,24 @@ async def download_pdf(contract_id: str, current_user: dict = Depends(get_curren
         raise HTTPException(status_code=404, detail="Contract not found")
     
     signature = await db.signatures.find_one({"contract_id": contract_id})
-    creator = await db.users.find_one({"id": contract['creator_id']})
+    
+    # Get landlord signature hash if contract is signed/approved
+    landlord_signature_hash = contract.get('landlord_signature_hash')
+    
+    # Generate PDF using centralized function
+    try:
+        pdf_bytes = generate_contract_pdf(contract, signature, landlord_signature_hash)
+        
+        return Response(
+            content=pdf_bytes,
+            media_type="application/pdf",
+            headers={"Content-Disposition": f"attachment; filename=contract-{contract_id}.pdf"}
+        )
+    except Exception as e:
+        logging.error(f"Error generating PDF: {str(e)}")
+        import traceback
+        logging.error(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"Error generating PDF: {str(e)}")
     
     # Register DejaVu fonts for Cyrillic support
     try:
