@@ -470,14 +470,6 @@ const SignContractPage = () => {
                   >
                     ← Назад
                   </Button>
-                  <Button
-                    onClick={() => setStep(3)}
-                    disabled={uploading || !uploadedFile}
-                    className="flex-1"
-                    data-testid="continue-to-verify-button"
-                  >
-                    Продолжить →
-                  </Button>
                 </div>
               </motion.div>
             )}
