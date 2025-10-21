@@ -113,9 +113,8 @@ const SignContractPage = () => {
     
     try {
       await axios.post(`${API}/sign/${id}/upload-document`, formData);
-      toast.success('Document uploaded');
-      setStep(3);
-      handleRequestOTP();
+      toast.success('Документ загружен');
+      setStep(3); // Go to method selection, no auto-send
     } catch (error) {
       toast.error(error.response?.data?.detail || t('common.error'));
     } finally {
