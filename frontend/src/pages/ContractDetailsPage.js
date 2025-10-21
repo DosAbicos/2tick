@@ -67,6 +67,23 @@ const ContractDetailsPage = () => {
     }
   };
 
+  const replacePlaceholders = (content) => {
+    if (!contract) return content;
+    
+    let result = content;
+    result = result.replace(/\[ФИО Нанимателя\]/g, contract.signer_name || '[ФИО Нанимателя]');
+    result = result.replace(/\[ФИО\]/g, contract.signer_name || '[ФИО]');
+    result = result.replace(/\[Телефон\]/g, contract.signer_phone || '[Телефон]');
+    result = result.replace(/\[Email\]/g, contract.signer_email || '[Email]');
+    result = result.replace(/\[Дата заселения\]/g, contract.move_in_date || '[Дата заселения]');
+    result = result.replace(/\[Дата выселения\]/g, contract.move_out_date || '[Дата выселения]');
+    result = result.replace(/\[Адрес квартиры\]/g, contract.property_address || '[Адрес квартиры]');
+    result = result.replace(/\[Цена в сутки\]/g, contract.rent_amount || '[Цена в сутки]');
+    result = result.replace(/\[Количество суток\]/g, contract.days_count || '[Количество суток]');
+    
+    return result;
+  };
+
   const handleSendContract = async () => {
     setSendingContract(true);
     try {
