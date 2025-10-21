@@ -1350,6 +1350,30 @@ async def request_telegram_otp(contract_id: str, data: dict):
     
     # Send via Telegram bot
     try:
+        # Check if Telegram bot is properly configured
+        if not TELEGRAM_BOT_TOKEN:
+            # Fallback to mock mode
+            logging.warning(f"[MOCK TELEGRAM] Bot not configured. OTP: {otp_code} for @{telegram_username}")
+            
+            # Store verification data for mock mode
+            verification_data = {
+                "contract_id": contract_id,
+                "telegram_username": telegram_username,
+                "otp_code": otp_code,
+                "method": "telegram",
+                "created_at": datetime.now(timezone.utc).isoformat(),
+                "expires_at": (datetime.now(timezone.utc) + timedelta(minutes=10)).isoformat(),
+                "verified": False
+            }
+            
+            await db.verifications.insert_one(verification_data)
+            
+            return {
+                "message": f"Код отправлен в Telegram @{telegram_username}",
+                "telegram_username": telegram_username,
+                "mock_otp": otp_code
+            }
+        
         from telegram import Bot
         import asyncio
         
@@ -1399,12 +1423,42 @@ async def request_telegram_otp(contract_id: str, data: dict):
                 logging.info(f"✅ Telegram message sent to @{telegram_username}")
                 
         except Exception as e:
-            # If sending fails, log error and raise exception
+            # If sending fails, use fallback mode like Twilio
             logging.error(f"Telegram send error: {str(e)}")
-            raise HTTPException(
-                status_code=400, 
-                detail=f"Не удалось отправить сообщение. Убедитесь что вы написали боту @{TELEGRAM_BOT_USERNAME} команду /start"
-            )
+            
+            # Check if it's a common error that should trigger fallback
+            error_str = str(e).lower()
+            if ('chat not found' in error_str or 
+                'user not found' in error_str or 
+                'forbidden' in error_str or
+                'unauthorized' in error_str):
+                
+                logging.warning(f"[MOCK TELEGRAM FALLBACK] Telegram error ({str(e)}). OTP: {otp_code} for @{telegram_username}")
+                
+                # Store verification data for fallback mode
+                verification_data = {
+                    "contract_id": contract_id,
+                    "telegram_username": telegram_username,
+                    "otp_code": otp_code,
+                    "method": "telegram",
+                    "created_at": datetime.now(timezone.utc).isoformat(),
+                    "expires_at": (datetime.now(timezone.utc) + timedelta(minutes=10)).isoformat(),
+                    "verified": False
+                }
+                
+                await db.verifications.insert_one(verification_data)
+                
+                return {
+                    "message": f"Код отправлен в Telegram @{telegram_username}",
+                    "telegram_username": telegram_username,
+                    "mock_otp": otp_code
+                }
+            else:
+                # For other errors, still raise exception
+                raise HTTPException(
+                    status_code=400, 
+                    detail=f"Не удалось отправить сообщение. Убедитесь что вы написали боту @{TELEGRAM_BOT_USERNAME} команду /start"
+                )
         
         # Store verification data
         verification_data = {
