@@ -68,6 +68,13 @@ const SignContractPage = () => {
   }, [callCooldown]);
 
   useEffect(() => {
+    if (telegramCooldown > 0) {
+      const timer = setTimeout(() => setTelegramCooldown(telegramCooldown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [telegramCooldown]);
+
+  useEffect(() => {
     fetchContract();
   }, [id]);
 
