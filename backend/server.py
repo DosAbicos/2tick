@@ -1522,67 +1522,78 @@ async def request_telegram_otp(contract_id: str, data: dict):
 
 @api_router.post("/sign/{contract_id}/verify-telegram-otp")
 async def verify_telegram_otp(contract_id: str, data: dict):
-    """Verify Telegram OTP code"""
+    """Verify Telegram OTP code - accepts ANY valid unexpired code for this contract"""
     entered_code = data.get('code', '').strip()
     
     if not entered_code or len(entered_code) != 6:
         raise HTTPException(status_code=400, detail="Введите 6-значный код")
     
-    # Find verification record
+    # Find ANY matching verification record (not just the latest one)
+    # This allows user to use any of the generated codes within expiry time
     verification = await db.verifications.find_one({
         "contract_id": contract_id,
         "method": "telegram",
+        "otp_code": entered_code,
         "verified": False
     })
     
     if not verification:
-        raise HTTPException(status_code=404, detail="Verification not found")
+        # Check if code exists but already used
+        used_verification = await db.verifications.find_one({
+            "contract_id": contract_id,
+            "method": "telegram",
+            "otp_code": entered_code,
+            "verified": True
+        })
+        
+        if used_verification:
+            raise HTTPException(status_code=400, detail="Этот код уже использован. Запросите новый код.")
+        else:
+            raise HTTPException(status_code=400, detail="Неверный код. Проверьте код в Telegram или запросите новый.")
     
     # Check if expired
     expires_at = datetime.fromisoformat(verification['expires_at'])
     if datetime.now(timezone.utc) > expires_at:
-        raise HTTPException(status_code=400, detail="Код истек. Запросите новый.")
+        raise HTTPException(status_code=400, detail="Код истек. Нажмите /start в боте для нового кода.")
     
-    # Verify code
-    if entered_code == verification['otp_code']:
-        # Mark as verified
-        await db.verifications.update_one(
-            {"_id": verification['_id']},
-            {"$set": {"verified": True}}
-        )
-        
-        # Sign contract (same as SMS/Call)
-        signature = await db.signatures.find_one({"contract_id": contract_id})
-        if not signature:
-            raise HTTPException(status_code=404, detail="Signature not found")
-        
-        # Handle both deep link and username-based telegram verification
-        telegram_identifier = verification.get('telegram_username', 'deep_link_user')
-        signature_data = f"{contract_id}-{telegram_identifier}-{datetime.now(timezone.utc).isoformat()}"
-        signature_hash = hashlib.sha256(signature_data.encode()).hexdigest()[:16].upper()
-        
-        await db.signatures.update_one(
-            {"contract_id": contract_id},
-            {"$set": {
-                "verified": True,
-                "signed_at": datetime.now(timezone.utc).isoformat(),
-                "signature_hash": signature_hash
-            }}
-        )
-        
-        await db.contracts.update_one(
-            {"id": contract_id},
-            {"$set": {
-                "status": "pending-signature",
-                "updated_at": datetime.now(timezone.utc).isoformat()
-            }}
-        )
-        
-        await log_audit("signature_verified_telegram", contract_id=contract_id)
-        
-        return {"message": "Договор успешно подписан!", "verified": True, "signature_hash": signature_hash}
-    else:
-        raise HTTPException(status_code=400, detail="Неверный код")
+    # Code is valid - mark as verified
+    await db.verifications.update_one(
+        {"_id": verification['_id']},
+        {"$set": {"verified": True}}
+    )
+    
+    # Sign contract (same as SMS/Call)
+    signature = await db.signatures.find_one({"contract_id": contract_id})
+    if not signature:
+        raise HTTPException(status_code=404, detail="Signature not found")
+    
+    # Handle both deep link and username-based telegram verification
+    telegram_identifier = verification.get('telegram_username', 'deep_link_user')
+    signature_data = f"{contract_id}-{telegram_identifier}-{datetime.now(timezone.utc).isoformat()}"
+    signature_hash = hashlib.sha256(signature_data.encode()).hexdigest()[:16].upper()
+    
+    await db.signatures.update_one(
+        {"contract_id": contract_id},
+        {"$set": {
+            "verified": True,
+            "signed_at": datetime.now(timezone.utc).isoformat(),
+            "signature_hash": signature_hash
+        }}
+    )
+    
+    await db.contracts.update_one(
+        {"id": contract_id},
+        {"$set": {
+            "status": "pending-signature",
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    await log_audit("signature_verified_telegram", contract_id=contract_id)
+    
+    logging.info(f"✅ Contract {contract_id} signed with Telegram OTP: {entered_code}")
+    
+    return {"message": "Договор успешно подписан!", "verified": True, "signature_hash": signature_hash}
 
 @api_router.post("/sign/{contract_id}/verify-call-otp")
 async def verify_call_otp(contract_id: str, data: dict):
