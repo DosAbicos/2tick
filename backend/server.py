@@ -1333,6 +1333,40 @@ async def request_call_otp(contract_id: str):
             "hint": "Тестовый режим - код: 1334"
         }
 
+@api_router.get("/sign/{contract_id}/telegram-deep-link")
+async def get_telegram_deep_link(contract_id: str):
+    """Generate Telegram deep link for OTP verification"""
+    contract = await db.contracts.find_one({"id": contract_id})
+    if not contract:
+        raise HTTPException(status_code=404, detail="Contract not found")
+    
+    # Generate 6-digit OTP and store it
+    import random
+    otp_code = f"{random.randint(100000, 999999)}"
+    
+    # Store verification data (pre-generate OTP)
+    verification_data = {
+        "contract_id": contract_id,
+        "otp_code": otp_code,
+        "method": "telegram",
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "expires_at": (datetime.now(timezone.utc) + timedelta(minutes=10)).isoformat(),
+        "verified": False
+    }
+    
+    await db.verifications.insert_one(verification_data)
+    
+    # Create deep link
+    deep_link = f"https://t.me/{TELEGRAM_BOT_USERNAME}?start={contract_id}"
+    
+    logging.info(f"✅ Generated Telegram deep link for contract {contract_id}, OTP: {otp_code}")
+    
+    return {
+        "deep_link": deep_link,
+        "bot_username": TELEGRAM_BOT_USERNAME,
+        "contract_id": contract_id
+    }
+
 @api_router.post("/sign/{contract_id}/request-telegram-otp")
 async def request_telegram_otp(contract_id: str, data: dict):
     """Request OTP via Telegram - user provides their Telegram username"""
