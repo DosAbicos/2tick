@@ -149,22 +149,28 @@ const SignContractPage = () => {
   };
 
   const handleRequestOTP = async (method = 'sms') => {
+    if (smsCooldown > 0) return;
+    
     try {
       const response = await axios.post(`${API}/sign/${id}/request-otp?method=${method}`);
       setMockOtp(response.data.mock_otp);
       toast.success(`OTP sent! Mock code: ${response.data.mock_otp}`);
+      setSmsCooldown(60); // 60 seconds cooldown
     } catch (error) {
       toast.error(t('common.error'));
     }
   };
 
   const handleRequestCallOTP = async () => {
+    if (callCooldown > 0) return;
+    
     setRequestingCall(true);
     try {
       const response = await axios.post(`${API}/sign/${id}/request-call-otp`);
       toast.success(response.data.message);
       setCallHint(response.data.hint);
       setVerificationMethod('call');
+      setCallCooldown(60); // 60 seconds cooldown
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Ошибка при звонке');
     } finally {
