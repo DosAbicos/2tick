@@ -80,6 +80,23 @@ const SignContractPage = () => {
     fetchContract();
   }, [id]);
 
+  // Pre-fetch Telegram deep link when step 3 is reached (for iOS compatibility)
+  useEffect(() => {
+    if (step === 3 && !telegramDeepLink && !loadingTelegramLink) {
+      setLoadingTelegramLink(true);
+      axios.get(`${API}/sign/${id}/telegram-deep-link`)
+        .then(response => {
+          setTelegramDeepLink(response.data.deep_link);
+        })
+        .catch(error => {
+          console.error('Failed to pre-fetch Telegram link:', error);
+        })
+        .finally(() => {
+          setLoadingTelegramLink(false);
+        });
+    }
+  }, [step, telegramDeepLink, loadingTelegramLink, id]);
+
   const fetchContract = async () => {
     try {
       const response = await axios.get(`${API}/sign/${id}`);
