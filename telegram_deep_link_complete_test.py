@@ -130,7 +130,7 @@ class TelegramDeepLinkTester:
     
     def get_verification_from_db(self, contract_id):
         """Get verification record from database"""
-        if not self.db:
+        if self.db is None:
             return None
         
         try:
