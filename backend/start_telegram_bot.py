@@ -8,20 +8,49 @@ import asyncio
 from telegram import Bot, Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 import os
+import json
 from dotenv import load_dotenv
 
 load_dotenv()
 
 TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+CHAT_IDS_FILE = '/tmp/telegram_chat_ids.json'
+
+def load_chat_ids():
+    """Load chat IDs from file"""
+    try:
+        if os.path.exists(CHAT_IDS_FILE):
+            with open(CHAT_IDS_FILE, 'r') as f:
+                return json.load(f)
+    except:
+        pass
+    return {}
+
+def save_chat_ids(chat_ids):
+    """Save chat IDs to file"""
+    try:
+        with open(CHAT_IDS_FILE, 'w') as f:
+            json.dump(chat_ids, f)
+    except Exception as e:
+        print(f"Error saving chat IDs: {e}")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Команда /start"""
+    # Store chat ID for this user
+    username = update.effective_user.username
+    chat_id = update.effective_chat.id
+    
+    if username:
+        chat_ids = load_chat_ids()
+        chat_ids[username] = chat_id
+        save_chat_ids(chat_ids)
+        print(f"✅ User {username} started bot, chat_id: {chat_id}")
+    
     await update.message.reply_text(
         "✅ Добро пожаловать в Signify KZ!\n\n"
         "Этот бот будет отправлять вам коды подтверждения для подписания договоров.\n\n"
         "Теперь вы можете получать коды верификации в Telegram."
     )
-    print(f"✅ User {update.effective_user.username} started bot")
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Обработка всех сообщений"""
