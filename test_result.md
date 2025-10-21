@@ -363,12 +363,39 @@ frontend:
     working: "NA"
     file: "/app/frontend/src/pages/SignContractPage.js"
     stuck_count: 0
-    priority: "medium"
-    needs_retesting: false
+    priority: "high"
+    needs_retesting: true
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Frontend уже существует, изменения не требуются. Пользователь будет тестировать вручную после backend тестирования."
+      - working: "NA"
+        agent: "main"
+        comment: "Подтверждено что все 3 метода верификации (SMS, Call, Telegram) присутствуют в UI. Кнопки отображаются в Step 3 при выборе метода. Telegram UI полностью реализован с вводом username и кодом."
+
+  - task: "UI для Call верификации"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/SignContractPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Call верификация реализована с кнопкой входящего звонка, вводом 4-значного кода, кулдауном 60 сек. Endpoint /api/sign/{contract_id}/request-call-otp используется."
+
+  - task: "UI для Telegram верификации"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/SignContractPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Telegram верификация полностью реализована: ввод username без @, кнопка отправки, ввод 6-значного кода, кулдаун 60 сек. Использует /api/sign/{contract_id}/request-telegram-otp и verify-telegram-otp."
 
 metadata:
   created_by: "main_agent"
