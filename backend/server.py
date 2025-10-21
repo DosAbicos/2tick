@@ -1368,13 +1368,38 @@ async def request_telegram_otp(contract_id: str, data: dict):
         
         # Try to send message
         try:
-            await bot.send_message(
-                chat_id=f"@{telegram_username}",
-                text=message,
-                parse_mode='Markdown'
-            )
+            # First try to load chat_id from file
+            chat_ids_file = '/tmp/telegram_chat_ids.json'
+            chat_id = None
+            
+            try:
+                import json
+                if os.path.exists(chat_ids_file):
+                    with open(chat_ids_file, 'r') as f:
+                        chat_ids = json.load(f)
+                        chat_id = chat_ids.get(telegram_username)
+            except Exception as e:
+                logging.warning(f"Could not load chat IDs: {str(e)}")
+            
+            if chat_id:
+                # Use stored chat_id
+                await bot.send_message(
+                    chat_id=chat_id,
+                    text=message,
+                    parse_mode='Markdown'
+                )
+                logging.info(f"✅ Telegram message sent to {telegram_username} (chat_id: {chat_id})")
+            else:
+                # Fallback: try username (will likely fail)
+                await bot.send_message(
+                    chat_id=f"@{telegram_username}",
+                    text=message,
+                    parse_mode='Markdown'
+                )
+                logging.info(f"✅ Telegram message sent to @{telegram_username}")
+                
         except Exception as e:
-            # If username doesn't work, save for manual verification
+            # If sending fails, log error and raise exception
             logging.error(f"Telegram send error: {str(e)}")
             raise HTTPException(
                 status_code=400, 
