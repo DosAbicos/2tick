@@ -459,6 +459,147 @@ def html_to_text_for_pdf(html_content: str) -> str:
     
     return text.strip()
 
+def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signature_hash: str = None) -> bytes:
+    """Generate full PDF for contract with all content and signatures"""
+    
+    # Register fonts
+    try:
+        dejavu_path = '/usr/share/fonts/truetype/dejavu/'
+        pdfmetrics.registerFont(TTFont('DejaVu', dejavu_path + 'DejaVuSans.ttf'))
+        pdfmetrics.registerFont(TTFont('DejaVu-Bold', dejavu_path + 'DejaVuSans-Bold.ttf'))
+        pdfmetrics.registerFont(TTFont('DejaVu-Mono', dejavu_path + 'DejaVuSansMono.ttf'))
+    except:
+        pass
+    
+    # Create PDF
+    pdf_buffer = BytesIO()
+    p = canvas.Canvas(pdf_buffer, pagesize=A4)
+    width, height = A4
+    
+    # Title
+    try:
+        p.setFont("DejaVu-Bold", 16)
+    except:
+        p.setFont("Helvetica-Bold", 16)
+    
+    title_text = contract['title']
+    p.drawString(50, height - 50, title_text[:60])
+    
+    # Date
+    try:
+        p.setFont("DejaVu", 10)
+    except:
+        p.setFont("Helvetica", 10)
+    
+    p.drawString(50, height - 80, f"Договор подписан {datetime.now().strftime('%d.%m.%Y')}")
+    
+    y_position = height - 120
+    
+    # Content with DejaVu font
+    try:
+        p.setFont("DejaVu", 9)
+    except:
+        p.setFont("Helvetica", 9)
+    
+    # Convert HTML to text if needed and replace placeholders
+    try:
+        content_text = contract['content']
+        
+        # Graceful fallback for missing content_type
+        content_type = contract.get('content_type', 'plain')
+        
+        if content_type == 'html':
+            content_text = html_to_text_for_pdf(content_text)
+        
+        # Replace placeholders with actual values
+        content_text = replace_placeholders_in_content(content_text, contract)
+    except Exception as e:
+        logging.error(f"Error processing content: {str(e)}")
+        content_text = contract.get('content', 'Error loading content')
+    
+    lines = content_text.split('\n')
+    
+    for line in lines:
+        if y_position < 100:
+            p.showPage()
+            try:
+                p.setFont("DejaVu", 9)
+            except:
+                p.setFont("Helvetica", 9)
+            y_position = height - 50
+        
+        if len(line) > 100:
+            words = line.split()
+            current_line = ""
+            for word in words:
+                if len(current_line + word) < 100:
+                    current_line += word + " "
+                else:
+                    if current_line.strip():
+                        p.drawString(50, y_position, current_line.strip())
+                        y_position -= 12
+                    current_line = word + " "
+            if current_line.strip():
+                p.drawString(50, y_position, current_line.strip())
+                y_position -= 12
+        else:
+            if line.strip():
+                p.drawString(50, y_position, line.strip())
+                y_position -= 12
+    
+    # Signatures section
+    if signature or landlord_signature_hash:
+        y_position -= 40
+        if y_position < 150:
+            p.showPage()
+            y_position = height - 50
+        
+        try:
+            p.setFont("DejaVu-Bold", 12)
+        except:
+            p.setFont("Helvetica-Bold", 12)
+        
+        p.drawString(50, y_position, "Подписи:")
+        y_position -= 30
+        
+        try:
+            p.setFont("DejaVu", 9)
+        except:
+            p.setFont("Helvetica", 9)
+        
+        if signature and signature.get('verified'):
+            p.drawString(50, y_position, f"Наниматель: {contract.get('signer_name', 'N/A')}")
+            y_position -= 15
+            p.drawString(50, y_position, f"Код-ключ подписи: {signature.get('signature_hash', 'N/A')}")
+            y_position -= 15
+            signed_at = signature.get('signed_at', 'N/A')
+            if signed_at != 'N/A':
+                try:
+                    signed_dt = datetime.fromisoformat(signed_at)
+                    signed_at = signed_dt.strftime('%d.%m.%Y %H:%M')
+                except:
+                    pass
+            p.drawString(50, y_position, f"Дата подписания: {signed_at}")
+            y_position -= 25
+        
+        if landlord_signature_hash:
+            p.drawString(50, y_position, "Наймодатель")
+            y_position -= 15
+            p.drawString(50, y_position, f"Код-ключ утверждения: {landlord_signature_hash}")
+            y_position -= 15
+            approved_at = contract.get('approved_at', 'N/A')
+            if approved_at != 'N/A':
+                try:
+                    approved_dt = datetime.fromisoformat(approved_at)
+                    approved_at = approved_dt.strftime('%d.%m.%Y %H:%M')
+                except:
+                    pass
+            p.drawString(50, y_position, f"Дата утверждения: {approved_at}")
+    
+    p.save()
+    pdf_buffer.seek(0)
+    return pdf_buffer.getvalue()
+
 def replace_placeholders_in_content(content: str, contract: dict) -> str:
     """Replace placeholders in contract content with actual values"""
     # Get values from contract or use placeholders, ensure all are strings
