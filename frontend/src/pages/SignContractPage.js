@@ -407,14 +407,24 @@ const SignContractPage = () => {
                   </Label>
                 </div>
                 
-                <Button
-                  variant="outline"
-                  onClick={() => setStep(1)}
-                  className="w-full"
-                  data-testid="back-to-view-button"
-                >
-                  ← Назад к договору
-                </Button>
+                <div className="flex gap-3">
+                  <Button
+                    variant="outline"
+                    onClick={() => setStep(1.5)}
+                    className="flex-1"
+                    data-testid="back-to-info-button"
+                  >
+                    ← Назад
+                  </Button>
+                  <Button
+                    onClick={() => setStep(3)}
+                    disabled={uploading || !uploadedFile}
+                    className="flex-1"
+                    data-testid="continue-to-verify-button"
+                  >
+                    Продолжить →
+                  </Button>
+                </div>
               </motion.div>
             )}
 
