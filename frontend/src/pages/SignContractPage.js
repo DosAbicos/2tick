@@ -408,12 +408,12 @@ const SignContractPage = () => {
                 </div>
                 
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   onClick={() => setStep(1)}
                   className="w-full"
                   data-testid="back-to-view-button"
                 >
-                  Back
+                  ← Назад к договору
                 </Button>
               </motion.div>
             )}
