@@ -39,6 +39,7 @@ const SignContractPage = () => {
   const [telegramCode, setTelegramCode] = useState('');
   const [requestingTelegram, setRequestingTelegram] = useState(false);
   const [telegramDeepLink, setTelegramDeepLink] = useState('');
+  const [loadingTelegramLink, setLoadingTelegramLink] = useState(false);
   
   // Cooldown states
   const [smsCooldown, setSmsCooldown] = useState(0);
