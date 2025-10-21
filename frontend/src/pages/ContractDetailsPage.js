@@ -376,11 +376,13 @@ const ContractDetailsPage = () => {
                       fontSize: '14px',
                       lineHeight: '1.6'
                     }}
-                    dangerouslySetInnerHTML={{ __html: contract.content }}
+                    dangerouslySetInnerHTML={{ __html: replacePlaceholders(contract.content) }}
                     data-testid="contract-content"
                   />
                 ) : (
-                  <pre className="whitespace-pre-wrap text-sm" data-testid="contract-content">{contract.content}</pre>
+                  <pre className="whitespace-pre-wrap text-sm" data-testid="contract-content">
+                    {replacePlaceholders(contract.content)}
+                  </pre>
                 )}
               </div>
             </div>
