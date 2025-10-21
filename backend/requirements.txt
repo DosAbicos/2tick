@@ -72,3 +72,4 @@ urllib3==2.5.0
 uvicorn==0.25.0
 watchfiles==1.1.0
 sendgrid==6.12.5
+python-telegram-bot==20.8
