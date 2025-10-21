@@ -100,25 +100,26 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             
             # Send the code
             if is_first_time:
+                # First time - more detailed message
                 message = (
-                    f"🔐 *Ваш код подтверждения:*\n\n"
+                    f"🔐 *Код подтверждения:*\n\n"
                     f"`{new_otp_code}`\n\n"
                     f"📋 Нажмите на код чтобы скопировать\n"
                     f"🔄 Вернитесь на сайт и вставьте код\n\n"
                     f"⚠️ Код действителен 10 минут\n\n"
-                    f"💡 Если нужен новый код - просто нажмите /start снова"
+                    f"💡 Нужен новый код? Просто нажмите /start снова"
                 )
             else:
+                # Subsequent times - just the code
                 message = (
-                    f"🔐 *Новый код подтверждения:*\n\n"
+                    f"🔐 *Новый код:*\n\n"
                     f"`{new_otp_code}`\n\n"
-                    f"📋 Нажмите на код чтобы скопировать\n\n"
-                    f"⚠️ Код действителен 10 минут"
+                    f"⚠️ Действителен 10 минут"
                 )
             
             await update.message.reply_text(message, parse_mode='Markdown')
             
-            print(f"✅ Generated and sent NEW OTP {new_otp_code} to {username} for contract {contract_id} (Attempt #{previous_verifications + 1})")
+            print(f"✅ Generated and sent NEW OTP {new_otp_code} to {username} for contract {contract_id} (Request #{existing_codes_count + 1})")
             
         except Exception as e:
             print(f"❌ Error generating OTP: {e}")
