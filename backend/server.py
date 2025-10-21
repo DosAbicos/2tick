@@ -599,9 +599,9 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             # Resize image
             image = image.resize((new_width, new_height), Image.Resampling.LANCZOS)
             
-            # Save to buffer
+            # Save to buffer with HIGH quality
             img_buffer = BytesIO()
-            image.save(img_buffer, format='JPEG', quality=85)
+            image.save(img_buffer, format='JPEG', quality=95, optimize=False)
             img_buffer.seek(0)
             
             # Draw image - position from TOP-LEFT corner
