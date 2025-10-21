@@ -513,23 +513,30 @@ const SignContractPage = () => {
                         {requestingCall ? 'Звоним...' : callCooldown > 0 ? `Звонок через ${callCooldown}с` : 'Входящий звонок (4 цифры)'}
                       </Button>
                       
-                      <div className="space-y-2">
-                        <input
-                          type="text"
-                          placeholder="Telegram username (без @)"
-                          value={telegramUsername}
-                          onChange={(e) => setTelegramUsername(e.target.value)}
-                          className="w-full px-4 py-2 border rounded-lg"
-                        />
-                        <Button
-                          onClick={handleRequestTelegramOTP}
-                          disabled={requestingTelegram || telegramCooldown > 0 || !telegramUsername.trim()}
-                          className="w-full"
-                          variant="outline"
-                        >
-                          💬 {requestingTelegram ? 'Отправляем...' : telegramCooldown > 0 ? `Telegram через ${telegramCooldown}с` : 'Отправить код в Telegram'}
-                        </Button>
-                      </div>
+                      <Button
+                        onClick={async () => {
+                          try {
+                            const response = await axios.get(`${API}/sign/${id}/telegram-deep-link`);
+                            const deepLink = response.data.deep_link;
+                            
+                            // Open Telegram bot with deep link
+                            window.open(deepLink, '_blank');
+                            
+                            // Set verification method to show code input
+                            setVerificationMethod('telegram');
+                            setTelegramCooldown(60);
+                            
+                            toast.success('Откройте Telegram и скопируйте код');
+                          } catch (error) {
+                            toast.error('Ошибка при открытии Telegram');
+                          }
+                        }}
+                        disabled={telegramCooldown > 0}
+                        className="w-full bg-[#0088cc] hover:bg-[#0077b3] text-white"
+                        variant="default"
+                      >
+                        💬 {telegramCooldown > 0 ? `Telegram через ${telegramCooldown}с` : 'Получить код в Telegram'}
+                      </Button>
                     </div>
                   </div>
                 ) : verificationMethod === 'sms' ? (
