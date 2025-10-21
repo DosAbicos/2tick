@@ -224,10 +224,11 @@ const ContractDetailsPage = () => {
                 {contract.status === 'pending-signature' && (
                   <Button
                     onClick={handleApprove}
+                    disabled={approving}
                     data-testid="approve-contract-button"
                   >
                     <CheckCircle className="mr-2 h-4 w-4" />
-                    Утвердить
+                    {approving ? t('common.loading') : 'Утвердить'}
                   </Button>
                 )}
                 
