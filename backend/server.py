@@ -51,6 +51,13 @@ TWILIO_PHONE_NUMBER = os.environ.get('TWILIO_PHONE_NUMBER')
 SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
 SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'noreply@2tick.kz')
 
+# SMTP Configuration (primary)
+USE_SMTP = os.environ.get('USE_SMTP', 'false').lower() == 'true'
+SMTP_HOST = os.environ.get('SMTP_HOST', 'mail.2tick.kz')
+SMTP_PORT = int(os.environ.get('SMTP_PORT', '25'))
+SMTP_USER = os.environ.get('SMTP_USER', 'noreply@2tick.kz')
+SMTP_PASSWORD = os.environ.get('SMTP_PASSWORD', '')
+
 # Initialize Twilio client
 twilio_client = None
 if TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN:
