@@ -463,19 +463,20 @@ const SignContractPage = () => {
                     <div className="flex justify-between items-center">
                       <button
                         onClick={() => handleRequestOTP('sms')}
-                        className="text-sm text-primary hover:underline"
+                        disabled={smsCooldown > 0}
+                        className="text-sm text-primary hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
                         data-testid="resend-otp-link"
                       >
-                        {t('signing.resend')}
+                        {smsCooldown > 0 ? `Повторить через ${smsCooldown}с` : t('signing.resend')}
                       </button>
                       <button
                         onClick={handleRequestCallOTP}
-                        disabled={requestingCall}
-                        className="text-sm text-neutral-600 hover:underline flex items-center gap-1"
+                        disabled={requestingCall || callCooldown > 0}
+                        className="text-sm text-neutral-600 hover:underline flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
                         data-testid="call-option-link"
                       >
                         <Phone className="h-4 w-4" />
-                        {requestingCall ? 'Звоним...' : 'Позвонить мне'}
+                        {requestingCall ? 'Звоним...' : callCooldown > 0 ? `Позвонить через ${callCooldown}с` : 'Позвонить мне'}
                       </button>
                     </div>
                     
