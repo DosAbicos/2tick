@@ -514,39 +514,37 @@ const SignContractPage = () => {
                         {requestingCall ? 'Звоним...' : callCooldown > 0 ? `Звонок через ${callCooldown}с` : 'Входящий звонок (4 цифры)'}
                       </Button>
                       
-                      {!telegramDeepLink ? (
-                        <Button
-                          onClick={async () => {
-                            try {
-                              const response = await axios.get(`${API}/sign/${id}/telegram-deep-link`);
-                              const deepLink = response.data.deep_link;
-                              
-                              setTelegramDeepLink(deepLink);
-                              toast.success('Нажмите кнопку чтобы открыть Telegram');
-                            } catch (error) {
-                              toast.error('Ошибка при создании ссылки');
-                            }
-                          }}
-                          disabled={telegramCooldown > 0}
-                          className="w-full bg-[#0088cc] hover:bg-[#0077b3] text-white"
-                          variant="default"
-                        >
-                          💬 {telegramCooldown > 0 ? `Telegram через ${telegramCooldown}с` : 'Получить код в Telegram'}
-                        </Button>
-                      ) : (
-                        <a
-                          href={telegramDeepLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={() => {
+                      <Button
+                        onClick={async () => {
+                          try {
+                            // Get deep link
+                            const response = await axios.get(`${API}/sign/${id}/telegram-deep-link`);
+                            const deepLink = response.data.deep_link;
+                            
+                            // Show code input form immediately
                             setVerificationMethod('telegram');
                             setTelegramCooldown(60);
-                          }}
-                          className="block w-full bg-[#0088cc] hover:bg-[#0077b3] text-white text-center py-3 px-6 rounded-lg font-medium transition-colors"
-                        >
-                          💬 Открыть Telegram → Получить код
-                        </a>
-                      )}
+                            
+                            // Create invisible link and click it programmatically
+                            const link = document.createElement('a');
+                            link.href = deepLink;
+                            link.target = '_blank';
+                            link.rel = 'noopener noreferrer';
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            
+                            toast.success('Откройте Telegram и скопируйте код');
+                          } catch (error) {
+                            toast.error('Ошибка при открытии Telegram');
+                          }
+                        }}
+                        disabled={telegramCooldown > 0}
+                        className="w-full bg-[#0088cc] hover:bg-[#0077b3] text-white"
+                        variant="default"
+                      >
+                        💬 {telegramCooldown > 0 ? `Telegram через ${telegramCooldown}с` : 'Получить код в Telegram'}
+                      </Button>
                     </div>
                   </div>
                 ) : verificationMethod === 'sms' ? (
