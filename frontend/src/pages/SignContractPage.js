@@ -532,37 +532,41 @@ const SignContractPage = () => {
                         {requestingCall ? 'Звоним...' : callCooldown > 0 ? `Звонок через ${callCooldown}с` : 'Входящий звонок (4 цифры)'}
                       </Button>
                       
-                      <Button
-                        onClick={async () => {
-                          try {
-                            // Get deep link
-                            const response = await axios.get(`${API}/sign/${id}/telegram-deep-link`);
-                            const deepLink = response.data.deep_link;
-                            
-                            // Show code input form immediately
+                      {telegramDeepLink ? (
+                        <a
+                          href={telegramDeepLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => {
                             setVerificationMethod('telegram');
                             setTelegramCooldown(60);
-                            
-                            // Create invisible link and click it programmatically
-                            const link = document.createElement('a');
-                            link.href = deepLink;
-                            link.target = '_blank';
-                            link.rel = 'noopener noreferrer';
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
-                            
                             toast.success('Откройте Telegram и скопируйте код');
-                          } catch (error) {
-                            toast.error('Ошибка при открытии Telegram');
-                          }
-                        }}
-                        disabled={telegramCooldown > 0}
-                        className="w-full bg-[#0088cc] hover:bg-[#0077b3] text-white"
-                        variant="default"
-                      >
-                        💬 {telegramCooldown > 0 ? `Telegram через ${telegramCooldown}с` : 'Получить код в Telegram'}
-                      </Button>
+                          }}
+                          className="block w-full bg-[#0088cc] hover:bg-[#0077b3] text-white text-center py-3 px-4 rounded-lg font-medium transition-colors no-underline"
+                          style={{
+                            display: telegramCooldown > 0 ? 'none' : 'block'
+                          }}
+                        >
+                          💬 Получить код в Telegram
+                        </a>
+                      ) : (
+                        <Button
+                          disabled={true}
+                          className="w-full bg-[#0088cc] opacity-50"
+                          variant="default"
+                        >
+                          💬 {loadingTelegramLink ? 'Загрузка...' : 'Получить код в Telegram'}
+                        </Button>
+                      )}
+                      {telegramCooldown > 0 && (
+                        <Button
+                          disabled={true}
+                          className="w-full bg-[#0088cc] opacity-50"
+                          variant="default"
+                        >
+                          💬 Telegram через {telegramCooldown}с
+                        </Button>
+                      )}
                     </div>
                   </div>
                 ) : verificationMethod === 'sms' ? (
