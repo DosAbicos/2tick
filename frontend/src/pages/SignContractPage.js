@@ -638,11 +638,16 @@ const SignContractPage = () => {
                   // Telegram verification
                   <div className="space-y-4">
                     <div className="text-center">
-                      <div className="text-4xl mb-4">📱</div>
+                      <div className="text-4xl mb-4">💬</div>
                       <h3 className="text-lg font-semibold mb-2">Введите код из Telegram</h3>
                       <p className="text-sm text-neutral-600 mb-4">
-                        Код отправлен в @{telegramUsername}
+                        Скопируйте код из чата с ботом @twotick_bot
                       </p>
+                      <div className="bg-blue-50 p-3 rounded-lg border border-blue-200 mb-4">
+                        <p className="text-xs text-blue-900">
+                          💡 Код отправлен в Telegram. Если не получили - нажмите кнопку еще раз
+                        </p>
+                      </div>
                     </div>
                     
                     <input
@@ -653,6 +658,7 @@ const SignContractPage = () => {
                       className="w-full px-4 py-3 text-center text-2xl tracking-widest border rounded-lg"
                       placeholder="_ _ _ _ _ _"
                       data-testid="telegram-code-input"
+                      autoFocus
                     />
                     
                     <div className="flex gap-3">
@@ -672,14 +678,6 @@ const SignContractPage = () => {
                         {verifying ? 'Проверяем...' : 'Подтвердить'}
                       </Button>
                     </div>
-                    
-                    <button
-                      onClick={handleRequestTelegramOTP}
-                      disabled={telegramCooldown > 0}
-                      className="w-full text-sm text-primary hover:underline disabled:opacity-50"
-                    >
-                      {telegramCooldown > 0 ? `Повторить через ${telegramCooldown}с` : 'Отправить код повторно'}
-                    </button>
                   </div>
                 ) : null}}
               </motion.div>
