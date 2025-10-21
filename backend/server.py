@@ -550,7 +550,9 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
     # Add ID document photo if available
     if signature and signature.get('document_upload'):
         y_position -= 40
-        if y_position < 300:  # Need space for image
+        
+        # Check if we need a new page for the image
+        if y_position < 450:  # Need at least 450px for image section
             p.showPage()
             y_position = height - 50
         
@@ -560,7 +562,7 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             p.setFont("Helvetica-Bold", 12)
         
         p.drawString(50, y_position, "Удостоверение личности:")
-        y_position -= 20
+        y_position -= 30
         
         try:
             # Decode base64 image
@@ -574,31 +576,67 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             image_bytes = base64.b64decode(doc_data)
             image = Image.open(BytesIO(image_bytes))
             
-            # Resize image to fit PDF (max 400px wide)
-            max_width = 400
-            ratio = max_width / float(image.size[0])
-            new_height = int(float(image.size[1]) * ratio)
+            # Resize image to fit PDF (max 450px wide, 350px height)
+            max_width = 450
+            max_height = 350
+            
+            # Calculate aspect ratio
+            img_ratio = float(image.size[0]) / float(image.size[1])
+            
+            if img_ratio > (max_width / max_height):
+                # Width is limiting factor
+                new_width = max_width
+                new_height = int(max_width / img_ratio)
+            else:
+                # Height is limiting factor
+                new_height = max_height
+                new_width = int(max_height * img_ratio)
             
             # Convert to RGB if needed
             if image.mode != 'RGB':
                 image = image.convert('RGB')
             
+            # Resize image
+            image = image.resize((new_width, new_height), Image.Resampling.LANCZOS)
+            
             # Save to buffer
             img_buffer = BytesIO()
-            image.save(img_buffer, format='JPEG')
+            image.save(img_buffer, format='JPEG', quality=85)
             img_buffer.seek(0)
             
-            # Draw image
+            # Draw image - position from TOP-LEFT corner
+            # y_position is TOP of image area, so subtract height to get BOTTOM
+            img_bottom = y_position - new_height
+            
+            # Make sure image fits on page
+            if img_bottom < 50:
+                p.showPage()
+                y_position = height - 50
+                img_bottom = y_position - new_height
+            
             img_reader = ImageReader(img_buffer)
-            p.drawImage(img_reader, 50, y_position - new_height, width=max_width, height=new_height, preserveAspectRatio=True)
+            p.drawImage(
+                img_reader, 
+                50,  # x position (left margin)
+                img_bottom,  # y position (bottom of image)
+                width=new_width, 
+                height=new_height,
+                preserveAspectRatio=True
+            )
             
-            y_position -= (new_height + 30)
+            # Move position down below image
+            y_position = img_bottom - 20
             
-            logging.info("✅ ID document image added to PDF")
+            logging.info(f"✅ ID document image added to PDF: {new_width}x{new_height}px")
             
         except Exception as e:
             logging.error(f"Error adding document image to PDF: {str(e)}")
-            p.setFont("DejaVu", 9)
+            import traceback
+            logging.error(traceback.format_exc())
+            try:
+                p.setFont("DejaVu", 9)
+            except:
+                p.setFont("Helvetica", 9)
             p.drawString(50, y_position, "Ошибка загрузки изображения")
             y_position -= 30
     
