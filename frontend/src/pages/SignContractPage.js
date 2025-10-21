@@ -519,10 +519,10 @@ const SignContractPage = () => {
                         </button>
                         <button
                           onClick={handleRequestCallOTP}
-                          disabled={requestingCall}
-                          className="text-neutral-600 hover:underline"
+                          disabled={requestingCall || callCooldown > 0}
+                          className="text-neutral-600 hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          {requestingCall ? 'Звоним...' : 'Перезвонить'}
+                          {requestingCall ? 'Звоним...' : callCooldown > 0 ? `Перезвонить через ${callCooldown}с` : 'Перезвонить'}
                         </button>
                       </div>
                       
