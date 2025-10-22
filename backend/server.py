@@ -937,6 +937,24 @@ async def get_me(current_user: dict = Depends(get_current_user)):
         user_doc['created_at'] = datetime.fromisoformat(user_doc['created_at'])
     return User(**user_doc)
 
+@api_router.get("/users/{user_id}")
+async def get_user_by_id(user_id: str, current_user: dict = Depends(get_current_user)):
+    """Get user by ID - for displaying landlord info in contracts"""
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Return only public info (no password hash)
+    return {
+        "id": user.get("id"),
+        "full_name": user.get("full_name"),
+        "email": user.get("email"),
+        "phone": user.get("phone"),
+        "company_name": user.get("company_name"),
+        "iin": user.get("iin"),
+        "legal_address": user.get("legal_address")
+    }
+
 @api_router.post("/auth/update-profile")
 async def update_profile(
     iin: Optional[str] = None,
