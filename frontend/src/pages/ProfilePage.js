@@ -39,13 +39,29 @@ const ProfilePage = () => {
     }
   };
 
-  const handleUpdateIIN = async () => {
+  const handleSaveIin = async () => {
+    setIinLoading(true);
     try {
       await axios.post(`${API}/auth/update-profile`, 
         { iin },
         { headers: { Authorization: `Bearer ${token}` }}
       );
-      toast.success('ИИН сохранен');
+      toast.success('ИИН/БИН сохранен');
+      fetchUser();
+    } catch (error) {
+      toast.error(t('common.error'));
+    } finally {
+      setIinLoading(false);
+    }
+  };
+
+  const handleUpdateField = async (field, value) => {
+    try {
+      await axios.post(`${API}/auth/update-profile`, 
+        { [field]: value },
+        { headers: { Authorization: `Bearer ${token}` }}
+      );
+      toast.success('Данные обновлены');
       fetchUser();
     } catch (error) {
       toast.error(t('common.error'));
