@@ -1654,7 +1654,9 @@ async def verify_call_otp(contract_id: str, data: dict):
             {"$set": {
                 "verified": True,
                 "signed_at": datetime.now(timezone.utc).isoformat(),
-                "signature_hash": signature_hash
+                "signature_hash": signature_hash,
+                "verification_method": "call",
+                "signer_phone": signer_phone
             }}
         )
         
@@ -1663,7 +1665,9 @@ async def verify_call_otp(contract_id: str, data: dict):
             {"id": contract_id},
             {"$set": {
                 "status": "pending-signature",
-                "updated_at": datetime.now(timezone.utc).isoformat()
+                "updated_at": datetime.now(timezone.utc).isoformat(),
+                "verification_method": "call",
+                "signer_phone": signer_phone
             }}
         )
         
