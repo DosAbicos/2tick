@@ -108,6 +108,51 @@ const RegisterPage = () => {
               </div>
               
               <div>
+                <Label htmlFor="company_name">Название компании *</Label>
+                <Input
+                  id="company_name"
+                  name="company_name"
+                  type="text"
+                  value={formData.company_name}
+                  onChange={handleChange}
+                  required
+                  data-testid="company-name-input"
+                  className="mt-1"
+                  placeholder="ИП 'RentDomik' или ТОО 'MyCompany'"
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="iin">ИИН/БИН компании *</Label>
+                <Input
+                  id="iin"
+                  name="iin"
+                  type="text"
+                  value={formData.iin}
+                  onChange={handleChange}
+                  required
+                  data-testid="iin-input"
+                  className="mt-1"
+                  placeholder="123456789012"
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="legal_address">Юридический адрес *</Label>
+                <Input
+                  id="legal_address"
+                  name="legal_address"
+                  type="text"
+                  value={formData.legal_address}
+                  onChange={handleChange}
+                  required
+                  data-testid="legal-address-input"
+                  className="mt-1"
+                  placeholder="г. Алматы, ул. Абая 1"
+                />
+              </div>
+              
+              <div>
                 <Label htmlFor="password">{t('auth.login.password')}</Label>
                 <Input
                   id="password"
