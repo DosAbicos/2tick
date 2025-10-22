@@ -125,6 +125,9 @@ class Contract(BaseModel):
     signature_link: Optional[str] = None
     landlord_signature_hash: Optional[str] = None  # Landlord's signature hash
     approved_at: Optional[datetime] = None
+    landlord_name: Optional[str] = None  # Название компании
+    landlord_representative: Optional[str] = None  # Представитель (кто составил)
+    landlord_iin_bin: Optional[str] = None  # ИИН/БИН из профиля
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
