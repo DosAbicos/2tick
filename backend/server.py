@@ -702,19 +702,37 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             p.drawString(left_x, y_left, landlord_signature_hash)
             y_left -= 15
             
+            # Get landlord info from user profile
+            landlord = await db.users.find_one({"id": contract.get('creator_id')})
+            
             # Company name
             if contract.get('landlord_name'):
                 p.drawString(left_x, y_left, contract.get('landlord_name', 'N/A'))
                 y_left -= 15
             
-            # Representative
+            # Representative (ФИО)
             if contract.get('landlord_representative'):
                 p.drawString(left_x, y_left, f"Представитель: {contract.get('landlord_representative')}")
                 y_left -= 15
             
-            # IIN/BIN
+            # IIN/BIN from contract
             if contract.get('landlord_iin_bin'):
-                p.drawString(left_x, y_left, f"ИИН: {contract.get('landlord_iin_bin')}")
+                p.drawString(left_x, y_left, f"ИИН/БИН: {contract.get('landlord_iin_bin')}")
+                y_left -= 15
+            
+            # Email from landlord profile
+            if landlord and landlord.get('email'):
+                p.drawString(left_x, y_left, f"Email: {landlord.get('email')}")
+                y_left -= 15
+            
+            # Phone from landlord profile
+            if landlord and landlord.get('phone'):
+                p.drawString(left_x, y_left, f"Телефон: {landlord.get('phone')}")
+                y_left -= 15
+            
+            # Legal address from landlord profile
+            if landlord and landlord.get('legal_address'):
+                p.drawString(left_x, y_left, f"Юр. адрес: {landlord.get('legal_address')}")
                 y_left -= 15
             
             # Approval date
