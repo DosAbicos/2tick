@@ -920,10 +920,28 @@ async def get_me(current_user: dict = Depends(get_current_user)):
     return User(**user_doc)
 
 @api_router.post("/auth/update-profile")
-async def update_profile(iin: Optional[str] = None, current_user: dict = Depends(get_current_user)):
+async def update_profile(
+    iin: Optional[str] = None,
+    company_name: Optional[str] = None,
+    legal_address: Optional[str] = None,
+    full_name: Optional[str] = None,
+    email: Optional[str] = None,
+    phone: Optional[str] = None,
+    current_user: dict = Depends(get_current_user)
+):
     update_data = {}
-    if iin:
+    if iin is not None:
         update_data['iin'] = iin
+    if company_name is not None:
+        update_data['company_name'] = company_name
+    if legal_address is not None:
+        update_data['legal_address'] = legal_address
+    if full_name is not None:
+        update_data['full_name'] = full_name
+    if email is not None:
+        update_data['email'] = email
+    if phone is not None:
+        update_data['phone'] = phone
     
     if update_data:
         await db.users.update_one(
