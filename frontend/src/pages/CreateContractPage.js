@@ -432,6 +432,17 @@ Email: ${templateData.tenant_email || '[Email]'}
                 )}
               </CardTitle>
               <div className="flex gap-2">
+                {!manualEditMode && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={toggleEditMode}
+                  >
+                    <Edit3 className="h-4 w-4 mr-2" />
+                    Редактировать вручную
+                  </Button>
+                )}
                 {manualEditMode && (
                   <Button
                     type="button"
@@ -442,15 +453,6 @@ Email: ${templateData.tenant_email || '[Email]'}
                     Сохранить
                   </Button>
                 )}
-                <Button
-                  type="button"
-                  variant={manualEditMode ? "outline" : "outline"}
-                  size="sm"
-                  onClick={toggleEditMode}
-                >
-                  <Edit3 className="h-4 w-4 mr-2" />
-                  {manualEditMode ? 'Вернуться к форме' : 'Редактировать вручную'}
-                </Button>
               </div>
             </CardHeader>
             <CardContent>
