@@ -87,7 +87,9 @@ class User(BaseModel):
     phone: str
     role: str = "creator"  # creator, signer, admin
     language: str = "ru"  # ru, kk, en
-    iin: Optional[str] = None  # ИИН (Individual Identification Number)
+    iin: Optional[str] = None  # ИИН/БИН (Individual/Business Identification Number)
+    company_name: Optional[str] = None  # Название компании
+    legal_address: Optional[str] = None  # Юридический адрес
     document_upload: Optional[str] = None  # Landlord's ID/passport
     document_filename: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
