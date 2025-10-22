@@ -22,6 +22,9 @@ const RegisterPage = () => {
     password: '',
     full_name: '',
     phone: '',
+    company_name: '', // Название компании (ИП, ТОО)
+    iin: '', // ИИН/БИН компании
+    legal_address: '', // Юридический адрес
     language: i18n.language || 'ru'
   });
 
