@@ -145,6 +145,8 @@ class ContractCreate(BaseModel):
     rent_amount: Optional[str] = None
     days_count: Optional[str] = None
     amount: Optional[str] = None
+    landlord_name: Optional[str] = None
+    landlord_representative: Optional[str] = None
 
 class Signature(BaseModel):
     model_config = ConfigDict(extra="ignore")
