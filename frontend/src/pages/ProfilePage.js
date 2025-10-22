@@ -81,42 +81,51 @@ const ProfilePage = () => {
         <h1 className="text-3xl font-bold text-neutral-900 mb-8">Профиль наймодателя</h1>
 
         <div className="space-y-6">
-          {/* Basic Info */}
+          {/* Company Info */}
           <Card>
             <CardHeader>
-              <CardTitle>Основная информация</CardTitle>
+              <CardTitle>Информация о компании</CardTitle>
+              <CardDescription>Эти данные будут отображаться в договорах</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <Label>ФИО</Label>
-                <Input value={user?.full_name || ''} disabled className="mt-1" />
+                <Label htmlFor="company_name">Название компании</Label>
+                <Input 
+                  id="company_name"
+                  value={user?.company_name || ''} 
+                  onChange={(e) => handleUpdateField('company_name', e.target.value)}
+                  className="mt-1"
+                  placeholder="ИП 'RentDomik'"
+                />
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>Email</Label>
-                  <Input value={user?.email || ''} disabled className="mt-1" />
-                </div>
-                <div>
-                  <Label>Телефон</Label>
-                  <Input value={user?.phone || ''} disabled className="mt-1" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* IIN */}
-          <Card>
-            <CardHeader>
-              <CardTitle>ИИН (Индивидуальный идентификационный номер)</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex gap-3">
+              <div>
+                <Label htmlFor="iin">ИИН/БИН компании</Label>
                 <Input
+                  id="iin"
                   value={iin}
                   onChange={(e) => setIin(e.target.value)}
                   placeholder="123456789012"
-                  maxLength={12}
+                  className="mt-1"
                   data-testid="iin-input"
+                />
+                <Button
+                  onClick={handleSaveIin}
+                  disabled={iinLoading}
+                  className="mt-2"
+                  size="sm"
+                  data-testid="save-iin-button"
+                >
+                  {iinLoading ? 'Сохранение...' : 'Сохранить ИИН/БИН'}
+                </Button>
+              </div>
+              <div>
+                <Label htmlFor="legal_address">Юридический адрес</Label>
+                <Input
+                  id="legal_address"
+                  value={user?.legal_address || ''}
+                  onChange={(e) => handleUpdateField('legal_address', e.target.value)}
+                  className="mt-1"
+                  placeholder="г. Алматы, ул. Абая 1"
                 />
                 <Button onClick={handleUpdateIIN} data-testid="save-iin-button">
                   Сохранить
