@@ -99,6 +99,9 @@ class UserCreate(BaseModel):
     password: str
     full_name: str
     phone: str
+    company_name: str  # Название компании (обязательно при регистрации)
+    iin: str  # ИИН/БИН (обязательно при регистрации)
+    legal_address: str  # Юридический адрес (обязательно при регистрации)
     language: str = "ru"
 
 class UserLogin(BaseModel):
