@@ -20,6 +20,7 @@ const ProfilePage = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [iin, setIin] = useState('');
+  const [iinLoading, setIinLoading] = useState(false);
 
   useEffect(() => {
     fetchUser();
