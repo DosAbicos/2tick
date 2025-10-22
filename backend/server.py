@@ -920,6 +920,10 @@ async def upload_landlord_document(file: UploadFile = File(...), current_user: d
 # ===== CONTRACT ROUTES =====
 @api_router.post("/contracts", response_model=Contract)
 async def create_contract(contract_data: ContractCreate, current_user: dict = Depends(get_current_user)):
+    # Get user IIN/BIN from profile
+    user = await db.users.find_one({"user_id": current_user['user_id']})
+    landlord_iin_bin = user.get('iin', '') if user else ''
+    
     contract = Contract(
         title=contract_data.title,
         content=contract_data.content,
@@ -933,7 +937,10 @@ async def create_contract(contract_data: ContractCreate, current_user: dict = De
         property_address=contract_data.property_address,
         rent_amount=contract_data.rent_amount,
         days_count=contract_data.days_count,
-        amount=contract_data.amount
+        amount=contract_data.amount,
+        landlord_name=contract_data.landlord_name,
+        landlord_representative=contract_data.landlord_representative,
+        landlord_iin_bin=landlord_iin_bin  # From user profile
     )
     
     doc = contract.model_dump()
