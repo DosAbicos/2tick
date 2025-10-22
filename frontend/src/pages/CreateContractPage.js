@@ -610,6 +610,30 @@ Email: ${templateData.tenant_email || '[Email]'}
                       placeholder="ФИО представителя"
                     />
                   </div>
+                  <div>
+                    <Label htmlFor="landlord_iin_bin">ИИН/БИН компании *</Label>
+                    <Input
+                      id="landlord_iin_bin"
+                      value={templateData.landlord_iin_bin}
+                      onChange={(e) => handleFieldChange('landlord_iin_bin', e.target.value)}
+                      required
+                      data-testid="landlord-iin-bin-input"
+                      className="mt-1"
+                      placeholder="123456789012"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="contract_creator">Кто составил договор *</Label>
+                    <Input
+                      id="contract_creator"
+                      value={templateData.contract_creator}
+                      onChange={(e) => handleFieldChange('contract_creator', e.target.value)}
+                      required
+                      data-testid="contract-creator-input"
+                      className="mt-1"
+                      placeholder="ФИО"
+                    />
+                  </div>
                 </div>
 
                 {/* Tenant Info - Optional Fields */}
