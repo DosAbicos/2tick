@@ -708,14 +708,14 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             p.drawString(50, y_position, f"Наймодатель: {contract.get('landlord_name', 'N/A')}")
             y_position -= 15
             
-            # ИИН/БИН
+            # ИИН/БИН из профиля
             if contract.get('landlord_iin_bin'):
                 p.drawString(50, y_position, f"ИИН/БИН: {contract.get('landlord_iin_bin')}")
                 y_position -= 15
             
-            # Кто составил
-            if contract.get('contract_creator'):
-                p.drawString(50, y_position, f"Составил договор: {contract.get('contract_creator')}")
+            # Представитель (кто составил договор)
+            if contract.get('landlord_representative'):
+                p.drawString(50, y_position, f"Составил договор: {contract.get('landlord_representative')}")
                 y_position -= 15
             
             p.drawString(50, y_position, f"Код-ключ утверждения: {landlord_signature_hash}")
