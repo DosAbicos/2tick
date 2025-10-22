@@ -612,7 +612,7 @@ const SignContractPage = () => {
                           rel="noopener noreferrer"
                           onClick={() => {
                             setVerificationMethod('telegram');
-                            setTelegramCooldown(60);
+                            // NO cooldown for Telegram - user can request new codes anytime
                             toast.success('Откройте Telegram и скопируйте код');
                           }}
                           className="block w-full bg-[#0088cc] hover:bg-[#0077b3] text-white text-center py-3 px-4 rounded-lg font-medium transition-colors no-underline"
