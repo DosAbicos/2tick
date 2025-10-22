@@ -455,6 +455,42 @@ const ContractDetailsPage = () => {
                         </div>
                         
                         <div className="space-y-2 text-sm">
+                          {contract.landlord_name && (
+                            <div>
+                              <span className="text-neutral-500">Компания:</span>
+                              <p className="font-medium">{contract.landlord_name}</p>
+                            </div>
+                          )}
+                          {contract.landlord_representative && (
+                            <div>
+                              <span className="text-neutral-500">Представитель:</span>
+                              <p className="font-medium">{contract.landlord_representative}</p>
+                            </div>
+                          )}
+                          {contract.landlord_iin_bin && (
+                            <div>
+                              <span className="text-neutral-500">ИИН/БИН:</span>
+                              <p className="font-medium">{contract.landlord_iin_bin}</p>
+                            </div>
+                          )}
+                          {creator && creator.email && (
+                            <div>
+                              <span className="text-neutral-500">Email:</span>
+                              <p className="font-medium">{creator.email}</p>
+                            </div>
+                          )}
+                          {creator && creator.phone && (
+                            <div>
+                              <span className="text-neutral-500">Телефон:</span>
+                              <p className="font-medium">{creator.phone}</p>
+                            </div>
+                          )}
+                          {creator && creator.legal_address && (
+                            <div>
+                              <span className="text-neutral-500">Юр. адрес:</span>
+                              <p className="font-medium">{creator.legal_address}</p>
+                            </div>
+                          )}
                           <div>
                             <span className="text-neutral-500">Статус:</span>
                             <p className="font-medium text-emerald-600">Утверждено</p>
