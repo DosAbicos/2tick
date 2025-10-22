@@ -181,11 +181,8 @@ const ProfilePage = () => {
                     onChange={(e) => handleUpdateField('phone', e.target.value)}
                     className="mt-1"
                   />
-                <Button onClick={handleUpdateIIN} data-testid="save-iin-button">
-                  Сохранить
-                </Button>
+                </div>
               </div>
-              <p className="text-xs text-neutral-500 mt-2">12-значный номер</p>
             </CardContent>
           </Card>
         </div>
