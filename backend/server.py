@@ -653,10 +653,10 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             p.drawString(50, y_position, "Ошибка загрузки изображения")
             y_position -= 30
     
-    # Signatures section
+    # Signatures section - Two columns like OkiDoki
     if signature or landlord_signature_hash:
         y_position -= 40
-        if y_position < 150:
+        if y_position < 250:
             p.showPage()
             y_position = height - 50
         
@@ -673,53 +673,46 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
         except:
             p.setFont("Helvetica", 9)
         
-        if signature and signature.get('verified'):
-            p.drawString(50, y_position, f"Наниматель: {contract.get('signer_name', 'N/A')}")
-            y_position -= 15
-            p.drawString(50, y_position, f"Код-ключ подписи: {signature.get('signature_hash', 'N/A')}")
-            y_position -= 15
-            
-            # Verification method
-            verification_method = contract.get('verification_method', 'N/A')
-            method_text = {
-                'sms': '📱 SMS',
-                'call': '☎️ Входящий звонок',
-                'telegram': '💬 Telegram'
-            }.get(verification_method, verification_method)
-            p.drawString(50, y_position, f"Метод подписания: {method_text}")
-            y_position -= 15
-            
-            # Telegram username if applicable
-            if verification_method == 'telegram' and contract.get('telegram_username'):
-                p.drawString(50, y_position, f"Telegram: @{contract.get('telegram_username')}")
-                y_position -= 15
-            
-            signed_at = signature.get('signed_at', 'N/A')
-            if signed_at != 'N/A':
-                try:
-                    signed_dt = datetime.fromisoformat(signed_at)
-                    signed_at = signed_dt.strftime('%d.%m.%Y %H:%M')
-                except:
-                    pass
-            p.drawString(50, y_position, f"Дата подписания: {signed_at}")
-            y_position -= 25
+        # Two columns layout
+        left_x = 50
+        right_x = 300
+        start_y = y_position
         
+        # LEFT COLUMN - Наймодатель
         if landlord_signature_hash:
-            p.drawString(50, y_position, f"Наймодатель: {contract.get('landlord_name', 'N/A')}")
-            y_position -= 15
+            y_left = start_y
+            try:
+                p.setFont("DejaVu-Bold", 10)
+            except:
+                p.setFont("Helvetica-Bold", 10)
+            p.drawString(left_x, y_left, "Подпись Наймодателя:")
+            y_left -= 15
             
-            # ИИН/БИН из профиля
-            if contract.get('landlord_iin_bin'):
-                p.drawString(50, y_position, f"ИИН/БИН: {contract.get('landlord_iin_bin')}")
-                y_position -= 15
+            try:
+                p.setFont("DejaVu", 9)
+            except:
+                p.setFont("Helvetica", 9)
             
-            # Представитель (кто составил договор)
+            # Signature hash
+            p.drawString(left_x, y_left, landlord_signature_hash)
+            y_left -= 15
+            
+            # Company name
+            if contract.get('landlord_name'):
+                p.drawString(left_x, y_left, contract.get('landlord_name', 'N/A'))
+                y_left -= 15
+            
+            # Representative
             if contract.get('landlord_representative'):
-                p.drawString(50, y_position, f"Составил договор: {contract.get('landlord_representative')}")
-                y_position -= 15
+                p.drawString(left_x, y_left, f"Представитель: {contract.get('landlord_representative')}")
+                y_left -= 15
             
-            p.drawString(50, y_position, f"Код-ключ утверждения: {landlord_signature_hash}")
-            y_position -= 15
+            # IIN/BIN
+            if contract.get('landlord_iin_bin'):
+                p.drawString(left_x, y_left, f"ИИН: {contract.get('landlord_iin_bin')}")
+                y_left -= 15
+            
+            # Approval date
             approved_at = contract.get('approved_at', 'N/A')
             if approved_at != 'N/A':
                 try:
@@ -727,7 +720,68 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
                     approved_at = approved_dt.strftime('%d.%m.%Y %H:%M')
                 except:
                     pass
-            p.drawString(50, y_position, f"Дата утверждения: {approved_at}")
+            p.drawString(left_x, y_left, f"Дата утверждения: {approved_at}")
+        
+        # RIGHT COLUMN - Наниматель
+        if signature and signature.get('verified'):
+            y_right = start_y
+            try:
+                p.setFont("DejaVu-Bold", 10)
+            except:
+                p.setFont("Helvetica-Bold", 10)
+            p.drawString(right_x, y_right, "Подпись Нанимателя:")
+            y_right -= 15
+            
+            try:
+                p.setFont("DejaVu", 9)
+            except:
+                p.setFont("Helvetica", 9)
+            
+            # Signature hash
+            p.drawString(right_x, y_right, signature.get('signature_hash', 'N/A'))
+            y_right -= 15
+            
+            # Full name
+            p.drawString(right_x, y_right, contract.get('signer_name', 'N/A'))
+            y_right -= 15
+            
+            # Phone
+            p.drawString(right_x, y_right, f"Телефон: {contract.get('signer_phone', 'N/A')}")
+            y_right -= 15
+            
+            # Email
+            if contract.get('signer_email'):
+                p.drawString(right_x, y_right, f"Email: {contract.get('signer_email')}")
+                y_right -= 15
+            
+            # Verification method
+            verification_method = contract.get('verification_method', 'N/A')
+            method_text = {
+                'sms': 'SMS',
+                'call': 'Входящий звонок',
+                'telegram': 'Telegram'
+            }.get(verification_method, verification_method)
+            p.drawString(right_x, y_right, f"Метод подписания: {method_text}")
+            y_right -= 15
+            
+            # Telegram ID if applicable
+            if verification_method == 'telegram' and contract.get('telegram_username'):
+                p.drawString(right_x, y_right, f"Telegram: @{contract.get('telegram_username')}")
+                y_right -= 15
+            
+            # Signing date
+            signed_at = signature.get('signed_at', 'N/A')
+            if signed_at != 'N/A':
+                try:
+                    signed_dt = datetime.fromisoformat(signed_at)
+                    signed_at = signed_dt.strftime('%d.%m.%Y %H:%M')
+                except:
+                    pass
+            p.drawString(right_x, y_right, f"Дата подписания: {signed_at}")
+        
+        # Update y_position to continue below both columns
+        y_position = min(y_left if landlord_signature_hash else start_y, 
+                        y_right if (signature and signature.get('verified')) else start_y) - 20
     
     p.save()
     pdf_buffer.seek(0)
