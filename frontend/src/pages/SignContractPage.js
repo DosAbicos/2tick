@@ -612,13 +612,9 @@ const SignContractPage = () => {
                           rel="noopener noreferrer"
                           onClick={() => {
                             setVerificationMethod('telegram');
-                            // NO cooldown for Telegram - user can request new codes anytime
                             toast.success('Откройте Telegram и скопируйте код');
                           }}
                           className="block w-full bg-[#0088cc] hover:bg-[#0077b3] text-white text-center py-3 px-4 rounded-lg font-medium transition-colors no-underline"
-                          style={{
-                            display: telegramCooldown > 0 ? 'none' : 'block'
-                          }}
                         >
                           💬 Получить код в Telegram
                         </a>
@@ -629,15 +625,6 @@ const SignContractPage = () => {
                           variant="default"
                         >
                           💬 {loadingTelegramLink ? 'Загрузка...' : 'Получить код в Telegram'}
-                        </Button>
-                      )}
-                      {telegramCooldown > 0 && (
-                        <Button
-                          disabled={true}
-                          className="w-full bg-[#0088cc] opacity-50"
-                          variant="default"
-                        >
-                          💬 Telegram через {telegramCooldown}с
                         </Button>
                       )}
                     </div>
