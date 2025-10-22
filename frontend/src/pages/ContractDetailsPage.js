@@ -30,6 +30,7 @@ const ContractDetailsPage = () => {
   const { id } = useParams();
   const [contract, setContract] = useState(null);
   const [signature, setSignature] = useState(null);
+  const [creator, setCreator] = useState(null);
   const [loading, setLoading] = useState(true);
   const [sendingContract, setSendingContract] = useState(false);
   const [approving, setApproving] = useState(false);
