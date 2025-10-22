@@ -748,7 +748,7 @@ const SignContractPage = () => {
                       </p>
                       <div className="bg-blue-50 p-3 rounded-lg border border-blue-200 mb-4">
                         <p className="text-xs text-blue-900">
-                          💡 Код отправлен в Telegram. Если не получили - нажмите кнопку еще раз
+                          💡 Код отправлен в Telegram. Если не получили - нажмите кнопку ниже
                         </p>
                       </div>
                     </div>
@@ -781,6 +781,21 @@ const SignContractPage = () => {
                         {verifying ? 'Проверяем...' : 'Подтвердить'}
                       </Button>
                     </div>
+                    
+                    <button
+                      onClick={async () => {
+                        try {
+                          // Request new code from backend (generates new OTP)
+                          await axios.get(`${API}/sign/${id}/telegram-deep-link`);
+                          toast.success('Новый код отправлен в Telegram');
+                        } catch (error) {
+                          toast.error('Ошибка при отправке кода');
+                        }
+                      }}
+                      className="w-full text-sm text-primary hover:underline"
+                    >
+                      🔄 Отправить код повторно
+                    </button>
                   </div>
                 ) : null}}
               </motion.div>
