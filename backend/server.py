@@ -1572,12 +1572,18 @@ async def verify_telegram_otp(contract_id: str, data: dict):
     signature_data = f"{contract_id}-{telegram_identifier}-{datetime.now(timezone.utc).isoformat()}"
     signature_hash = hashlib.sha256(signature_data.encode()).hexdigest()[:16].upper()
     
+    # Get user info from verification/signature
+    signature_full = await db.signatures.find_one({"contract_id": contract_id})
+    telegram_username = signature_full.get('telegram_username', '') if signature_full else ''
+    
     await db.signatures.update_one(
         {"contract_id": contract_id},
         {"$set": {
             "verified": True,
             "signed_at": datetime.now(timezone.utc).isoformat(),
-            "signature_hash": signature_hash
+            "signature_hash": signature_hash,
+            "verification_method": "telegram",
+            "telegram_username": telegram_username or telegram_identifier
         }}
     )
     
@@ -1585,7 +1591,9 @@ async def verify_telegram_otp(contract_id: str, data: dict):
         {"id": contract_id},
         {"$set": {
             "status": "pending-signature",
-            "updated_at": datetime.now(timezone.utc).isoformat()
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+            "verification_method": "telegram",
+            "telegram_username": telegram_username or telegram_identifier
         }}
     )
     
