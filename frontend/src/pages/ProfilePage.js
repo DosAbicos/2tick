@@ -98,7 +98,45 @@ const ProfilePage = () => {
         <h1 className="text-3xl font-bold text-neutral-900 mb-8">Профиль наймодателя</h1>
 
         <div className="space-y-6">
-          {/* Company Info */}
+          {/* Personal Info - FIRST */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Личные данные</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="full_name">ФИО</Label>
+                <Input 
+                  id="full_name"
+                  value={user?.full_name || ''} 
+                  disabled
+                  className="mt-1"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="email">Email</Label>
+                  <Input 
+                    id="email"
+                    value={user?.email || ''} 
+                    disabled
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="phone">Телефон</Label>
+                  <Input 
+                    id="phone"
+                    value={user?.phone || ''} 
+                    disabled
+                    className="mt-1"
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Company Info - SECOND */}
           <Card>
             <CardHeader>
               <CardTitle>Информация о компании</CardTitle>
@@ -110,7 +148,7 @@ const ProfilePage = () => {
                 <Input 
                   id="company_name"
                   value={user?.company_name || ''} 
-                  onChange={(e) => handleUpdateField('company_name', e.target.value)}
+                  disabled
                   className="mt-1"
                   placeholder="ИП 'RentDomik'"
                 />
@@ -119,69 +157,22 @@ const ProfilePage = () => {
                 <Label htmlFor="iin">ИИН/БИН компании</Label>
                 <Input
                   id="iin"
-                  value={iin}
-                  onChange={(e) => setIin(e.target.value)}
+                  value={user?.iin || ''}
+                  disabled
                   placeholder="123456789012"
                   className="mt-1"
                   data-testid="iin-input"
                 />
-                <Button
-                  onClick={handleSaveIin}
-                  disabled={iinLoading}
-                  className="mt-2"
-                  size="sm"
-                  data-testid="save-iin-button"
-                >
-                  {iinLoading ? 'Сохранение...' : 'Сохранить ИИН/БИН'}
-                </Button>
               </div>
               <div>
                 <Label htmlFor="legal_address">Юридический адрес</Label>
                 <Input
                   id="legal_address"
                   value={user?.legal_address || ''}
-                  onChange={(e) => handleUpdateField('legal_address', e.target.value)}
+                  disabled
                   className="mt-1"
                   placeholder="г. Алматы, ул. Абая 1"
                 />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Personal Info */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Личные данные</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="full_name">ФИО</Label>
-                <Input 
-                  id="full_name"
-                  value={user?.full_name || ''} 
-                  onChange={(e) => handleUpdateField('full_name', e.target.value)}
-                  className="mt-1"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="email">Email</Label>
-                  <Input 
-                    id="email"
-                    value={user?.email || ''} 
-                    onChange={(e) => handleUpdateField('email', e.target.value)}
-                    className="mt-1"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="phone">Телефон</Label>
-                  <Input 
-                    id="phone"
-                    value={user?.phone || ''} 
-                    onChange={(e) => handleUpdateField('phone', e.target.value)}
-                    className="mt-1"
-                  />
-                </div>
               </div>
             </CardContent>
           </Card>
