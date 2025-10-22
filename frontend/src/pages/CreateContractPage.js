@@ -175,7 +175,8 @@ const CreateContractPage = () => {
       const savedContent = editorRef.current.innerHTML;
       setManualContent(savedContent);
       setIsContentSaved(true);
-      toast.success('Изменения сохранены! Теперь можете вернуться к форме.');
+      setManualEditMode(false); // Return to form after saving
+      toast.success('Изменения сохранены!');
     }
   };
 
