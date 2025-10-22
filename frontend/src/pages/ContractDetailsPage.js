@@ -422,11 +422,22 @@ const ContractDetailsPage = () => {
                         </div>
                       )}
                       <div>
-                        <span className="text-neutral-500">Метод:</span>
-                        <p className="font-medium capitalize">{signature.verification_method}</p>
+                        <span className="text-neutral-500">Метод подписания:</span>
+                        <p className="font-medium">
+                          {contract.verification_method === 'sms' && '📱 SMS'}
+                          {contract.verification_method === 'call' && '☎️ Входящий звонок'}
+                          {contract.verification_method === 'telegram' && '💬 Telegram'}
+                          {!contract.verification_method && 'Не указан'}
+                        </p>
                       </div>
+                      {contract.verification_method === 'telegram' && contract.telegram_username && (
+                        <div>
+                          <span className="text-neutral-500">Telegram:</span>
+                          <p className="font-medium">@{contract.telegram_username}</p>
+                        </div>
+                      )}
                       <div>
-                        <span className="text-neutral-500">Время:</span>
+                        <span className="text-neutral-500">Время подписания:</span>
                         <p className="font-medium">{signature.signed_at ? format(new Date(signature.signed_at), 'dd MMM yyyy HH:mm') : 'N/A'}</p>
                       </div>
                     </div>
