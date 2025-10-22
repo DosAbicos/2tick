@@ -1702,12 +1702,18 @@ async def verify_otp(contract_id: str, otp_data: OTPVerify):
     signature_hash = hashlib.sha256(signature_data.encode()).hexdigest()[:16].upper()
     
     # Mark as verified and signed
+    # Get signer phone from signature
+    signature_full = await db.signatures.find_one({"contract_id": contract_id})
+    signer_phone = signature_full.get('signer_phone', '') if signature_full else ''
+    
     await db.signatures.update_one(
         {"contract_id": contract_id},
         {"$set": {
             "verified": True,
             "signed_at": datetime.now(timezone.utc).isoformat(),
-            "signature_hash": signature_hash
+            "signature_hash": signature_hash,
+            "verification_method": "sms",
+            "signer_phone": signer_phone
         }}
     )
     
@@ -1716,7 +1722,9 @@ async def verify_otp(contract_id: str, otp_data: OTPVerify):
         {"id": contract_id},
         {"$set": {
             "status": "pending-signature",
-            "updated_at": datetime.now(timezone.utc).isoformat()
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+            "verification_method": "sms",
+            "signer_phone": signer_phone
         }}
     )
     
