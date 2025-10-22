@@ -47,6 +47,18 @@ const ContractDetailsPage = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setContract(response.data);
+      
+      // Fetch creator info
+      if (response.data.creator_id) {
+        try {
+          const creatorResponse = await axios.get(`${API}/users/${response.data.creator_id}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setCreator(creatorResponse.data);
+        } catch (error) {
+          console.error('Failed to fetch creator info:', error);
+        }
+      }
     } catch (error) {
       toast.error(t('common.error'));
       navigate('/dashboard');
