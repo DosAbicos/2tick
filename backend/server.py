@@ -673,6 +673,22 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             y_position -= 15
             p.drawString(50, y_position, f"Код-ключ подписи: {signature.get('signature_hash', 'N/A')}")
             y_position -= 15
+            
+            # Verification method
+            verification_method = contract.get('verification_method', 'N/A')
+            method_text = {
+                'sms': '📱 SMS',
+                'call': '☎️ Входящий звонок',
+                'telegram': '💬 Telegram'
+            }.get(verification_method, verification_method)
+            p.drawString(50, y_position, f"Метод подписания: {method_text}")
+            y_position -= 15
+            
+            # Telegram username if applicable
+            if verification_method == 'telegram' and contract.get('telegram_username'):
+                p.drawString(50, y_position, f"Telegram: @{contract.get('telegram_username')}")
+                y_position -= 15
+            
             signed_at = signature.get('signed_at', 'N/A')
             if signed_at != 'N/A':
                 try:
@@ -684,8 +700,19 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             y_position -= 25
         
         if landlord_signature_hash:
-            p.drawString(50, y_position, "Наймодатель")
+            p.drawString(50, y_position, f"Наймодатель: {contract.get('landlord_name', 'N/A')}")
             y_position -= 15
+            
+            # ИИН/БИН
+            if contract.get('landlord_iin_bin'):
+                p.drawString(50, y_position, f"ИИН/БИН: {contract.get('landlord_iin_bin')}")
+                y_position -= 15
+            
+            # Кто составил
+            if contract.get('contract_creator'):
+                p.drawString(50, y_position, f"Составил договор: {contract.get('contract_creator')}")
+                y_position -= 15
+            
             p.drawString(50, y_position, f"Код-ключ утверждения: {landlord_signature_hash}")
             y_position -= 15
             approved_at = contract.get('approved_at', 'N/A')
