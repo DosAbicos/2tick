@@ -702,8 +702,7 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             p.drawString(left_x, y_left, landlord_signature_hash)
             y_left -= 15
             
-            # Get landlord info from user profile
-            landlord = await db.users.find_one({"id": contract.get('creator_id')})
+            # Landlord info passed as parameter
             
             # Company name
             if contract.get('landlord_name'):
