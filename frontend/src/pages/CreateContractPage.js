@@ -26,6 +26,9 @@ const CreateContractPage = () => {
   const [manualContent, setManualContent] = useState('');
   const [isContentSaved, setIsContentSaved] = useState(false);
   
+  // Optional fields visibility
+  const [showOptionalFields, setShowOptionalFields] = useState(false);
+  
   // Tenant document upload (optional for landlord to upload)
   const [tenantDocument, setTenantDocument] = useState(null);
   const [tenantDocPreview, setTenantDocPreview] = useState(null);
