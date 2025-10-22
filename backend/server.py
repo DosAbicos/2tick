@@ -2035,10 +2035,13 @@ async def download_pdf(contract_id: str, current_user: dict = Depends(get_curren
     landlord_signature_hash = contract.get('landlord_signature_hash')
     print(f"✅ Landlord hash: {bool(landlord_signature_hash)}")
     
+    # Get landlord info
+    landlord = await db.users.find_one({"id": contract.get('creator_id')})
+    
     # Generate PDF using centralized function
     try:
         print(f"🔥 Generating PDF...")
-        pdf_bytes = generate_contract_pdf(contract, signature, landlord_signature_hash)
+        pdf_bytes = generate_contract_pdf(contract, signature, landlord_signature_hash, landlord)
         print(f"✅ PDF generated: {len(pdf_bytes)} bytes")
         
         return Response(
