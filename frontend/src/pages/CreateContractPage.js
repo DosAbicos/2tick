@@ -52,9 +52,7 @@ const CreateContractPage = () => {
     
     // Landlord (Creator) info
     landlord_name: 'ИП "RentDomik"',
-    landlord_representative: '',
-    landlord_iin_bin: '', // ИИН/БИН компании
-    contract_creator: '', // Кто составил договор
+    landlord_representative: '', // Кто составил договор
     
     // Tenant (Signer) info
     tenant_name: '',
