@@ -610,53 +610,68 @@ Email: ${templateData.tenant_email || '[Email]'}
                   </div>
                 </div>
 
-                {/* Tenant Info */}
+                {/* Tenant Info - Optional Fields */}
                 <div className="space-y-4">
-                  <h3 className="font-semibold text-neutral-900 border-b pb-2">Наниматель (Клиент)</h3>
-                  <p className="text-xs text-neutral-500 -mt-2">Если не заполните, клиент заполнит сам при подписании</p>
-                  
-                  <div>
-                    <Label htmlFor="tenant_name">ФИО нанимателя</Label>
-                    <Input
-                      id="tenant_name"
-                      value={templateData.tenant_name}
-                      onChange={(e) => handleFieldChange('tenant_name', e.target.value)}
-                      data-testid="tenant-name-input"
-                      className="mt-1"
-                      placeholder="Оставьте пустым, если клиент заполнит сам"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="flex items-center justify-between border-b pb-2">
                     <div>
-                      <Label htmlFor="tenant_phone">Телефон</Label>
-                      <IMaskInput
-                        mask="+7 (000) 000-00-00"
-                        value={templateData.tenant_phone}
-                        onAccept={(value) => handleFieldChange('tenant_phone', value)}
-                        placeholder="+7 (___) ___-__-__"
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1"
-                        id="tenant_phone"
-                        type="tel"
-                        data-testid="tenant-phone-input"
-                      />
+                      <h3 className="font-semibold text-neutral-900">Наниматель (Клиент)</h3>
+                      <p className="text-xs text-neutral-500">Необязательные поля - клиент заполнит при подписании</p>
                     </div>
-                    <div>
-                      <Label htmlFor="tenant_email">Email</Label>
-                      <Input
-                        id="tenant_email"
-                        type="email"
-                        value={templateData.tenant_email}
-                        onChange={(e) => handleFieldChange('tenant_email', e.target.value)}
-                        data-testid="tenant-email-input"
-                        className="mt-1"
-                        placeholder="Опционально"
-                      />
-                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowOptionalFields(!showOptionalFields)}
+                      className="text-sm"
+                    >
+                      {showOptionalFields ? '▼ Скрыть' : '▶ Показать опциональные поля'}
+                    </Button>
                   </div>
                   
-                  <div>
-                    <Label>Удостоверение личности клиента (опционально)</Label>
-                    <p className="text-xs text-neutral-500 mb-2">Если есть документ клиента, можете загрузить. Иначе клиент загрузит сам.</p>
+                  {showOptionalFields && (
+                    <div className="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                      <div>
+                        <Label htmlFor="tenant_name">ФИО нанимателя</Label>
+                        <Input
+                          id="tenant_name"
+                          value={templateData.tenant_name}
+                          onChange={(e) => handleFieldChange('tenant_name', e.target.value)}
+                          data-testid="tenant-name-input"
+                          className="mt-1"
+                          placeholder="Оставьте пустым, если клиент заполнит сам"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="tenant_phone">Телефон</Label>
+                          <IMaskInput
+                            mask="+7 (000) 000-00-00"
+                            value={templateData.tenant_phone}
+                            onAccept={(value) => handleFieldChange('tenant_phone', value)}
+                            placeholder="+7 (___) ___-__-__"
+                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1"
+                            id="tenant_phone"
+                            type="tel"
+                            data-testid="tenant-phone-input"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="tenant_email">Email</Label>
+                          <Input
+                            id="tenant_email"
+                            type="email"
+                            value={templateData.tenant_email}
+                            onChange={(e) => handleFieldChange('tenant_email', e.target.value)}
+                            data-testid="tenant-email-input"
+                            className="mt-1"
+                            placeholder="Опционально"
+                          />
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <Label>Удостоверение личности клиента (опционально)</Label>
+                        <p className="text-xs text-neutral-500 mb-2">Если есть документ клиента, можете загрузить. Иначе клиент загрузит сам.</p>
                     {tenantDocPreview && (
                       <div className="mt-2 mb-3">
                         <img
