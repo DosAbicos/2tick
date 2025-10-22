@@ -477,7 +477,7 @@ def html_to_text_for_pdf(html_content: str) -> str:
     
     return text.strip()
 
-def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signature_hash: str = None) -> bytes:
+def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signature_hash: str = None, landlord: dict = None) -> bytes:
     """Generate full PDF for contract with all content and signatures"""
     
     # Register fonts
