@@ -867,6 +867,9 @@ async def register(user_data: UserCreate):
         email=user_data.email,
         full_name=user_data.full_name,
         phone=user_data.phone,
+        company_name=user_data.company_name,
+        iin=user_data.iin,
+        legal_address=user_data.legal_address,
         language=user_data.language
     )
     
