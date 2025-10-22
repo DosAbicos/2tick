@@ -697,20 +697,14 @@ const SignContractPage = () => {
                       </Button>
                     </div>
                     
-                    <button
-                      onClick={async () => {
-                        try {
-                          // Request new code from backend (generates new OTP)
-                          await axios.get(`${API}/sign/${id}/telegram-deep-link`);
-                          toast.success('Новый код отправлен в Telegram');
-                        } catch (error) {
-                          toast.error('Ошибка при отправке кода');
-                        }
-                      }}
-                      className="w-full text-sm text-primary hover:underline"
+                    <a
+                      href={telegramDeepLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block w-full text-sm text-center text-primary hover:underline"
                     >
-                      🔄 Отправить код повторно
-                    </button>
+                      🔄 Отправить код повторно (открыть Telegram)
+                    </a>
                   </div>
                 ) : null}}
               </motion.div>
