@@ -102,7 +102,56 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Добавление двух новых функций: 1) Верификация через входящий звонок (пользователь вводит последние 4 цифры caller ID), 2) Автоматическая отправка подписанного договора на email через SendGrid после утверждения наймодателем."
+user_problem_statement: "Исправление 5 критических проблем: 1) Ошибка сохранения профиля Создателя, 2) Неправильный формат номера договора (должен быть 01, 02, 010, 0110), 3) Проблемы отображения информации о подписании в PDF (отсутствует ФИО представителя, телефон для Call OTP, лишние 'N/A' поля, название компании и ИИН/БИН), 4) Ошибка загрузки PDF документов Подписантом (Poppler), 5) Telegram бот не запущен."
+
+backend:
+  - task: "Исправление ошибки сохранения профиля"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Обновлен эндпоинт /auth/update-profile для обработки обоих параметров: iin и iin_bin. Frontend отправляет iin, но для совместимости добавлена поддержка iin_bin. Исправлена ошибка в ProfilePage.js - удалена строка с несуществующей переменной setIin(). Теперь профиль должен сохраняться без ошибок."
+
+  - task: "Правильная генерация номера договора"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Добавлено поле contract_number в модель Contract. Реализована генерация последовательных номеров: 01, 02, 03...09, 010, 011 и т.д. Формат: всегда начинается с '0', затем номер (1, 2, 10, 110 и т.д.). Используется contract_count + 1 для уникальности."
+
+  - task: "Улучшение отображения информации о подписании в PDF"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Полностью переработано отображение подписей в PDF: 1) verification_method и telegram_username теперь берутся из signature (с fallback на contract), 2) Telegram ID показывается ТОЛЬКО для метода Telegram (убрано 'N/A' для SMS/Call), 3) Представитель Landlord теперь показывает landlord.full_name из профиля пользователя, 4) Название компании показывает landlord.company_name из профиля, 5) ИИН/БИН показывает landlord.iin из профиля, 6) Добавлены fallback тексты 'Не указан/Не указана' вместо пустых строк для всех полей Landlord. Добавлены поля verification_method и telegram_username в модель Contract для хранения метода верификации."
+
+  - task: "Переустановка poppler-utils для PDF конвертации"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Установлен poppler-utils через apt-get install. Библиотека pdf2image теперь может конвертировать PDF в изображения. Backend перезапущен успешно."
 
 backend:
   - task: "Новый Telegram Deep Link подход для верификации"
