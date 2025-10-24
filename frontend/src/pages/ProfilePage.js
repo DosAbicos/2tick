@@ -109,7 +109,7 @@ const ProfilePage = () => {
                 <Input 
                   id="full_name"
                   value={user?.full_name || ''} 
-                  disabled
+                  onChange={(e) => setUser({...user, full_name: e.target.value})}
                   className="mt-1"
                 />
               </div>
@@ -119,7 +119,7 @@ const ProfilePage = () => {
                   <Input 
                     id="email"
                     value={user?.email || ''} 
-                    disabled
+                    onChange={(e) => setUser({...user, email: e.target.value})}
                     className="mt-1"
                   />
                 </div>
@@ -128,7 +128,7 @@ const ProfilePage = () => {
                   <Input 
                     id="phone"
                     value={user?.phone || ''} 
-                    disabled
+                    onChange={(e) => setUser({...user, phone: e.target.value})}
                     className="mt-1"
                   />
                 </div>
@@ -148,7 +148,7 @@ const ProfilePage = () => {
                 <Input 
                   id="company_name"
                   value={user?.company_name || ''} 
-                  disabled
+                  onChange={(e) => setUser({...user, company_name: e.target.value})}
                   className="mt-1"
                   placeholder="ИП 'RentDomik'"
                 />
@@ -158,7 +158,7 @@ const ProfilePage = () => {
                 <Input
                   id="iin"
                   value={user?.iin || ''}
-                  disabled
+                  onChange={(e) => setUser({...user, iin: e.target.value})}
                   placeholder="123456789012"
                   className="mt-1"
                   data-testid="iin-input"
@@ -169,11 +169,19 @@ const ProfilePage = () => {
                 <Input
                   id="legal_address"
                   value={user?.legal_address || ''}
-                  disabled
+                  onChange={(e) => setUser({...user, legal_address: e.target.value})}
                   className="mt-1"
                   placeholder="г. Алматы, ул. Абая 1"
                 />
               </div>
+              
+              <Button 
+                onClick={handleSaveProfile} 
+                disabled={saving}
+                className="w-full"
+              >
+                {saving ? 'Сохранение...' : 'Сохранить изменения'}
+              </Button>
             </CardContent>
           </Card>
         </div>
