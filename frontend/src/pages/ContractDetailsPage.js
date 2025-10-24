@@ -408,55 +408,7 @@ const ContractDetailsPage = () => {
                 <h3 className="text-lg font-semibold mb-4">Информация о подписании</h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Tenant Signature */}
-                  <div className="border rounded-lg p-4 bg-neutral-50">
-                    <h4 className="font-semibold mb-3 text-neutral-900">Подпись Нанимателя</h4>
-                    
-                    {signature.signature_hash && (
-                      <div className="bg-blue-50 p-3 rounded border border-blue-200 mb-3">
-                        <p className="text-xs text-blue-700 mb-1">Код-ключ:</p>
-                        <p className="font-mono text-sm font-bold text-blue-900">{signature.signature_hash}</p>
-                      </div>
-                    )}
-                    
-                    <div className="space-y-2 text-sm">
-                      <div>
-                        <span className="text-neutral-500">Имя:</span>
-                        <p className="font-medium">{contract.signer_name}</p>
-                      </div>
-                      <div>
-                        <span className="text-neutral-500">Телефон:</span>
-                        <p className="font-medium">{contract.signer_phone}</p>
-                      </div>
-                      {contract.signer_email && (
-                        <div>
-                          <span className="text-neutral-500">Email:</span>
-                          <p className="font-medium">{contract.signer_email}</p>
-                        </div>
-                      )}
-                      <div>
-                        <span className="text-neutral-500">Метод подписания:</span>
-                        <p className="font-medium">
-                          {contract.verification_method === 'sms' && '📱 SMS'}
-                          {contract.verification_method === 'call' && '☎️ Входящий звонок'}
-                          {contract.verification_method === 'telegram' && '💬 Telegram'}
-                          {!contract.verification_method && 'Не указан'}
-                        </p>
-                      </div>
-                      {contract.verification_method === 'telegram' && contract.telegram_username && (
-                        <div>
-                          <span className="text-neutral-500">Telegram:</span>
-                          <p className="font-medium">@{contract.telegram_username}</p>
-                        </div>
-                      )}
-                      <div>
-                        <span className="text-neutral-500">Время подписания:</span>
-                        <p className="font-medium">{signature.signed_at ? format(new Date(signature.signed_at), 'dd MMM yyyy HH:mm') : 'N/A'}</p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Landlord Signature */}
+                  {/* Landlord Signature - LEFT COLUMN */}
                   <div className="border rounded-lg p-4 bg-neutral-50">
                     <h4 className="font-semibold mb-3 text-neutral-900">Подпись Наймодателя</h4>
                     
@@ -519,6 +471,54 @@ const ContractDetailsPage = () => {
                     ) : (
                       <p className="text-sm text-amber-600">Ожидает утверждения</p>
                     )}
+                  </div>
+                  
+                  {/* Tenant Signature - RIGHT COLUMN */}
+                  <div className="border rounded-lg p-4 bg-neutral-50">
+                    <h4 className="font-semibold mb-3 text-neutral-900">Подпись Нанимателя</h4>
+                    
+                    {signature.signature_hash && (
+                      <div className="bg-blue-50 p-3 rounded border border-blue-200 mb-3">
+                        <p className="text-xs text-blue-700 mb-1">Код-ключ:</p>
+                        <p className="font-mono text-sm font-bold text-blue-900">{signature.signature_hash}</p>
+                      </div>
+                    )}
+                    
+                    <div className="space-y-2 text-sm">
+                      <div>
+                        <span className="text-neutral-500">Имя:</span>
+                        <p className="font-medium">{contract.signer_name}</p>
+                      </div>
+                      <div>
+                        <span className="text-neutral-500">Телефон:</span>
+                        <p className="font-medium">{contract.signer_phone}</p>
+                      </div>
+                      {contract.signer_email && (
+                        <div>
+                          <span className="text-neutral-500">Email:</span>
+                          <p className="font-medium">{contract.signer_email}</p>
+                        </div>
+                      )}
+                      <div>
+                        <span className="text-neutral-500">Метод подписания:</span>
+                        <p className="font-medium">
+                          {contract.verification_method === 'sms' && '📱 SMS'}
+                          {contract.verification_method === 'call' && '☎️ Входящий звонок'}
+                          {contract.verification_method === 'telegram' && '💬 Telegram'}
+                          {!contract.verification_method && 'Не указан'}
+                        </p>
+                      </div>
+                      {contract.verification_method === 'telegram' && contract.telegram_username && (
+                        <div>
+                          <span className="text-neutral-500">Telegram:</span>
+                          <p className="font-medium">@{contract.telegram_username}</p>
+                        </div>
+                      )}
+                      <div>
+                        <span className="text-neutral-500">Время подписания:</span>
+                        <p className="font-medium">{signature.signed_at ? format(new Date(signature.signed_at), 'dd MMM yyyy HH:mm') : 'N/A'}</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 
