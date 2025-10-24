@@ -15,7 +15,7 @@
 ### Почему подписантам не нужно приложение?
 
 Клиенты (подписанты) получают ссылку по SMS и открывают её в **любом браузере** на телефоне:
-1. Получают SMS: `https://signly.preview.emergentagent.com/sign/CONTRACT_ID`
+1. Получают SMS: `https://kz-digisign.preview.emergentagent.com/sign/CONTRACT_ID`
 2. Открывают в браузере (Safari, Chrome, любой другой)
 3. Подписывают договор прямо в браузере
 4. Всё работает без установки приложения!
@@ -83,7 +83,7 @@
 ### Доступные API endpoints:
 
 ```
-Base URL: https://signly.preview.emergentagent.com/api
+Base URL: https://kz-digisign.preview.emergentagent.com/api
 
 Аутентификация:
 POST /auth/register - Регистрация
@@ -119,7 +119,7 @@ GET /admin/contracts - Все договоры
 // LoginScreen.js
 import axios from 'axios';
 
-const API_URL = 'https://signly.preview.emergentagent.com/api';
+const API_URL = 'https://kz-digisign.preview.emergentagent.com/api';
 
 const handleLogin = async (email, password) => {
   try {

@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 # Get backend URL from frontend .env
-BACKEND_URL = "https://signly.preview.emergentagent.com/api"
+BACKEND_URL = "https://kz-digisign.preview.emergentagent.com/api"
 
 class TelegramDeepLinkTester:
     def __init__(self):
