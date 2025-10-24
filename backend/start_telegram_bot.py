@@ -86,11 +86,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             # Generate NEW code every time /start is pressed
             new_otp_code = f"{random.randint(100000, 999999)}"
             
-            # Store new verification
+            # Store new verification with username
             verification_data = {
                 "contract_id": contract_id,
                 "otp_code": new_otp_code,
                 "method": "telegram",
+                "telegram_username": username,  # Save username for verification
                 "created_at": datetime.now(timezone.utc).isoformat(),
                 "expires_at": (datetime.now(timezone.utc) + timedelta(minutes=10)).isoformat(),
                 "verified": False
