@@ -647,37 +647,46 @@ agent_communication:
 frontend:
   - task: "Страница верификации регистрации"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/pages/VerifyRegistrationPage.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Создана новая страница VerifyRegistrationPage.js с полным UI для верификации через SMS/Call/Telegram. Переиспользует компоненты из SignContractPage.js. Включает: выбор метода, кнопки запроса OTP с кулдаунами, поля ввода кодов, Telegram deep link, success экран."
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. Страница верификации регистрации работает идеально: 1) Страница загружается корректно с заголовком 'Подтверждение телефона', 2) Все 3 кнопки верификации отображаются (SMS/Call/Telegram), 3) SMS верификация: поле ввода 6-значного кода появляется, mock OTP извлекается из ответа API, верификация проходит успешно с редиректом на dashboard, 4) Call верификация: поле ввода 4-значного кода появляется, hint с последними цифрами отображается, код 1334 принимается и верификация завершается успешно, 5) Telegram deep link генерируется в правильном формате https://t.me/twotick_bot?start=reg_{registration_id}, 6) После успешной верификации JWT token и user data сохраняются в localStorage, 7) UI компоненты (InputOTP, кнопки, формы) функционируют корректно. ✅ КРИТИЧЕСКИЕ ФУНКЦИИ РАБОТАЮТ: полный E2E flow регистрации с верификацией телефона, все методы верификации, success screen с редиректом на dashboard."
 
   - task: "Модификация RegisterPage для верификации"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/pages/RegisterPage.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Модифицирован handleSubmit в RegisterPage.js - после успешной регистрации перенаправляет на /verify-registration/{registration_id} вместо dashboard."
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. Модификация RegisterPage работает корректно: 1) Форма регистрации заполняется всеми обязательными полями (full_name, email, phone, company_name, iin, legal_address, password), 2) POST /api/auth/register успешно создает временную запись в коллекции registrations, 3) Редирект на /verify-registration/{registration_id} происходит автоматически после успешной регистрации, 4) registration_id корректно извлекается из ответа API и используется в URL, 5) Все поля формы имеют правильные data-testid атрибуты для тестирования, 6) Валидация формы работает (кнопка активна только при заполнении всех полей). ✅ ИНТЕГРАЦИЯ РАБОТАЕТ: RegisterPage → API → VerifyRegistrationPage flow функционирует без ошибок."
 
   - task: "Роут для страницы верификации"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/App.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Добавлен импорт VerifyRegistrationPage и новый роут /verify-registration/:registration_id в App.js."
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. Роут для страницы верификации работает корректно: 1) Импорт VerifyRegistrationPage присутствует в App.js, 2) Роут /verify-registration/:registration_id корректно настроен, 3) Навигация на страницу верификации происходит без ошибок, 4) Параметр registration_id корректно передается в компонент через useParams, 5) Страница загружается с правильным registration_id из URL, 6) Роутинг работает как для прямого доступа по URL, так и для программного редиректа. ✅ РОУТИНГ НАСТРОЕН ПРАВИЛЬНО: все переходы между страницами регистрации и верификации функционируют корректно."
 
