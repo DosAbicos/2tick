@@ -21,6 +21,9 @@ const CreateContractPage = () => {
   const [loading, setLoading] = useState(false);
   const token = localStorage.getItem('token');
   
+  // Next contract number (for display)
+  const [nextContractNumber, setNextContractNumber] = useState(null);
+  
   // Manual editing mode
   const [manualEditMode, setManualEditMode] = useState(false);
   const [manualContent, setManualContent] = useState('');
