@@ -115,6 +115,7 @@ class Contract(BaseModel):
     content: str
     content_type: str = "plain"  # "plain" or "html"
     creator_id: str
+    contract_number: Optional[str] = None  # Sequential number: 01, 02, 010, 0110, etc.
     signer_name: str
     signer_phone: str
     signer_email: Optional[str] = None
@@ -133,6 +134,8 @@ class Contract(BaseModel):
     landlord_name: Optional[str] = None  # Название компании
     landlord_representative: Optional[str] = None  # Представитель (кто составил)
     landlord_iin_bin: Optional[str] = None  # ИИН/БИН из профиля
+    verification_method: Optional[str] = None  # SMS, Call, Telegram
+    telegram_username: Optional[str] = None  # @username для Telegram верификации
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
