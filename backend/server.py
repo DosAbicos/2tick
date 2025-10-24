@@ -1035,13 +1035,17 @@ async def update_profile(
     phone: Optional[str] = None,
     current_user: dict = Depends(get_current_user)
 ):
+    logging.info(f"🔥 DEBUG update_profile: iin={iin}, iin_bin={iin_bin}, company_name={company_name}, user_id={current_user['user_id']}")
+    
     update_data = {}
     
     # Handle both iin and iin_bin parameters (frontend sends iin_bin, backend stores as iin)
     if iin_bin is not None:
         update_data['iin'] = iin_bin
+        logging.info(f"🔥 DEBUG: Setting iin from iin_bin: {iin_bin}")
     elif iin is not None:
         update_data['iin'] = iin
+        logging.info(f"🔥 DEBUG: Setting iin from iin: {iin}")
     
     if company_name is not None:
         update_data['company_name'] = company_name
@@ -1054,11 +1058,16 @@ async def update_profile(
     if phone is not None:
         update_data['phone'] = phone
     
+    logging.info(f"🔥 DEBUG: update_data = {update_data}")
+    
     if update_data:
-        await db.users.update_one(
+        result = await db.users.update_one(
             {"id": current_user['user_id']},
             {"$set": update_data}
         )
+        logging.info(f"🔥 DEBUG: MongoDB update result: matched={result.matched_count}, modified={result.modified_count}")
+    else:
+        logging.info("🔥 DEBUG: No update_data, skipping update")
     
     return {"message": "Profile updated"}
 
