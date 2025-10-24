@@ -31,7 +31,6 @@ const ProfilePage = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUser(response.data);
-      setIin(response.data.iin || '');
     } catch (error) {
       toast.error(t('common.error'));
     } finally {
