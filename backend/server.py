@@ -1040,13 +1040,21 @@ async def update_profile(
     update_data = {}
     
     # Handle both iin and iin_bin parameters (frontend sends iin_bin, backend stores as iin)
-    if iin_bin is not None:
+    # Allow empty string to clear the field
+    if iin_bin is not None and iin_bin != '':
         update_data['iin'] = iin_bin
         logging.info(f"🔥 DEBUG: Setting iin from iin_bin: {iin_bin}")
-    elif iin is not None:
+    elif iin_bin == '':
+        update_data['iin'] = ''  # Allow clearing
+        logging.info(f"🔥 DEBUG: Clearing iin (empty iin_bin)")
+    elif iin is not None and iin != '':
         update_data['iin'] = iin
         logging.info(f"🔥 DEBUG: Setting iin from iin: {iin}")
+    elif iin == '':
+        update_data['iin'] = ''  # Allow clearing
+        logging.info(f"🔥 DEBUG: Clearing iin (empty iin)")
     
+    # Allow empty strings to clear fields
     if company_name is not None:
         update_data['company_name'] = company_name
     if legal_address is not None:
