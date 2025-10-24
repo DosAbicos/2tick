@@ -599,15 +599,18 @@ agent_communication:
 
   - task: "Call верификация при регистрации"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Добавлены endpoints: POST /auth/registration/{registration_id}/request-call-otp - входящий звонок через Twilio, POST /auth/registration/{registration_id}/verify-call-otp - проверка последних 4 цифр и создание пользователя."
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. Call верификация при регистрации работает корректно: 1) POST /api/auth/registration/{registration_id}/request-call-otp возвращает статус 200 с сообщением о звонке, 2) Возвращает hint с последними 4 цифрами номера ('Номер заканчивается на: ...1334'), 3) Создается запись в коллекции verifications с expected_code='1334', 4) POST /api/auth/registration/{registration_id}/verify-call-otp с кодом '1334' успешно верифицирует, 5) Создается пользователь в коллекции users с корректными данными, 6) Возвращает JWT token, user объект и verified=true, 7) Временная запись удаляется из registrations. ✅ СИСТЕМА РАБОТАЕТ: Call верификация полностью функциональна с fallback на mock режим."
 
   - task: "Telegram верификация при регистрации"
     implemented: true
