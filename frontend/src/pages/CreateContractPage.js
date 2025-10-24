@@ -428,6 +428,13 @@ Email: ${templateData.tenant_email || '[Email]'}
         
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-neutral-900">{t('contract.create.title')}</h1>
+          {nextContractNumber && (
+            <div className="mt-3 inline-block bg-blue-50 border border-blue-200 rounded-lg px-4 py-2">
+              <p className="text-sm text-blue-700">
+                📄 <strong>Номер договора:</strong> {nextContractNumber}
+              </p>
+            </div>
+          )}
           <p className="text-neutral-600 mt-2">Заполните поля справа, договор автоматически обновится слева</p>
           <div className="mt-3">
             <Button
