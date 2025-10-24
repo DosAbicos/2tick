@@ -19,8 +19,7 @@ const ProfilePage = () => {
   const token = localStorage.getItem('token');
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [iin, setIin] = useState('');
-  const [iinLoading, setIinLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     fetchUser();
