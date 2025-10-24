@@ -1150,6 +1150,391 @@ async def upload_landlord_document(file: UploadFile = File(...), current_user: d
     
     return {"message": "Document uploaded successfully"}
 
+# ===== REGISTRATION VERIFICATION ROUTES =====
+@api_router.post("/auth/registration/{registration_id}/request-otp")
+async def request_registration_otp(registration_id: str, method: str = "sms"):
+    """Request OTP for phone verification during registration (SMS)"""
+    registration = await db.registrations.find_one({"id": registration_id})
+    if not registration:
+        raise HTTPException(status_code=404, detail="Registration not found")
+    
+    if registration.get('verified'):
+        raise HTTPException(status_code=400, detail="Registration already verified")
+    
+    # Check if expired
+    expires_at = registration.get('expires_at')
+    if isinstance(expires_at, str):
+        expires_at = datetime.fromisoformat(expires_at)
+    if expires_at < datetime.now(timezone.utc):
+        raise HTTPException(status_code=400, detail="Registration expired. Please register again.")
+    
+    phone = registration.get('phone')
+    if not phone:
+        raise HTTPException(status_code=400, detail="Phone number not found")
+    
+    # Use Twilio Verify API
+    channel = "sms" if method == "sms" else "call"
+    result = send_otp_via_twilio(phone, channel)
+    
+    if not result["success"]:
+        raise HTTPException(status_code=500, detail=f"Failed to send OTP: {result.get('error', 'Unknown error')}")
+    
+    # Store verification info
+    update_data = {
+        "verification_method": method,
+        "otp_requested_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    # If mock OTP is present (fallback mode), store it
+    if "mock_otp" in result:
+        update_data["otp_code"] = result["mock_otp"]
+    
+    await db.registrations.update_one(
+        {"id": registration_id},
+        {"$set": update_data}
+    )
+    
+    await log_audit("registration_otp_requested", registration_id=registration_id, details=f"Method: {method}, Phone: {phone}")
+    
+    response = {"message": f"OTP sent via {method}"}
+    # Include mock OTP only in development/fallback mode
+    if "mock_otp" in result:
+        response["mock_otp"] = result["mock_otp"]
+    
+    return response
+
+@api_router.post("/auth/registration/{registration_id}/verify-otp")
+async def verify_registration_otp(registration_id: str, otp_data: dict):
+    """Verify OTP and create user account"""
+    registration = await db.registrations.find_one({"id": registration_id})
+    if not registration:
+        raise HTTPException(status_code=404, detail="Registration not found")
+    
+    if registration.get('verified'):
+        raise HTTPException(status_code=400, detail="Registration already verified")
+    
+    # Check if expired
+    expires_at = registration.get('expires_at')
+    if isinstance(expires_at, str):
+        expires_at = datetime.fromisoformat(expires_at)
+    if expires_at < datetime.now(timezone.utc):
+        raise HTTPException(status_code=400, detail="Registration expired. Please register again.")
+    
+    phone = registration.get('phone')
+    otp_code = otp_data.get('otp_code')
+    
+    if not otp_code:
+        raise HTTPException(status_code=400, detail="OTP code is required")
+    
+    # Verify OTP via Twilio
+    result = verify_otp_via_twilio(phone, otp_code)
+    
+    # If Twilio verification failed, check if it's a mock OTP (fallback mode)
+    if not result["success"]:
+        stored_otp = registration.get('otp_code')
+        if stored_otp and stored_otp == otp_code:
+            # Mock OTP matches
+            logging.info(f"✅ Mock OTP verified for registration {registration_id}")
+        else:
+            raise HTTPException(status_code=400, detail="Invalid OTP code")
+    
+    # OTP verified! Create user account
+    user = User(
+        email=registration['email'],
+        full_name=registration['full_name'],
+        phone=registration['phone'],
+        company_name=registration['company_name'],
+        iin=registration['iin'],
+        legal_address=registration['legal_address'],
+        language=registration.get('language', 'ru')
+    )
+    
+    user_doc = user.model_dump()
+    user_doc['password'] = registration['password_hash']
+    user_doc['created_at'] = user_doc['created_at'].isoformat()
+    
+    await db.users.insert_one(user_doc)
+    
+    # Mark registration as verified and delete it
+    await db.registrations.delete_one({"id": registration_id})
+    
+    # Generate token
+    token = create_jwt_token(user.id, user.email, user.role)
+    
+    await log_audit("user_registered", user_id=user.id, details=f"User {user.email} registered after phone verification")
+    
+    return {"token": token, "user": user, "verified": True}
+
+@api_router.post("/auth/registration/{registration_id}/request-call-otp")
+async def request_registration_call_otp(registration_id: str):
+    """Request phone call verification during registration"""
+    registration = await db.registrations.find_one({"id": registration_id})
+    if not registration:
+        raise HTTPException(status_code=404, detail="Registration not found")
+    
+    if registration.get('verified'):
+        raise HTTPException(status_code=400, detail="Registration already verified")
+    
+    # Check if expired
+    expires_at = registration.get('expires_at')
+    if isinstance(expires_at, str):
+        expires_at = datetime.fromisoformat(expires_at)
+    if expires_at < datetime.now(timezone.utc):
+        raise HTTPException(status_code=400, detail="Registration expired. Please register again.")
+    
+    phone = registration.get('phone')
+    if not phone:
+        raise HTTPException(status_code=400, detail="Phone number not found")
+    
+    # Normalize phone to E.164 format
+    phone = normalize_phone(phone)
+    
+    try:
+        # Make call via Twilio
+        from twilio.rest import Client
+        client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+        
+        call = client.calls.create(
+            to=phone,
+            from_=TWILIO_PHONE_NUMBER,
+            url="http://demo.twilio.com/docs/voice.xml",
+            timeout=10
+        )
+        
+        # Extract last 4 digits from our number
+        caller_number = TWILIO_PHONE_NUMBER.replace('+', '').replace(' ', '').replace('-', '')
+        last_4_digits = caller_number[-4:]
+        
+        # Store verification data
+        verification_data = {
+            "registration_id": registration_id,
+            "phone": phone,
+            "call_sid": call.sid,
+            "expected_code": last_4_digits,
+            "method": "call",
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "expires_at": (datetime.now(timezone.utc) + timedelta(minutes=5)).isoformat(),
+            "verified": False
+        }
+        
+        await db.verifications.insert_one(verification_data)
+        
+        logging.info(f"✅ Registration call initiated to {phone}, SID: {call.sid}")
+        
+        return {
+            "message": "Звонок инициирован. Введите последние 4 цифры входящего номера.",
+            "call_sid": call.sid,
+            "hint": f"Номер заканчивается на: ...{last_4_digits}"
+        }
+        
+    except Exception as e:
+        logging.error(f"Registration call error: {str(e)}")
+        # Fallback: return mock response
+        last_4_digits = "1334"
+        
+        verification_data = {
+            "registration_id": registration_id,
+            "phone": phone,
+            "call_sid": "MOCK_CALL",
+            "expected_code": last_4_digits,
+            "method": "call",
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "expires_at": (datetime.now(timezone.utc) + timedelta(minutes=5)).isoformat(),
+            "verified": False
+        }
+        
+        await db.verifications.insert_one(verification_data)
+        
+        return {
+            "message": "Mock: Звонок инициирован. Введите последние 4 цифры.",
+            "hint": f"Номер заканчивается на: ...{last_4_digits}"
+        }
+
+@api_router.post("/auth/registration/{registration_id}/verify-call-otp")
+async def verify_registration_call_otp(registration_id: str, data: dict):
+    """Verify call OTP and create user account"""
+    registration = await db.registrations.find_one({"id": registration_id})
+    if not registration:
+        raise HTTPException(status_code=404, detail="Registration not found")
+    
+    if registration.get('verified'):
+        raise HTTPException(status_code=400, detail="Registration already verified")
+    
+    code = data.get('code')
+    if not code:
+        raise HTTPException(status_code=400, detail="Code is required")
+    
+    # Find verification record
+    verification = await db.verifications.find_one({
+        "registration_id": registration_id,
+        "method": "call",
+        "verified": False
+    })
+    
+    if not verification:
+        raise HTTPException(status_code=404, detail="Call verification not found")
+    
+    # Check if expired
+    expires_at = verification.get('expires_at')
+    if isinstance(expires_at, str):
+        expires_at = datetime.fromisoformat(expires_at)
+    if expires_at < datetime.now(timezone.utc):
+        raise HTTPException(status_code=400, detail="Verification expired")
+    
+    # Verify code
+    expected_code = verification.get('expected_code')
+    if code != expected_code:
+        raise HTTPException(status_code=400, detail="Invalid code")
+    
+    # Mark verification as verified
+    await db.verifications.update_one(
+        {"_id": verification["_id"]},
+        {"$set": {"verified": True}}
+    )
+    
+    # Create user account
+    user = User(
+        email=registration['email'],
+        full_name=registration['full_name'],
+        phone=registration['phone'],
+        company_name=registration['company_name'],
+        iin=registration['iin'],
+        legal_address=registration['legal_address'],
+        language=registration.get('language', 'ru')
+    )
+    
+    user_doc = user.model_dump()
+    user_doc['password'] = registration['password_hash']
+    user_doc['created_at'] = user_doc['created_at'].isoformat()
+    
+    await db.users.insert_one(user_doc)
+    
+    # Delete registration
+    await db.registrations.delete_one({"id": registration_id})
+    
+    # Generate token
+    token = create_jwt_token(user.id, user.email, user.role)
+    
+    await log_audit("user_registered", user_id=user.id, details=f"User {user.email} registered after call verification")
+    
+    return {"token": token, "user": user, "verified": True}
+
+@api_router.get("/auth/registration/{registration_id}/telegram-deep-link")
+async def get_registration_telegram_deep_link(registration_id: str):
+    """Get Telegram deep link for registration verification"""
+    registration = await db.registrations.find_one({"id": registration_id})
+    if not registration:
+        raise HTTPException(status_code=404, detail="Registration not found")
+    
+    if registration.get('verified'):
+        raise HTTPException(status_code=400, detail="Registration already verified")
+    
+    # Check if expired
+    expires_at = registration.get('expires_at')
+    if isinstance(expires_at, str):
+        expires_at = datetime.fromisoformat(expires_at)
+    if expires_at < datetime.now(timezone.utc):
+        raise HTTPException(status_code=400, detail="Registration expired. Please register again.")
+    
+    # Generate OTP code
+    otp_code = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+    
+    # Store verification data with registration_id
+    verification_data = {
+        "registration_id": registration_id,
+        "otp_code": otp_code,
+        "method": "telegram",
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "expires_at": (datetime.now(timezone.utc) + timedelta(minutes=10)).isoformat(),
+        "verified": False
+    }
+    
+    # Delete any existing verification for this registration
+    await db.verifications.delete_many({"registration_id": registration_id, "method": "telegram"})
+    
+    # Insert new verification
+    await db.verifications.insert_one(verification_data)
+    
+    # Create deep link with registration_id
+    deep_link = f"https://t.me/{TELEGRAM_BOT_USERNAME}?start=reg_{registration_id}"
+    
+    logging.info(f"✅ Telegram deep link created for registration {registration_id}")
+    
+    return {
+        "deep_link": deep_link,
+        "registration_id": registration_id,
+        "message": "Нажмите на ссылку чтобы открыть Telegram и получить код"
+    }
+
+@api_router.post("/auth/registration/{registration_id}/verify-telegram-otp")
+async def verify_registration_telegram_otp(registration_id: str, data: dict):
+    """Verify Telegram OTP and create user account"""
+    registration = await db.registrations.find_one({"id": registration_id})
+    if not registration:
+        raise HTTPException(status_code=404, detail="Registration not found")
+    
+    if registration.get('verified'):
+        raise HTTPException(status_code=400, detail="Registration already verified")
+    
+    code = data.get('code')
+    if not code:
+        raise HTTPException(status_code=400, detail="Code is required")
+    
+    # Find verification record
+    verification = await db.verifications.find_one({
+        "registration_id": registration_id,
+        "method": "telegram",
+        "verified": False
+    })
+    
+    if not verification:
+        raise HTTPException(status_code=404, detail="Telegram verification not found. Please request a new code.")
+    
+    # Check if expired
+    expires_at = verification.get('expires_at')
+    if isinstance(expires_at, str):
+        expires_at = datetime.fromisoformat(expires_at)
+    if expires_at < datetime.now(timezone.utc):
+        raise HTTPException(status_code=400, detail="Verification expired. Please request a new code.")
+    
+    # Verify code
+    expected_code = verification.get('otp_code')
+    if code != expected_code:
+        raise HTTPException(status_code=400, detail="Invalid code")
+    
+    # Mark verification as verified
+    await db.verifications.update_one(
+        {"_id": verification["_id"]},
+        {"$set": {"verified": True}}
+    )
+    
+    # Create user account
+    user = User(
+        email=registration['email'],
+        full_name=registration['full_name'],
+        phone=registration['phone'],
+        company_name=registration['company_name'],
+        iin=registration['iin'],
+        legal_address=registration['legal_address'],
+        language=registration.get('language', 'ru')
+    )
+    
+    user_doc = user.model_dump()
+    user_doc['password'] = registration['password_hash']
+    user_doc['created_at'] = user_doc['created_at'].isoformat()
+    
+    await db.users.insert_one(user_doc)
+    
+    # Delete registration
+    await db.registrations.delete_one({"id": registration_id})
+    
+    # Generate token
+    token = create_jwt_token(user.id, user.email, user.role)
+    
+    await log_audit("user_registered", user_id=user.id, details=f"User {user.email} registered after Telegram verification")
+    
+    return {"token": token, "user": user, "verified": True}
+
 # ===== CONTRACT ROUTES =====
 @api_router.post("/contracts", response_model=Contract)
 async def create_contract(contract_data: ContractCreate, current_user: dict = Depends(get_current_user)):
