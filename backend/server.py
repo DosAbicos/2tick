@@ -809,7 +809,8 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             # Метод подписания (instead of IIN/BIN - aligned)
             p.drawString(right_x, y_right, "Метод подписания:")
             y_right -= 12
-            verification_method = contract.get('verification_method', 'N/A')
+            # Get verification_method from signature, fallback to contract
+            verification_method = signature.get('verification_method') or contract.get('verification_method', 'N/A')
             method_text = {
                 'sms': 'SMS',
                 'call': 'Входящий звонок',
@@ -818,14 +819,24 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             p.drawString(right_x, y_right, method_text)
             y_right -= 18
             
-            # Telegram ID (if applicable - instead of legal address - aligned)
-            p.drawString(right_x, y_right, "Telegram ID:")
-            y_right -= 12
-            if verification_method == 'telegram' and contract.get('telegram_username'):
-                p.drawString(right_x, y_right, f"@{contract.get('telegram_username')}")
+            # Telegram ID (ONLY show for Telegram method)
+            if verification_method == 'telegram':
+                p.drawString(right_x, y_right, "Telegram ID:")
+                y_right -= 12
+                # Get telegram_username from signature, fallback to contract
+                telegram_username = signature.get('telegram_username') or contract.get('telegram_username', '')
+                if telegram_username:
+                    # Add @ if not present
+                    if not telegram_username.startswith('@'):
+                        telegram_username = f"@{telegram_username}"
+                    p.drawString(right_x, y_right, telegram_username)
+                else:
+                    p.drawString(right_x, y_right, "Не указан")
+                y_right -= 18
             else:
-                p.drawString(right_x, y_right, "N/A")
-            y_right -= 18
+                # Skip Telegram ID section for SMS/Call to keep alignment
+                # Add placeholder space to keep alignment with landlord column
+                y_right -= 30
             
             # Дата подписания (aligned)
             p.drawString(right_x, y_right, "Дата подписания:")
