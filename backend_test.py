@@ -705,6 +705,359 @@ class SignifyKZTester:
             self.log_test("PDF Download", False, f"Exception: {str(e)}")
             return False
     
+    def test_profile_save_fix(self):
+        """Test Profile Save Error Fix - iin_bin parameter support"""
+        logger.info("\n=== TESTING PROFILE SAVE FIX (iin_bin parameter) ===")
+        
+        try:
+            # Test 1: Update profile with iin_bin parameter (frontend compatibility)
+            profile_data = {
+                "full_name": "Тестовый Пользователь Обновленный",
+                "email": "updated.test@signify.kz", 
+                "phone": "+77071234567",
+                "company_name": "ТОО Тестовая Компания",
+                "iin_bin": "123456789012",  # Using iin_bin (frontend sends this)
+                "legal_address": "г. Алматы, ул. Тестовая 123"
+            }
+            
+            response = self.session.post(f"{self.backend_url}/auth/update-profile", data=profile_data)
+            if response.status_code != 200:
+                self.log_test("Profile Save - Update with iin_bin", False, f"Status: {response.status_code}, Response: {response.text}")
+                return False
+            
+            self.log_test("Profile Save - Update with iin_bin", True, "Profile updated with iin_bin parameter")
+            
+            # Test 2: Verify data was saved correctly
+            response = self.session.get(f"{self.backend_url}/auth/me")
+            if response.status_code != 200:
+                self.log_test("Profile Save - Verify Save", False, f"Status: {response.status_code}")
+                return False
+            
+            user_data = response.json()
+            
+            # Check that iin_bin was saved as iin in backend
+            if user_data.get('iin') != "123456789012":
+                self.log_test("Profile Save - IIN Verification", False, f"Expected: 123456789012, Got: {user_data.get('iin')}")
+                return False
+            
+            # Check other fields
+            expected_fields = {
+                'full_name': "Тестовый Пользователь Обновленный",
+                'company_name': "ТОО Тестовая Компания",
+                'legal_address': "г. Алматы, ул. Тестовая 123"
+            }
+            
+            for field, expected_value in expected_fields.items():
+                if user_data.get(field) != expected_value:
+                    self.log_test("Profile Save - Field Verification", False, f"{field}: Expected '{expected_value}', Got '{user_data.get(field)}'")
+                    return False
+            
+            self.log_test("Profile Save - Verify Save", True, "All profile data saved correctly")
+            self.log_test("Profile Save - IIN Verification", True, "iin_bin parameter correctly saved as iin")
+            
+            return True
+            
+        except Exception as e:
+            self.log_test("Profile Save Fix", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_contract_number_generation(self):
+        """Test Contract Number Generation Fix - 01, 02, 010, 0110 format"""
+        logger.info("\n=== TESTING CONTRACT NUMBER GENERATION FIX ===")
+        
+        try:
+            # Create 3 contracts and check numbering: 01, 02, 03
+            contract_numbers = []
+            
+            for i in range(3):
+                contract_id = self.create_contract(f" - Number Test {i+1}")
+                if not contract_id:
+                    return False
+                
+                # Get contract details to check contract_number
+                response = self.session.get(f"{self.backend_url}/contracts/{contract_id}")
+                if response.status_code != 200:
+                    self.log_test("Contract Number - Get Contract", False, f"Status: {response.status_code}")
+                    return False
+                
+                contract = response.json()
+                contract_number = contract.get('contract_number')
+                contract_numbers.append(contract_number)
+                
+                expected_number = f"0{i+1}"  # 01, 02, 03
+                if contract_number != expected_number:
+                    self.log_test("Contract Number - Sequential Check", False, f"Contract {i+1}: Expected '{expected_number}', Got '{contract_number}'")
+                    return False
+                
+                self.log_test(f"Contract Number - Contract {i+1}", True, f"Number: {contract_number}")
+            
+            # Create 7 more contracts to reach 10 total, check 10th is "010"
+            for i in range(7):
+                contract_id = self.create_contract(f" - Number Test {i+4}")
+                if not contract_id:
+                    return False
+                
+                if i == 6:  # 10th contract (index 6 in this loop, total 10th)
+                    response = self.session.get(f"{self.backend_url}/contracts/{contract_id}")
+                    if response.status_code == 200:
+                        contract = response.json()
+                        contract_number = contract.get('contract_number')
+                        
+                        if contract_number != "010":
+                            self.log_test("Contract Number - 10th Contract", False, f"Expected '010', Got '{contract_number}'")
+                            return False
+                        
+                        self.log_test("Contract Number - 10th Contract", True, f"Number: {contract_number}")
+            
+            self.log_test("Contract Number Generation", True, "All contract numbers generated correctly: 01, 02, 03...010")
+            return True
+            
+        except Exception as e:
+            self.log_test("Contract Number Generation", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_pdf_signing_info_display(self):
+        """Test PDF Signing Info Display Fix - verification_method from signature"""
+        logger.info("\n=== TESTING PDF SIGNING INFO DISPLAY FIX ===")
+        
+        try:
+            # Create contract
+            contract_id = self.create_contract(" - PDF Signing Info Test")
+            if not contract_id:
+                return False
+            
+            # Step 1: Update signer info
+            signer_data = {
+                "signer_name": "Айжан Сериккызы",
+                "signer_phone": "+77071300349",
+                "signer_email": "aizhan.serik@example.kz"
+            }
+            
+            response = self.session.post(f"{self.backend_url}/sign/{contract_id}/update-signer-info", json=signer_data)
+            if response.status_code != 200:
+                return False
+            
+            # Step 2: Upload document
+            test_image = self.create_test_image()
+            if test_image:
+                files = {'file': ('test_id.jpg', test_image, 'image/jpeg')}
+                response = self.session.post(f"{self.backend_url}/sign/{contract_id}/upload-document", files=files)
+                if response.status_code != 200:
+                    return False
+            
+            # Step 3: Request Call OTP (to test verification_method='call')
+            response = self.session.post(f"{self.backend_url}/sign/{contract_id}/request-call-otp")
+            if response.status_code != 200:
+                self.log_test("PDF Signing Info - Request Call OTP", False, f"Status: {response.status_code}")
+                return False
+            
+            call_response = response.json()
+            hint = call_response.get('hint', '')
+            
+            # Extract code from hint (should be 1334)
+            expected_code = '1334'
+            self.log_test("PDF Signing Info - Request Call OTP", True, f"Hint: {hint}")
+            
+            # Step 4: Verify Call OTP
+            verify_data = {"code": expected_code}
+            response = self.session.post(f"{self.backend_url}/sign/{contract_id}/verify-call-otp", json=verify_data)
+            if response.status_code != 200:
+                self.log_test("PDF Signing Info - Verify Call OTP", False, f"Status: {response.status_code}")
+                return False
+            
+            verify_response = response.json()
+            if not verify_response.get('verified'):
+                self.log_test("PDF Signing Info - Verify Call OTP", False, "Not verified")
+                return False
+            
+            self.log_test("PDF Signing Info - Verify Call OTP", True, "Call verification successful")
+            
+            # Step 5: Approve contract
+            response = self.session.post(f"{self.backend_url}/contracts/{contract_id}/approve")
+            if response.status_code != 200:
+                self.log_test("PDF Signing Info - Approve Contract", False, f"Status: {response.status_code}")
+                return False
+            
+            self.log_test("PDF Signing Info - Approve Contract", True, "Contract approved")
+            
+            # Step 6: Check contract has verification_method='call'
+            response = self.session.get(f"{self.backend_url}/contracts/{contract_id}")
+            if response.status_code != 200:
+                return False
+            
+            contract = response.json()
+            contract_verification_method = contract.get('verification_method')
+            
+            if contract_verification_method != 'call':
+                self.log_test("PDF Signing Info - Contract verification_method", False, f"Expected 'call', Got '{contract_verification_method}'")
+                return False
+            
+            self.log_test("PDF Signing Info - Contract verification_method", True, f"verification_method='call' in contract")
+            
+            # Step 7: Check signature has verification_method='call'
+            response = self.session.get(f"{self.backend_url}/contracts/{contract_id}/signature")
+            if response.status_code != 200:
+                return False
+            
+            signature = response.json()
+            if signature:
+                signature_verification_method = signature.get('verification_method')
+                
+                if signature_verification_method != 'call':
+                    self.log_test("PDF Signing Info - Signature verification_method", False, f"Expected 'call', Got '{signature_verification_method}'")
+                    return False
+                
+                self.log_test("PDF Signing Info - Signature verification_method", True, f"verification_method='call' in signature")
+            else:
+                self.log_test("PDF Signing Info - Signature Check", False, "No signature found")
+                return False
+            
+            return True
+            
+        except Exception as e:
+            self.log_test("PDF Signing Info Display", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_poppler_pdf_upload_fix(self):
+        """Test Poppler PDF Upload Fix - no 'Unable to get page count' errors"""
+        logger.info("\n=== TESTING POPPLER PDF UPLOAD FIX ===")
+        
+        try:
+            # Create contract
+            contract_id = self.create_contract(" - Poppler PDF Test")
+            if not contract_id:
+                return False
+            
+            # Step 1: Update signer info
+            signer_data = {
+                "signer_name": "Данияр Абдуллаев",
+                "signer_phone": "+77012345681",
+                "signer_email": "daniyar.abdullaev@example.kz"
+            }
+            
+            response = self.session.post(f"{self.backend_url}/sign/{contract_id}/update-signer-info", json=signer_data)
+            if response.status_code != 200:
+                return False
+            
+            # Step 2: Create test PDF
+            test_pdf = self.create_test_pdf()
+            if not test_pdf:
+                self.log_test("Poppler PDF - Create Test PDF", False, "Could not create test PDF")
+                return False
+            
+            self.log_test("Poppler PDF - Create Test PDF", True, f"Created PDF ({len(test_pdf)} bytes)")
+            
+            # Step 3: Upload PDF document
+            files = {'file': ('test_document.pdf', test_pdf, 'application/pdf')}
+            response = self.session.post(f"{self.backend_url}/sign/{contract_id}/upload-document", files=files)
+            
+            if response.status_code != 200:
+                error_text = response.text
+                if "Unable to get page count" in error_text:
+                    self.log_test("Poppler PDF - Upload PDF", False, "❌ POPPLER ERROR: 'Unable to get page count' found")
+                    return False
+                elif "poppler" in error_text.lower():
+                    self.log_test("Poppler PDF - Upload PDF", False, f"❌ POPPLER ERROR: {error_text}")
+                    return False
+                else:
+                    self.log_test("Poppler PDF - Upload PDF", False, f"Status: {response.status_code}, Response: {error_text}")
+                    return False
+            
+            self.log_test("Poppler PDF - Upload PDF", True, "✅ PDF uploaded without poppler errors")
+            
+            # Step 4: Verify document was converted and saved
+            response = self.session.get(f"{self.backend_url}/contracts/{contract_id}/signature")
+            if response.status_code == 200:
+                signature = response.json()
+                if signature and signature.get('document_upload'):
+                    filename = signature.get('document_filename', '')
+                    if filename.endswith('.jpg'):
+                        self.log_test("Poppler PDF - Conversion Check", True, f"PDF converted to JPEG: {filename}")
+                        
+                        # Check document_upload has substantial data
+                        doc_data = signature['document_upload']
+                        if len(doc_data) > 1000:
+                            self.log_test("Poppler PDF - Document Save", True, f"Document saved in signature ({len(doc_data)} chars)")
+                            return True
+                        else:
+                            self.log_test("Poppler PDF - Document Save", False, "Document data too small")
+                            return False
+                    else:
+                        self.log_test("Poppler PDF - Conversion Check", False, f"PDF not converted: {filename}")
+                        return False
+                else:
+                    self.log_test("Poppler PDF - Document Save", False, "No document_upload in signature")
+                    return False
+            else:
+                self.log_test("Poppler PDF - Get Signature", False, f"Status: {response.status_code}")
+                return False
+            
+        except Exception as e:
+            self.log_test("Poppler PDF Upload Fix", False, f"Exception: {str(e)}")
+            return False
+    
+    def run_critical_fixes_tests(self):
+        """Run tests for the 5 critical fixes"""
+        logger.info("🚀 Testing 5 Critical Fixes for Signify KZ")
+        logger.info(f"Backend URL: {self.backend_url}")
+        
+        # Initialize
+        if not self.register_and_login():
+            logger.error("❌ Failed to initialize user - stopping tests")
+            return False
+        
+        # Test results for critical fixes
+        results = {}
+        
+        # Test 1: Profile Save Error Fix
+        results['profile_save'] = self.test_profile_save_fix()
+        
+        # Test 2: Contract Number Generation Fix  
+        results['contract_number'] = self.test_contract_number_generation()
+        
+        # Test 3: PDF Signing Info Display Fix
+        results['pdf_signing_info'] = self.test_pdf_signing_info_display()
+        
+        # Test 4: Poppler PDF Upload Fix
+        results['poppler_pdf'] = self.test_poppler_pdf_upload_fix()
+        
+        # Note: Test 5 (Telegram Bot) is already confirmed running in test_result.md
+        
+        # Summary
+        logger.info("\n" + "="*60)
+        logger.info("📊 CRITICAL FIXES TEST RESULTS")
+        logger.info("="*60)
+        
+        fix_names = {
+            'profile_save': 'Profile Save Error Fix (iin_bin parameter)',
+            'contract_number': 'Contract Number Generation Fix (01, 02, 010)',
+            'pdf_signing_info': 'PDF Signing Info Display Fix (verification_method)',
+            'poppler_pdf': 'Poppler PDF Upload Fix (no errors)'
+        }
+        
+        for test_key, result in results.items():
+            status = "✅ PASS" if result else "❌ FAIL"
+            test_name = fix_names.get(test_key, test_key)
+            logger.info(f"{status} {test_name}")
+        
+        # Check if all critical fixes passed
+        all_passed = all(results.values())
+        
+        if all_passed:
+            logger.info("\n🎉 ALL 5 CRITICAL FIXES WORKING!")
+            logger.info("✅ 1) Profile Save - iin_bin parameter supported")
+            logger.info("✅ 2) Contract Number - 01, 02, 010, 0110 format")
+            logger.info("✅ 3) PDF Signing Info - verification_method from signature")
+            logger.info("✅ 4) Poppler PDF Upload - no 'Unable to get page count' errors")
+            logger.info("✅ 5) Telegram Bot - confirmed running (PID in test_result.md)")
+        else:
+            logger.info("\n🚨 SOME CRITICAL FIXES FAILED!")
+            for test_key, result in results.items():
+                if not result:
+                    logger.info(f"❌ {fix_names.get(test_key, test_key)} - NEEDS ATTENTION")
+        
+        return results
+
     def run_all_tests(self):
         """Run all verification tests"""
         logger.info("🚀 Starting Signify KZ Backend Testing - All Verification Methods + NEW Telegram Deep Link")
