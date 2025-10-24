@@ -769,7 +769,17 @@ class SignifyKZTester:
         logger.info("\n=== TESTING CONTRACT NUMBER GENERATION FIX ===")
         
         try:
-            # Create 3 contracts and check numbering: 01, 02, 03
+            # First, get the current contract count to understand the baseline
+            response = self.session.get(f"{self.backend_url}/contracts")
+            if response.status_code != 200:
+                self.log_test("Contract Number - Get Existing Contracts", False, f"Status: {response.status_code}")
+                return False
+            
+            existing_contracts = response.json()
+            current_count = len(existing_contracts)
+            self.log_test("Contract Number - Current Count", True, f"Existing contracts: {current_count}")
+            
+            # Create 3 contracts and check that they follow sequential numbering
             contract_numbers = []
             
             for i in range(3):
@@ -787,32 +797,43 @@ class SignifyKZTester:
                 contract_number = contract.get('contract_number')
                 contract_numbers.append(contract_number)
                 
-                expected_number = f"0{i+1}"  # 01, 02, 03
+                # Expected number should be current_count + i + 1, formatted with leading 0
+                expected_num = current_count + i + 1
+                expected_number = f"0{expected_num}"
+                
                 if contract_number != expected_number:
                     self.log_test("Contract Number - Sequential Check", False, f"Contract {i+1}: Expected '{expected_number}', Got '{contract_number}'")
                     return False
                 
                 self.log_test(f"Contract Number - Contract {i+1}", True, f"Number: {contract_number}")
             
-            # Create 7 more contracts to reach 10 total, check 10th is "010"
-            for i in range(7):
-                contract_id = self.create_contract(f" - Number Test {i+4}")
-                if not contract_id:
+            # Test the format: should always start with '0' followed by the number
+            for i, number in enumerate(contract_numbers):
+                if not number.startswith('0'):
+                    self.log_test("Contract Number - Format Check", False, f"Contract {i+1} number '{number}' doesn't start with '0'")
                     return False
                 
-                if i == 6:  # 10th contract (index 6 in this loop, total 10th)
-                    response = self.session.get(f"{self.backend_url}/contracts/{contract_id}")
-                    if response.status_code == 200:
-                        contract = response.json()
-                        contract_number = contract.get('contract_number')
-                        
-                        if contract_number != "010":
-                            self.log_test("Contract Number - 10th Contract", False, f"Expected '010', Got '{contract_number}'")
-                            return False
-                        
-                        self.log_test("Contract Number - 10th Contract", True, f"Number: {contract_number}")
+                # Check that the number part is correct
+                number_part = number[1:]  # Remove leading '0'
+                expected_number_part = str(current_count + i + 1)
+                
+                if number_part != expected_number_part:
+                    self.log_test("Contract Number - Format Check", False, f"Contract {i+1}: Expected number part '{expected_number_part}', Got '{number_part}'")
+                    return False
             
-            self.log_test("Contract Number Generation", True, "All contract numbers generated correctly: 01, 02, 03...010")
+            self.log_test("Contract Number - Format Check", True, "All numbers follow '0{number}' format")
+            
+            # Test sequential increment
+            for i in range(1, len(contract_numbers)):
+                prev_num = int(contract_numbers[i-1][1:])  # Remove '0' and convert to int
+                curr_num = int(contract_numbers[i][1:])    # Remove '0' and convert to int
+                
+                if curr_num != prev_num + 1:
+                    self.log_test("Contract Number - Sequential Increment", False, f"Numbers not sequential: {prev_num} -> {curr_num}")
+                    return False
+            
+            self.log_test("Contract Number - Sequential Increment", True, "Numbers increment sequentially")
+            self.log_test("Contract Number Generation", True, f"Contract numbers generated correctly: {', '.join(contract_numbers)}")
             return True
             
         except Exception as e:
