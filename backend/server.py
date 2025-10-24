@@ -1024,8 +1024,6 @@ async def get_user_by_id(user_id: str, current_user: dict = Depends(get_current_
         "legal_address": user.get("legal_address")
     }
 
-from fastapi import Form
-
 @api_router.post("/auth/update-profile")
 async def update_profile(
     iin: Optional[str] = Form(None),
