@@ -38,13 +38,12 @@ const RegisterPage = () => {
     
     try {
       const response = await axios.post(`${API}/auth/register`, formData);
-      const { token, user } = response.data;
+      const { registration_id, message } = response.data;
       
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
+      toast.success(message || 'Регистрация создана. Подтвердите телефон.');
       
-      toast.success(t('common.success'));
-      navigate('/dashboard');
+      // Redirect to verification page
+      navigate(`/verify-registration/${registration_id}`);
     } catch (error) {
       toast.error(error.response?.data?.detail || t('common.error'));
     } finally {
