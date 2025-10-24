@@ -46,7 +46,7 @@ GET /api/sign/{contract_id}/telegram-deep-link
 **Ответ:**
 ```json
 {
-  "deep_link": "https://t.me/twotick_bot?start=550e8400-e29b-41d4-a716-446655440000",
+  "deep_link": "https://t.me/twotick_bot?start=signly",
   "bot_username": "twotick_bot",
   "contract_id": "550e8400-e29b-41d4-a716-446655440000"
 }
@@ -207,13 +207,13 @@ tail -f /var/log/supervisor/backend.err.log
 ### Тест через curl:
 ```bash
 # 1. Получить deep link
-curl -X GET https://signify-kz.preview.emergentagent.com/api/sign/CONTRACT_ID/telegram-deep-link
+curl -X GET https://signly.preview.emergentagent.com/api/sign/CONTRACT_ID/telegram-deep-link
 
 # 2. Открыть deep link в браузере или Telegram
 # Скопировать полученный код
 
 # 3. Верифицировать код
-curl -X POST https://signify-kz.preview.emergentagent.com/api/sign/CONTRACT_ID/verify-telegram-otp \
+curl -X POST https://signly.preview.emergentagent.com/api/sign/CONTRACT_ID/verify-telegram-otp \
   -H "Content-Type: application/json" \
   -d '{"code": "123456"}'
 ```

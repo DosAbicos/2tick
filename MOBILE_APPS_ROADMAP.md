@@ -129,7 +129,7 @@
 Мобильное приложение будет использовать тот же REST API, что и веб-версия:
 
 ```
-https://signify-kz.preview.emergentagent.com/api
+https://signly.preview.emergentagent.com/api
 ```
 
 ### Основные эндпоинты:
@@ -149,7 +149,7 @@ https://signify-kz.preview.emergentagent.com/api
 
 Клиенты **НЕ используют мобильное приложение**. Процесс подписания:
 
-1. Клиент получает SMS с ссылкой: `https://signify-kz.preview.emergentagent.com/sign/CONTRACT_ID`
+1. Клиент получает SMS с ссылкой: `https://signly.preview.emergentagent.com/sign/CONTRACT_ID`
 2. Открывает ссылку в любом браузере на телефоне/планшете/компьютере
 3. Просматривает договор
 4. Загружает фото удостоверения личности (через камеру или галерею)

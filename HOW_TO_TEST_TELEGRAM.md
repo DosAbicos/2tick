@@ -5,7 +5,7 @@
 ### Шаг 1: Откройте тестовую ссылку на телефоне
 
 ```
-https://signify-kz.preview.emergentagent.com/sign/0e552b84-03ca-4ad4-9c6a-1af9578a7951
+https://signly.preview.emergentagent.com/sign/0e552b84-03ca-4ad4-9c6a-1af9578a7951
 ```
 
 ### Шаг 2: Заполните форму
@@ -181,7 +181,7 @@ python3 start_telegram_bot.py > /tmp/telegram_bot.log 2>&1 &
 bash /tmp/create_test_contract.sh
 
 # Или создайте вручную через API
-curl -X POST https://signify-kz.preview.emergentagent.com/api/contracts \
+curl -X POST https://signly.preview.emergentagent.com/api/contracts \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
