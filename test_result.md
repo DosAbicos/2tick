@@ -152,15 +152,18 @@ backend:
 
   - task: "Переустановка poppler-utils для PDF конвертации"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "critical"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Установлен poppler-utils через apt-get install. Библиотека pdf2image теперь может конвертировать PDF в изображения. Backend перезапущен успешно."
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. Poppler PDF Upload Fix работает корректно: 1) POST /sign/{contract_id}/update-signer-info обновляет данные нанимателя, 2) Создан тестовый PDF документ (1595 bytes) с помощью reportlab, 3) POST /sign/{contract_id}/upload-document успешно загружает PDF без ошибок 'Unable to get page count' или других poppler ошибок (статус 200), 4) PDF корректно конвертируется в JPEG изображение (filename изменяется с .pdf на .jpg), 5) Конвертированное изображение сохраняется в signature.document_upload как base64 данные (49628 chars), 6) GET /contracts/{contract_id}/signature подтверждает успешное сохранение документа. ✅ ИСПРАВЛЕНА ПРОБЛЕМА: poppler-utils корректно установлен и работает без ошибок конвертации PDF."
 
 backend:
   - task: "Новый Telegram Deep Link подход для верификации"
