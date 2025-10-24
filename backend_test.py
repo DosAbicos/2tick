@@ -1123,4 +1123,13 @@ class SignifyKZTester:
 
 if __name__ == "__main__":
     tester = SignifyKZTester()
-    results = tester.run_all_tests()
+    
+    # Run critical fixes tests (as requested in review)
+    logger.info("🔧 RUNNING CRITICAL FIXES TESTS (5 fixes)")
+    critical_results = tester.run_critical_fixes_tests()
+    
+    # Also run comprehensive tests
+    logger.info("\n" + "="*60)
+    logger.info("🔄 RUNNING COMPREHENSIVE VERIFICATION TESTS")
+    logger.info("="*60)
+    all_results = tester.run_all_tests()
