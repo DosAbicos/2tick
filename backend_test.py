@@ -36,12 +36,15 @@ class SignifyKZTester:
     def register_and_login(self):
         """Register a test user and login"""
         try:
-            # Register user
+            # Register user with all required fields
             register_data = {
                 "email": "test.creator@signify.kz",
                 "password": "TestPassword123!",
                 "full_name": "Тестовый Создатель",
                 "phone": "+77012345678",
+                "company_name": "ТОО Тестовая Компания",
+                "iin": "123456789012",
+                "legal_address": "г. Алматы, ул. Тестовая 1",
                 "language": "ru"
             }
             
