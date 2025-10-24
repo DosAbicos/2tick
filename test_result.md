@@ -519,7 +519,12 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Исправление ошибки сохранения профиля"
+    - "Правильная генерация номера договора"
+    - "Улучшение отображения информации о подписании в PDF"
+    - "Переустановка poppler-utils для PDF конвертации"
+    - "Исправление ошибки в ProfilePage - undefined setIin"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
