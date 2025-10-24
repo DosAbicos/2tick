@@ -995,6 +995,7 @@ async def get_user_by_id(user_id: str, current_user: dict = Depends(get_current_
 @api_router.post("/auth/update-profile")
 async def update_profile(
     iin: Optional[str] = None,
+    iin_bin: Optional[str] = None,  # Support both iin and iin_bin from frontend
     company_name: Optional[str] = None,
     legal_address: Optional[str] = None,
     full_name: Optional[str] = None,
@@ -1003,8 +1004,13 @@ async def update_profile(
     current_user: dict = Depends(get_current_user)
 ):
     update_data = {}
-    if iin is not None:
+    
+    # Handle both iin and iin_bin parameters (frontend sends iin_bin, backend stores as iin)
+    if iin_bin is not None:
+        update_data['iin'] = iin_bin
+    elif iin is not None:
         update_data['iin'] = iin
+    
     if company_name is not None:
         update_data['company_name'] = company_name
     if legal_address is not None:
