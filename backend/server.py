@@ -1190,6 +1190,26 @@ async def get_contract(contract_id: str, current_user: dict = Depends(get_curren
         contract['updated_at'] = datetime.fromisoformat(contract['updated_at'])
     return Contract(**contract)
 
+@api_router.put("/contracts/{contract_id}")
+async def update_contract(contract_id: str, update_data: dict, current_user: dict = Depends(get_current_user)):
+    """Update contract fields"""
+    contract = await db.contracts.find_one({"id": contract_id})
+    if not contract:
+        raise HTTPException(status_code=404, detail="Contract not found")
+    
+    # Only allow updating certain fields
+    allowed_fields = ['title', 'content', 'signer_name', 'signer_phone', 'signer_email']
+    filtered_data = {k: v for k, v in update_data.items() if k in allowed_fields}
+    
+    if filtered_data:
+        filtered_data['updated_at'] = datetime.now(timezone.utc).isoformat()
+        await db.contracts.update_one(
+            {"id": contract_id},
+            {"$set": filtered_data}
+        )
+    
+    return {"message": "Contract updated"}
+
 @api_router.post("/contracts/{contract_id}/send")
 async def send_contract(contract_id: str, current_user: dict = Depends(get_current_user)):
     contract = await db.contracts.find_one({"id": contract_id})
