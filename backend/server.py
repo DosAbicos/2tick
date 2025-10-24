@@ -1039,11 +1039,17 @@ async def create_contract(contract_data: ContractCreate, current_user: dict = De
     user = await db.users.find_one({"user_id": current_user['user_id']})
     landlord_iin_bin = user.get('iin', '') if user else ''
     
+    # Generate sequential contract number with leading 0
+    # Get the count of existing contracts for this user
+    contract_count = await db.contracts.count_documents({"creator_id": current_user['user_id']})
+    contract_number = f"0{contract_count + 1}"  # Always starts with 0: 01, 02, 03...010, 011...
+    
     contract = Contract(
         title=contract_data.title,
         content=contract_data.content,
         content_type=contract_data.content_type,
         creator_id=current_user['user_id'],
+        contract_number=contract_number,  # Sequential number with leading 0
         signer_name=contract_data.signer_name or "",
         signer_phone=contract_data.signer_phone or "",
         signer_email=contract_data.signer_email,
