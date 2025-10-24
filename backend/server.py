@@ -710,8 +710,13 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             # ФИО / Название компании (aligned with tenant name)
             p.drawString(left_x, y_left, "Название компании:")
             y_left -= 12
-            if contract.get('landlord_name'):
-                p.drawString(left_x, y_left, contract.get('landlord_name', 'N/A'))
+            # Show company_name from landlord profile first, then contract
+            if landlord and landlord.get('company_name'):
+                p.drawString(left_x, y_left, landlord.get('company_name'))
+            elif contract.get('landlord_name'):
+                p.drawString(left_x, y_left, contract.get('landlord_name'))
+            else:
+                p.drawString(left_x, y_left, "Не указана")
             y_left -= 18
             
             # Представитель (aligned)
