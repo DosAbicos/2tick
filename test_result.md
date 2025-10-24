@@ -584,15 +584,18 @@ agent_communication:
 
   - task: "SMS верификация при регистрации"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Добавлены endpoints: POST /auth/registration/{registration_id}/request-otp - отправка SMS через Twilio, POST /auth/registration/{registration_id}/verify-otp - проверка кода и создание пользователя. Переиспользует функции send_otp_via_twilio() и verify_otp_via_twilio()."
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. SMS верификация при регистрации работает корректно: 1) POST /api/auth/registration/{registration_id}/request-otp?method=sms возвращает статус 200 с сообщением 'OTP sent via sms', 2) В fallback режиме (Twilio trial) возвращается mock_otp для тестирования, 3) POST /api/auth/registration/{registration_id}/verify-otp с правильным otp_code создает пользователя в коллекции users, 4) Возвращает JWT token, user объект и verified=true, 5) Временная запись удаляется из коллекции registrations после успешной верификации, 6) Пользователь создается с корректными данными (email, full_name, phone, company_name, iin, legal_address). ✅ СИСТЕМА РАБОТАЕТ: SMS верификация полностью функциональна с Twilio fallback режимом."
 
   - task: "Call верификация при регистрации"
     implemented: true
