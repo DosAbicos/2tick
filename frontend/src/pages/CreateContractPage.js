@@ -326,7 +326,7 @@ Email: ${templateData.tenant_email || '[Email]'}
       const isHtmlContent = isContentSaved && manualContent.includes('<');
       
       const contractData = {
-        title: `Договор № ${templateData.contract_number} от ${templateData.contract_date}`,
+        title: `Договор от ${templateData.contract_date}`,  // Temporary title, will be updated with backend contract_number
         content: contentToSave,
         content_type: isHtmlContent ? 'html' : 'plain', // Add metadata
         signer_name: templateData.tenant_name,
@@ -345,6 +345,15 @@ Email: ${templateData.tenant_email || '[Email]'}
       });
       
       const contractId = response.data.id;
+      const contractNumber = response.data.contract_number;  // Get contract number from backend
+      
+      // Update contract title with proper contract number from backend
+      if (contractNumber) {
+        await axios.put(`${API}/contracts/${contractId}`, 
+          { title: `Договор № ${contractNumber} от ${templateData.contract_date}` },
+          { headers: { Authorization: `Bearer ${token}` }}
+        );
+      }
       
       // Save template to localStorage for future use
       const templateToSave = {
