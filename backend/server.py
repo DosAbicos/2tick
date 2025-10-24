@@ -1826,14 +1826,17 @@ async def verify_telegram_otp(contract_id: str, data: dict):
     # Get telegram username from verification or bot
     telegram_username = verification.get('telegram_username', '')
     
-    # If not in verification, try to get from bot logs (user who received the code)
+    # If not in verification, try to get from signature
     if not telegram_username:
-        # For deep link, we need to get username from signature or use deep_link_user
         signature_full = await db.signatures.find_one({"contract_id": contract_id})
         telegram_username = signature_full.get('telegram_username', '') if signature_full else ''
     
-    telegram_identifier = telegram_username or 'deep_link_user'
-    signature_data = f"{contract_id}-{telegram_identifier}-{datetime.now(timezone.utc).isoformat()}"
+    # For signature hash - use username if available, otherwise just contract_id
+    if telegram_username:
+        signature_data = f"{contract_id}-{telegram_username}-{datetime.now(timezone.utc).isoformat()}"
+    else:
+        signature_data = f"{contract_id}-telegram-{datetime.now(timezone.utc).isoformat()}"
+    
     signature_hash = hashlib.sha256(signature_data.encode()).hexdigest()[:16].upper()
     
     await db.signatures.update_one(
@@ -1853,7 +1856,7 @@ async def verify_telegram_otp(contract_id: str, data: dict):
             "status": "pending-signature",
             "updated_at": datetime.now(timezone.utc).isoformat(),
             "verification_method": "telegram",
-            "telegram_username": telegram_username or telegram_identifier
+            "telegram_username": telegram_username if telegram_username else None
         }}
     )
     
