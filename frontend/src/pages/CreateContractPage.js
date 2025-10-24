@@ -554,18 +554,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                 {/* Contract Info */}
                 <div className="space-y-4">
                   <h3 className="font-semibold text-neutral-900 border-b pb-2">Информация о договоре</h3>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="contract_number">Номер договора *</Label>
-                      <Input
-                        id="contract_number"
-                        value={templateData.contract_number}
-                        onChange={(e) => handleFieldChange('contract_number', e.target.value)}
-                        required
-                        data-testid="contract-number-input"
-                        className="mt-1"
-                      />
-                    </div>
+                  <div className="grid grid-cols-1 gap-4">
                     <div>
                       <Label htmlFor="contract_date">Дата договора *</Label>
                       <Input
@@ -577,6 +566,9 @@ Email: ${templateData.tenant_email || '[Email]'}
                         data-testid="contract-date-input"
                         className="mt-1"
                       />
+                      <p className="text-sm text-neutral-500 mt-1">
+                        💡 Номер договора будет сгенерирован автоматически (01, 02, 010, 0110...)
+                      </p>
                     </div>
                   </div>
                 </div>
