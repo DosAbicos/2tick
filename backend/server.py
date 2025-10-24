@@ -766,6 +766,8 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             y_left -= 12
             if landlord and landlord.get('legal_address'):
                 p.drawString(left_x, y_left, landlord.get('legal_address'))
+            else:
+                p.drawString(left_x, y_left, "Не указан")
             y_left -= 18
             
             # Дата утверждения (aligned)
