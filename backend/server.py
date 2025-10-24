@@ -958,17 +958,24 @@ async def log_audit(action: str, contract_id: str = None, user_id: str = None, d
 # ===== AUTH ROUTES =====
 @api_router.post("/auth/register")
 async def register(user_data: UserCreate):
-    # Check if user exists
+    # Check if user already exists
     existing = await db.users.find_one({"email": user_data.email})
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
     
+    # Check if there's a pending registration with this email
+    pending = await db.registrations.find_one({"email": user_data.email})
+    if pending and not pending.get('verified'):
+        # Delete expired or unverified registration
+        await db.registrations.delete_one({"email": user_data.email})
+    
     # Hash password
     hashed_password = hash_password(user_data.password)
     
-    # Create user
-    user = User(
+    # Create temporary registration record
+    registration = Registration(
         email=user_data.email,
+        password_hash=hashed_password,
         full_name=user_data.full_name,
         phone=user_data.phone,
         company_name=user_data.company_name,
@@ -977,18 +984,19 @@ async def register(user_data: UserCreate):
         language=user_data.language
     )
     
-    user_doc = user.model_dump()
-    user_doc['password'] = hashed_password
-    user_doc['created_at'] = user_doc['created_at'].isoformat()
+    registration_doc = registration.model_dump()
+    registration_doc['created_at'] = registration_doc['created_at'].isoformat()
+    registration_doc['expires_at'] = registration_doc['expires_at'].isoformat()
     
-    await db.users.insert_one(user_doc)
+    await db.registrations.insert_one(registration_doc)
     
-    # Generate token
-    token = create_jwt_token(user.id, user.email, user.role)
+    await log_audit("registration_created", registration_id=registration.id, details=f"Registration created for {user_data.email}")
     
-    await log_audit("user_registered", user_id=user.id, details=f"User {user.email} registered")
-    
-    return {"token": token, "user": user}
+    return {
+        "registration_id": registration.id,
+        "phone": user_data.phone,
+        "message": "Registration created. Please verify your phone number."
+    }
 
 @api_router.post("/auth/login")
 async def login(credentials: UserLogin):
