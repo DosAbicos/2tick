@@ -870,11 +870,11 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
                     signed_at = signed_dt.strftime('%d.%m.%Y %H:%M')
                 except:
                     pass
-            p.drawString(right_x, y_right, signed_at)
+            p.drawString(tenant_x, y_tenant, signed_at)
         
         # Update y_position to continue below both columns
-        y_position = min(y_left if landlord_signature_hash else start_y, 
-                        y_right if (signature and signature.get('verified')) else start_y) - 20
+        y_position = min(y_landlord if landlord_signature_hash else start_y, 
+                        y_tenant if (signature and signature.get('verified')) else start_y) - 20
     
     p.save()
     pdf_buffer.seek(0)
