@@ -723,7 +723,7 @@ class SignifyKZTester:
                 "legal_address": "г. Алматы, ул. Тестовая 123"
             }
             
-            response = self.session.post(f"{self.backend_url}/auth/update-profile", json=profile_data)
+            response = self.session.post(f"{self.backend_url}/auth/update-profile", data=profile_data)
             if response.status_code != 200:
                 self.log_test("Profile Save - Update with iin_bin", False, f"Status: {response.status_code}, Response: {response.text}")
                 return False
