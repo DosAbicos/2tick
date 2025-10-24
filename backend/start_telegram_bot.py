@@ -41,7 +41,7 @@ def save_chat_ids(chat_ids):
         print(f"Error saving chat IDs: {e}")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Команда /start with deep link support and code regeneration"""
+    """Команда /start with deep link support for contracts and registrations"""
     username = update.effective_user.username
     chat_id = update.effective_chat.id
     
@@ -52,75 +52,131 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         save_chat_ids(chat_ids)
         print(f"✅ User {username} started bot, chat_id: {chat_id}")
     
-    # Check if this is a deep link with contract_id
+    # Check if this is a deep link
     if context.args and len(context.args) > 0:
-        contract_id = context.args[0]
-        print(f"🔗 Deep link detected: contract_id={contract_id}")
+        link_param = context.args[0]
+        print(f"🔗 Deep link detected: {link_param}")
         
         try:
             from datetime import datetime, timezone, timedelta
             import random
             
-            # Check if user has received codes for this contract before
-            # Count BEFORE generating new code
-            existing_codes_count = await db.verifications.count_documents({
-                "contract_id": contract_id,
-                "method": "telegram"
-            })
-            
-            is_first_time = (existing_codes_count == 0)
-            
-            print(f"📊 Contract {contract_id}: existing codes = {existing_codes_count}, is_first_time = {is_first_time}")
-            
-            # Send welcome message on first time only
-            if is_first_time:
-                await update.message.reply_text(
-                    "✅ *Добро пожаловать в Signify KZ!*\n\n"
-                    "Этот бот отправляет коды подтверждения для подписания договоров.\n\n"
-                    "Сейчас я отправлю вам код...",
-                    parse_mode='Markdown'
-                )
-                # Small delay for better UX
-                await asyncio.sleep(1)
-            
-            # Generate NEW code every time /start is pressed
-            new_otp_code = f"{random.randint(100000, 999999)}"
-            
-            # Store new verification with username
-            verification_data = {
-                "contract_id": contract_id,
-                "otp_code": new_otp_code,
-                "method": "telegram",
-                "telegram_username": username,  # Save username for verification
-                "created_at": datetime.now(timezone.utc).isoformat(),
-                "expires_at": (datetime.now(timezone.utc) + timedelta(minutes=10)).isoformat(),
-                "verified": False
-            }
-            
-            await db.verifications.insert_one(verification_data)
-            
-            # Send the code
-            if is_first_time:
-                # First time - more detailed message
-                message = (
-                    f"🔐 *Код подтверждения:*\n\n"
-                    f"`{new_otp_code}`\n\n"
-                    f"📋 Нажмите на код чтобы скопировать\n"
-                    f"🔄 Вернитесь на сайт и вставьте код\n\n"
-                    f"⚠️ Код действителен 10 минут\n\n"
-                    f"💡 Нужен новый код? Просто нажмите /start снова"
-                )
+            # Check if this is a registration link (starts with "reg_")
+            if link_param.startswith("reg_"):
+                registration_id = link_param[4:]  # Remove "reg_" prefix
+                print(f"📝 Registration verification: registration_id={registration_id}")
+                
+                # Check if user has received codes for this registration before
+                existing_codes_count = await db.verifications.count_documents({
+                    "registration_id": registration_id,
+                    "method": "telegram"
+                })
+                
+                is_first_time = (existing_codes_count == 0)
+                
+                print(f"📊 Registration {registration_id}: existing codes = {existing_codes_count}, is_first_time = {is_first_time}")
+                
+                # Send welcome message on first time only
+                if is_first_time:
+                    await update.message.reply_text(
+                        "✅ *Добро пожаловать в Signify KZ!*\n\n"
+                        "Подтверждение регистрации через Telegram.\n\n"
+                        "Сейчас я отправлю вам код...",
+                        parse_mode='Markdown'
+                    )
+                    await asyncio.sleep(1)
+                
+                # Generate NEW code every time /start is pressed
+                new_otp_code = f"{random.randint(100000, 999999)}"
+                
+                # Store new verification
+                verification_data = {
+                    "registration_id": registration_id,
+                    "otp_code": new_otp_code,
+                    "method": "telegram",
+                    "telegram_username": username,
+                    "created_at": datetime.now(timezone.utc).isoformat(),
+                    "expires_at": (datetime.now(timezone.utc) + timedelta(minutes=10)).isoformat(),
+                    "verified": False
+                }
+                
+                await db.verifications.insert_one(verification_data)
+                
+                # Send the code
+                if is_first_time:
+                    message = (
+                        f"🔐 *Код подтверждения регистрации:*\n\n"
+                        f"`{new_otp_code}`\n\n"
+                        f"📋 Нажмите на код чтобы скопировать\n"
+                        f"🔄 Вернитесь на сайт и вставьте код\n\n"
+                        f"⚠️ Код действителен 10 минут\n\n"
+                        f"💡 Нужен новый код? Просто нажмите /start снова"
+                    )
+                else:
+                    message = (
+                        f"🔐 *Новый код регистрации:*\n\n"
+                        f"`{new_otp_code}`\n\n"
+                        f"⚠️ Действителен 10 минут"
+                    )
+                
+                await update.message.reply_text(message, parse_mode='Markdown')
+                print(f"✅ Generated and sent NEW OTP {new_otp_code} to {username} for registration {registration_id} (Request #{existing_codes_count + 1})")
+                
             else:
-                # Subsequent times - just the code
-                message = (
-                    f"🔐 *Новый код:*\n\n"
-                    f"`{new_otp_code}`\n\n"
-                    f"⚠️ Действителен 10 минут"
-                )
-            
-            await update.message.reply_text(message, parse_mode='Markdown')
-            
-            print(f"✅ Generated and sent NEW OTP {new_otp_code} to {username} for contract {contract_id} (Request #{existing_codes_count + 1})")
+                # Contract verification (existing logic)
+                contract_id = link_param
+                print(f"📄 Contract verification: contract_id={contract_id}")
+                
+                existing_codes_count = await db.verifications.count_documents({
+                    "contract_id": contract_id,
+                    "method": "telegram"
+                })
+                
+                is_first_time = (existing_codes_count == 0)
+                
+                print(f"📊 Contract {contract_id}: existing codes = {existing_codes_count}, is_first_time = {is_first_time}")
+                
+                if is_first_time:
+                    await update.message.reply_text(
+                        "✅ *Добро пожаловать в Signify KZ!*\n\n"
+                        "Этот бот отправляет коды подтверждения для подписания договоров.\n\n"
+                        "Сейчас я отправлю вам код...",
+                        parse_mode='Markdown'
+                    )
+                    await asyncio.sleep(1)
+                
+                new_otp_code = f"{random.randint(100000, 999999)}"
+                
+                verification_data = {
+                    "contract_id": contract_id,
+                    "otp_code": new_otp_code,
+                    "method": "telegram",
+                    "telegram_username": username,
+                    "created_at": datetime.now(timezone.utc).isoformat(),
+                    "expires_at": (datetime.now(timezone.utc) + timedelta(minutes=10)).isoformat(),
+                    "verified": False
+                }
+                
+                await db.verifications.insert_one(verification_data)
+                
+                if is_first_time:
+                    message = (
+                        f"🔐 *Код подтверждения:*\n\n"
+                        f"`{new_otp_code}`\n\n"
+                        f"📋 Нажмите на код чтобы скопировать\n"
+                        f"🔄 Вернитесь на сайт и вставьте код\n\n"
+                        f"⚠️ Код действителен 10 минут\n\n"
+                        f"💡 Нужен новый код? Просто нажмите /start снова"
+                    )
+                else:
+                    message = (
+                        f"🔐 *Новый код:*\n\n"
+                        f"`{new_otp_code}`\n\n"
+                        f"⚠️ Действителен 10 минут"
+                    )
+                
+                await update.message.reply_text(message, parse_mode='Markdown')
+                print(f"✅ Generated and sent NEW OTP {new_otp_code} to {username} for contract {contract_id} (Request #{existing_codes_count + 1})")
             
         except Exception as e:
             print(f"❌ Error generating OTP: {e}")
@@ -133,8 +189,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # Regular /start without deep link
         await update.message.reply_text(
             "✅ *Добро пожаловать в Signify KZ!*\n\n"
-            "Этот бот отправляет коды подтверждения для подписания договоров.\n\n"
-            "🔗 Для получения кода нажмите кнопку *'Получить код в Telegram'* на сайте при подписании договора.",
+            "Этот бот отправляет коды подтверждения для:\n"
+            "• Регистрации на сайте\n"
+            "• Подписания договоров\n\n"
+            "🔗 Для получения кода используйте кнопку на сайте.",
             parse_mode='Markdown'
         )
 
