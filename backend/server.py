@@ -1024,15 +1024,17 @@ async def get_user_by_id(user_id: str, current_user: dict = Depends(get_current_
         "legal_address": user.get("legal_address")
     }
 
+from fastapi import Form
+
 @api_router.post("/auth/update-profile")
 async def update_profile(
-    iin: Optional[str] = None,
-    iin_bin: Optional[str] = None,  # Support both iin and iin_bin from frontend
-    company_name: Optional[str] = None,
-    legal_address: Optional[str] = None,
-    full_name: Optional[str] = None,
-    email: Optional[str] = None,
-    phone: Optional[str] = None,
+    iin: Optional[str] = Form(None),
+    iin_bin: Optional[str] = Form(None),  # Support both iin and iin_bin from frontend
+    company_name: Optional[str] = Form(None),
+    legal_address: Optional[str] = Form(None),
+    full_name: Optional[str] = Form(None),
+    email: Optional[str] = Form(None),
+    phone: Optional[str] = Form(None),
     current_user: dict = Depends(get_current_user)
 ):
     logging.info(f"🔥 DEBUG update_profile: iin={iin}, iin_bin={iin_bin}, company_name={company_name}, user_id={current_user['user_id']}")
