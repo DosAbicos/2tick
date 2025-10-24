@@ -629,15 +629,18 @@ agent_communication:
 
   - task: "Telegram бот для регистрации"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/start_telegram_bot.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Обновлена функция start() в telegram боте для обработки двух типов deep links: 1) reg_{registration_id} - для регистрации, 2) {contract_id} - для контрактов. Бот генерирует и отправляет OTP код соответствующего типа."
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. Telegram бот для регистрации готов к работе: 1) Бот обновлен для обработки deep links формата 'reg_{registration_id}' для регистрации, 2) Deep link генерируется корректно с правильным форматом https://t.me/twotick_bot?start=reg_{registration_id}, 3) OTP код pre-генерируется при запросе deep link и сохраняется в коллекции verifications, 4) Система готова к получению кодов от бота и верификации пользователей, 5) Бот может различать между регистрацией (reg_) и контрактами (без префикса). ✅ ИНТЕГРАЦИЯ ГОТОВА: Telegram бот полностью интегрирован с системой регистрации и готов отправлять OTP коды пользователям."
 
 frontend:
   - task: "Страница верификации регистрации"
