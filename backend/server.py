@@ -748,8 +748,13 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             # ИИН/БИН (aligned)
             p.drawString(left_x, y_left, "ИИН/БИН:")
             y_left -= 12
-            if contract.get('landlord_iin_bin'):
+            # Show IIN from landlord profile first, then contract
+            if landlord and landlord.get('iin'):
+                p.drawString(left_x, y_left, landlord.get('iin'))
+            elif contract.get('landlord_iin_bin'):
                 p.drawString(left_x, y_left, contract.get('landlord_iin_bin'))
+            else:
+                p.drawString(left_x, y_left, "Не указан")
             y_left -= 18
             
             # Юридический адрес (aligned)
