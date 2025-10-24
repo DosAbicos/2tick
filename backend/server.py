@@ -990,7 +990,7 @@ async def register(user_data: UserCreate):
     
     await db.registrations.insert_one(registration_doc)
     
-    await log_audit("registration_created", registration_id=registration.id, details=f"Registration created for {user_data.email}")
+    await log_audit("registration_created", details=f"Registration created for {user_data.email}, registration_id: {registration.id}")
     
     return {
         "registration_id": registration.id,
