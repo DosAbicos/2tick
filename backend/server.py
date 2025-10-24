@@ -758,7 +758,7 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
                     pass
             p.drawString(left_x, y_left, approved_at)
         
-        # RIGHT COLUMN - Наниматель
+        # RIGHT COLUMN - Наниматель (aligned with left column)
         if signature and signature.get('verified'):
             y_right = start_y
             try:
@@ -766,46 +766,67 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             except:
                 p.setFont("Helvetica-Bold", 10)
             p.drawString(right_x, y_right, "Подпись Нанимателя:")
-            y_right -= 15
+            y_right -= 20
             
             try:
                 p.setFont("DejaVu", 9)
             except:
                 p.setFont("Helvetica", 9)
             
-            # Signature hash
+            # Код-ключ подписи (aligned)
+            p.drawString(right_x, y_right, "Код-ключ подписи:")
+            y_right -= 12
             p.drawString(right_x, y_right, signature.get('signature_hash', 'N/A'))
-            y_right -= 15
+            y_right -= 18
             
-            # Full name
+            # ФИО нанимателя (aligned)
+            p.drawString(right_x, y_right, "ФИО нанимателя:")
+            y_right -= 12
             p.drawString(right_x, y_right, contract.get('signer_name', 'N/A'))
-            y_right -= 15
+            y_right -= 18
             
-            # Phone
-            p.drawString(right_x, y_right, f"Телефон: {contract.get('signer_phone', 'N/A')}")
-            y_right -= 15
+            # Представитель - skip for tenant to keep alignment
+            y_right -= 30  # Skip this section
             
-            # Email
+            # Телефон (aligned)
+            p.drawString(right_x, y_right, "Телефон:")
+            y_right -= 12
+            p.drawString(right_x, y_right, contract.get('signer_phone', 'N/A'))
+            y_right -= 18
+            
+            # Email (aligned)
+            p.drawString(right_x, y_right, "Email:")
+            y_right -= 12
             if contract.get('signer_email'):
-                p.drawString(right_x, y_right, f"Email: {contract.get('signer_email')}")
-                y_right -= 15
+                p.drawString(right_x, y_right, contract.get('signer_email'))
+            else:
+                p.drawString(right_x, y_right, "Не указан")
+            y_right -= 18
             
-            # Verification method
+            # Метод подписания (instead of IIN/BIN - aligned)
+            p.drawString(right_x, y_right, "Метод подписания:")
+            y_right -= 12
             verification_method = contract.get('verification_method', 'N/A')
             method_text = {
                 'sms': 'SMS',
                 'call': 'Входящий звонок',
                 'telegram': 'Telegram'
             }.get(verification_method, verification_method)
-            p.drawString(right_x, y_right, f"Метод подписания: {method_text}")
-            y_right -= 15
+            p.drawString(right_x, y_right, method_text)
+            y_right -= 18
             
-            # Telegram ID if applicable
+            # Telegram ID (if applicable - instead of legal address - aligned)
+            p.drawString(right_x, y_right, "Telegram ID:")
+            y_right -= 12
             if verification_method == 'telegram' and contract.get('telegram_username'):
-                p.drawString(right_x, y_right, f"Telegram: @{contract.get('telegram_username')}")
-                y_right -= 15
+                p.drawString(right_x, y_right, f"@{contract.get('telegram_username')}")
+            else:
+                p.drawString(right_x, y_right, "N/A")
+            y_right -= 18
             
-            # Signing date
+            # Дата подписания (aligned)
+            p.drawString(right_x, y_right, "Дата подписания:")
+            y_right -= 12
             signed_at = signature.get('signed_at', 'N/A')
             if signed_at != 'N/A':
                 try:
@@ -813,7 +834,7 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
                     signed_at = signed_dt.strftime('%d.%m.%Y %H:%M')
                 except:
                     pass
-            p.drawString(right_x, y_right, f"Дата подписания: {signed_at}")
+            p.drawString(right_x, y_right, signed_at)
         
         # Update y_position to continue below both columns
         y_position = min(y_left if landlord_signature_hash else start_y, 
