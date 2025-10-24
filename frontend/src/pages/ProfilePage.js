@@ -41,20 +41,28 @@ const ProfilePage = () => {
   const handleSaveProfile = async () => {
     setSaving(true);
     try {
+      // Backend expects form-data, not JSON
+      const formData = new FormData();
+      formData.append('full_name', user.full_name || '');
+      formData.append('email', user.email || '');
+      formData.append('phone', user.phone || '');
+      formData.append('company_name', user.company_name || '');
+      formData.append('iin', user.iin || '');
+      formData.append('legal_address', user.legal_address || '');
+      
       await axios.post(`${API}/auth/update-profile`, 
-        {
-          full_name: user.full_name,
-          email: user.email,
-          phone: user.phone,
-          company_name: user.company_name,
-          iin: user.iin,
-          legal_address: user.legal_address
-        },
-        { headers: { Authorization: `Bearer ${token}` }}
+        formData,
+        { 
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data'
+          }
+        }
       );
       toast.success('Профиль обновлен');
       fetchUser();
     } catch (error) {
+      console.error('Profile update error:', error);
       toast.error(t('common.error'));
     } finally {
       setSaving(false);
