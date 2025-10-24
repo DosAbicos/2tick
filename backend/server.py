@@ -703,77 +703,77 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
                 p.setFont("Helvetica", 9)
             
             # Код-ключ (aligned)
-            p.drawString(left_x, y_left, "Код-ключ утверждения:")
-            y_left -= 12
-            p.drawString(left_x, y_left, landlord_signature_hash)
-            y_left -= 18
+            p.drawString(landlord_x, y_landlord, "Код-ключ утверждения:")
+            y_landlord -= 12
+            p.drawString(landlord_x, y_landlord, landlord_signature_hash)
+            y_landlord -= 18
             
             # ФИО / Название компании (aligned with tenant name)
-            p.drawString(left_x, y_left, "Название компании:")
-            y_left -= 12
+            p.drawString(landlord_x, y_landlord, "Название компании:")
+            y_landlord -= 12
             # Show company_name from landlord profile first, then contract
             if landlord and landlord.get('company_name'):
-                p.drawString(left_x, y_left, landlord.get('company_name'))
+                p.drawString(landlord_x, y_landlord, landlord.get('company_name'))
             elif contract.get('landlord_name'):
-                p.drawString(left_x, y_left, contract.get('landlord_name'))
+                p.drawString(landlord_x, y_landlord, contract.get('landlord_name'))
             else:
-                p.drawString(left_x, y_left, "Не указана")
-            y_left -= 18
+                p.drawString(landlord_x, y_landlord, "Не указана")
+            y_landlord -= 18
             
             # Представитель (aligned)
-            p.drawString(left_x, y_left, "Представитель:")
-            y_left -= 12
+            p.drawString(landlord_x, y_landlord, "Представитель:")
+            y_landlord -= 12
             # Show landlord's full_name from profile if available
             if landlord and landlord.get('full_name'):
-                p.drawString(left_x, y_left, landlord.get('full_name'))
+                p.drawString(landlord_x, y_landlord, landlord.get('full_name'))
             elif contract.get('landlord_representative'):
-                p.drawString(left_x, y_left, contract.get('landlord_representative'))
+                p.drawString(landlord_x, y_landlord, contract.get('landlord_representative'))
             else:
-                p.drawString(left_x, y_left, "Не указан")
-            y_left -= 18
+                p.drawString(landlord_x, y_landlord, "Не указан")
+            y_landlord -= 18
             
             # Телефон (aligned with tenant phone)
-            p.drawString(left_x, y_left, "Телефон:")
-            y_left -= 12
+            p.drawString(landlord_x, y_landlord, "Телефон:")
+            y_landlord -= 12
             if landlord and landlord.get('phone'):
-                p.drawString(left_x, y_left, landlord.get('phone'))
+                p.drawString(landlord_x, y_landlord, landlord.get('phone'))
             else:
-                p.drawString(left_x, y_left, "Не указан")
-            y_left -= 18
+                p.drawString(landlord_x, y_landlord, "Не указан")
+            y_landlord -= 18
             
             # Email (aligned with tenant email)
-            p.drawString(left_x, y_left, "Email:")
-            y_left -= 12
+            p.drawString(landlord_x, y_landlord, "Email:")
+            y_landlord -= 12
             if landlord and landlord.get('email'):
-                p.drawString(left_x, y_left, landlord.get('email'))
+                p.drawString(landlord_x, y_landlord, landlord.get('email'))
             else:
-                p.drawString(left_x, y_left, "Не указан")
-            y_left -= 18
+                p.drawString(landlord_x, y_landlord, "Не указан")
+            y_landlord -= 18
             
             # ИИН/БИН (aligned)
-            p.drawString(left_x, y_left, "ИИН/БИН:")
-            y_left -= 12
+            p.drawString(landlord_x, y_landlord, "ИИН/БИН:")
+            y_landlord -= 12
             # Show IIN from landlord profile first, then contract
             if landlord and landlord.get('iin'):
-                p.drawString(left_x, y_left, landlord.get('iin'))
+                p.drawString(landlord_x, y_landlord, landlord.get('iin'))
             elif contract.get('landlord_iin_bin'):
-                p.drawString(left_x, y_left, contract.get('landlord_iin_bin'))
+                p.drawString(landlord_x, y_landlord, contract.get('landlord_iin_bin'))
             else:
-                p.drawString(left_x, y_left, "Не указан")
-            y_left -= 18
+                p.drawString(landlord_x, y_landlord, "Не указан")
+            y_landlord -= 18
             
             # Юридический адрес (aligned)
-            p.drawString(left_x, y_left, "Юридический адрес:")
-            y_left -= 12
+            p.drawString(landlord_x, y_landlord, "Юридический адрес:")
+            y_landlord -= 12
             if landlord and landlord.get('legal_address'):
-                p.drawString(left_x, y_left, landlord.get('legal_address'))
+                p.drawString(landlord_x, y_landlord, landlord.get('legal_address'))
             else:
-                p.drawString(left_x, y_left, "Не указан")
-            y_left -= 18
+                p.drawString(landlord_x, y_landlord, "Не указан")
+            y_landlord -= 18
             
             # Дата утверждения (aligned)
-            p.drawString(left_x, y_left, "Дата утверждения:")
-            y_left -= 12
+            p.drawString(landlord_x, y_landlord, "Дата утверждения:")
+            y_landlord -= 12
             approved_at = contract.get('approved_at', 'N/A')
             if approved_at != 'N/A':
                 try:
@@ -781,7 +781,7 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
                     approved_at = approved_dt.strftime('%d.%m.%Y %H:%M')
                 except:
                     pass
-            p.drawString(left_x, y_left, approved_at)
+            p.drawString(landlord_x, y_landlord, approved_at)
         
         # RIGHT COLUMN - Наниматель (aligned with left column)
         if signature and signature.get('verified'):
