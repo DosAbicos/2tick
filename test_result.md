@@ -401,6 +401,18 @@ backend:
         comment: "✅ ПРОБЛЕМА ИСПРАВЛЕНА: Добавлен fallback механизм для Telegram API аналогично Twilio. При ошибках 'Chat not found', 'User not found', 'Forbidden', 'Unauthorized' система переключается в mock режим. Обновлен Telegram бот для сохранения chat_id пользователей в /tmp/telegram_chat_ids.json. Теперь POST /api/sign/{contract_id}/request-telegram-otp с телом {'telegram_username': 'ngzadl'} возвращает статус 200 с message 'Код отправлен в Telegram @ngzadl' и mock_otp для тестирования."
 
 frontend:
+  - task: "Исправление ошибки в ProfilePage - undefined setIin"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/ProfilePage.js"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Исправлена ошибка в fetchUser() - удалена строка setIin(response.data.iin || '') так как переменная setIin не была определена. Данные IIN уже доступны через user.iin. Профиль теперь должен загружаться и сохраняться без ошибок."
+
   - task: "Сохранение и загрузка шаблонов договоров"
     implemented: true
     working: "NA"
