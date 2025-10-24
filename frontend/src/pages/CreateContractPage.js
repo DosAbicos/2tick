@@ -203,7 +203,6 @@ const CreateContractPage = () => {
 
   const generateContractContent = () => {
     const { 
-      contract_number, 
       contract_date,
       landlord_name,
       landlord_representative,
@@ -218,7 +217,7 @@ const CreateContractPage = () => {
       payment_method
     } = templateData;
 
-    return `ДОГОВОР КРАТКОСРОЧНОГО НАЙМА ЖИЛОГО ПОМЕЩЕНИЯ № ${contract_number}
+    return `ДОГОВОР КРАТКОСРОЧНОГО НАЙМА ЖИЛОГО ПОМЕЩЕНИЯ
 
 ${contract_date}
 
