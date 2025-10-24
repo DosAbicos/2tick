@@ -1194,7 +1194,7 @@ async def request_registration_otp(registration_id: str, method: str = "sms"):
         {"$set": update_data}
     )
     
-    await log_audit("registration_otp_requested", registration_id=registration_id, details=f"Method: {method}, Phone: {phone}")
+    await log_audit("registration_otp_requested", details=f"Method: {method}, Phone: {phone}, registration_id: {registration_id}")
     
     response = {"message": f"OTP sent via {method}"}
     # Include mock OTP only in development/fallback mode
