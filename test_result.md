@@ -562,3 +562,103 @@ agent_communication:
     message: "🔧 ИСПРАВЛЕНЫ ВСЕ 5 КРИТИЧЕСКИХ ПРОБЛЕМ ПОЛЬЗОВАТЕЛЯ: 1) Profile Save - Добавлена поддержка параметра iin_bin в /auth/update-profile, исправлена ошибка setIin в ProfilePage.js, 2) Contract Number - Добавлено поле contract_number в модель Contract, реализована генерация 01, 02, 010, 0110, 3) PDF Signing Info Display - verification_method/telegram_username берутся из signature, Telegram ID показывается только для Telegram, отображаются landlord.full_name/company_name/iin из профиля, добавлены fallback тексты, 4) Poppler - Переустановлен poppler-utils для PDF конвертации, 5) Telegram Bot - Подтверждено что бот запущен (PID 123). Backend перезапущен успешно. Готов к тестированию всех исправлений."
   - agent: "testing"
     message: "🎉 ВСЕ 5 КРИТИЧЕСКИХ ИСПРАВЛЕНИЙ ПРОТЕСТИРОВАНЫ И РАБОТАЮТ! Проведено полное тестирование всех критических исправлений по запросу пользователя: ✅ 1) PROFILE SAVE ERROR FIX - POST /auth/update-profile с параметром iin_bin корректно сохраняет данные (исправлен Form() wrapper для form-data), ✅ 2) CONTRACT NUMBER GENERATION FIX - номера договоров генерируются в правильном формате '0{number}' последовательно, ✅ 3) PDF SIGNING INFO DISPLAY FIX - verification_method корректно берется из signature и отображается в contract, ✅ 4) POPPLER PDF UPLOAD FIX - PDF документы загружаются и конвертируются без ошибок 'Unable to get page count', ✅ 5) TELEGRAM BOT - подтвержден запущенным (из test_result.md). ✅ ДОПОЛНИТЕЛЬНО ПРОТЕСТИРОВАНЫ: SMS верификация, Call верификация, Telegram Deep Link, PDF конвертация, PDF скачивание - все работают корректно. Система готова к продакшену!"
+  - agent: "main"
+    message: "📝 РЕАЛИЗОВАНА ВЕРИФИКАЦИЯ ТЕЛЕФОНА ПРИ РЕГИСТРАЦИИ: 1) Backend: Создана модель Registration для временного хранения данных регистрации, модифицирован /auth/register для создания временной записи вместо пользователя, добавлены endpoints для верификации: request-otp (SMS), verify-otp, request-call-otp, verify-call-otp, telegram-deep-link, verify-telegram-otp. 2) Telegram Bot: Обновлен для обработки как контрактов так и регистраций (deep link формат: reg_{registration_id}). 3) Frontend: Создана страница VerifyRegistrationPage.js с UI для выбора метода верификации (SMS/Call/Telegram), модифицирован RegisterPage.js для перенаправления на верификацию, добавлен роут в App.js. 4) После успешной верификации создается пользователь и выдается JWT токен. Backend и Telegram бот перезапущены успешно. Готов к тестированию!"
+
+  - task: "Регистрация с созданием временной записи"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Модифицирован endpoint POST /auth/register - теперь создает временную запись в коллекции registrations вместо создания пользователя. Возвращает registration_id для следующего шага верификации. Временная запись истекает через 30 минут."
+
+  - task: "SMS верификация при регистрации"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Добавлены endpoints: POST /auth/registration/{registration_id}/request-otp - отправка SMS через Twilio, POST /auth/registration/{registration_id}/verify-otp - проверка кода и создание пользователя. Переиспользует функции send_otp_via_twilio() и verify_otp_via_twilio()."
+
+  - task: "Call верификация при регистрации"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Добавлены endpoints: POST /auth/registration/{registration_id}/request-call-otp - входящий звонок через Twilio, POST /auth/registration/{registration_id}/verify-call-otp - проверка последних 4 цифр и создание пользователя."
+
+  - task: "Telegram верификация при регистрации"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Добавлены endpoints: GET /auth/registration/{registration_id}/telegram-deep-link - генерация deep link формата https://t.me/twotick_bot?start=reg_{registration_id}, POST /auth/registration/{registration_id}/verify-telegram-otp - проверка кода и создание пользователя."
+
+  - task: "Telegram бот для регистрации"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/start_telegram_bot.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Обновлена функция start() в telegram боте для обработки двух типов deep links: 1) reg_{registration_id} - для регистрации, 2) {contract_id} - для контрактов. Бот генерирует и отправляет OTP код соответствующего типа."
+
+frontend:
+  - task: "Страница верификации регистрации"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/VerifyRegistrationPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Создана новая страница VerifyRegistrationPage.js с полным UI для верификации через SMS/Call/Telegram. Переиспользует компоненты из SignContractPage.js. Включает: выбор метода, кнопки запроса OTP с кулдаунами, поля ввода кодов, Telegram deep link, success экран."
+
+  - task: "Модификация RegisterPage для верификации"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/RegisterPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Модифицирован handleSubmit в RegisterPage.js - после успешной регистрации перенаправляет на /verify-registration/{registration_id} вместо dashboard."
+
+  - task: "Роут для страницы верификации"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Добавлен импорт VerifyRegistrationPage и новый роут /verify-registration/:registration_id в App.js."
+
