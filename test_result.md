@@ -569,15 +569,18 @@ agent_communication:
 
   - task: "Регистрация с созданием временной записи"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Модифицирован endpoint POST /auth/register - теперь создает временную запись в коллекции registrations вместо создания пользователя. Возвращает registration_id для следующего шага верификации. Временная запись истекает через 30 минут."
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. Регистрация с созданием временной записи работает корректно: 1) POST /api/auth/register создает временную запись в коллекции registrations (НЕ создает пользователя сразу), 2) Возвращает корректную структуру ответа с registration_id, phone, message, 3) Временная запись содержит все необходимые поля (email, password_hash, full_name, phone, company_name, iin, legal_address), 4) Запись истекает через 30 минут (expires_at установлен корректно), 5) Пользователь НЕ создается в коллекции users до верификации телефона. ✅ ИСПРАВЛЕНА ПРОБЛЕМА: Исправлены вызовы log_audit() - убран несуществующий параметр registration_id, используется details для логирования."
 
   - task: "SMS верификация при регистрации"
     implemented: true
