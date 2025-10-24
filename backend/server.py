@@ -108,6 +108,22 @@ class UserLogin(BaseModel):
     email: EmailStr
     password: str
 
+class Registration(BaseModel):
+    """Temporary registration data before phone verification"""
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    email: EmailStr
+    password_hash: str
+    full_name: str
+    phone: str
+    company_name: str
+    iin: str
+    legal_address: str
+    language: str = "ru"
+    verified: bool = False
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    expires_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc) + timedelta(minutes=30))
+
 class Contract(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
