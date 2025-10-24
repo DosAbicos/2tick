@@ -691,50 +691,64 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             except:
                 p.setFont("Helvetica-Bold", 10)
             p.drawString(left_x, y_left, "Подпись Наймодателя:")
-            y_left -= 15
+            y_left -= 20
             
             try:
                 p.setFont("DejaVu", 9)
             except:
                 p.setFont("Helvetica", 9)
             
-            # Signature hash
+            # Код-ключ (aligned)
+            p.drawString(left_x, y_left, "Код-ключ утверждения:")
+            y_left -= 12
             p.drawString(left_x, y_left, landlord_signature_hash)
-            y_left -= 15
+            y_left -= 18
             
-            # Landlord info passed as parameter
-            
-            # Company name
+            # ФИО / Название компании (aligned with tenant name)
+            p.drawString(left_x, y_left, "Название компании:")
+            y_left -= 12
             if contract.get('landlord_name'):
                 p.drawString(left_x, y_left, contract.get('landlord_name', 'N/A'))
-                y_left -= 15
+            y_left -= 18
             
-            # Representative (ФИО)
+            # Представитель (aligned)
+            p.drawString(left_x, y_left, "Представитель:")
+            y_left -= 12
             if contract.get('landlord_representative'):
-                p.drawString(left_x, y_left, f"Представитель: {contract.get('landlord_representative')}")
-                y_left -= 15
+                p.drawString(left_x, y_left, contract.get('landlord_representative'))
+            y_left -= 18
             
-            # IIN/BIN from contract
-            if contract.get('landlord_iin_bin'):
-                p.drawString(left_x, y_left, f"ИИН/БИН: {contract.get('landlord_iin_bin')}")
-                y_left -= 15
-            
-            # Email from landlord profile
-            if landlord and landlord.get('email'):
-                p.drawString(left_x, y_left, f"Email: {landlord.get('email')}")
-                y_left -= 15
-            
-            # Phone from landlord profile
+            # Телефон (aligned with tenant phone)
+            p.drawString(left_x, y_left, "Телефон:")
+            y_left -= 12
             if landlord and landlord.get('phone'):
-                p.drawString(left_x, y_left, f"Телефон: {landlord.get('phone')}")
-                y_left -= 15
+                p.drawString(left_x, y_left, landlord.get('phone'))
+            y_left -= 18
             
-            # Legal address from landlord profile
+            # Email (aligned with tenant email)
+            p.drawString(left_x, y_left, "Email:")
+            y_left -= 12
+            if landlord and landlord.get('email'):
+                p.drawString(left_x, y_left, landlord.get('email'))
+            y_left -= 18
+            
+            # ИИН/БИН (aligned)
+            p.drawString(left_x, y_left, "ИИН/БИН:")
+            y_left -= 12
+            if contract.get('landlord_iin_bin'):
+                p.drawString(left_x, y_left, contract.get('landlord_iin_bin'))
+            y_left -= 18
+            
+            # Юридический адрес (aligned)
+            p.drawString(left_x, y_left, "Юридический адрес:")
+            y_left -= 12
             if landlord and landlord.get('legal_address'):
-                p.drawString(left_x, y_left, f"Юр. адрес: {landlord.get('legal_address')}")
-                y_left -= 15
+                p.drawString(left_x, y_left, landlord.get('legal_address'))
+            y_left -= 18
             
-            # Approval date
+            # Дата утверждения (aligned)
+            p.drawString(left_x, y_left, "Дата утверждения:")
+            y_left -= 12
             approved_at = contract.get('approved_at', 'N/A')
             if approved_at != 'N/A':
                 try:
@@ -742,7 +756,7 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
                     approved_at = approved_dt.strftime('%d.%m.%Y %H:%M')
                 except:
                     pass
-            p.drawString(left_x, y_left, f"Дата утверждения: {approved_at}")
+            p.drawString(left_x, y_left, approved_at)
         
         # RIGHT COLUMN - Наниматель
         if signature and signature.get('verified'):
