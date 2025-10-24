@@ -681,12 +681,12 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
         except:
             p.setFont("Helvetica", 9)
         
-        # Two columns layout
-        left_x = 50
-        right_x = 300
+        # Two columns layout - Landlord on LEFT, Tenant on RIGHT
+        left_x = 50      # Наймодатель (Landlord)
+        right_x = 300    # Наниматель (Tenant)
         start_y = y_position
         
-        # LEFT COLUMN - Наймодатель
+        # LEFT COLUMN - Наймодатель (Landlord)
         if landlord_signature_hash:
             y_left = start_y
             try:
