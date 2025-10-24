@@ -182,7 +182,8 @@ class RegistrationVerificationTester:
             
             # Check for hint with last 4 digits
             hint = call_response.get('hint', '')
-            if 'последние 4 цифры' not in hint and 'last 4 digits' not in hint.lower():
+            if ('последние 4 цифры' not in hint and 'last 4 digits' not in hint.lower() and 
+                'заканчивается на' not in hint and 'ends with' not in hint.lower()):
                 self.log_test("Call Registration - Request Call Hint", False, f"No hint with last 4 digits: {hint}")
                 return False
             
