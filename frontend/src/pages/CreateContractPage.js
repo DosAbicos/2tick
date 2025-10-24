@@ -109,6 +109,24 @@ const CreateContractPage = () => {
 
   const editorRef = useRef(null);
 
+  // Load next contract number on mount
+  useEffect(() => {
+    const fetchNextContractNumber = async () => {
+      try {
+        const response = await axios.get(`${API}/contracts`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const contractCount = response.data.length;
+        const nextNumber = `0${contractCount + 1}`;
+        setNextContractNumber(nextNumber);
+      } catch (error) {
+        console.error('Error fetching contract count:', error);
+      }
+    };
+    
+    fetchNextContractNumber();
+  }, []);
+
   const loadLastTemplate = () => {
     try {
       const savedTemplate = localStorage.getItem('signify_last_template');
