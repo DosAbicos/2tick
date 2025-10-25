@@ -154,6 +154,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 
                 new_otp_code = f"{random.randint(100000, 999999)}"
                 
+                # Delete any old verification records for this contract
+                await db.verifications.delete_many({
+                    "contract_id": contract_id,
+                    "method": "telegram"
+                })
+                
                 verification_data = {
                     "contract_id": contract_id,
                     "otp_code": new_otp_code,
@@ -165,6 +171,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 }
                 
                 await db.verifications.insert_one(verification_data)
+                print(f"🗑️ Deleted old verifications for contract {contract_id}")
                 
                 if is_first_time:
                     message = (
