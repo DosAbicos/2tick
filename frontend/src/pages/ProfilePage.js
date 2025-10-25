@@ -52,17 +52,54 @@ const ProfilePage = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUser(response.data);
+      setOriginalUser(response.data); // Store original for cancel
     } catch (error) {
       toast.error(t('common.error'));
     } finally {
       setLoading(false);
     }
   };
+  
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+  
+  const handleCancel = () => {
+    setUser(originalUser); // Revert changes
+    setIsEditing(false);
+  };
+  
+  const validatePhone = (phone) => {
+    // Check if phone is complete: +7 XXX XXX XX XX
+    const cleanPhone = phone.replace(/\D/g, '');
+    return cleanPhone.length === 11;
+  };
 
   const handleSaveProfile = async () => {
+    // Check if phone changed
+    const phoneChanged = user.phone !== originalUser.phone;
+    
+    if (phoneChanged) {
+      // Validate new phone format
+      if (!validatePhone(user.phone)) {
+        toast.error('Введите полный номер телефона');
+        return;
+      }
+      
+      // Show verification modal
+      setOldPhone(originalUser.phone);
+      setNewPhone(user.phone);
+      setShowPhoneVerification(true);
+      return;
+    }
+    
+    // No phone change, save directly
+    await saveProfileData();
+  };
+  
+  const saveProfileData = async () => {
     setSaving(true);
     try {
-      // Backend expects form-data, not JSON
       const formData = new FormData();
       formData.append('full_name', user.full_name || '');
       formData.append('email', user.email || '');
@@ -81,6 +118,7 @@ const ProfilePage = () => {
         }
       );
       toast.success('Профиль обновлен');
+      setIsEditing(false);
       fetchUser();
     } catch (error) {
       console.error('Profile update error:', error);
@@ -88,6 +126,44 @@ const ProfilePage = () => {
     } finally {
       setSaving(false);
     }
+  };
+  
+  const handleRequestVerification = async (method) => {
+    setCooldown(60);
+    setVerificationMethod(method);
+    toast.success(`Код отправлен через ${method === 'sms' ? 'SMS' : method === 'call' ? 'звонок' : 'Telegram'}`);
+    // TODO: Add actual API call when backend endpoint is ready
+  };
+  
+  const handleVerifyCode = async () => {
+    if (otpCode.length < 4) {
+      toast.error('Введите код');
+      return;
+    }
+    
+    setVerifying(true);
+    try {
+      // TODO: Add actual verification API call
+      // For now, simulate success
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Save profile with new phone
+      await saveProfileData();
+      setShowPhoneVerification(false);
+      setOtpCode('');
+      toast.success('Номер телефона обновлен!');
+    } catch (error) {
+      toast.error('Неверный код');
+    } finally {
+      setVerifying(false);
+    }
+  };
+  
+  const handleCancelVerification = () => {
+    setUser({...user, phone: oldPhone}); // Revert phone
+    setShowPhoneVerification(false);
+    setVerificationMethod('');
+    setOtpCode('');
   };
 
   if (loading) {
