@@ -254,21 +254,38 @@ const ProfilePage = () => {
                   <Label htmlFor="email">Email</Label>
                   <Input 
                     id="email"
+                    type="email"
                     value={user?.email || ''} 
                     onChange={(e) => setUser({...user, email: e.target.value})}
                     disabled={!isEditing}
-                    className="mt-1"
+                    className={`mt-1 ${!validateEmail(user?.email || '') && user?.email ? 'border-red-500' : ''}`}
+                    placeholder="example@mail.com"
                   />
+                  {user?.email && !validateEmail(user?.email) && (
+                    <p className="text-xs text-red-500 mt-1">Введите корректный email</p>
+                  )}
                 </div>
                 <div>
                   <Label htmlFor="phone">Телефон</Label>
-                  <Input 
-                    id="phone"
-                    value={user?.phone || ''} 
-                    onChange={(e) => setUser({...user, phone: e.target.value})}
-                    disabled={!isEditing}
-                    className="mt-1"
-                  />
+                  {isEditing ? (
+                    <IMaskInput
+                      mask="+7 (000) 000-00-00"
+                      value={user?.phone || ''}
+                      onAccept={(value) => setUser({...user, phone: value})}
+                      placeholder="+7 (___) ___-__-__"
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1"
+                      id="phone"
+                      name="phone"
+                      type="tel"
+                    />
+                  ) : (
+                    <Input 
+                      id="phone"
+                      value={user?.phone || ''} 
+                      disabled={true}
+                      className="mt-1"
+                    />
+                  )}
                 </div>
               </div>
             </CardContent>
