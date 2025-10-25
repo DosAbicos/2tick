@@ -89,6 +89,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 # Generate NEW code every time /start is pressed
                 new_otp_code = f"{random.randint(100000, 999999)}"
                 
+                # Delete any old verification records for this registration
+                await db.verifications.delete_many({
+                    "registration_id": registration_id,
+                    "method": "telegram"
+                })
+                
                 # Store new verification
                 verification_data = {
                     "registration_id": registration_id,
@@ -101,6 +107,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 }
                 
                 await db.verifications.insert_one(verification_data)
+                print(f"🗑️ Deleted old verifications for registration {registration_id}")
                 
                 # Send the code
                 if is_first_time:
