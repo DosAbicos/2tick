@@ -469,8 +469,8 @@ const SignContractPage = () => {
               </motion.div>
             )}
 
-            {/* Step 2: Upload Document */}
-            {step === 2 && (
+            {/* Step 2: Upload Document - only show if document not already uploaded */}
+            {step === 2 && !contract.signature?.document_upload && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
