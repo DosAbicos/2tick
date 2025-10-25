@@ -533,14 +533,6 @@ Email: ${templateData.tenant_email || '[Email]'}
                       overflowY: 'auto'
                     }}
                   />
-                  
-                  {/* Legend */}
-                  <div className="mt-3 text-xs text-neutral-600 flex gap-3 p-3 bg-neutral-50 rounded border">
-                    <span className="font-semibold">Переменные подсвечены:</span>
-                    <span className="bg-yellow-50 border border-yellow-200 px-2 py-1 rounded">[ФИО]</span>
-                    <span className="bg-blue-50 border border-blue-200 px-2 py-1 rounded">[Телефон]</span>
-                    <span className="bg-green-50 border border-green-200 px-2 py-1 rounded">[Email]</span>
-                  </div>
                 </div>
               ) : (
                 <div className="bg-white border rounded-lg p-6 max-h-[800px] overflow-y-auto" data-testid="contract-preview">
