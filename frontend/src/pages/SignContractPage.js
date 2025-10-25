@@ -432,9 +432,12 @@ const SignContractPage = () => {
                       value={signerInfo.email}
                       onChange={(e) => setSignerInfo({...signerInfo, email: e.target.value})}
                       data-testid="signer-email-input"
-                      className="mt-1"
+                      className={`mt-1 ${signerInfo.email && !validateEmail(signerInfo.email) ? 'border-red-500' : ''}`}
                       placeholder="example@mail.com"
                     />
+                    {signerInfo.email && !validateEmail(signerInfo.email) && (
+                      <p className="text-xs text-red-500 mt-1">Введите корректный email</p>
+                    )}
                   </div>
                 )}
                 
