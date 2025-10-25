@@ -141,6 +141,12 @@ const SignContractPage = () => {
     }
   };
 
+  const validateEmail = (email) => {
+    if (!email) return true; // Email is optional
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleSaveSignerInfo = async () => {
     // Validate required fields
     if (needsInfo) {
@@ -152,6 +158,12 @@ const SignContractPage = () => {
         toast.error('Пожалуйста, укажите телефон');
         return;
       }
+    }
+    
+    // Validate email if provided
+    if (signerInfo.email && !validateEmail(signerInfo.email)) {
+      toast.error('Введите корректный email адрес');
+      return;
     }
     
     try {
