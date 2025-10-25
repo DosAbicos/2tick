@@ -20,12 +20,31 @@ const ProfilePage = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
   const [user, setUser] = useState(null);
+  const [originalUser, setOriginalUser] = useState(null); // Store original for cancel
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  
+  // Phone verification modal states
+  const [showPhoneVerification, setShowPhoneVerification] = useState(false);
+  const [oldPhone, setOldPhone] = useState('');
+  const [newPhone, setNewPhone] = useState('');
+  const [verificationMethod, setVerificationMethod] = useState('');
+  const [otpCode, setOtpCode] = useState('');
+  const [verifying, setVerifying] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
 
   useEffect(() => {
     fetchUser();
   }, []);
+  
+  // Cooldown timer
+  useEffect(() => {
+    if (cooldown > 0) {
+      const timer = setTimeout(() => setCooldown(cooldown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [cooldown]);
 
   const fetchUser = async () => {
     try {
