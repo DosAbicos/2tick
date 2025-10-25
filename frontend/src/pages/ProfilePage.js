@@ -192,7 +192,26 @@ const ProfilePage = () => {
           Back to Dashboard
         </Button>
 
-        <h1 className="text-3xl font-bold text-neutral-900 mb-8">Профиль наймодателя</h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-neutral-900">Профиль наймодателя</h1>
+          {!isEditing ? (
+            <Button onClick={handleEdit} variant="outline">
+              <Edit2 className="mr-2 h-4 w-4" />
+              Редактировать
+            </Button>
+          ) : (
+            <div className="flex gap-2">
+              <Button onClick={handleSaveProfile} disabled={saving}>
+                <Save className="mr-2 h-4 w-4" />
+                {saving ? 'Сохранение...' : 'Сохранить'}
+              </Button>
+              <Button onClick={handleCancel} variant="outline">
+                <X className="mr-2 h-4 w-4" />
+                Отменить
+              </Button>
+            </div>
+          )}
+        </div>
 
         <div className="space-y-6">
           {/* Personal Info - FIRST */}
@@ -207,6 +226,7 @@ const ProfilePage = () => {
                   id="full_name"
                   value={user?.full_name || ''} 
                   onChange={(e) => setUser({...user, full_name: e.target.value})}
+                  disabled={!isEditing}
                   className="mt-1"
                 />
               </div>
@@ -217,6 +237,7 @@ const ProfilePage = () => {
                     id="email"
                     value={user?.email || ''} 
                     onChange={(e) => setUser({...user, email: e.target.value})}
+                    disabled={!isEditing}
                     className="mt-1"
                   />
                 </div>
@@ -226,6 +247,7 @@ const ProfilePage = () => {
                     id="phone"
                     value={user?.phone || ''} 
                     onChange={(e) => setUser({...user, phone: e.target.value})}
+                    disabled={!isEditing}
                     className="mt-1"
                   />
                 </div>
@@ -246,6 +268,7 @@ const ProfilePage = () => {
                   id="company_name"
                   value={user?.company_name || ''} 
                   onChange={(e) => setUser({...user, company_name: e.target.value})}
+                  disabled={!isEditing}
                   className="mt-1"
                   placeholder="ИП 'RentDomik'"
                 />
@@ -256,6 +279,7 @@ const ProfilePage = () => {
                   id="iin"
                   value={user?.iin || ''}
                   onChange={(e) => setUser({...user, iin: e.target.value})}
+                  disabled={!isEditing}
                   placeholder="123456789012"
                   className="mt-1"
                   data-testid="iin-input"
@@ -267,22 +291,111 @@ const ProfilePage = () => {
                   id="legal_address"
                   value={user?.legal_address || ''}
                   onChange={(e) => setUser({...user, legal_address: e.target.value})}
+                  disabled={!isEditing}
                   className="mt-1"
                   placeholder="г. Алматы, ул. Абая 1"
                 />
               </div>
-              
-              <Button 
-                onClick={handleSaveProfile} 
-                disabled={saving}
-                className="w-full"
-              >
-                {saving ? 'Сохранение...' : 'Сохранить изменения'}
-              </Button>
             </CardContent>
           </Card>
         </div>
       </div>
+      
+      {/* Phone Verification Modal */}
+      <Dialog open={showPhoneVerification} onOpenChange={setShowPhoneVerification}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Подтверждение нового номера</DialogTitle>
+            <DialogDescription>
+              Вы изменили номер телефона с {oldPhone} на {newPhone}. Подтвердите новый номер.
+            </DialogDescription>
+          </DialogHeader>
+          
+          {!verificationMethod ? (
+            <div className="space-y-3">
+              <p className="text-sm text-neutral-600 mb-4">Выберите способ верификации:</p>
+              <Button
+                onClick={() => handleRequestVerification('sms')}
+                disabled={cooldown > 0}
+                className="w-full"
+              >
+                {cooldown > 0 ? `SMS (${cooldown}с)` : '📱 SMS-сообщение'}
+              </Button>
+              <Button
+                onClick={() => handleRequestVerification('call')}
+                disabled={cooldown > 0}
+                className="w-full"
+                variant="outline"
+              >
+                {cooldown > 0 ? `Звонок (${cooldown}с)` : '📞 Входящий звонок'}
+              </Button>
+              <Button
+                onClick={() => handleRequestVerification('telegram')}
+                disabled={cooldown > 0}
+                className="w-full"
+                variant="outline"
+              >
+                {cooldown > 0 ? `Telegram (${cooldown}с)` : '✈️ Telegram'}
+              </Button>
+              <Button
+                onClick={handleCancelVerification}
+                variant="ghost"
+                className="w-full"
+              >
+                Отменить
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="text-center">
+                <p className="text-sm text-neutral-600 mb-4">
+                  Введите код из {verificationMethod === 'sms' ? 'SMS' : verificationMethod === 'call' ? 'звонка' : 'Telegram'}
+                </p>
+              </div>
+              
+              <div className="flex justify-center">
+                <InputOTP 
+                  maxLength={verificationMethod === 'call' ? 4 : 6} 
+                  value={otpCode} 
+                  onChange={setOtpCode}
+                >
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                    {verificationMethod !== 'call' && (
+                      <>
+                        <InputOTPSlot index={4} />
+                        <InputOTPSlot index={5} />
+                      </>
+                    )}
+                  </InputOTPGroup>
+                </InputOTP>
+              </div>
+
+              <Button
+                onClick={handleVerifyCode}
+                disabled={verifying || otpCode.length < (verificationMethod === 'call' ? 4 : 6)}
+                className="w-full"
+              >
+                {verifying ? 'Проверка...' : 'Подтвердить'}
+              </Button>
+
+              <Button
+                onClick={() => {
+                  setVerificationMethod('');
+                  setOtpCode('');
+                }}
+                variant="outline"
+                className="w-full"
+              >
+                Выбрать другой способ
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
