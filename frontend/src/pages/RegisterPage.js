@@ -98,8 +98,12 @@ const RegisterPage = () => {
                   onChange={handleChange}
                   required
                   data-testid="email-input"
-                  className="mt-1"
+                  className={`mt-1 ${formData.email && !validateEmail(formData.email) ? 'border-red-500' : ''}`}
+                  placeholder="example@mail.com"
                 />
+                {formData.email && !validateEmail(formData.email) && (
+                  <p className="text-xs text-red-500 mt-1">Введите корректный email</p>
+                )}
               </div>
               
               <div>
