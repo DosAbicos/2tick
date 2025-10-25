@@ -75,8 +75,26 @@ const ProfilePage = () => {
     const cleanPhone = phone.replace(/\D/g, '');
     return cleanPhone.length === 11;
   };
+  
+  const validateEmail = (email) => {
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
   const handleSaveProfile = async () => {
+    // Validate email format
+    if (!validateEmail(user.email)) {
+      toast.error('Введите корректный email адрес');
+      return;
+    }
+    
+    // Validate phone format
+    if (!validatePhone(user.phone)) {
+      toast.error('Введите полный номер телефона');
+      return;
+    }
+    
     // Check if phone changed
     const phoneChanged = user.phone !== originalUser.phone;
     
