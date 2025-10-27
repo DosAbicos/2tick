@@ -520,40 +520,61 @@ const SignContractPage = () => {
                 className="space-y-4"
                 data-testid="step-document-already-uploaded"
               >
-                <div className="text-center">
-                  <CheckCircle2 className="h-12 w-12 text-green-500 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Документ уже загружен</h3>
-                  <p className="text-neutral-600 text-sm mb-4">Наймодатель загрузил ваше удостоверение личности</p>
+                <div className="text-center mb-6">
+                  <CheckCircle2 className="h-16 w-16 text-green-500 mx-auto mb-4" />
+                  <h3 className="text-2xl font-bold mb-2">Документ уже загружен</h3>
+                  <p className="text-neutral-600">Наймодатель загрузил ваше удостоверение личности</p>
                 </div>
                 
-                <div className="border rounded-lg p-4 bg-neutral-50">
-                  <p className="text-sm text-neutral-600 mb-2">Загруженный документ:</p>
-                  <img 
-                    src={`data:image/jpeg;base64,${contract.signature.document_upload}`} 
-                    alt="Document" 
-                    className="w-full max-w-md mx-auto rounded border"
-                  />
+                <Card className="overflow-hidden">
+                  <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 border-b">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <FileUp className="h-5 w-5 text-green-600" />
+                      Загруженный документ
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-6">
+                    <div className="relative group">
+                      <img 
+                        src={`data:image/jpeg;base64,${contract.signature.document_upload}`} 
+                        alt="Document" 
+                        className="w-full max-w-2xl mx-auto rounded-lg shadow-lg border-2 border-neutral-200 transition-transform group-hover:scale-[1.02]"
+                      />
+                      <div className="absolute top-2 right-2 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                        ✓ Проверено
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 rounded-r-lg p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                      <span className="text-white text-lg">ℹ️</span>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-blue-900 mb-1">Документ защищен</p>
+                      <p className="text-sm text-blue-800">
+                        Этот документ был загружен и проверен наймодателем. Изменение невозможно.
+                      </p>
+                    </div>
+                  </div>
                 </div>
                 
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <p className="text-sm text-blue-800">
-                    ℹ️ Этот документ был загружен наймодателем. Вы не можете его изменить.
-                  </p>
-                </div>
-                
-                <div className="flex gap-3">
+                <div className="flex gap-3 pt-4">
                   <Button
                     variant="outline"
-                    onClick={() => setStep(1.5)}
+                    onClick={() => setStep(needsInfo ? 1.5 : 1)}
                     className="flex-1"
                   >
                     ← Назад
                   </Button>
                   <Button
                     onClick={() => setStep(3)}
-                    className="flex-1"
+                    className="flex-1 bg-green-600 hover:bg-green-700"
+                    size="lg"
                   >
-                    Продолжить →
+                    Продолжить к верификации →
                   </Button>
                 </div>
               </motion.div>
