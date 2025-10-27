@@ -793,7 +793,7 @@ const SignContractPage = () => {
                       🔄 Отправить код повторно (открыть Telegram)
                     </a>
                   </div>
-                ) : null}}
+                ) : null}
               </motion.div>
             )}
 
