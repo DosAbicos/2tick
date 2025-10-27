@@ -9,7 +9,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import Header from '@/components/Header';
-import { CheckCircle, FileUp, Phone } from 'lucide-react';
+import { CheckCircle, CheckCircle2, FileUp, Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { IMaskInput } from 'react-imask';
 
