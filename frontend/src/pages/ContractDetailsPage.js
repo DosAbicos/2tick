@@ -39,7 +39,17 @@ const ContractDetailsPage = () => {
   useEffect(() => {
     fetchContract();
     fetchSignature();
-  }, [id]);
+    
+    // Auto-refresh if contract is sent (waiting for signature)
+    const intervalId = setInterval(() => {
+      if (contract?.status === 'sent') {
+        fetchContract();
+        fetchSignature();
+      }
+    }, 5000); // Poll every 5 seconds
+    
+    return () => clearInterval(intervalId);
+  }, [id, contract?.status]);
 
   const fetchContract = async () => {
     try {
