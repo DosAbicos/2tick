@@ -679,16 +679,34 @@ Email: ${templateData.tenant_email || '[Email]'}
                       
                       <div>
                         <Label>Удостоверение личности клиента (опционально)</Label>
-                        <p className="text-xs text-neutral-500 mb-2">Если есть документ клиента, можете загрузить. Иначе клиент загрузит сам.</p>
-                    {tenantDocPreview && (
-                      <div className="mt-2 mb-3">
-                        <img
-                          src={tenantDocPreview}
-                          alt="Tenant document preview"
-                          className="max-w-xs rounded border shadow-sm"
-                        />
-                      </div>
-                    )}
+                        <p className="text-xs text-neutral-500 mb-3">Если есть документ клиента, можете загрузить. Иначе клиент загрузит сам.</p>
+                        
+                        {tenantDocPreview && (
+                          <div className="mb-4 p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg border-2 border-green-200">
+                            <div className="flex items-start gap-3">
+                              <div className="flex-shrink-0">
+                                <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+                                  <CheckCircle className="h-6 w-6 text-white" />
+                                </div>
+                              </div>
+                              <div className="flex-1">
+                                <h4 className="font-semibold text-green-900 mb-1">Документ загружен</h4>
+                                <p className="text-sm text-green-700 mb-3">Удостоверение личности клиента</p>
+                                <div className="relative group">
+                                  <img
+                                    src={tenantDocPreview}
+                                    alt="Tenant document preview"
+                                    className="w-full max-w-md rounded-lg border-2 border-white shadow-lg transition-transform group-hover:scale-[1.02]"
+                                  />
+                                  <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
+                                    ✓ Готов
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                        
                         <Label htmlFor="tenant_doc" className="cursor-pointer">
                           <Button type="button" variant="outline" className="w-full" asChild>
                             <span>
