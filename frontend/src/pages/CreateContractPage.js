@@ -682,14 +682,14 @@ Email: ${templateData.tenant_email || '[Email]'}
                         <p className="text-xs text-neutral-500 mb-3">Если есть документ клиента, можете загрузить. Иначе клиент загрузит сам.</p>
                         
                         {tenantDocPreview && (
-                          <div className="mb-4">
-                            <div className="bg-green-50 border-l-4 border-green-500 p-3 rounded-r mb-3">
+                          <div className="mb-6">
+                            <div className="bg-green-50 border-l-4 border-green-500 p-3 rounded-r mb-4">
                               <div className="flex items-center gap-2 text-green-800">
                                 <CheckCircle className="h-5 w-5" />
                                 <span className="font-semibold">Документ загружен успешно</span>
                               </div>
                             </div>
-                            <div className="max-w-md">
+                            <div className="max-w-md mb-4">
                               <img
                                 src={tenantDocPreview}
                                 alt=""
