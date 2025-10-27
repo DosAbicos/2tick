@@ -695,7 +695,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                                 <div className="relative group">
                                   <img
                                     src={tenantDocPreview}
-                                    alt="Tenant document preview"
+                                    alt="Документ клиента"
                                     className="w-full max-w-md rounded-lg border-2 border-white shadow-lg transition-transform group-hover:scale-[1.02]"
                                   />
                                   <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
