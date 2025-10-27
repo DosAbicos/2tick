@@ -689,11 +689,11 @@ Email: ${templateData.tenant_email || '[Email]'}
                                 <span className="font-semibold">Документ загружен успешно</span>
                               </div>
                             </div>
-                            <div className="relative inline-block">
+                            <div className="relative max-w-md">
                               <img
                                 src={tenantDocPreview}
                                 alt=""
-                                className="max-w-md rounded-lg border-2 border-green-200 shadow-md"
+                                className="w-full rounded-lg border-2 border-green-200 shadow-md block"
                               />
                               <div className="absolute top-2 right-2 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg">
                                 ✓ Готов
