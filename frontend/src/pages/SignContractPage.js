@@ -514,6 +514,53 @@ const SignContractPage = () => {
                 </div>
               </motion.div>
             )}
+            
+            {/* Step 2 Alternative: Document already uploaded by landlord */}
+            {step === 2 && contract.signature?.document_upload && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="space-y-4"
+                data-testid="step-document-already-uploaded"
+              >
+                <div className="text-center">
+                  <CheckCircle2 className="h-12 w-12 text-green-500 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">Документ уже загружен</h3>
+                  <p className="text-neutral-600 text-sm mb-4">Наймодатель загрузил ваше удостоверение личности</p>
+                </div>
+                
+                <div className="border rounded-lg p-4 bg-neutral-50">
+                  <p className="text-sm text-neutral-600 mb-2">Загруженный документ:</p>
+                  <img 
+                    src={`data:image/jpeg;base64,${contract.signature.document_upload}`} 
+                    alt="Document" 
+                    className="w-full max-w-md mx-auto rounded border"
+                  />
+                </div>
+                
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <p className="text-sm text-blue-800">
+                    ℹ️ Этот документ был загружен наймодателем. Вы не можете его изменить.
+                  </p>
+                </div>
+                
+                <div className="flex gap-3">
+                  <Button
+                    variant="outline"
+                    onClick={() => setStep(1.5)}
+                    className="flex-1"
+                  >
+                    ← Назад
+                  </Button>
+                  <Button
+                    onClick={() => setStep(3)}
+                    className="flex-1"
+                  >
+                    Продолжить →
+                  </Button>
+                </div>
+              </motion.div>
+            )}
 
             {/* Step 3: Verify OTP */}
             {step === 3 && (
