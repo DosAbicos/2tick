@@ -1752,6 +1752,17 @@ async def get_contract_for_signing(contract_id: str):
         contract['created_at'] = datetime.fromisoformat(contract['created_at'])
     if isinstance(contract.get('updated_at'), str):
         contract['updated_at'] = datetime.fromisoformat(contract['updated_at'])
+    
+    # Get signature data (including document_upload if exists)
+    signature = await db.signatures.find_one({"contract_id": contract_id}, {"_id": 0})
+    if signature:
+        # Don't include full document_upload in response (too large), just flag
+        contract['signature'] = {
+            "has_document": bool(signature.get('document_upload')),
+            "document_upload": signature.get('document_upload'),  # Include for preview
+            "verified": signature.get('verified', False)
+        }
+    
     return Contract(**contract)
 
 class SignerInfoUpdate(BaseModel):
