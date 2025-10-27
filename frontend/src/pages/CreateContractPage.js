@@ -682,19 +682,20 @@ Email: ${templateData.tenant_email || '[Email]'}
                         <p className="text-xs text-neutral-500 mb-3">Если есть документ клиента, можете загрузить. Иначе клиент загрузит сам.</p>
                         
                         {tenantDocPreview && (
-                          <div className="mb-4 p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg border-2 border-green-200">
-                            <h4 className="font-semibold text-green-900 mb-1 flex items-center gap-2">
-                              <CheckCircle className="h-5 w-5 text-green-600" />
-                              Документ загружен
-                            </h4>
-                            <p className="text-sm text-green-700 mb-3">Удостоверение личности клиента</p>
-                            <div className="relative group">
+                          <div className="mb-4">
+                            <div className="bg-green-50 border-l-4 border-green-500 p-3 rounded-r mb-3">
+                              <div className="flex items-center gap-2 text-green-800">
+                                <CheckCircle className="h-5 w-5" />
+                                <span className="font-semibold">Документ загружен успешно</span>
+                              </div>
+                            </div>
+                            <div className="relative inline-block">
                               <img
                                 src={tenantDocPreview}
-                                alt="Документ клиента"
-                                className="w-full max-w-md rounded-lg border-2 border-white shadow-lg transition-transform group-hover:scale-[1.02]"
+                                alt=""
+                                className="max-w-md rounded-lg border-2 border-green-200 shadow-md"
                               />
-                              <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
+                              <div className="absolute top-2 right-2 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg">
                                 ✓ Готов
                               </div>
                             </div>
