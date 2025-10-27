@@ -152,6 +152,7 @@ class Contract(BaseModel):
     landlord_iin_bin: Optional[str] = None  # ИИН/БИН из профиля
     verification_method: Optional[str] = None  # SMS, Call, Telegram
     telegram_username: Optional[str] = None  # @username для Telegram верификации
+    signature: Optional[dict] = None  # Signature data (document_upload, verified status)
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
