@@ -1834,6 +1834,14 @@ async def update_signer_info(contract_id: str, data: SignerInfoUpdate):
 
 @api_router.post("/sign/{contract_id}/upload-document")
 async def upload_document(contract_id: str, file: UploadFile = File(...)):
+    # Check if document already uploaded
+    existing_signature = await db.signatures.find_one({"contract_id": contract_id})
+    if existing_signature and existing_signature.get('document_upload'):
+        raise HTTPException(
+            status_code=400, 
+            detail="Document already uploaded. Cannot overwrite existing document."
+        )
+    
     # Read file
     content = await file.read()
     
