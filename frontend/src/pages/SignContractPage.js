@@ -106,13 +106,16 @@ const SignContractPage = () => {
       if (response.data.status === 'pending-signature' || response.data.status === 'signed') {
         setStep(4); // Go directly to success
       } else {
-        // Check if we need additional info
+        // Check if we need additional info for signer data
         const needsName = !response.data.signer_name;
         const needsPhone = !response.data.signer_phone;
-        const needsEmail = !response.data.signer_email;
         
-        if (needsName || needsPhone || needsEmail) {
+        if (needsName || needsPhone) {
           setNeedsInfo(true);
+          setStep(1.5); // Show info collection step
+        } else {
+          // All signer data is filled, go directly to document step
+          setStep(2);
         }
       }
     } catch (error) {
