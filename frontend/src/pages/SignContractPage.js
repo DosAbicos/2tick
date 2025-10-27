@@ -112,11 +112,10 @@ const SignContractPage = () => {
         
         if (needsName || needsPhone) {
           setNeedsInfo(true);
-          setStep(1.5); // Show info collection step
-        } else {
-          // All signer data is filled, go directly to document step
-          setStep(2);
         }
+        
+        // Always start with step 1 - contract review
+        setStep(1);
       }
     } catch (error) {
       toast.error(t('common.error'));
