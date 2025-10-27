@@ -683,25 +683,19 @@ Email: ${templateData.tenant_email || '[Email]'}
                         
                         {tenantDocPreview && (
                           <div className="mb-4 p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg border-2 border-green-200">
-                            <div className="flex items-start gap-3">
-                              <div className="flex-shrink-0">
-                                <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-                                  <CheckCircle className="h-6 w-6 text-white" />
-                                </div>
-                              </div>
-                              <div className="flex-1">
-                                <h4 className="font-semibold text-green-900 mb-1">Документ загружен</h4>
-                                <p className="text-sm text-green-700 mb-3">Удостоверение личности клиента</p>
-                                <div className="relative group">
-                                  <img
-                                    src={tenantDocPreview}
-                                    alt="Документ клиента"
-                                    className="w-full max-w-md rounded-lg border-2 border-white shadow-lg transition-transform group-hover:scale-[1.02]"
-                                  />
-                                  <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
-                                    ✓ Готов
-                                  </div>
-                                </div>
+                            <h4 className="font-semibold text-green-900 mb-1 flex items-center gap-2">
+                              <CheckCircle className="h-5 w-5 text-green-600" />
+                              Документ загружен
+                            </h4>
+                            <p className="text-sm text-green-700 mb-3">Удостоверение личности клиента</p>
+                            <div className="relative group">
+                              <img
+                                src={tenantDocPreview}
+                                alt="Документ клиента"
+                                className="w-full max-w-md rounded-lg border-2 border-white shadow-lg transition-transform group-hover:scale-[1.02]"
+                              />
+                              <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
+                                ✓ Готов
                               </div>
                             </div>
                           </div>
