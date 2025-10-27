@@ -189,13 +189,8 @@ const SignContractPage = () => {
       
       toast.success('Информация сохранена');
       
-      // Check if document is already uploaded by landlord
-      // If so, skip upload step and go directly to verification
-      if (contract.signature?.document_upload) {
-        setStep(3); // Skip to verification step
-      } else {
-        setStep(2); // Move to upload step
-      }
+      // Always move to document step after saving info
+      setStep(2);
     } catch (error) {
       toast.error(t('common.error'));
     }
