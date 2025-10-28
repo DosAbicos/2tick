@@ -136,7 +136,7 @@ const SignContractPage = () => {
     try {
       await axios.post(`${API}/sign/${id}/upload-document`, formData);
       toast.success('Документ загружен');
-      setStep(2.5); // Go to final preview before verification
+      // Don't auto-navigate, let user choose when to review
     } catch (error) {
       toast.error(error.response?.data?.detail || t('common.error'));
     } finally {
