@@ -112,16 +112,15 @@ const SignContractPage = () => {
       if (response.data.status === 'pending-signature' || response.data.status === 'signed') {
         setStep(4); // Go directly to success
       } else {
+        // Always start with step 1 - contract review
+        setStep(1);
+        
         // Check if we need additional info for signer data
         const needsName = !response.data.signer_name;
         const needsPhone = !response.data.signer_phone;
         
         if (needsName || needsPhone) {
           setNeedsInfo(true);
-          setStep(1.5); // Show info collection step
-        } else {
-          // All signer data is filled, go directly to document step
-          setStep(2);
         }
       }
     } catch (error) {
