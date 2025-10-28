@@ -537,11 +537,11 @@ const SignContractPage = () => {
                   </Button>
                   {documentUploaded && (
                     <Button
-                      onClick={() => setStep(2.5)}
+                      onClick={() => setStep(1)}
                       className="flex-1 bg-primary"
                       size="lg"
                     >
-                      Просмотреть договор →
+                      Ознакомиться с договором →
                     </Button>
                   )}
                 </div>
