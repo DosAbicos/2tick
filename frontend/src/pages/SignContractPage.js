@@ -466,19 +466,19 @@ const SignContractPage = () => {
  
                 <div className="flex gap-3">
                   <Button
-                    variant="ghost"
+                    variant="outline"
                     onClick={() => setStep(1)}
                     className="flex-1"
                     data-testid="back-to-view-button"
                   >
-                    ← Назад
+                    ← Назад к договору
                   </Button>
                   <Button
                     onClick={handleSaveSignerInfo}
                     className="flex-1"
                     data-testid="save-signer-info-button"
                   >
-                    Продолжить →
+                    Сохранить и продолжить →
                   </Button>
                 </div>
               </motion.div>
