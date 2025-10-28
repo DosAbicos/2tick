@@ -103,6 +103,11 @@ const SignContractPage = () => {
       const response = await axios.get(`${API}/sign/${id}`);
       setContract(response.data);
       
+      // Check if document already uploaded by landlord
+      if (response.data.signature?.document_upload) {
+        setDocumentUploaded(true);
+      }
+      
       // Check if already signed
       if (response.data.status === 'pending-signature' || response.data.status === 'signed') {
         setStep(4); // Go directly to success
