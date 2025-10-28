@@ -649,17 +649,20 @@ const SignContractPage = () => {
                 <div className="flex gap-3">
                   <Button
                     variant="outline"
-                    onClick={() => setStep(2)}
+                    onClick={() => {
+                      setStep(needsInfo ? 1.5 : 2);
+                      setDocumentUploaded(false);
+                    }}
                     className="flex-1"
                   >
-                    ← Назад
+                    ← Изменить данные
                   </Button>
                   <Button
                     onClick={() => setStep(3)}
-                    className="flex-1 bg-primary hover:bg-primary/90"
+                    className="flex-1 bg-green-600 hover:bg-green-700"
                     size="lg"
                   >
-                    Подтвердить и перейти к подписанию →
+                    Всё верно, подписать →
                   </Button>
                 </div>
               </motion.div>
