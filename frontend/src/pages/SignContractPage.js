@@ -372,19 +372,31 @@ const SignContractPage = () => {
                     <pre className="whitespace-pre-wrap text-sm" data-testid="contract-preview">{contract.content}</pre>
                   )}
                 </div>
-                <Button
-                  onClick={() => {
-                    if (needsInfo) {
-                      setStep(1.5); // Go to info filling step
-                    } else {
-                      setStep(2); // Go directly to upload
-                    }
-                  }}
-                  className="w-full"
-                  data-testid="proceed-to-upload-button"
-                >
-                  Proceed to Verification
-                </Button>
+                
+                {documentUploaded ? (
+                  <Button
+                    onClick={() => setStep(3)}
+                    className="w-full bg-green-600 hover:bg-green-700"
+                    size="lg"
+                    data-testid="sign-button"
+                  >
+                    Всё верно, подписать договор →
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => {
+                      if (needsInfo) {
+                        setStep(1.5); // Go to info filling step
+                      } else {
+                        setStep(2); // Go directly to upload
+                      }
+                    }}
+                    className="w-full"
+                    data-testid="proceed-button"
+                  >
+                    Продолжить →
+                  </Button>
+                )}
               </motion.div>
             )}
 
