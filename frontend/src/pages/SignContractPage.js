@@ -527,30 +527,33 @@ const SignContractPage = () => {
                 )}
                 
                 <div className="flex gap-3">
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      // If data is already filled (saved), go back to contract view
-                      // Otherwise go back to data entry
-                      if (contract.signer_name && contract.signer_phone) {
-                        setStep(1);
-                      } else {
-                        setStep(1.5);
-                      }
-                    }}
-                    className="flex-1"
-                    data-testid="back-to-info-button"
-                  >
-                    ← Назад
-                  </Button>
-                  {documentUploaded && (
+                  {!documentUploaded ? (
                     <Button
-                      onClick={() => setStep(1)}
-                      className="flex-1 bg-primary"
-                      size="lg"
+                      variant="outline"
+                      onClick={() => setStep(1.5)}
+                      className="flex-1"
+                      data-testid="back-to-info-button"
                     >
-                      Ознакомиться с договором →
+                      ← Назад к данным
                     </Button>
+                  ) : null}
+                  {documentUploaded && (
+                    <>
+                      <Button
+                        variant="outline"
+                        onClick={() => setStep(1.5)}
+                        className="flex-1"
+                      >
+                        ← Изменить данные
+                      </Button>
+                      <Button
+                        onClick={() => setStep(1)}
+                        className="flex-1 bg-primary"
+                        size="lg"
+                      >
+                        Ознакомиться с договором →
+                      </Button>
+                    </>
                   )}
                 </div>
               </motion.div>
