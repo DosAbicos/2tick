@@ -529,11 +529,19 @@ const SignContractPage = () => {
                 <div className="flex gap-3">
                   <Button
                     variant="outline"
-                    onClick={() => setStep(1.5)}
+                    onClick={() => {
+                      // If data is already filled (saved), go back to contract view
+                      // Otherwise go back to data entry
+                      if (contract.signer_name && contract.signer_phone) {
+                        setStep(1);
+                      } else {
+                        setStep(1.5);
+                      }
+                    }}
                     className="flex-1"
                     data-testid="back-to-info-button"
                   >
-                    ← Назад к данным
+                    ← Назад
                   </Button>
                   {documentUploaded && (
                     <Button
