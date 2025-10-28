@@ -570,11 +570,11 @@ const SignContractPage = () => {
                     ← Назад
                   </Button>
                   <Button
-                    onClick={() => setStep(3)}
+                    onClick={() => setStep(2.5)}
                     className="flex-1 bg-green-600 hover:bg-green-700"
                     size="lg"
                   >
-                    Продолжить к верификации →
+                    Продолжить к просмотру договора →
                   </Button>
                 </div>
               </motion.div>
