@@ -501,15 +501,33 @@ const SignContractPage = () => {
                   </Label>
                 </div>
                 
+                {documentUploaded && (
+                  <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded-r">
+                    <div className="flex items-center gap-2 text-green-800">
+                      <CheckCircle2 className="h-5 w-5" />
+                      <span className="font-semibold">Документ успешно загружен!</span>
+                    </div>
+                  </div>
+                )}
+                
                 <div className="flex gap-3">
                   <Button
                     variant="outline"
-                    onClick={() => setStep(1.5)}
+                    onClick={() => setStep(needsInfo ? 1.5 : 1.5)}
                     className="flex-1"
                     data-testid="back-to-info-button"
                   >
-                    ← Назад
+                    ← Изменить данные
                   </Button>
+                  {documentUploaded && (
+                    <Button
+                      onClick={() => setStep(2.5)}
+                      className="flex-1 bg-primary"
+                      size="lg"
+                    >
+                      Просмотреть договор →
+                    </Button>
+                  )}
                 </div>
               </motion.div>
             )}
