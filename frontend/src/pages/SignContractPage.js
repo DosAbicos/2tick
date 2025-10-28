@@ -401,7 +401,7 @@ const SignContractPage = () => {
             )}
 
             {/* Step 1.5: Fill Missing Info */}
-            {step === 1.5 && needsInfo && (
+            {step === 1.5 && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
