@@ -529,11 +529,11 @@ const SignContractPage = () => {
                 <div className="flex gap-3">
                   <Button
                     variant="outline"
-                    onClick={() => setStep(needsInfo ? 1.5 : 1.5)}
+                    onClick={() => setStep(needsInfo ? 1.5 : 1)}
                     className="flex-1"
                     data-testid="back-to-info-button"
                   >
-                    ← Изменить данные
+                    ← Назад
                   </Button>
                   {documentUploaded && (
                     <Button
