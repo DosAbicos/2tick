@@ -1243,12 +1243,13 @@ class SignifyKZTester:
         all_passed = all(results.values())
         
         if all_passed:
-            logger.info("\n🎉 ALL 5 CRITICAL FIXES WORKING!")
+            logger.info("\n🎉 ALL 6 CRITICAL FIXES WORKING!")
             logger.info("✅ 1) Profile Save - iin_bin parameter supported")
             logger.info("✅ 2) Contract Number - 01, 02, 010, 0110 format")
             logger.info("✅ 3) PDF Signing Info - verification_method from signature")
             logger.info("✅ 4) Poppler PDF Upload - no 'Unable to get page count' errors")
-            logger.info("✅ 5) Telegram Bot - confirmed running (PID in test_result.md)")
+            logger.info("✅ 5) Placeholder Replacement - [ФИО Нанимателя], [Телефон], [Email] replaced")
+            logger.info("✅ 6) Telegram Bot - confirmed running (PID in test_result.md)")
         else:
             logger.info("\n🚨 SOME CRITICAL FIXES FAILED!")
             for test_key, result in results.items():
