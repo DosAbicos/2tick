@@ -1230,7 +1230,8 @@ class SignifyKZTester:
             'profile_save': 'Profile Save Error Fix (iin_bin parameter)',
             'contract_number': 'Contract Number Generation Fix (01, 02, 010)',
             'pdf_signing_info': 'PDF Signing Info Display Fix (verification_method)',
-            'poppler_pdf': 'Poppler PDF Upload Fix (no errors)'
+            'poppler_pdf': 'Poppler PDF Upload Fix (no errors)',
+            'placeholder_replacement': 'Placeholder Replacement Fix ([ФИО Нанимателя], [Телефон], [Email])'
         }
         
         for test_key, result in results.items():
