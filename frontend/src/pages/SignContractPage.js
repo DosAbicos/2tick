@@ -192,6 +192,9 @@ const SignContractPage = () => {
         }));
       }
       
+      // Mark that all required info is now filled
+      setNeedsInfo(false);
+      
       toast.success('Информация сохранена');
       
       // Always move to document step after saving info
