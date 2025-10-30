@@ -129,7 +129,7 @@
 Мобильное приложение будет использовать тот же REST API, что и веб-версия:
 
 ```
-https://kz-digisign.preview.emergentagent.com/api
+https://signlify.preview.emergentagent.com/api
 ```
 
 ### Основные эндпоинты:
@@ -149,7 +149,7 @@ https://kz-digisign.preview.emergentagent.com/api
 
 Клиенты **НЕ используют мобильное приложение**. Процесс подписания:
 
-1. Клиент получает SMS с ссылкой: `https://kz-digisign.preview.emergentagent.com/sign/CONTRACT_ID`
+1. Клиент получает SMS с ссылкой: `https://signlify.preview.emergentagent.com/sign/CONTRACT_ID`
 2. Открывает ссылку в любом браузере на телефоне/планшете/компьютере
 3. Просматривает договор
 4. Загружает фото удостоверения личности (через камеру или галерею)

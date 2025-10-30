@@ -207,13 +207,13 @@ tail -f /var/log/supervisor/backend.err.log
 ### Тест через curl:
 ```bash
 # 1. Получить deep link
-curl -X GET https://kz-digisign.preview.emergentagent.com/api/sign/CONTRACT_ID/telegram-deep-link
+curl -X GET https://signlify.preview.emergentagent.com/api/sign/CONTRACT_ID/telegram-deep-link
 
 # 2. Открыть deep link в браузере или Telegram
 # Скопировать полученный код
 
 # 3. Верифицировать код
-curl -X POST https://kz-digisign.preview.emergentagent.com/api/sign/CONTRACT_ID/verify-telegram-otp \
+curl -X POST https://signlify.preview.emergentagent.com/api/sign/CONTRACT_ID/verify-telegram-otp \
   -H "Content-Type: application/json" \
   -d '{"code": "123456"}'
 ```
