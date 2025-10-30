@@ -1321,15 +1321,56 @@ class SignifyKZTester:
         
         return results
 
+    def run_placeholder_test_only(self):
+        """Run only the placeholder replacement test as requested in review"""
+        logger.info("🔧 TESTING PLACEHOLDER REPLACEMENT FIX (Review Request)")
+        logger.info(f"Backend URL: {self.backend_url}")
+        
+        # Initialize
+        if not self.register_and_login():
+            logger.error("❌ Failed to initialize user - stopping test")
+            return False
+        
+        # Run the specific test
+        result = self.test_placeholder_replacement_fix()
+        
+        # Summary
+        logger.info("\n" + "="*60)
+        logger.info("📊 PLACEHOLDER REPLACEMENT TEST RESULT")
+        logger.info("="*60)
+        
+        if result:
+            logger.info("✅ PLACEHOLDER REPLACEMENT FIX - WORKING!")
+            logger.info("✅ [ФИО Нанимателя] → 'Иванов Иван Иванович'")
+            logger.info("✅ [Телефон] → '+7 (707) 123-45-67'")
+            logger.info("✅ [Email] → 'ivanov@test.com'")
+            logger.info("✅ [ФИО] → 'Иванов Иван Иванович' (alternative placeholder)")
+            logger.info("✅ Content updated in database")
+            logger.info("✅ Subsequent GET requests return replaced content")
+        else:
+            logger.info("❌ PLACEHOLDER REPLACEMENT FIX - FAILED!")
+            logger.info("❌ Placeholders not being replaced when updating signer info")
+        
+        return result
+
 if __name__ == "__main__":
+    import sys
+    
     tester = SignifyKZTester()
     
-    # Run critical fixes tests (as requested in review)
-    logger.info("🔧 RUNNING CRITICAL FIXES TESTS (5 fixes)")
-    critical_results = tester.run_critical_fixes_tests()
-    
-    # Also run comprehensive tests
-    logger.info("\n" + "="*60)
-    logger.info("🔄 RUNNING COMPREHENSIVE VERIFICATION TESTS")
-    logger.info("="*60)
-    all_results = tester.run_all_tests()
+    # Check if specific test requested
+    if len(sys.argv) > 1 and sys.argv[1] == "placeholder":
+        # Run only placeholder test (as requested in review)
+        logger.info("🎯 RUNNING PLACEHOLDER REPLACEMENT TEST ONLY")
+        result = tester.run_placeholder_test_only()
+        sys.exit(0 if result else 1)
+    else:
+        # Run critical fixes tests (as requested in review)
+        logger.info("🔧 RUNNING CRITICAL FIXES TESTS (6 fixes)")
+        critical_results = tester.run_critical_fixes_tests()
+        
+        # Also run comprehensive tests
+        logger.info("\n" + "="*60)
+        logger.info("🔄 RUNNING COMPREHENSIVE VERIFICATION TESTS")
+        logger.info("="*60)
+        all_results = tester.run_all_tests()
