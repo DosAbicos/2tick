@@ -1020,6 +1020,177 @@ class SignifyKZTester:
             self.log_test("Poppler PDF Upload Fix", False, f"Exception: {str(e)}")
             return False
     
+    def test_placeholder_replacement_fix(self):
+        """Test Placeholder Replacement Fix - [ФИО Нанимателя], [Телефон], [Email] replacement"""
+        logger.info("\n=== TESTING PLACEHOLDER REPLACEMENT FIX ===")
+        
+        try:
+            # Test 1: Create contract with placeholders [ФИО Нанимателя], [Телефон], [Email]
+            contract_data = {
+                "title": "Тест замены плейсхолдеров",
+                "content": "Договор аренды.\n\nНаниматель: [ФИО Нанимателя]\nТелефон: [Телефон]\nEmail: [Email]\n\nУсловия договора...",
+                "content_type": "plain",
+                "signer_name": "",
+                "signer_phone": "",
+                "signer_email": ""
+            }
+            
+            response = self.session.post(f"{self.backend_url}/contracts", json=contract_data)
+            if response.status_code not in [200, 201]:
+                self.log_test("Placeholder - Create Contract", False, f"Status: {response.status_code}")
+                return False
+            
+            contract = response.json()
+            contract_id = contract["id"]
+            self.log_test("Placeholder - Create Contract", True, f"Contract created with placeholders: {contract_id}")
+            
+            # Verify initial content has placeholders
+            if "[ФИО Нанимателя]" not in contract["content"]:
+                self.log_test("Placeholder - Initial Content Check", False, "Missing [ФИО Нанимателя] placeholder")
+                return False
+            
+            self.log_test("Placeholder - Initial Content Check", True, "Contract contains placeholders")
+            
+            # Test 2: Update signer info - should replace placeholders in content
+            signer_data = {
+                "signer_name": "Иванов Иван Иванович",
+                "signer_phone": "+7 (707) 123-45-67",
+                "signer_email": "ivanov@test.com"
+            }
+            
+            response = self.session.post(f"{self.backend_url}/sign/{contract_id}/update-signer-info", json=signer_data)
+            if response.status_code != 200:
+                self.log_test("Placeholder - Update Signer Info", False, f"Status: {response.status_code}, Response: {response.text}")
+                return False
+            
+            update_response = response.json()
+            self.log_test("Placeholder - Update Signer Info", True, "Signer info updated")
+            
+            # Test 3: Check that response contains updated content with replaced placeholders
+            updated_contract = update_response.get('contract')
+            if not updated_contract:
+                self.log_test("Placeholder - Response Contract Check", False, "No contract in response")
+                return False
+            
+            updated_content = updated_contract.get('content', '')
+            
+            # Check that placeholders were replaced
+            if "[ФИО Нанимателя]" in updated_content:
+                self.log_test("Placeholder - [ФИО Нанимателя] Replacement", False, "[ФИО Нанимателя] not replaced in response")
+                return False
+            
+            if "[Телефон]" in updated_content:
+                self.log_test("Placeholder - [Телефон] Replacement", False, "[Телефон] not replaced in response")
+                return False
+            
+            if "[Email]" in updated_content:
+                self.log_test("Placeholder - [Email] Replacement", False, "[Email] not replaced in response")
+                return False
+            
+            # Check that actual values are present
+            if "Иванов Иван Иванович" not in updated_content:
+                self.log_test("Placeholder - Name Value Check", False, "Name not found in updated content")
+                return False
+            
+            if "+7 (707) 123-45-67" not in updated_content:
+                self.log_test("Placeholder - Phone Value Check", False, "Phone not found in updated content")
+                return False
+            
+            if "ivanov@test.com" not in updated_content:
+                self.log_test("Placeholder - Email Value Check", False, "Email not found in updated content")
+                return False
+            
+            self.log_test("Placeholder - Response Content Check", True, "✅ All placeholders replaced in response")
+            
+            # Test 4: Verify content is updated in database
+            response = self.session.get(f"{self.backend_url}/contracts/{contract_id}")
+            if response.status_code != 200:
+                self.log_test("Placeholder - Get Updated Contract", False, f"Status: {response.status_code}")
+                return False
+            
+            db_contract = response.json()
+            db_content = db_contract.get('content', '')
+            
+            # Check database content has replacements
+            if "[ФИО Нанимателя]" in db_content:
+                self.log_test("Placeholder - DB [ФИО Нанимателя] Replacement", False, "[ФИО Нанимателя] not replaced in DB")
+                return False
+            
+            if "[Телефон]" in db_content:
+                self.log_test("Placeholder - DB [Телефон] Replacement", False, "[Телефон] not replaced in DB")
+                return False
+            
+            if "[Email]" in db_content:
+                self.log_test("Placeholder - DB [Email] Replacement", False, "[Email] not replaced in DB")
+                return False
+            
+            self.log_test("Placeholder - Database Content Check", True, "✅ All placeholders replaced in database")
+            
+            # Test 5: Verify subsequent GET requests return replaced content
+            response = self.session.get(f"{self.backend_url}/sign/{contract_id}")
+            if response.status_code == 200:
+                sign_contract = response.json()
+                sign_content = sign_contract.get('content', '')
+                
+                if "[ФИО Нанимателя]" in sign_content or "[Телефон]" in sign_content or "[Email]" in sign_content:
+                    self.log_test("Placeholder - Sign Page Content Check", False, "Placeholders still present in sign page")
+                    return False
+                
+                self.log_test("Placeholder - Sign Page Content Check", True, "✅ Placeholders remain replaced in sign page")
+            
+            # Test 6: Additional test for [ФИО] placeholder (without "Нанимателя")
+            logger.info("\n--- Testing [ФИО] placeholder variant ---")
+            
+            # Create another contract with [ФИО] instead of [ФИО Нанимателя]
+            contract_data_2 = {
+                "title": "Тест замены плейсхолдера [ФИО]",
+                "content": "Договор аренды.\n\nНаниматель: [ФИО]\nТелефон: [Телефон]\nEmail: [Email]\n\nУсловия договора...",
+                "content_type": "plain",
+                "signer_name": "",
+                "signer_phone": "",
+                "signer_email": ""
+            }
+            
+            response = self.session.post(f"{self.backend_url}/contracts", json=contract_data_2)
+            if response.status_code not in [200, 201]:
+                self.log_test("Placeholder - Create Contract [ФИО]", False, f"Status: {response.status_code}")
+                return False
+            
+            contract_2 = response.json()
+            contract_id_2 = contract_2["id"]
+            
+            # Update signer info for second contract
+            response = self.session.post(f"{self.backend_url}/sign/{contract_id_2}/update-signer-info", json=signer_data)
+            if response.status_code != 200:
+                self.log_test("Placeholder - Update Signer Info [ФИО]", False, f"Status: {response.status_code}")
+                return False
+            
+            # Check that [ФИО] was also replaced
+            response = self.session.get(f"{self.backend_url}/contracts/{contract_id_2}")
+            if response.status_code != 200:
+                return False
+            
+            contract_2_updated = response.json()
+            content_2 = contract_2_updated.get('content', '')
+            
+            if "[ФИО]" in content_2:
+                self.log_test("Placeholder - [ФИО] Replacement", False, "[ФИО] placeholder not replaced")
+                return False
+            
+            if "Иванов Иван Иванович" not in content_2:
+                self.log_test("Placeholder - [ФИО] Value Check", False, "Name not found after [ФИО] replacement")
+                return False
+            
+            self.log_test("Placeholder - [ФИО] Replacement", True, "✅ [ФИО] placeholder also replaced correctly")
+            
+            return True
+            
+        except Exception as e:
+            self.log_test("Placeholder Replacement Fix", False, f"Exception: {str(e)}")
+            import traceback
+            logger.error(traceback.format_exc())
+            return False
+
     def run_critical_fixes_tests(self):
         """Run tests for the 5 critical fixes"""
         logger.info("🚀 Testing 5 Critical Fixes for Signify KZ")
@@ -1045,7 +1216,10 @@ class SignifyKZTester:
         # Test 4: Poppler PDF Upload Fix
         results['poppler_pdf'] = self.test_poppler_pdf_upload_fix()
         
-        # Note: Test 5 (Telegram Bot) is already confirmed running in test_result.md
+        # Test 5: Placeholder Replacement Fix (NEW - from review request)
+        results['placeholder_replacement'] = self.test_placeholder_replacement_fix()
+        
+        # Note: Test 6 (Telegram Bot) is already confirmed running in test_result.md
         
         # Summary
         logger.info("\n" + "="*60)
