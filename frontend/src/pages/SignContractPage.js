@@ -415,49 +415,55 @@ const SignContractPage = () => {
                   <p className="text-neutral-600 text-sm">Для подписания договора необходима дополнительная информация</p>
                 </div>
                 
-                <div>
-                  <Label htmlFor="signer_name">ФИО *</Label>
-                  <Input
-                    id="signer_name"
-                    value={signerInfo.name || contract.signer_name || ''}
-                    onChange={(e) => setSignerInfo({...signerInfo, name: e.target.value})}
-                    required
-                    data-testid="signer-name-input"
-                    className="mt-1"
-                    placeholder="Иванов Иван Иванович"
-                  />
-                </div>
+                {!contract.signer_name && (
+                  <div>
+                    <Label htmlFor="signer_name">ФИО *</Label>
+                    <Input
+                      id="signer_name"
+                      value={signerInfo.name}
+                      onChange={(e) => setSignerInfo({...signerInfo, name: e.target.value})}
+                      required
+                      data-testid="signer-name-input"
+                      className="mt-1"
+                      placeholder="Иванов Иван Иванович"
+                    />
+                  </div>
+                )}
                 
-                <div>
-                  <Label htmlFor="signer_phone">Номер телефона *</Label>
-                  <IMaskInput
-                    mask="+7 (000) 000-00-00"
-                    value={signerInfo.phone || contract.signer_phone || ''}
-                    onAccept={(value) => setSignerInfo({...signerInfo, phone: value})}
-                    placeholder="+7 (___) ___-__-__"
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1"
-                    id="signer_phone"
-                    type="tel"
-                    required
-                    data-testid="signer-phone-input"
-                  />
-                </div>
+                {!contract.signer_phone && (
+                  <div>
+                    <Label htmlFor="signer_phone">Номер телефона *</Label>
+                    <IMaskInput
+                      mask="+7 (000) 000-00-00"
+                      value={signerInfo.phone}
+                      onAccept={(value) => setSignerInfo({...signerInfo, phone: value})}
+                      placeholder="+7 (___) ___-__-__"
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1"
+                      id="signer_phone"
+                      type="tel"
+                      required
+                      data-testid="signer-phone-input"
+                    />
+                  </div>
+                )}
                 
-                <div>
-                  <Label htmlFor="signer_email">Email</Label>
-                  <Input
-                    id="signer_email"
-                    type="email"
-                    value={signerInfo.email || contract.signer_email || ''}
-                    onChange={(e) => setSignerInfo({...signerInfo, email: e.target.value})}
-                    data-testid="signer-email-input"
-                    className={`mt-1 ${signerInfo.email && !validateEmail(signerInfo.email) ? 'border-red-500' : ''}`}
-                    placeholder="example@mail.com"
-                  />
-                  {signerInfo.email && !validateEmail(signerInfo.email) && (
-                    <p className="text-xs text-red-500 mt-1">Введите корректный email</p>
-                  )}
-                </div>
+                {!contract.signer_email && (
+                  <div>
+                    <Label htmlFor="signer_email">Email</Label>
+                    <Input
+                      id="signer_email"
+                      type="email"
+                      value={signerInfo.email}
+                      onChange={(e) => setSignerInfo({...signerInfo, email: e.target.value})}
+                      data-testid="signer-email-input"
+                      className={`mt-1 ${signerInfo.email && !validateEmail(signerInfo.email) ? 'border-red-500' : ''}`}
+                      placeholder="example@mail.com"
+                    />
+                    {signerInfo.email && !validateEmail(signerInfo.email) && (
+                      <p className="text-xs text-red-500 mt-1">Введите корректный email</p>
+                    )}
+                  </div>
+                )}
                 
  
                 <div className="flex gap-3">
