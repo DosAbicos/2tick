@@ -118,8 +118,10 @@ const SignContractPage = () => {
         // Check if we need additional info for signer data
         const needsName = !response.data.signer_name;
         const needsPhone = !response.data.signer_phone;
+        const needsEmail = !response.data.signer_email;
         
-        if (needsName || needsPhone) {
+        // Show form if ANY required field is missing (email is also important for notifications)
+        if (needsName || needsPhone || needsEmail) {
           setNeedsInfo(true);
         }
       }
