@@ -1804,9 +1804,11 @@ async def update_signer_info(contract_id: str, data: SignerInfoUpdate):
         new_email = data.signer_email or old_email
         
         # Replace placeholders or old values with new values
+        # Support both [ФИО] and [ФИО Нанимателя] placeholders
         if data.signer_name:
+            updated_content = updated_content.replace('[ФИО Нанимателя]', new_name)
             updated_content = updated_content.replace('[ФИО]', new_name)
-            if old_name and old_name != '[ФИО]':
+            if old_name and old_name not in ['[ФИО]', '[ФИО Нанимателя]']:
                 updated_content = updated_content.replace(old_name, new_name)
         
         if data.signer_phone:
