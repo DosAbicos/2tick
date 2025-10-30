@@ -34,9 +34,26 @@ class SignifyKZTester:
         logger.info(f"{status_symbol} {test_name}: {details}")
         
     def register_and_login(self):
-        """Register a test user and login"""
+        """Register a test user and login (handles new phone verification flow)"""
         try:
-            # Register user with all required fields
+            # Try to login first with existing user
+            login_data = {
+                "email": "test.creator@signify.kz",
+                "password": "TestPassword123!"
+            }
+            
+            response = self.session.post(f"{self.backend_url}/auth/login", json=login_data)
+            
+            if response.status_code == 200:
+                # User exists and login successful
+                data = response.json()
+                self.auth_token = data["token"]
+                self.user_id = data["user"]["id"]
+                self.session.headers.update({"Authorization": f"Bearer {self.auth_token}"})
+                self.log_test("User Login", True, f"Existing user logged in: {self.user_id}")
+                return True
+            
+            # User doesn't exist, need to register with new phone verification flow
             register_data = {
                 "email": "test.creator@signify.kz",
                 "password": "TestPassword123!",
@@ -51,26 +68,69 @@ class SignifyKZTester:
             response = self.session.post(f"{self.backend_url}/auth/register", json=register_data)
             
             if response.status_code == 400 and "already registered" in response.text:
-                # User exists, try to login
-                login_data = {
-                    "email": register_data["email"],
-                    "password": register_data["password"]
-                }
+                # User exists but login failed, try login again
                 response = self.session.post(f"{self.backend_url}/auth/login", json=login_data)
+                if response.status_code == 200:
+                    data = response.json()
+                    self.auth_token = data["token"]
+                    self.user_id = data["user"]["id"]
+                    self.session.headers.update({"Authorization": f"Bearer {self.auth_token}"})
+                    self.log_test("User Login (retry)", True, f"User ID: {self.user_id}")
+                    return True
+                else:
+                    self.log_test("User Login (retry)", False, f"Status: {response.status_code}")
+                    return False
             
             if response.status_code in [200, 201]:
-                data = response.json()
-                self.auth_token = data["token"]
-                self.user_id = data["user"]["id"]
-                self.session.headers.update({"Authorization": f"Bearer {self.auth_token}"})
-                self.log_test("User Registration/Login", True, f"User ID: {self.user_id}")
-                return True
+                # New registration system - returns registration_id, need phone verification
+                reg_data = response.json()
+                registration_id = reg_data.get("registration_id")
+                
+                if registration_id:
+                    self.log_test("User Registration", True, f"Registration created: {registration_id}")
+                    
+                    # Request SMS OTP for verification
+                    otp_response = self.session.post(f"{self.backend_url}/auth/registration/{registration_id}/request-otp?method=sms")
+                    if otp_response.status_code == 200:
+                        otp_data = otp_response.json()
+                        mock_otp = otp_data.get("mock_otp")
+                        
+                        if mock_otp:
+                            # Verify OTP to complete registration
+                            verify_data = {"otp_code": mock_otp}
+                            verify_response = self.session.post(f"{self.backend_url}/auth/registration/{registration_id}/verify-otp", json=verify_data)
+                            
+                            if verify_response.status_code == 200:
+                                verify_data = verify_response.json()
+                                self.auth_token = verify_data["token"]
+                                self.user_id = verify_data["user"]["id"]
+                                self.session.headers.update({"Authorization": f"Bearer {self.auth_token}"})
+                                self.log_test("User Registration/Verification", True, f"User created and verified: {self.user_id}")
+                                return True
+                            else:
+                                self.log_test("User Verification", False, f"Status: {verify_response.status_code}")
+                                return False
+                        else:
+                            self.log_test("User OTP Request", False, "No mock_otp returned")
+                            return False
+                    else:
+                        self.log_test("User OTP Request", False, f"Status: {otp_response.status_code}")
+                        return False
+                else:
+                    # Old registration system - direct token
+                    self.auth_token = reg_data["token"]
+                    self.user_id = reg_data["user"]["id"]
+                    self.session.headers.update({"Authorization": f"Bearer {self.auth_token}"})
+                    self.log_test("User Registration (direct)", True, f"User ID: {self.user_id}")
+                    return True
             else:
-                self.log_test("User Registration/Login", False, f"Status: {response.status_code}, Response: {response.text}")
+                self.log_test("User Registration", False, f"Status: {response.status_code}, Response: {response.text}")
                 return False
                 
         except Exception as e:
             self.log_test("User Registration/Login", False, f"Exception: {str(e)}")
+            import traceback
+            logger.error(traceback.format_exc())
             return False
     
     def create_contract(self, title_suffix=""):
