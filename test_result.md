@@ -699,11 +699,11 @@ frontend:
 
   - task: "Переустановка poppler-utils для PDF конвертации (4-я установка)"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 3
     priority: "critical"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "user"
@@ -711,6 +711,9 @@ frontend:
       - working: "NA"
         agent: "main"
         comment: "Переустановлен poppler-utils (4-й раз) через apt-get install. Backend перезапущен. Эта проблема повторяется регулярно - poppler пропадает после перезапусков контейнера."
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН! Poppler-utils работает корректно: 1) Создан тестовый PDF документ с помощью reportlab, 2) POST /api/sign/{contract_id}/upload-document успешно загружает PDF без ошибок 'Unable to get page count' (статус 200), 3) PDF корректно конвертируется в JPEG изображение, 4) Никаких poppler ошибок не обнаружено. ✅ ИСПРАВЛЕНИЕ ПОДТВЕРЖДЕНО: poppler-utils установлен и функционирует без проблем, PDF документы загружаются и конвертируются успешно."
 
   - task: "Telegram бот автозапуск"
     implemented: true
