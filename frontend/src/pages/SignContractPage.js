@@ -373,7 +373,8 @@ const SignContractPage = () => {
                   )}
                 </div>
                 
-                {documentUploaded ? (
+                {documentUploaded && !needsInfo ? (
+                  // Document uploaded AND data filled - ready to sign
                   <Button
                     onClick={() => setStep(3)}
                     className="w-full bg-green-600 hover:bg-green-700"
@@ -383,6 +384,7 @@ const SignContractPage = () => {
                     Всё верно, подписать договор →
                   </Button>
                 ) : (
+                  // Need to fill data or upload document
                   <Button
                     onClick={() => {
                       if (needsInfo) {
