@@ -373,8 +373,8 @@ const SignContractPage = () => {
                   )}
                 </div>
                 
-                {documentUploaded && !needsInfo ? (
-                  // Document uploaded AND data filled - ready to sign
+                {(documentUploaded || contract.signature?.document_upload) && !needsInfo ? (
+                  // Document uploaded (by user or landlord) AND data filled - ready to sign
                   <Button
                     onClick={() => setStep(3)}
                     className="w-full bg-green-600 hover:bg-green-700"
