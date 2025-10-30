@@ -688,6 +688,42 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ ТЕСТ ПРОЙДЕН! Исправление зацикливания на странице подписания работает корректно. Проведено полное E2E тестирование: 1) Создан тестовый контракт БЕЗ предзаполненных данных нанимателя, 2) Step 1 (Просмотр) правильно показывает кнопку 'Продолжить →' для незаполненного контракта, 3) Step 1.5 (Заполнение данных) успешно сохраняет ФИО и телефон, 4) КРИТИЧЕСКИЙ МОМЕНТ: setNeedsInfo(false) корректно срабатывает при сохранении данных в handleSaveSignerInfo, 5) Step 2 (Загрузка документа) работает нормально, 6) КРИТИЧЕСКАЯ ПРОВЕРКА: При возврате на Step 1 после заполнения данных показывается ПРАВИЛЬНАЯ кнопка 'Всё верно, подписать договор →' вместо зацикливающей 'Продолжить →'. ✅ ИСПРАВЛЕНИЕ ПОДТВЕРЖДЕНО: Зацикливание полностью устранено, логика отображения кнопок работает корректно (documentUploaded && !needsInfo → показывает кнопку подписания), правильная навигация к верификации (Step 3) функционирует."
+      - working: "NA"
+        agent: "user"
+        comment: "ПРОБЛЕМА 3: Когда наймодатель заполняет ФИО и телефон, но оставляет email пустым, у нанимателя не отображается форма для заполнения (Step 1.5)."
+      - working: "NA"
+        agent: "main"
+        comment: "ИСПРАВЛЕНИЕ 3: Обновлена логика проверки needsInfo (строки 119-126) - добавлена проверка email поля (needsEmail). Теперь форма Step 1.5 показывается если НЕ заполнено ЛЮБОЕ из полей: ФИО, телефон ИЛИ email. Email остается необязательным для нанимателя, но если наймодатель не заполнил его, нанимателю даётся возможность его указать."
+
+  - task: "Переустановка poppler-utils для PDF конвертации (4-я установка)"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 3
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "user"
+        comment: "ПРОБЛЕМА 1: PDF не загружается - ошибка 'Unable to get page count. Is poppler installed and in PATH?'"
+      - working: "NA"
+        agent: "main"
+        comment: "Переустановлен poppler-utils (4-й раз) через apt-get install. Backend перезапущен. Эта проблема повторяется регулярно - poppler пропадает после перезапусков контейнера."
+
+  - task: "Telegram бот автозапуск"
+    implemented: true
+    working: true
+    file: "/etc/supervisor/conf.d/telegram_bot.conf"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "user"
+        comment: "ПРОБЛЕМА 2: Telegram бот не запускается автоматически"
+      - working: true
+        agent: "main"
+        comment: "✅ ПРОВЕРКА ПРОЙДЕНА: Telegram бот УЖЕ настроен на автозапуск через supervisor. Конфиг /etc/supervisor/conf.d/telegram_bot.conf содержит autostart=true и autorestart=true. Текущий статус: RUNNING (uptime 1:01:58). Telegram бот запускается автоматически при старте системы и перезапускается при падениях."
 
   - task: "Роут для страницы верификации"
     implemented: true
