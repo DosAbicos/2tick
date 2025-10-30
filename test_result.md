@@ -677,6 +677,18 @@ frontend:
         agent: "testing"
         comment: "✅ ТЕСТ ПРОЙДЕН. Модификация RegisterPage работает корректно: 1) Форма регистрации заполняется всеми обязательными полями (full_name, email, phone, company_name, iin, legal_address, password), 2) POST /api/auth/register успешно создает временную запись в коллекции registrations, 3) Редирект на /verify-registration/{registration_id} происходит автоматически после успешной регистрации, 4) registration_id корректно извлекается из ответа API и используется в URL, 5) Все поля формы имеют правильные data-testid атрибуты для тестирования, 6) Валидация формы работает (кнопка активна только при заполнении всех полей). ✅ ИНТЕГРАЦИЯ РАБОТАЕТ: RegisterPage → API → VerifyRegistrationPage flow функционирует без ошибок."
 
+  - task: "Исправление зацикливания на странице подписания (needsInfo)"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/SignContractPage.js"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "ПРОБЛЕМА: После заполнения данных (Step 1.5) и перехода на Step 2 (загрузка документа), при возврате на Step 1 (просмотр договора) кнопка 'Продолжить' вела обратно к просмотру договора вместо перехода к верификации (Step 3). ПРИЧИНА: needsInfo state не обновлялся на false после успешного сохранения данных через handleSaveSignerInfo. ИСПРАВЛЕНИЕ: Добавлена строка setNeedsInfo(false) в функцию handleSaveSignerInfo после успешного сохранения данных. Теперь после сохранения данных needsInfo становится false, что позволяет Step 1 показывать правильную кнопку 'Всё верно, подписать договор →' вместо 'Продолжить →', устраняя зацикливание."
+
   - task: "Роут для страницы верификации"
     implemented: true
     working: true
