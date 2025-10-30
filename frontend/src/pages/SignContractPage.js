@@ -613,13 +613,13 @@ const SignContractPage = () => {
                 <div className="flex gap-3 pt-4">
                   <Button
                     variant="outline"
-                    onClick={() => setStep(needsInfo ? 1.5 : 1)}
+                    onClick={() => setStep(1.5)}
                     className="flex-1"
                   >
-                    ← Назад
+                    ← Изменить данные
                   </Button>
                   <Button
-                    onClick={() => setStep(2.5)}
+                    onClick={() => setStep(1)}
                     className="flex-1 bg-green-600 hover:bg-green-700"
                     size="lg"
                   >
