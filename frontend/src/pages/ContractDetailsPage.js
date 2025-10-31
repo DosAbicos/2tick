@@ -228,6 +228,13 @@ const ContractDetailsPage = () => {
         
         <Card data-testid="contract-details-card">
           <CardHeader>
+            {isReadOnly && (
+              <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                <p className="text-sm text-amber-800 font-medium">
+                  👁️ Режим просмотра (только чтение)
+                </p>
+              </div>
+            )}
             <div className="flex justify-between items-start">
               <div>
                 <CardTitle className="text-2xl mb-2" data-testid="contract-title">{contract.title}</CardTitle>
