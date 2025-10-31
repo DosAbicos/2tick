@@ -41,8 +41,9 @@ async def make_admin(email: str):
 
 async def list_users():
     mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
+    db_name = os.environ.get('DB_NAME', 'signify_kz_db')
     client = AsyncIOMotorClient(mongo_url)
-    db = client.signify_kz
+    db = client[db_name]
     
     users = await db.users.find({}, {"email": 1, "full_name": 1, "role": 1}).limit(10).to_list(10)
     
