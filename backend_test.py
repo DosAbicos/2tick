@@ -1549,17 +1549,60 @@ class SignifyKZTester:
         
         return result
 
+    def run_contract_code_test_only(self):
+        """Run only contract code generation test"""
+        logger.info("🔧 Testing Contract Code Generation Feature")
+        logger.info(f"Backend URL: {self.backend_url}")
+        
+        # Initialize
+        if not self.register_and_login():
+            logger.error("❌ Failed to initialize user - stopping tests")
+            return False
+        
+        # Run the specific test
+        result = self.test_contract_code_generation()
+        
+        # Summary
+        logger.info("\n" + "="*60)
+        logger.info("📊 CONTRACT CODE GENERATION TEST RESULT")
+        logger.info("="*60)
+        
+        if result:
+            logger.info("✅ CONTRACT CODE GENERATION - WORKING!")
+            logger.info("✅ Unique codes generated in ABC-1234 format")
+            logger.info("✅ Format validation: ^[A-Z]{3}-[0-9]{4}$")
+            logger.info("✅ Code persistence in database")
+            logger.info("✅ Uniqueness verification across multiple contracts")
+            logger.info("✅ All requirements met")
+        else:
+            logger.info("❌ CONTRACT CODE GENERATION - FAILED!")
+            logger.info("❌ Contract codes not being generated or invalid format")
+        
+        return result
+
 if __name__ == "__main__":
     import sys
     
     tester = SignifyKZTester()
     
     # Check if specific test requested
-    if len(sys.argv) > 1 and sys.argv[1] == "placeholder":
-        # Run only placeholder test (as requested in review)
-        logger.info("🎯 RUNNING PLACEHOLDER REPLACEMENT TEST ONLY")
-        result = tester.run_placeholder_test_only()
-        sys.exit(0 if result else 1)
+    if len(sys.argv) > 1:
+        test_type = sys.argv[1]
+        
+        if test_type == "placeholder":
+            # Run only placeholder test
+            logger.info("🎯 RUNNING PLACEHOLDER REPLACEMENT TEST ONLY")
+            result = tester.run_placeholder_test_only()
+            sys.exit(0 if result else 1)
+        elif test_type == "contract_code":
+            # Run only contract code test (NEW)
+            logger.info("🎯 RUNNING CONTRACT CODE GENERATION TEST ONLY")
+            result = tester.run_contract_code_test_only()
+            sys.exit(0 if result else 1)
+        else:
+            logger.error(f"❌ Unknown test type: {test_type}")
+            logger.info("Available test types: placeholder, contract_code")
+            sys.exit(1)
     else:
         # Run critical fixes tests (as requested in review)
         logger.info("🔧 RUNNING CRITICAL FIXES TESTS (6 fixes)")
