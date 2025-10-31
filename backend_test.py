@@ -1258,7 +1258,7 @@ class SignifyKZTester:
         try:
             import re
             
-            # Test 1: Create contract and verify it has contract_code
+            # Test 1: Create contract exactly as specified in review request
             contract_data = {
                 "title": "Тест договора с кодом",
                 "content": "Тестовый контент",
@@ -1281,22 +1281,34 @@ class SignifyKZTester:
             
             self.log_test("Contract Code - Create Contract", True, f"Contract created with code: {contract_code}")
             
-            # Test 2: Verify code format (ABC-1234: 3 uppercase letters, dash, 4 digits)
+            # Test 2: ✅ Response содержит `contract_code` (формат: ABC-1234, где A-Z буквы, 0-9 цифры)
             code_pattern = r'^[A-Z]{3}-[0-9]{4}$'
             if not re.match(code_pattern, contract_code):
                 self.log_test("Contract Code - Format Validation", False, f"Code '{contract_code}' doesn't match pattern {code_pattern}")
                 return False
             
-            self.log_test("Contract Code - Format Validation", True, f"Code '{contract_code}' matches ABC-1234 format")
+            self.log_test("Contract Code - Format Validation", True, f"✅ Code '{contract_code}' matches ABC-1234 format")
             
-            # Test 3: Verify code is not empty and not null
+            # Test 3: ✅ `contract_code` не пустой и не null
             if contract_code is None or contract_code == "":
                 self.log_test("Contract Code - Non-Empty Check", False, "contract_code is empty or null")
                 return False
             
-            self.log_test("Contract Code - Non-Empty Check", True, f"Code is not empty: '{contract_code}'")
+            self.log_test("Contract Code - Non-Empty Check", True, f"✅ Code is not empty and not null: '{contract_code}'")
             
-            # Test 4: Verify code persists when retrieving contract
+            # Test 4: ✅ Код соответствует формату: 3 заглавные буквы, дефис, 4 цифры
+            letters_part = contract_code[:3]
+            dash = contract_code[3]
+            numbers_part = contract_code[4:]
+            
+            if not (len(letters_part) == 3 and letters_part.isupper() and letters_part.isalpha() and 
+                   dash == '-' and len(numbers_part) == 4 and numbers_part.isdigit()):
+                self.log_test("Contract Code - Component Check", False, f"Code '{contract_code}' has invalid components")
+                return False
+            
+            self.log_test("Contract Code - Component Check", True, f"✅ Code has correct format: 3 uppercase letters, dash, 4 digits")
+            
+            # Test 5: ✅ При повторном GET /api/contracts/{contract_id} код сохраняется
             response = self.session.get(f"{self.backend_url}/contracts/{contract_id}")
             if response.status_code != 200:
                 self.log_test("Contract Code - Retrieve Contract", False, f"Status: {response.status_code}")
@@ -1309,10 +1321,10 @@ class SignifyKZTester:
                 self.log_test("Contract Code - Persistence Check", False, f"Code changed: '{contract_code}' -> '{retrieved_code}'")
                 return False
             
-            self.log_test("Contract Code - Persistence Check", True, f"Code persisted correctly: '{retrieved_code}'")
+            self.log_test("Contract Code - Persistence Check", True, f"✅ Code persisted correctly in database: '{retrieved_code}'")
             
-            # Test 5: Create multiple contracts and verify uniqueness
-            logger.info("\n--- Testing Code Uniqueness ---")
+            # Test 6: Тест уникальности кодов - Создать 5 договоров подряд
+            logger.info("\n--- Testing Code Uniqueness (5 contracts) ---")
             
             created_codes = [contract_code]  # Include first contract code
             
@@ -1349,35 +1361,56 @@ class SignifyKZTester:
                 created_codes.append(new_code)
                 self.log_test(f"Contract Code - Contract {i+2}", True, f"Unique code: '{new_code}'")
             
-            self.log_test("Contract Code - Uniqueness Check", True, f"All 5 codes are unique: {created_codes}")
+            self.log_test("Contract Code - Uniqueness Check", True, f"✅ All 5 codes are different: {created_codes}")
+            self.log_test("Contract Code - No Duplicates", True, f"✅ No duplicate codes found")
             
-            # Test 6: Verify all codes follow the correct format
-            valid_examples = ["ABC-1234", "XYZ-9876", "QWE-0000"]
-            invalid_examples = ["abc-1234", "AB-1234", "ABC-12345", "ABC1234", "ABCD-1234"]
+            # Test 7: Тест формата кода - регулярное выражение ^[A-Z]{3}-[0-9]{4}$
+            logger.info("\n--- Testing Format with Regex ---")
             
-            for code in created_codes:
+            for i, code in enumerate(created_codes):
                 if not re.match(code_pattern, code):
-                    self.log_test("Contract Code - Final Format Check", False, f"Code '{code}' is invalid")
+                    self.log_test("Contract Code - Regex Format Check", False, f"Code '{code}' fails regex ^[A-Z]{{3}}-[0-9]{{4}}$")
                     return False
             
-            self.log_test("Contract Code - Final Format Check", True, "All generated codes match ^[A-Z]{3}-[0-9]{4}$ pattern")
+            self.log_test("Contract Code - Regex Format Check", True, f"✅ All codes match regex ^[A-Z]{{3}}-[0-9]{{4}}$")
             
-            # Test 7: Test examples from requirements
-            logger.info(f"\n--- Format Examples ---")
+            # Test 8: Examples validation
+            logger.info("\n--- Format Examples Validation ---")
+            valid_examples = ["ABC-1234", "XYZ-9876", "QWE-0000"]
+            invalid_examples = ["abc-1234", "AB-1234", "ABC-12345"]
+            
             logger.info(f"✅ Valid examples: {valid_examples}")
             logger.info(f"❌ Invalid examples: {invalid_examples}")
             
+            # Verify our generated codes would be considered valid
             for code in created_codes:
-                letters_part = code[:3]
-                dash = code[3]
-                numbers_part = code[4:]
-                
-                if not (letters_part.isupper() and letters_part.isalpha() and 
-                       dash == '-' and numbers_part.isdigit() and len(numbers_part) == 4):
-                    self.log_test("Contract Code - Component Check", False, f"Code '{code}' has invalid components")
+                if code.lower() in [ex.lower() for ex in invalid_examples]:
+                    self.log_test("Contract Code - Example Validation", False, f"Generated code '{code}' matches invalid example")
                     return False
             
-            self.log_test("Contract Code - Component Check", True, "All codes have correct components (3 letters, dash, 4 digits)")
+            # Verify format matches valid examples pattern
+            for code in created_codes:
+                if not (len(code) == 8 and code[3] == '-' and 
+                       code[:3].isupper() and code[:3].isalpha() and 
+                       code[4:].isdigit() and len(code[4:]) == 4):
+                    self.log_test("Contract Code - Example Format", False, f"Code '{code}' doesn't match valid example format")
+                    return False
+            
+            self.log_test("Contract Code - Example Validation", True, f"✅ All generated codes follow valid example pattern")
+            
+            # Test 9: Check old contracts can have null contract_code (backward compatibility)
+            logger.info("\n--- Testing Backward Compatibility ---")
+            
+            # Get all contracts to see if any have null contract_code (this is acceptable)
+            response = self.session.get(f"{self.backend_url}/contracts")
+            if response.status_code == 200:
+                all_contracts = response.json()
+                null_code_count = sum(1 for c in all_contracts if c.get('contract_code') is None)
+                
+                if null_code_count > 0:
+                    self.log_test("Contract Code - Backward Compatibility", True, f"✅ Found {null_code_count} old contracts with null contract_code (acceptable)")
+                else:
+                    self.log_test("Contract Code - Backward Compatibility", True, f"✅ All contracts have contract_code (new implementation)")
             
             return True
             
