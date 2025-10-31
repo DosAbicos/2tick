@@ -351,7 +351,14 @@ const SignContractPage = () => {
         <Card data-testid="sign-contract-card">
           <CardHeader>
             <CardTitle className="text-2xl" data-testid="signing-title">{t('signing.title')}</CardTitle>
-            <p className="text-neutral-600">{contract.title}</p>
+            <div className="flex items-center gap-2 mt-2">
+              {contract.contract_code && (
+                <code className="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded border border-blue-200">
+                  {contract.contract_code}
+                </code>
+              )}
+              <p className="text-neutral-600">{contract.title}</p>
+            </div>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Step 1: View Contract */}
