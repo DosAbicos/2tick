@@ -53,6 +53,10 @@ const AdminPage = () => {
   const [stats, setStats] = useState(null);
   const [users, setUsers] = useState([]);
   const [contracts, setContracts] = useState([]);
+  const [contractsTotal, setContractsTotal] = useState(0);
+  const [contractsSkip, setContractsSkip] = useState(0);
+  const [contractsHasMore, setContractsHasMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [auditLogs, setAuditLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   
@@ -79,13 +83,16 @@ const AdminPage = () => {
       const [statsRes, usersRes, contractsRes, logsRes] = await Promise.all([
         axios.get(`${API}/admin/stats`, { headers: { Authorization: `Bearer ${token}` } }),
         axios.get(`${API}/admin/users`, { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get(`${API}/admin/contracts`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API}/admin/contracts?limit=20&skip=0`, { headers: { Authorization: `Bearer ${token}` } }),
         axios.get(`${API}/admin/audit-logs`, { headers: { Authorization: `Bearer ${token}` } })
       ]);
       
       setStats(statsRes.data);
       setUsers(usersRes.data);
-      setContracts(contractsRes.data);
+      setContracts(contractsRes.data.contracts);
+      setContractsTotal(contractsRes.data.total);
+      setContractsSkip(contractsRes.data.skip);
+      setContractsHasMore(contractsRes.data.has_more);
       setAuditLogs(logsRes.data || []);
     } catch (error) {
       toast.error('Ошибка загрузки данных');
