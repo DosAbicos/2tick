@@ -133,6 +133,7 @@ class Contract(BaseModel):
     content_type: str = "plain"  # "plain" or "html"
     creator_id: str
     contract_number: Optional[str] = None  # Sequential number: 01, 02, 010, 0110, etc.
+    contract_code: Optional[str] = None  # Unique short code: ABC-1234
     signer_name: str
     signer_phone: str
     signer_email: Optional[str] = None
