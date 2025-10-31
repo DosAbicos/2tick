@@ -2653,6 +2653,70 @@ async def get_stats(current_user: dict = Depends(get_current_user)):
         "pending_contracts": pending_contracts
     }
 
+@api_router.get("/admin/users/{user_id}")
+async def get_user_details(user_id: str, current_user: dict = Depends(get_current_user)):
+    if current_user.get('role') != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    user = await db.users.find_one({"id": user_id}, {"_id": 0, "password": 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Получить статистику по договорам пользователя
+    user_contracts = await db.contracts.find({"landlord_id": user_id}).to_list(None)
+    signed_count = sum(1 for c in user_contracts if c.get('status') == 'signed')
+    pending_count = sum(1 for c in user_contracts if c.get('status') in ['draft', 'sent', 'pending-signature'])
+    
+    user['stats'] = {
+        'total_contracts': len(user_contracts),
+        'signed_contracts': signed_count,
+        'pending_contracts': pending_count,
+        'contract_limit': user.get('contract_limit', 10)
+    }
+    
+    return user
+
+@api_router.post("/admin/users/{user_id}/reset-password")
+async def admin_reset_password(user_id: str, new_password: str, current_user: dict = Depends(get_current_user)):
+    if current_user.get('role') != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Хешируем новый пароль
+    password_hash = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"password": password_hash}}
+    )
+    
+    await log_audit("admin_password_reset", user_id=current_user.get('id'), 
+                   details=f"Reset password for user: {user.get('email')}")
+    
+    return {"message": "Password reset successfully", "new_password": new_password}
+
+@api_router.post("/admin/users/{user_id}/update-contract-limit")
+async def update_contract_limit(user_id: str, contract_limit: int, current_user: dict = Depends(get_current_user)):
+    if current_user.get('role') != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"contract_limit": contract_limit}}
+    )
+    
+    await log_audit("admin_contract_limit_update", user_id=current_user.get('id'), 
+                   details=f"Updated contract limit for {user.get('email')} to {contract_limit}")
+    
+    return {"message": "Contract limit updated successfully", "contract_limit": contract_limit}
+
 # Include router
 app.include_router(api_router)
 
