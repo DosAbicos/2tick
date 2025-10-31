@@ -284,6 +284,7 @@ const AdminPage = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
+                      <TableHead>ID</TableHead>
                       <TableHead>Email</TableHead>
                       <TableHead>Имя</TableHead>
                       <TableHead>Роль</TableHead>
@@ -295,6 +296,9 @@ const AdminPage = () => {
                   <TableBody>
                     {filteredUsers.map((user) => (
                       <TableRow key={user.id}>
+                        <TableCell>
+                          <code className="text-xs text-neutral-500">{user.id.substring(0, 8)}...</code>
+                        </TableCell>
                         <TableCell className="font-medium">{user.email}</TableCell>
                         <TableCell>{user.full_name}</TableCell>
                         <TableCell>
