@@ -394,7 +394,7 @@ const AdminPage = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredContracts.slice(0, 50).map((contract) => (
+                    {filteredContracts.map((contract) => (
                       <TableRow key={contract.id}>
                         <TableCell>
                           <code className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded">
