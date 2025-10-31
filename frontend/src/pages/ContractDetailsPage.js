@@ -227,7 +227,12 @@ const ContractDetailsPage = () => {
             <div className="flex justify-between items-start">
               <div>
                 <CardTitle className="text-2xl mb-2" data-testid="contract-title">{contract.title}</CardTitle>
-                <div className="flex gap-2 items-center">
+                <div className="flex gap-2 items-center flex-wrap">
+                  {contract.contract_code && (
+                    <code className="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded border border-blue-200">
+                      {contract.contract_code}
+                    </code>
+                  )}
                   {getStatusBadge(contract.status)}
                   <span className="text-sm text-neutral-500">
                     Updated {format(new Date(contract.updated_at), 'dd MMM yyyy HH:mm')}
