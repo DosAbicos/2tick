@@ -1553,9 +1553,10 @@ def generate_contract_code():
 
 @api_router.post("/contracts", response_model=Contract)
 async def create_contract(contract_data: ContractCreate, current_user: dict = Depends(get_current_user)):
-    # Get user IIN/BIN from profile
+    # Get user IIN/BIN and full_name from profile
     user = await db.users.find_one({"user_id": current_user['user_id']})
     landlord_iin_bin = user.get('iin', '') if user else ''
+    landlord_full_name = user.get('full_name', '') if user else ''
     
     # Generate sequential contract number: 01, 02, 03...09, 010, 011...099, 0100, etc.
     # Get the count of existing contracts for this user
@@ -1589,6 +1590,7 @@ async def create_contract(contract_data: ContractCreate, current_user: dict = De
         amount=contract_data.amount,
         landlord_name=contract_data.landlord_name,
         landlord_email=current_user.get('email'),  # Email наймодателя из current_user
+        landlord_full_name=landlord_full_name,  # ФИО наймодателя из профиля
         landlord_representative=contract_data.landlord_representative,
         landlord_iin_bin=landlord_iin_bin  # From user profile
     )
