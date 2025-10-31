@@ -35,6 +35,10 @@ const ContractDetailsPage = () => {
   const [sendingContract, setSendingContract] = useState(false);
   const [approving, setApproving] = useState(false);
   const token = localStorage.getItem('token');
+  
+  // Check if readonly mode (for admin)
+  const searchParams = new URLSearchParams(window.location.search);
+  const isReadOnly = searchParams.get('readonly') === 'true';
 
   useEffect(() => {
     fetchContract();
