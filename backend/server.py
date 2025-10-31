@@ -1587,6 +1587,7 @@ async def create_contract(contract_data: ContractCreate, current_user: dict = De
         days_count=contract_data.days_count,
         amount=contract_data.amount,
         landlord_name=contract_data.landlord_name,
+        landlord_email=current_user.get('email'),  # Email наймодателя из current_user
         landlord_representative=contract_data.landlord_representative,
         landlord_iin_bin=landlord_iin_bin  # From user profile
     )
