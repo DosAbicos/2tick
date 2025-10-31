@@ -5,9 +5,19 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from '@/components/ui/dialog';
 import {
   Table,
   TableBody,
@@ -20,15 +30,15 @@ import Header from '@/components/Header';
 import { 
   Users, 
   FileText, 
-  Activity, 
-  TrendingUp,
+  Activity,
   Search,
   Eye,
-  Ban,
   CheckCircle,
   XCircle,
-  Download,
-  Filter
+  Key,
+  Plus,
+  Minus,
+  Settings
 } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -49,6 +59,16 @@ const AdminPage = () => {
   // Filters
   const [userSearch, setUserSearch] = useState('');
   const [contractStatusFilter, setContractStatusFilter] = useState('all');
+  
+  // Modal states
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [userDetailsOpen, setUserDetailsOpen] = useState(false);
+  const [resetPasswordOpen, setResetPasswordOpen] = useState(false);
+  const [contractLimitOpen, setContractLimitOpen] = useState(false);
+  
+  // Form states
+  const [newPassword, setNewPassword] = useState('');
+  const [newContractLimit, setNewContractLimit] = useState(10);
 
   useEffect(() => {
     fetchAdminData();
@@ -77,23 +97,74 @@ const AdminPage = () => {
     }
   };
 
-  const getStatusBadge = (status) => {
-    const statusMap = {
-      'draft': { label: 'Черновик', variant: 'secondary' },
-      'sent': { label: 'Отправлен', variant: 'default' },
-      'pending-signature': { label: 'Ожидает утверждения', variant: 'outline' },
-      'signed': { label: 'Подписан', variant: 'success' },
-      'declined': { label: 'Отклонен', variant: 'destructive' }
-    };
-    
-    const config = statusMap[status] || { label: status, variant: 'secondary' };
-    return <Badge variant={config.variant}>{config.label}</Badge>;
+  const fetchUserDetails = async (userId) => {
+    try {
+      const response = await axios.get(`${API}/admin/users/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setSelectedUser(response.data);
+      setUserDetailsOpen(true);
+    } catch (error) {
+      toast.error('Ошибка загрузки данных пользователя');
+    }
   };
 
-  const filteredUsers = users.filter(user => 
+  const handleResetPassword = async () => {
+    if (!newPassword || newPassword.length < 6) {
+      toast.error('Пароль должен содержать минимум 6 символов');
+      return;
+    }
+
+    try {
+      await axios.post(
+        `${API}/admin/users/${selectedUser.id}/reset-password`,
+        null,
+        {
+          params: { new_password: newPassword },
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+      toast.success(`Пароль сброшен! Новый пароль: ${newPassword}`);
+      setResetPasswordOpen(false);
+      setNewPassword('');
+    } catch (error) {
+      toast.error('Ошибка сброса пароля');
+    }
+  };
+
+  const handleUpdateContractLimit = async () => {
+    try {
+      await axios.post(
+        `${API}/admin/users/${selectedUser.id}/update-contract-limit`,
+        null,
+        {
+          params: { contract_limit: newContractLimit },
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+      toast.success(`Лимит обновлен до ${newContractLimit}`);
+      setContractLimitOpen(false);
+      fetchUserDetails(selectedUser.id); // Refresh user details
+      fetchAdminData(); // Refresh users list
+    } catch (error) {
+      toast.error('Ошибка обновления лимита');
+    }
+  };
+
+  const getStatusBadge = (status) => {
+    const variants = {
+      'signed': { label: 'Подписан', color: 'bg-green-100 text-green-800' },
+      'pending-signature': { label: 'На подписи', color: 'bg-amber-100 text-amber-800' },
+      'sent': { label: 'Отправлен', color: 'bg-blue-100 text-blue-800' },
+      'draft': { label: 'Черновик', color: 'bg-neutral-100 text-neutral-800' }
+    };
+    const variant = variants[status] || variants.draft;
+    return <Badge className={variant.color}>{variant.label}</Badge>;
+  };
+
+  const filteredUsers = users.filter(user =>
     user.email?.toLowerCase().includes(userSearch.toLowerCase()) ||
-    user.full_name?.toLowerCase().includes(userSearch.toLowerCase()) ||
-    user.company_name?.toLowerCase().includes(userSearch.toLowerCase())
+    user.full_name?.toLowerCase().includes(userSearch.toLowerCase())
   );
 
   const filteredContracts = contracts.filter(contract =>
@@ -200,7 +271,7 @@ const AdminPage = () => {
                     <div className="relative">
                       <Search className="absolute left-2 top-2.5 h-4 w-4 text-neutral-500" />
                       <Input
-                        placeholder="Поиск по email, имени..."
+                        placeholder="Поиск по email или имени"
                         value={userSearch}
                         onChange={(e) => setUserSearch(e.target.value)}
                         className="pl-8"
@@ -214,38 +285,59 @@ const AdminPage = () => {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Email</TableHead>
-                      <TableHead>ФИО</TableHead>
-                      <TableHead>Компания</TableHead>
-                      <TableHead>Телефон</TableHead>
+                      <TableHead>Имя</TableHead>
+                      <TableHead>Роль</TableHead>
+                      <TableHead>Лимит договоров</TableHead>
                       <TableHead>Дата регистрации</TableHead>
-                      <TableHead>Договоров</TableHead>
+                      <TableHead className="text-right">Действия</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredUsers.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={6} className="text-center text-neutral-500">
-                          Пользователи не найдены
+                    {filteredUsers.map((user) => (
+                      <TableRow key={user.id}>
+                        <TableCell className="font-medium">{user.email}</TableCell>
+                        <TableCell>{user.full_name}</TableCell>
+                        <TableCell>
+                          <Badge variant={user.role === 'admin' ? 'destructive' : 'default'}>
+                            {user.role}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{user.contract_limit || 10}</TableCell>
+                        <TableCell>{new Date(user.created_at).toLocaleDateString('ru-RU')}</TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => fetchUserDetails(user.id)}
+                            >
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => {
+                                setSelectedUser(user);
+                                setResetPasswordOpen(true);
+                              }}
+                            >
+                              <Key className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => {
+                                setSelectedUser(user);
+                                setNewContractLimit(user.contract_limit || 10);
+                                setContractLimitOpen(true);
+                              }}
+                            >
+                              <Settings className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
-                    ) : (
-                      filteredUsers.map((user) => (
-                        <TableRow key={user.id}>
-                          <TableCell className="font-medium">{user.email}</TableCell>
-                          <TableCell>{user.full_name}</TableCell>
-                          <TableCell>{user.company_name || '-'}</TableCell>
-                          <TableCell>{user.phone}</TableCell>
-                          <TableCell>
-                            {new Date(user.created_at).toLocaleDateString('ru-RU')}
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant="outline">
-                              {contracts.filter(c => c.creator_id === user.id).length}
-                            </Badge>
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    )}
+                    ))}
                   </TableBody>
                 </Table>
               </CardContent>
@@ -258,22 +350,31 @@ const AdminPage = () => {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div>
-                    <CardTitle>Все договоры</CardTitle>
-                    <CardDescription>Список всех созданных договоров</CardDescription>
+                    <CardTitle>Список договоров</CardTitle>
+                    <CardDescription>Все созданные договоры в системе</CardDescription>
                   </div>
                   <div className="flex gap-2">
-                    <select
-                      value={contractStatusFilter}
-                      onChange={(e) => setContractStatusFilter(e.target.value)}
-                      className="px-3 py-2 border rounded-md text-sm"
+                    <Button
+                      variant={contractStatusFilter === 'all' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setContractStatusFilter('all')}
                     >
-                      <option value="all">Все статусы</option>
-                      <option value="draft">Черновик</option>
-                      <option value="sent">Отправлен</option>
-                      <option value="pending-signature">Ожидает утверждения</option>
-                      <option value="signed">Подписан</option>
-                      <option value="declined">Отклонен</option>
-                    </select>
+                      Все
+                    </Button>
+                    <Button
+                      variant={contractStatusFilter === 'signed' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setContractStatusFilter('signed')}
+                    >
+                      Подписан
+                    </Button>
+                    <Button
+                      variant={contractStatusFilter === 'pending-signature' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setContractStatusFilter('pending-signature')}
+                    >
+                      На подписи
+                    </Button>
                   </div>
                 </div>
               </CardHeader>
@@ -282,42 +383,20 @@ const AdminPage = () => {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Название</TableHead>
-                      <TableHead>Наниматель</TableHead>
-                      <TableHead>Телефон</TableHead>
+                      <TableHead>Наймодатель</TableHead>
                       <TableHead>Статус</TableHead>
                       <TableHead>Дата создания</TableHead>
-                      <TableHead>Действия</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredContracts.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={6} className="text-center text-neutral-500">
-                          Договоры не найдены
-                        </TableCell>
+                    {filteredContracts.slice(0, 50).map((contract) => (
+                      <TableRow key={contract.id}>
+                        <TableCell className="font-medium">{contract.title}</TableCell>
+                        <TableCell>{contract.landlord_email || 'Неизвестно'}</TableCell>
+                        <TableCell>{getStatusBadge(contract.status)}</TableCell>
+                        <TableCell>{new Date(contract.created_at).toLocaleDateString('ru-RU')}</TableCell>
                       </TableRow>
-                    ) : (
-                      filteredContracts.map((contract) => (
-                        <TableRow key={contract.id}>
-                          <TableCell className="font-medium">{contract.title}</TableCell>
-                          <TableCell>{contract.signer_name || '-'}</TableCell>
-                          <TableCell>{contract.signer_phone || '-'}</TableCell>
-                          <TableCell>{getStatusBadge(contract.status)}</TableCell>
-                          <TableCell>
-                            {new Date(contract.created_at).toLocaleDateString('ru-RU')}
-                          </TableCell>
-                          <TableCell>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => navigate(`/contracts/${contract.id}`)}
-                            >
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    )}
+                    ))}
                   </TableBody>
                 </Table>
               </CardContent>
@@ -328,35 +407,190 @@ const AdminPage = () => {
           <TabsContent value="activity" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Последние действия</CardTitle>
-                <CardDescription>История активности в системе</CardDescription>
+                <CardTitle>Логи активности</CardTitle>
+                <CardDescription>Последние действия в системе</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {auditLogs.length === 0 ? (
-                    <p className="text-center text-neutral-500 py-8">Нет записей активности</p>
-                  ) : (
-                    auditLogs.slice(0, 20).map((log, index) => (
-                      <div key={index} className="flex items-start gap-3 p-3 bg-neutral-50 rounded-lg">
-                        <div className="flex-shrink-0 w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-                          <Activity className="h-4 w-4 text-primary" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium">{log.action}</p>
-                          <p className="text-xs text-neutral-500 mt-1">{log.details}</p>
-                          <p className="text-xs text-neutral-400 mt-1">
-                            {new Date(log.timestamp).toLocaleString('ru-RU')}
-                          </p>
+                  {auditLogs.slice(0, 20).map((log, idx) => (
+                    <div key={idx} className="flex items-start gap-3 p-3 rounded-lg bg-neutral-50">
+                      <Activity className="h-4 w-4 text-neutral-500 mt-0.5" />
+                      <div className="flex-1">
+                        <div className="font-medium text-sm">{log.action}</div>
+                        <div className="text-xs text-neutral-600">{log.details}</div>
+                        <div className="text-xs text-neutral-400 mt-1">
+                          {new Date(log.timestamp).toLocaleString('ru-RU')}
                         </div>
                       </div>
-                    ))
-                  )}
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* User Details Dialog */}
+      <Dialog open={userDetailsOpen} onOpenChange={setUserDetailsOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Профиль пользователя</DialogTitle>
+            <DialogDescription>Подробная информация о пользователе</DialogDescription>
+          </DialogHeader>
+          {selectedUser && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Email</Label>
+                  <p className="text-sm text-neutral-600">{selectedUser.email}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">ФИО</Label>
+                  <p className="text-sm text-neutral-600">{selectedUser.full_name}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Телефон</Label>
+                  <p className="text-sm text-neutral-600">{selectedUser.phone}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Роль</Label>
+                  <Badge variant={selectedUser.role === 'admin' ? 'destructive' : 'default'}>
+                    {selectedUser.role}
+                  </Badge>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Компания</Label>
+                  <p className="text-sm text-neutral-600">{selectedUser.company_name || 'Не указана'}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">ИИН/БИН</Label>
+                  <p className="text-sm text-neutral-600">{selectedUser.iin || 'Не указан'}</p>
+                </div>
+                <div className="col-span-2">
+                  <Label className="text-sm font-medium">Юридический адрес</Label>
+                  <p className="text-sm text-neutral-600">{selectedUser.legal_address || 'Не указан'}</p>
+                </div>
+              </div>
+              
+              {selectedUser.stats && (
+                <div className="pt-4 border-t">
+                  <Label className="text-sm font-medium mb-3 block">Статистика по договорам</Label>
+                  <div className="grid grid-cols-3 gap-4">
+                    <Card>
+                      <CardContent className="pt-6">
+                        <div className="text-2xl font-bold text-center">{selectedUser.stats.total_contracts}</div>
+                        <p className="text-xs text-neutral-500 text-center mt-1">Всего</p>
+                      </CardContent>
+                    </Card>
+                    <Card>
+                      <CardContent className="pt-6">
+                        <div className="text-2xl font-bold text-center text-green-600">{selectedUser.stats.signed_contracts}</div>
+                        <p className="text-xs text-neutral-500 text-center mt-1">Подписано</p>
+                      </CardContent>
+                    </Card>
+                    <Card>
+                      <CardContent className="pt-6">
+                        <div className="text-2xl font-bold text-center text-amber-600">{selectedUser.stats.pending_contracts}</div>
+                        <p className="text-xs text-neutral-500 text-center mt-1">В ожидании</p>
+                      </CardContent>
+                    </Card>
+                  </div>
+                  <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                    <p className="text-sm text-blue-900">
+                      <strong>Лимит договоров:</strong> {selectedUser.stats.contract_limit}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Reset Password Dialog */}
+      <Dialog open={resetPasswordOpen} onOpenChange={setResetPasswordOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Сброс пароля</DialogTitle>
+            <DialogDescription>
+              Установите новый пароль для пользователя {selectedUser?.email}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label htmlFor="new-password">Новый пароль</Label>
+              <Input
+                id="new-password"
+                type="text"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Минимум 6 символов"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setResetPasswordOpen(false)}>
+              Отмена
+            </Button>
+            <Button onClick={handleResetPassword}>
+              Сбросить пароль
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Contract Limit Dialog */}
+      <Dialog open={contractLimitOpen} onOpenChange={setContractLimitOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Управление лимитом договоров</DialogTitle>
+            <DialogDescription>
+              Измените лимит договоров для {selectedUser?.email}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label htmlFor="contract-limit">Лимит договоров</Label>
+              <div className="flex items-center gap-2 mt-2">
+                <Button
+                  size="icon"
+                  variant="outline"
+                  onClick={() => setNewContractLimit(Math.max(1, newContractLimit - 5))}
+                >
+                  <Minus className="h-4 w-4" />
+                </Button>
+                <Input
+                  id="contract-limit"
+                  type="number"
+                  value={newContractLimit}
+                  onChange={(e) => setNewContractLimit(parseInt(e.target.value) || 1)}
+                  className="text-center"
+                  min="1"
+                />
+                <Button
+                  size="icon"
+                  variant="outline"
+                  onClick={() => setNewContractLimit(newContractLimit + 5)}
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+              <p className="text-xs text-neutral-500 mt-2">
+                Текущий лимит: {selectedUser?.contract_limit || 10}
+              </p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setContractLimitOpen(false)}>
+              Отмена
+            </Button>
+            <Button onClick={handleUpdateContractLimit}>
+              Обновить лимит
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
