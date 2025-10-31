@@ -92,6 +92,7 @@ class User(BaseModel):
     legal_address: Optional[str] = None  # Юридический адрес
     document_upload: Optional[str] = None  # Landlord's ID/passport
     document_filename: Optional[str] = None
+    contract_limit: int = 10  # Лимит на количество договоров (по умолчанию 10)
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class UserCreate(BaseModel):
