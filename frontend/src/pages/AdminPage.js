@@ -355,7 +355,7 @@ const AdminPage = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <CardTitle>Список договоров</CardTitle>
-                    <CardDescription>Все созданные договоры в системе</CardDescription>
+                    <CardDescription>Последние 20 договоров (от новых к старым)</CardDescription>
                   </div>
                   <div className="flex gap-2">
                     <Button
