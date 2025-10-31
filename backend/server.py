@@ -151,6 +151,7 @@ class Contract(BaseModel):
     approved_at: Optional[datetime] = None
     landlord_name: Optional[str] = None  # Название компании
     landlord_email: Optional[str] = None  # Email наймодателя
+    landlord_full_name: Optional[str] = None  # ФИО наймодателя
     landlord_representative: Optional[str] = None  # Представитель (кто составил)
     landlord_iin_bin: Optional[str] = None  # ИИН/БИН из профиля
     verification_method: Optional[str] = None  # SMS, Call, Telegram
