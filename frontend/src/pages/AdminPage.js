@@ -438,7 +438,7 @@ const AdminPage = () => {
                           <Button
                             size="sm"
                             variant="ghost"
-                            onClick={() => window.open(`/sign/${contract.id}`, '_blank')}
+                            onClick={() => window.open(`/contracts/${contract.id}`, '_blank')}
                           >
                             <Eye className="h-4 w-4" />
                           </Button>
