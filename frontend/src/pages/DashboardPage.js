@@ -149,6 +149,7 @@ const DashboardPage = () => {
                 <Table data-testid="contracts-table">
                   <TableHeader>
                     <TableRow>
+                      <TableHead>Код</TableHead>
                       <TableHead>{t('dashboard.table.title')}</TableHead>
                       <TableHead>{t('dashboard.table.counterparty')}</TableHead>
                       <TableHead>{t('dashboard.table.amount')}</TableHead>
@@ -160,6 +161,11 @@ const DashboardPage = () => {
                   <TableBody>
                     {contracts.map((contract) => (
                       <TableRow key={contract.id} data-testid="contracts-table-row">
+                        <TableCell>
+                          <code className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                            {contract.contract_code || 'N/A'}
+                          </code>
+                        </TableCell>
                         <TableCell className="font-medium">{contract.title}</TableCell>
                         <TableCell>{contract.signer_name}</TableCell>
                         <TableCell>{contract.amount || '-'}</TableCell>
