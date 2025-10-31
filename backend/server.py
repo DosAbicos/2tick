@@ -1539,6 +1539,16 @@ async def verify_registration_telegram_otp(registration_id: str, data: dict):
     return {"token": token, "user": user, "verified": True}
 
 # ===== CONTRACT ROUTES =====
+
+def generate_contract_code():
+    """Generate unique short contract code like ABC-1234"""
+    import random
+    import string
+    # 3 uppercase letters + 4 digits
+    letters = ''.join(random.choices(string.ascii_uppercase, k=3))
+    numbers = ''.join(random.choices(string.digits, k=4))
+    return f"{letters}-{numbers}"
+
 @api_router.post("/contracts", response_model=Contract)
 async def create_contract(contract_data: ContractCreate, current_user: dict = Depends(get_current_user)):
     # Get user IIN/BIN from profile
@@ -1553,12 +1563,19 @@ async def create_contract(contract_data: ContractCreate, current_user: dict = De
     # Always start with 0, then the number: 01, 02, 03...09, 010, 011
     contract_number = f"0{contract_num}"
     
+    # Generate unique contract code
+    contract_code = generate_contract_code()
+    # Ensure uniqueness (very rare collision, but check anyway)
+    while await db.contracts.find_one({"contract_code": contract_code}):
+        contract_code = generate_contract_code()
+    
     contract = Contract(
         title=contract_data.title,
         content=contract_data.content,
         content_type=contract_data.content_type,
         creator_id=current_user['user_id'],
         contract_number=contract_number,  # Sequential number with leading 0
+        contract_code=contract_code,  # Unique code like ABC-1234
         signer_name=contract_data.signer_name or "",
         signer_phone=contract_data.signer_phone or "",
         signer_email=contract_data.signer_email,
