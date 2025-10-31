@@ -386,6 +386,7 @@ const AdminPage = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
+                      <TableHead>Код</TableHead>
                       <TableHead>Название</TableHead>
                       <TableHead>Наймодатель</TableHead>
                       <TableHead>Статус</TableHead>
@@ -395,6 +396,11 @@ const AdminPage = () => {
                   <TableBody>
                     {filteredContracts.slice(0, 50).map((contract) => (
                       <TableRow key={contract.id}>
+                        <TableCell>
+                          <code className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                            {contract.contract_code || 'N/A'}
+                          </code>
+                        </TableCell>
                         <TableCell className="font-medium">{contract.title}</TableCell>
                         <TableCell>{contract.landlord_email || 'Неизвестно'}</TableCell>
                         <TableCell>{getStatusBadge(contract.status)}</TableCell>
