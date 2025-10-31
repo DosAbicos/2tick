@@ -2645,7 +2645,8 @@ async def get_all_users(current_user: dict = Depends(get_current_user)):
 async def get_all_contracts(current_user: dict = Depends(get_current_user)):
     if current_user.get('role') != 'admin':
         raise HTTPException(status_code=403, detail="Admin access required")
-    contracts = await db.contracts.find({}, {"_id": 0}).to_list(1000)
+    # Получить последние 20 договоров, отсортированные от новых к старым
+    contracts = await db.contracts.find({}, {"_id": 0}).sort("created_at", -1).limit(20).to_list(20)
     return contracts
 
 @api_router.get("/admin/audit-logs")
