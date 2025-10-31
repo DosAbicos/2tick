@@ -440,6 +440,23 @@ const AdminPage = () => {
           </DialogHeader>
           {selectedUser && (
             <div className="space-y-4">
+              <div className="p-3 bg-blue-50 rounded-lg border border-blue-200 mb-4">
+                <Label className="text-xs text-blue-600 font-semibold">ID пользователя</Label>
+                <div className="flex items-center justify-between mt-1">
+                  <code className="text-sm font-mono text-blue-900">{selectedUser.id}</code>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => {
+                      navigator.clipboard.writeText(selectedUser.id);
+                      toast.success('ID скопирован в буфер обмена');
+                    }}
+                    className="h-6 text-xs"
+                  >
+                    Копировать
+                  </Button>
+                </div>
+              </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label className="text-sm font-medium">Email</Label>
