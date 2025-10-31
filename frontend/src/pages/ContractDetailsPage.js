@@ -244,77 +244,79 @@ const ContractDetailsPage = () => {
                 </div>
               </div>
               
-              <div className="flex gap-2">
-                {/* Редактировать - только для draft и sent */}
-                {(contract.status === 'draft' || contract.status === 'sent') && (
-                  <Button
-                    onClick={() => navigate(`/contracts/edit/${id}`)}
-                    variant="outline"
-                    data-testid="edit-contract-button"
-                  >
-                    <Edit3 className="mr-2 h-4 w-4" />
-                    Редактировать
-                  </Button>
-                )}
-                
-                {/* Отправить ссылку - только для draft и sent */}
-                {(contract.status === 'draft' || contract.status === 'sent') && (
-                  <Button
-                    onClick={handleSendContract}
-                    disabled={sendingContract}
-                    data-testid="send-contract-button"
-                  >
-                    <Send className="mr-2 h-4 w-4" />
-                    {sendingContract ? t('common.loading') : 'Отправить ссылку'}
-                  </Button>
-                )}
-                
-                {/* Утвердить - только для pending-signature */}
-                {contract.status === 'pending-signature' && (
-                  <Button
-                    onClick={handleApprove}
-                    disabled={approving}
-                    data-testid="approve-contract-button"
-                  >
-                    <CheckCircle className="mr-2 h-4 w-4" />
-                    {approving ? t('common.loading') : 'Утвердить'}
-                  </Button>
-                )}
-                
-                {/* Скачать PDF - только для signed */}
-                {contract.status === 'signed' && (
-                  <Button
-                    onClick={handleDownloadPDF}
-                    variant="outline"
-                    data-testid="download-pdf-button"
-                  >
-                    <Download className="mr-2 h-4 w-4" />
-                    {t('contract.download')}
-                  </Button>
-                )}
-                
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="destructive" data-testid="delete-contract-button">
-                      <Trash2 className="h-4 w-4" />
+              {!isReadOnly && (
+                <div className="flex gap-2">
+                  {/* Редактировать - только для draft и sent */}
+                  {(contract.status === 'draft' || contract.status === 'sent') && (
+                    <Button
+                      onClick={() => navigate(`/contracts/edit/${id}`)}
+                      variant="outline"
+                      data-testid="edit-contract-button"
+                    >
+                      <Edit3 className="mr-2 h-4 w-4" />
+                      Редактировать
                     </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Delete Contract</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone. This will permanently delete the contract.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel data-testid="cancel-delete-button">{t('common.cancel')}</AlertDialogCancel>
-                      <AlertDialogAction onClick={handleDelete} data-testid="confirm-delete-button">
-                        {t('contract.delete')}
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </div>
+                  )}
+                  
+                  {/* Отправить ссылку - только для draft и sent */}
+                  {(contract.status === 'draft' || contract.status === 'sent') && (
+                    <Button
+                      onClick={handleSendContract}
+                      disabled={sendingContract}
+                      data-testid="send-contract-button"
+                    >
+                      <Send className="mr-2 h-4 w-4" />
+                      {sendingContract ? t('common.loading') : 'Отправить ссылку'}
+                    </Button>
+                  )}
+                  
+                  {/* Утвердить - только для pending-signature */}
+                  {contract.status === 'pending-signature' && (
+                    <Button
+                      onClick={handleApprove}
+                      disabled={approving}
+                      data-testid="approve-contract-button"
+                    >
+                      <CheckCircle className="mr-2 h-4 w-4" />
+                      {approving ? t('common.loading') : 'Утвердить'}
+                    </Button>
+                  )}
+                  
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="destructive" data-testid="delete-contract-button">
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Contract</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently delete the contract.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel data-testid="cancel-delete-button">{t('common.cancel')}</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleDelete} data-testid="confirm-delete-button">
+                          {t('contract.delete')}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+              )}
+              
+              {/* Скачать PDF - доступно всегда для signed, в том числе для админа */}
+              {contract.status === 'signed' && (
+                <Button
+                  onClick={handleDownloadPDF}
+                  variant="outline"
+                  data-testid="download-pdf-button"
+                >
+                  <Download className="mr-2 h-4 w-4" />
+                  {t('contract.download')}
+                </Button>
+              )}
             </div>
           </CardHeader>
           <CardContent className="space-y-6">
