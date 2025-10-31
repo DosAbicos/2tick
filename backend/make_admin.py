@@ -13,8 +13,9 @@ load_dotenv()
 
 async def make_admin(email: str):
     mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
+    db_name = os.environ.get('DB_NAME', 'signify_kz_db')
     client = AsyncIOMotorClient(mongo_url)
-    db = client.signify_kz
+    db = client[db_name]
     
     # Найти пользователя по email
     user = await db.users.find_one({"email": email})
