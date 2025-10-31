@@ -437,6 +437,25 @@ const AdminPage = () => {
                     ))}
                   </TableBody>
                 </Table>
+                
+                {contractsHasMore && (
+                  <div className="mt-4 text-center">
+                    <Button
+                      onClick={loadMoreContracts}
+                      disabled={loadingMore}
+                      variant="outline"
+                      className="w-full"
+                    >
+                      {loadingMore ? 'Загрузка...' : `Показать еще (${contractsTotal - contracts.length} осталось)`}
+                    </Button>
+                  </div>
+                )}
+                
+                {!contractsHasMore && contracts.length > 0 && (
+                  <div className="mt-4 text-center text-sm text-neutral-500">
+                    Показаны все {contractsTotal} договоров
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
