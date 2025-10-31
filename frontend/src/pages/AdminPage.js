@@ -419,6 +419,7 @@ const AdminPage = () => {
                       <TableHead>Наймодатель</TableHead>
                       <TableHead>Статус</TableHead>
                       <TableHead>Дата создания</TableHead>
+                      <TableHead>Действия</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -430,9 +431,18 @@ const AdminPage = () => {
                           </code>
                         </TableCell>
                         <TableCell className="font-medium">{contract.title}</TableCell>
-                        <TableCell>{contract.landlord_email || 'Неизвестно'}</TableCell>
+                        <TableCell>{contract.landlord_full_name || contract.landlord_email || 'Неизвестно'}</TableCell>
                         <TableCell>{getStatusBadge(contract.status)}</TableCell>
                         <TableCell>{new Date(contract.created_at).toLocaleDateString('ru-RU')}</TableCell>
+                        <TableCell>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => window.open(`/sign/${contract.id}`, '_blank')}
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
