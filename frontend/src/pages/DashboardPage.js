@@ -129,19 +129,8 @@ const DashboardPage = () => {
             {t('dashboard.title')}
           </h1>
           <Button
-            onClick={async () => {
-              // Обновить лимит перед проверкой
-              await fetchLimitInfo();
-              
-              // Подождать чуть-чуть чтобы state обновился
-              setTimeout(() => {
-                if (limitInfo?.exceeded) {
-                  toast.error(`Достигнут лимит договоров (${limitInfo.limit}). Пожалуйста, обновите подписку.`);
-                } else {
-                  navigate('/contracts/create');
-                }
-              }, 100);
-            }}}
+            onClick={handleCreateContract}
+            disabled={limitInfo?.exceeded}}}
             disabled={limitInfo?.exceeded}
             data-testid="create-contract-primary-button"
           >
