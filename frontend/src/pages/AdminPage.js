@@ -68,12 +68,10 @@ const AdminPage = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [userDetailsOpen, setUserDetailsOpen] = useState(false);
   const [resetPasswordOpen, setResetPasswordOpen] = useState(false);
-  const [contractLimitOpen, setContractLimitOpen] = useState(false);
   const [addContractsOpen, setAddContractsOpen] = useState(false);
   
   // Form states
   const [newPassword, setNewPassword] = useState('');
-  const [newContractLimit, setNewContractLimit] = useState(10);
   const [contractsToAdd, setContractsToAdd] = useState(5);
 
   useEffect(() => {
