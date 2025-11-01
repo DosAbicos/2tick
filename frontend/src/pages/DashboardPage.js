@@ -64,8 +64,21 @@ const DashboardPage = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setLimitInfo(response.data);
+      return response.data; // Возвращаем данные
     } catch (error) {
       console.error('Error fetching limit info:', error);
+      return null;
+    }
+  };
+
+  const handleCreateContract = async () => {
+    // Обновить лимит перед проверкой
+    const freshLimitInfo = await fetchLimitInfo();
+    
+    if (freshLimitInfo?.exceeded) {
+      toast.error(`Достигнут лимит договоров (${freshLimitInfo.limit}). Пожалуйста, обновите подписку.`);
+    } else {
+      navigate('/contracts/create');
     }
   };
 
