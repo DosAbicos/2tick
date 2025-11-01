@@ -221,13 +221,7 @@ const DashboardPage = () => {
                 <Button
                   variant="outline"
                   className="mt-4"
-                  onClick={() => {
-                    if (limitInfo?.exceeded) {
-                      toast.error(`Достигнут лимит договоров (${limitInfo.limit}). Пожалуйста, обновите подписку.`);
-                    } else {
-                      navigate('/contracts/create');
-                    }
-                  }}
+                  onClick={handleCreateContract}
                   disabled={limitInfo?.exceeded}
                   data-testid="empty-state-create-button"
                 >
