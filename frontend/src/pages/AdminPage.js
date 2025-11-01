@@ -648,65 +648,13 @@ const AdminPage = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Contract Limit Dialog */}
-      <Dialog open={contractLimitOpen} onOpenChange={setContractLimitOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Управление лимитом договоров</DialogTitle>
-            <DialogDescription>
-              Измените лимит договоров для {selectedUser?.email}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div>
-              <Label htmlFor="contract-limit">Лимит договоров</Label>
-              <div className="flex items-center gap-2 mt-2">
-                <Button
-                  size="icon"
-                  variant="outline"
-                  onClick={() => setNewContractLimit(Math.max(1, newContractLimit - 5))}
-                >
-                  <Minus className="h-4 w-4" />
-                </Button>
-                <Input
-                  id="contract-limit"
-                  type="number"
-                  value={newContractLimit}
-                  onChange={(e) => setNewContractLimit(parseInt(e.target.value) || 1)}
-                  className="text-center"
-                  min="1"
-                />
-                <Button
-                  size="icon"
-                  variant="outline"
-                  onClick={() => setNewContractLimit(newContractLimit + 5)}
-                >
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-              <p className="text-xs text-neutral-500 mt-2">
-                Текущий лимит: {selectedUser?.contract_limit || 10}
-              </p>
-            </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setContractLimitOpen(false)}>
-              Отмена
-            </Button>
-            <Button onClick={handleUpdateContractLimit}>
-              Обновить лимит
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
       {/* Add Contracts Dialog */}
       <Dialog open={addContractsOpen} onOpenChange={setAddContractsOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Добавить договоры</DialogTitle>
+            <DialogTitle>Управление лимитом договоров</DialogTitle>
             <DialogDescription>
-              Добавить договоры к текущему лимиту для {selectedUser?.email}
+              Добавить договоры для {selectedUser?.email}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
