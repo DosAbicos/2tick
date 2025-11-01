@@ -130,7 +130,6 @@ const DashboardPage = () => {
           </h1>
           <Button
             onClick={handleCreateContract}
-            disabled={limitInfo?.exceeded}}}
             disabled={limitInfo?.exceeded}
             data-testid="create-contract-primary-button"
           >
