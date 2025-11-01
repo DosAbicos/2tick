@@ -362,7 +362,7 @@ const AdminPage = () => {
                               variant="ghost"
                               onClick={() => {
                                 setSelectedUser(user);
-                                setContractsToAdd(5);
+                                setContractsToAdd(1);
                                 setAddContractsOpen(true);
                               }}
                               title="Добавить договоры"
