@@ -2777,6 +2777,33 @@ async def update_contract_limit(user_id: str, contract_limit: int, current_user:
     
     return {"message": "Contract limit updated successfully", "contract_limit": contract_limit}
 
+@api_router.post("/admin/users/{user_id}/add-contracts")
+async def add_contracts_to_limit(user_id: str, contracts_to_add: int, current_user: dict = Depends(get_current_user)):
+    if current_user.get('role') != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    current_limit = user.get('contract_limit', 10)
+    new_limit = current_limit + contracts_to_add
+    
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"contract_limit": new_limit}}
+    )
+    
+    await log_audit("admin_contracts_added", user_id=current_user.get('id'), 
+                   details=f"Added {contracts_to_add} contracts to {user.get('email')}. New limit: {new_limit}")
+    
+    return {
+        "message": f"Added {contracts_to_add} contracts successfully",
+        "previous_limit": current_limit,
+        "new_limit": new_limit,
+        "contracts_added": contracts_to_add
+    }
+
 # Include router
 app.include_router(api_router)
 
