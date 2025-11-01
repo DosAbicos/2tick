@@ -26,10 +26,12 @@ const DashboardPage = () => {
   const navigate = useNavigate();
   const [contracts, setContracts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [limitInfo, setLimitInfo] = useState(null);
   const token = localStorage.getItem('token');
 
   useEffect(() => {
     fetchContracts();
+    fetchLimitInfo();
   }, []);
 
   const fetchContracts = async () => {
@@ -42,6 +44,17 @@ const DashboardPage = () => {
       toast.error(t('common.error'));
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchLimitInfo = async () => {
+    try {
+      const response = await axios.get(`${API}/contracts/limit/info`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setLimitInfo(response.data);
+    } catch (error) {
+      console.error('Error fetching limit info:', error);
     }
   };
 
