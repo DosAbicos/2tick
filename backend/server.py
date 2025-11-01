@@ -1611,6 +1611,19 @@ async def create_contract(contract_data: ContractCreate, current_user: dict = De
     
     return contract
 
+@api_router.get("/contracts/limit/info")
+async def get_contract_limit_info(current_user: dict = Depends(get_current_user)):
+    user = await db.users.find_one({"user_id": current_user['user_id']})
+    contract_limit = user.get('contract_limit', 10) if user else 10
+    contract_count = await db.contracts.count_documents({"creator_id": current_user['user_id']})
+    
+    return {
+        "limit": contract_limit,
+        "used": contract_count,
+        "remaining": max(0, contract_limit - contract_count),
+        "exceeded": contract_count >= contract_limit
+    }
+
 @api_router.get("/contracts", response_model=List[Contract])
 async def get_contracts(current_user: dict = Depends(get_current_user)):
     contracts = await db.contracts.find({"creator_id": current_user['user_id']}, {"_id": 0}).to_list(1000)
