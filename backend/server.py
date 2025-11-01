@@ -1554,7 +1554,7 @@ def generate_contract_code():
 @api_router.post("/contracts", response_model=Contract)
 async def create_contract(contract_data: ContractCreate, current_user: dict = Depends(get_current_user)):
     # Get user IIN/BIN and full_name from profile
-    user = await db.users.find_one({"user_id": current_user['user_id']})
+    user = await db.users.find_one({"id": current_user['user_id']})  # Поле в базе называется 'id', а в токене 'user_id'
     landlord_iin_bin = user.get('iin', '') if user else ''
     landlord_full_name = user.get('full_name', '') if user else ''
     
