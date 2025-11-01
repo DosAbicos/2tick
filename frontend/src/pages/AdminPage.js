@@ -181,6 +181,25 @@ const AdminPage = () => {
     }
   };
 
+  const handleAddContracts = async () => {
+    try {
+      const response = await axios.post(
+        `${API}/admin/users/${selectedUser.id}/add-contracts`,
+        null,
+        {
+          params: { contracts_to_add: contractsToAdd },
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+      toast.success(`Добавлено ${contractsToAdd} договоров. Новый лимит: ${response.data.new_limit}`);
+      setAddContractsOpen(false);
+      fetchUserDetails(selectedUser.id); // Refresh user details
+      fetchAdminData(); // Refresh users list
+    } catch (error) {
+      toast.error('Ошибка добавления договоров');
+    }
+  };
+
   const getStatusBadge = (status) => {
     const variants = {
       'signed': { label: 'Подписан', color: 'bg-green-100 text-green-800' },
