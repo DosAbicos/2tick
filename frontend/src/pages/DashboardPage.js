@@ -202,7 +202,14 @@ const DashboardPage = () => {
                 <Button
                   variant="outline"
                   className="mt-4"
-                  onClick={() => navigate('/contracts/create')}
+                  onClick={() => {
+                    if (limitInfo?.exceeded) {
+                      toast.error(`Достигнут лимит договоров (${limitInfo.limit}). Пожалуйста, обновите подписку.`);
+                    } else {
+                      navigate('/contracts/create');
+                    }
+                  }}
+                  disabled={limitInfo?.exceeded}
                   data-testid="empty-state-create-button"
                 >
                   {t('dashboard.new_contract')}
