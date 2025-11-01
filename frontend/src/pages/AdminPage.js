@@ -711,6 +711,67 @@ const AdminPage = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Add Contracts Dialog */}
+      <Dialog open={addContractsOpen} onOpenChange={setAddContractsOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Добавить договоры</DialogTitle>
+            <DialogDescription>
+              Добавить договоры к текущему лимиту для {selectedUser?.email}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label htmlFor="contracts-to-add">Количество договоров для добавления</Label>
+              <div className="flex items-center gap-2 mt-2">
+                <Button
+                  size="icon"
+                  variant="outline"
+                  onClick={() => setContractsToAdd(Math.max(1, contractsToAdd - 1))}
+                >
+                  <Minus className="h-4 w-4" />
+                </Button>
+                <Input
+                  id="contracts-to-add"
+                  type="number"
+                  value={contractsToAdd}
+                  onChange={(e) => setContractsToAdd(parseInt(e.target.value) || 1)}
+                  className="text-center"
+                  min="1"
+                />
+                <Button
+                  size="icon"
+                  variant="outline"
+                  onClick={() => setContractsToAdd(contractsToAdd + 1)}
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="mt-4 p-3 bg-green-50 rounded-lg border border-green-200">
+                <p className="text-sm text-green-900">
+                  <strong>Текущий лимит:</strong> {selectedUser?.contract_limit || 10}
+                </p>
+                <p className="text-sm text-green-900 mt-1">
+                  <strong>Новый лимит:</strong> {(selectedUser?.contract_limit || 10) + contractsToAdd}
+                </p>
+                <p className="text-xs text-green-700 mt-2">
+                  Будет добавлено {contractsToAdd} договоров к существующему лимиту
+                </p>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAddContractsOpen(false)}>
+              Отмена
+            </Button>
+            <Button onClick={handleAddContracts} className="bg-green-600 hover:bg-green-700">
+              <Plus className="mr-2 h-4 w-4" />
+              Добавить договоры
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
