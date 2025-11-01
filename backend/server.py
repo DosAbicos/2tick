@@ -1558,9 +1558,16 @@ async def create_contract(contract_data: ContractCreate, current_user: dict = De
     landlord_iin_bin = user.get('iin', '') if user else ''
     landlord_full_name = user.get('full_name', '') if user else ''
     
-    # Generate sequential contract number: 01, 02, 03...09, 010, 011...099, 0100, etc.
-    # Get the count of existing contracts for this user
+    # Check contract limit
     contract_count = await db.contracts.count_documents({"creator_id": current_user['user_id']})
+    contract_limit = user.get('contract_limit', 10) if user else 10
+    
+    if contract_count >= contract_limit:
+        raise HTTPException(
+            status_code=403, 
+            detail=f"Contract limit reached. You have created {contract_count}/{contract_limit} contracts. Please upgrade your subscription."
+        )
+    
     contract_num = contract_count + 1
     
     # Always start with 0, then the number: 01, 02, 03...09, 010, 011
