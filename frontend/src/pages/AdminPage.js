@@ -160,25 +160,6 @@ const AdminPage = () => {
     }
   };
 
-  const handleUpdateContractLimit = async () => {
-    try {
-      await axios.post(
-        `${API}/admin/users/${selectedUser.id}/update-contract-limit`,
-        null,
-        {
-          params: { contract_limit: newContractLimit },
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      );
-      toast.success(`Лимит обновлен до ${newContractLimit}`);
-      setContractLimitOpen(false);
-      fetchUserDetails(selectedUser.id); // Refresh user details
-      fetchAdminData(); // Refresh users list
-    } catch (error) {
-      toast.error('Ошибка обновления лимита');
-    }
-  };
-
   const handleAddContracts = async () => {
     try {
       const response = await axios.post(
