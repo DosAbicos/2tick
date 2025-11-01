@@ -105,13 +105,64 @@ const DashboardPage = () => {
             {t('dashboard.title')}
           </h1>
           <Button
-            onClick={() => navigate('/contracts/create')}
+            onClick={() => {
+              if (limitInfo?.exceeded) {
+                toast.error(`Достигнут лимит договоров (${limitInfo.limit}). Пожалуйста, обновите подписку.`);
+              } else {
+                navigate('/contracts/create');
+              }
+            }}
+            disabled={limitInfo?.exceeded}
             data-testid="create-contract-primary-button"
           >
             <Plus className="mr-2 h-4 w-4" />
             {t('dashboard.new_contract')}
           </Button>
         </div>
+
+        {/* Limit warning */}
+        {limitInfo && (
+          <div className={`mb-6 p-4 rounded-lg border ${
+            limitInfo.exceeded 
+              ? 'bg-red-50 border-red-200' 
+              : limitInfo.remaining <= 2 
+                ? 'bg-amber-50 border-amber-200' 
+                : 'bg-blue-50 border-blue-200'
+          }`}>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className={`font-medium ${
+                  limitInfo.exceeded 
+                    ? 'text-red-900' 
+                    : limitInfo.remaining <= 2 
+                      ? 'text-amber-900' 
+                      : 'text-blue-900'
+                }`}>
+                  {limitInfo.exceeded 
+                    ? '⚠️ Лимит договоров исчерпан' 
+                    : limitInfo.remaining <= 2
+                      ? '⚠️ Лимит договоров почти исчерпан'
+                      : '📊 Лимит договоров'}
+                </p>
+                <p className={`text-sm mt-1 ${
+                  limitInfo.exceeded 
+                    ? 'text-red-700' 
+                    : limitInfo.remaining <= 2 
+                      ? 'text-amber-700' 
+                      : 'text-blue-700'
+                }`}>
+                  Использовано: {limitInfo.used} из {limitInfo.limit} договоров
+                  {limitInfo.remaining > 0 && ` (осталось ${limitInfo.remaining})`}
+                </p>
+              </div>
+              {limitInfo.exceeded && (
+                <Button variant="destructive" onClick={() => toast.info('Функция покупки подписки в разработке')}>
+                  Обновить подписку
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
