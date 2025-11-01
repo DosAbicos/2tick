@@ -32,6 +32,17 @@ const DashboardPage = () => {
   useEffect(() => {
     fetchContracts();
     fetchLimitInfo();
+    
+    // Обновлять лимит при возврате на страницу (после работы админа)
+    const handleFocus = () => {
+      fetchLimitInfo();
+    };
+    
+    window.addEventListener('focus', handleFocus);
+    
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+    };
   }, []);
 
   const fetchContracts = async () => {
