@@ -390,18 +390,6 @@ const AdminPage = () => {
                             >
                               <Plus className="h-4 w-4 text-green-600" />
                             </Button>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => {
-                                setSelectedUser(user);
-                                setNewContractLimit(user.contract_limit || 10);
-                                setContractLimitOpen(true);
-                              }}
-                              title="Установить лимит"
-                            >
-                              <Settings className="h-4 w-4" />
-                            </Button>
                           </div>
                         </TableCell>
                       </TableRow>
