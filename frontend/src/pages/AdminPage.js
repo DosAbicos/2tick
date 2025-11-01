@@ -363,6 +363,7 @@ const AdminPage = () => {
                               size="sm"
                               variant="ghost"
                               onClick={() => fetchUserDetails(user.id)}
+                              title="Просмотр профиля"
                             >
                               <Eye className="h-4 w-4" />
                             </Button>
@@ -373,8 +374,21 @@ const AdminPage = () => {
                                 setSelectedUser(user);
                                 setResetPasswordOpen(true);
                               }}
+                              title="Сбросить пароль"
                             >
                               <Key className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => {
+                                setSelectedUser(user);
+                                setContractsToAdd(5);
+                                setAddContractsOpen(true);
+                              }}
+                              title="Добавить договоры"
+                            >
+                              <Plus className="h-4 w-4 text-green-600" />
                             </Button>
                             <Button
                               size="sm"
@@ -384,6 +398,7 @@ const AdminPage = () => {
                                 setNewContractLimit(user.contract_limit || 10);
                                 setContractLimitOpen(true);
                               }}
+                              title="Установить лимит"
                             >
                               <Settings className="h-4 w-4" />
                             </Button>
