@@ -20,6 +20,7 @@ const RegisterPage = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
+    confirmPassword: '',
     full_name: '',
     phone: '',
     company_name: '', // Название компании (ИП, ТОО)
