@@ -206,7 +206,7 @@ const RegisterPage = () => {
                   <p className="text-xs text-red-500 mt-1">{t('auth.register.password_mismatch')}</p>
                 )}
                 {formData.confirmPassword && formData.password === formData.confirmPassword && formData.password.length > 0 && (
-                  <p className="text-xs text-green-500 mt-1">✓ Пароли совпадают</p>
+                  <p className="text-xs text-green-500 mt-1">{t('auth.register.password_match')}</p>
                 )}
               </div>
               
