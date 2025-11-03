@@ -101,6 +101,7 @@ const resources = {
       "auth.register.phone": "Телефон",
       "auth.register.confirm_password": "Құпия сөзді растаңыз",
       "auth.register.password_mismatch": "Құпия сөздер сәйкес келмейді",
+      "auth.register.password_match": "✓ Құпия сөздер сәйкес келеді",
       "auth.register.submit": "Тіркелу",
       
       // Dashboard
