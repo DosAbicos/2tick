@@ -47,10 +47,18 @@ const RegisterPage = () => {
       return;
     }
     
+    // Validate password match
+    if (formData.password !== formData.confirmPassword) {
+      toast.error(t('auth.register.password_mismatch'));
+      return;
+    }
+    
     setLoading(true);
     
     try {
-      const response = await axios.post(`${API}/auth/register`, formData);
+      // Remove confirmPassword before sending to backend
+      const { confirmPassword, ...registrationData } = formData;
+      const response = await axios.post(`${API}/auth/register`, registrationData);
       const { registration_id, message } = response.data;
       
       toast.success(message || 'Регистрация создана. Подтвердите телефон.');
