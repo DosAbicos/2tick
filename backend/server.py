@@ -1106,7 +1106,8 @@ async def forgot_password(request: ForgotPasswordRequest):
         email=request.email,
         reset_code=reset_code
     )
-    await db.password_resets.insert_one(reset_doc.model_dump())
+    insert_result = await db.password_resets.insert_one(reset_doc.model_dump())
+    logging.info(f"✅ Password reset code created: {reset_code} for {request.email}, inserted_id: {insert_result.inserted_id}")
     
     # Send email with reset code
     subject = "Password Reset Code - Signify KZ"
