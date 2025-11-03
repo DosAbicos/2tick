@@ -22,6 +22,8 @@ const resources = {
       "auth.register.title": "Регистрация",
       "auth.register.full_name": "Полное имя",
       "auth.register.phone": "Телефон",
+      "auth.register.confirm_password": "Подтвердите пароль",
+      "auth.register.password_mismatch": "Пароли не совпадают",
       "auth.register.submit": "Зарегистрироваться",
       
       // Dashboard
