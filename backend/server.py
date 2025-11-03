@@ -179,6 +179,7 @@ class Contract(BaseModel):
     verification_method: Optional[str] = None  # SMS, Call, Telegram
     telegram_username: Optional[str] = None  # @username для Telegram верификации
     signature: Optional[dict] = None  # Signature data (document_upload, verified status)
+    deleted: bool = False  # Soft delete flag - для подписанных договоров
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
