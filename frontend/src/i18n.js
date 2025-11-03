@@ -98,6 +98,8 @@ const resources = {
       "auth.register.title": "Тіркелу",
       "auth.register.full_name": "Толық аты",
       "auth.register.phone": "Телефон",
+      "auth.register.confirm_password": "Құпия сөзді растаңыз",
+      "auth.register.password_mismatch": "Құпия сөздер сәйкес келмейді",
       "auth.register.submit": "Тіркелу",
       
       // Dashboard
