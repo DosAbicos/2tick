@@ -289,6 +289,19 @@ const ContractDetailsPage = () => {
                     </Button>
                   )}
                   
+                  {/* Скачать PDF - доступно для signed */}
+                  {contract.status === 'signed' && (
+                    <Button
+                      onClick={handleDownloadPDF}
+                      variant="outline"
+                      data-testid="download-pdf-button"
+                    >
+                      <Download className="mr-2 h-4 w-4" />
+                      {t('contract.download')}
+                    </Button>
+                  )}
+                  
+                  {/* Удалить - всегда доступно */}
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button variant="destructive" data-testid="delete-contract-button">
@@ -311,18 +324,6 @@ const ContractDetailsPage = () => {
                     </AlertDialogContent>
                   </AlertDialog>
                 </div>
-              )}
-              
-              {/* Скачать PDF - доступно всегда для signed, в том числе для админа */}
-              {contract.status === 'signed' && (
-                <Button
-                  onClick={handleDownloadPDF}
-                  variant="outline"
-                  data-testid="download-pdf-button"
-                >
-                  <Download className="mr-2 h-4 w-4" />
-                  {t('contract.download')}
-                </Button>
               )}
             </div>
           </CardHeader>
