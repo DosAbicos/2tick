@@ -366,6 +366,75 @@ const AdminTemplatesPage = () => {
                 </Select>
               </div>
 
+              {/* Конструктор плейсхолдеров */}
+              <div className="border rounded-lg p-4 bg-neutral-50">
+                <div className="flex items-center justify-between mb-3">
+                  <Label className="text-base font-semibold">Конструктор плейсхолдеров</Label>
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={() => setShowPlaceholderDialog(true)}
+                  >
+                    <Plus className="mr-2 h-3 w-3" />
+                    Добавить плейсхолдер
+                  </Button>
+                </div>
+
+                {Object.keys(formData.placeholders).length === 0 ? (
+                  <p className="text-sm text-neutral-500 text-center py-4">
+                    Нет плейсхолдеров. Добавьте их для создания форм заполнения
+                  </p>
+                ) : (
+                  <div className="space-y-2">
+                    {Object.entries(formData.placeholders).map(([name, config]) => (
+                      <div key={name} className="flex items-center justify-between bg-white p-3 rounded border">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <code className="text-sm font-mono bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
+                              {'{{'}{name}{'}}'} 
+                            </code>
+                            <span className="text-xs text-neutral-500">
+                              {config.type}
+                            </span>
+                            <span className={`text-xs px-2 py-0.5 rounded ${
+                              config.owner === 'landlord' 
+                                ? 'bg-purple-100 text-purple-800' 
+                                : 'bg-green-100 text-green-800'
+                            }`}>
+                              {config.owner === 'landlord' ? '🏢 Наймодатель' : '👤 Наниматель'}
+                            </span>
+                            {config.required && (
+                              <span className="text-xs bg-red-100 text-red-800 px-2 py-0.5 rounded">
+                                обязательно
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-sm text-neutral-600">{config.label}</p>
+                        </div>
+                        <div className="flex gap-1">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => insertPlaceholderToContent(name)}
+                          >
+                            Вставить
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleRemovePlaceholder(name)}
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
               <div>
                 <Label htmlFor="content">Содержание договора *</Label>
                 <Textarea
