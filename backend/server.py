@@ -147,6 +147,21 @@ class Registration(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     expires_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc) + timedelta(minutes=30))
 
+class ContractTemplate(BaseModel):
+    """Шаблон договора для маркетплейса"""
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    description: str
+    category: str  # "real_estate", "services", "employment", "other"
+    content: str
+    content_type: str = "plain"  # "plain" or "html"
+    placeholders: Optional[dict] = None  # Конфигурация плейсхолдеров
+    is_active: bool = True
+    created_by: str = "admin"
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
 class Contract(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
@@ -154,6 +169,9 @@ class Contract(BaseModel):
     content: str
     content_type: str = "plain"  # "plain" or "html"
     creator_id: str
+    source_type: str = "manual"  # "manual", "template", "uploaded_pdf"
+    template_id: Optional[str] = None  # ID шаблона, если создан из шаблона
+    uploaded_pdf_path: Optional[str] = None  # Путь к загруженному PDF
     contract_number: Optional[str] = None  # Sequential number: 01, 02, 010, 0110, etc.
     contract_code: Optional[str] = None  # Unique short code: ABC-1234
     signer_name: str
