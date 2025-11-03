@@ -16,7 +16,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 # Get backend URL from frontend .env
-BACKEND_URL = "https://signlify.preview.emergentagent.com/api"
+BACKEND_URL = "https://docusign-kz.preview.emergentagent.com/api"
 
 class RegistrationVerificationTester:
     def __init__(self):

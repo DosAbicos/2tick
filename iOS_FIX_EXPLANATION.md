@@ -259,7 +259,7 @@ iOS Safari: "Это trusted click на настоящую ссылку"
 ### На iPhone:
 
 1. Откройте Safari на iPhone
-2. Перейдите: `https://signlify.preview.emergentagent.com/sign/{contract_id}`
+2. Перейдите: `https://docusign-kz.preview.emergentagent.com/sign/{contract_id}`
 3. Заполните форму → Загрузите фото
 4. Нажмите "💬 Получить код в Telegram"
 5. ✅ Должен открыться Telegram

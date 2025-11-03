@@ -6,7 +6,7 @@ Debug SMS OTP issue
 import requests
 import json
 
-BACKEND_URL = "https://signlify.preview.emergentagent.com/api"
+BACKEND_URL = "https://docusign-kz.preview.emergentagent.com/api"
 
 def debug_sms():
     session = requests.Session()
