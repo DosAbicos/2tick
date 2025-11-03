@@ -464,6 +464,125 @@ const AdminTemplatesPage = () => {
             </form>
           </DialogContent>
         </Dialog>
+
+        {/* Placeholder Creation Dialog */}
+        <Dialog open={showPlaceholderDialog} onOpenChange={setShowPlaceholderDialog}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle>Добавить плейсхолдер</DialogTitle>
+              <DialogDescription>
+                Создайте новый плейсхолдер для формы заполнения
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4 mt-4">
+              <div>
+                <Label>Имя плейсхолдера *</Label>
+                <Input
+                  value={currentPlaceholder.name}
+                  onChange={(e) => setCurrentPlaceholder({
+                    ...currentPlaceholder,
+                    name: e.target.value.toUpperCase().replace(/\s+/g, '_')
+                  })}
+                  placeholder="RENT_AMOUNT"
+                  className="mt-1 font-mono"
+                />
+                <p className="text-xs text-neutral-500 mt-1">
+                  Будет использоваться как {'{{'}{currentPlaceholder.name || 'ИМЯ'}{'}}'}
+                </p>
+              </div>
+
+              <div>
+                <Label>Метка (Label) *</Label>
+                <Input
+                  value={currentPlaceholder.label}
+                  onChange={(e) => setCurrentPlaceholder({
+                    ...currentPlaceholder,
+                    label: e.target.value
+                  })}
+                  placeholder="Сумма аренды"
+                  className="mt-1"
+                />
+                <p className="text-xs text-neutral-500 mt-1">
+                  Будет показано пользователю в форме
+                </p>
+              </div>
+
+              <div>
+                <Label>Тип поля *</Label>
+                <Select
+                  value={currentPlaceholder.type}
+                  onValueChange={(value) => setCurrentPlaceholder({
+                    ...currentPlaceholder,
+                    type: value
+                  })}
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="text">Текст</SelectItem>
+                    <SelectItem value="number">Число</SelectItem>
+                    <SelectItem value="date">Дата</SelectItem>
+                    <SelectItem value="phone">Телефон</SelectItem>
+                    <SelectItem value="email">Email</SelectItem>
+                    <SelectItem value="textarea">Длинный текст</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label>Кто заполняет? *</Label>
+                <Select
+                  value={currentPlaceholder.owner}
+                  onValueChange={(value) => setCurrentPlaceholder({
+                    ...currentPlaceholder,
+                    owner: value
+                  })}
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="landlord">🏢 Наймодатель</SelectItem>
+                    <SelectItem value="signer">👤 Наниматель</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="required"
+                  checked={currentPlaceholder.required}
+                  onChange={(e) => setCurrentPlaceholder({
+                    ...currentPlaceholder,
+                    required: e.target.checked
+                  })}
+                  className="h-4 w-4"
+                />
+                <Label htmlFor="required" className="cursor-pointer">
+                  Обязательное поле
+                </Label>
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <Button
+                  onClick={handleAddPlaceholder}
+                  className="flex-1"
+                >
+                  Добавить
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowPlaceholderDialog(false)}
+                >
+                  Отмена
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
