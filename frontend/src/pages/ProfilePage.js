@@ -16,6 +16,123 @@ import { IMaskInput } from 'react-imask';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
+// Change Password Component
+const ChangePasswordSection = () => {
+  const { t } = useTranslation();
+  const token = localStorage.getItem('token');
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [changing, setChanging] = useState(false);
+
+  const handleChangePassword = async () => {
+    // Validate passwords match
+    if (newPassword !== confirmPassword) {
+      toast.error(t('auth.register.password_mismatch'));
+      return;
+    }
+
+    // Validate password length
+    if (newPassword.length < 6) {
+      toast.error('Новый пароль должен быть минимум 6 символов');
+      return;
+    }
+
+    setChanging(true);
+
+    try {
+      await axios.post(
+        `${API}/auth/change-password`,
+        {
+          old_password: oldPassword,
+          new_password: newPassword
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+
+      toast.success('Пароль успешно изменен');
+      
+      // Reset form
+      setOldPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (error) {
+      if (error.response?.status === 400) {
+        toast.error('Неверный текущий пароль');
+      } else {
+        toast.error(error.response?.data?.detail || 'Ошибка при смене пароля');
+      }
+    } finally {
+      setChanging(false);
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <Label htmlFor="old_password">Текущий пароль</Label>
+        <Input
+          id="old_password"
+          name="old_password"
+          type="password"
+          value={oldPassword}
+          onChange={(e) => setOldPassword(e.target.value)}
+          className="mt-1"
+          placeholder="Введите текущий пароль"
+        />
+      </div>
+
+      <div>
+        <Label htmlFor="new_password">Новый пароль</Label>
+        <Input
+          id="new_password"
+          name="new_password"
+          type="password"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+          className="mt-1"
+          placeholder="Введите новый пароль"
+        />
+      </div>
+
+      <div>
+        <Label htmlFor="confirm_new_password">{t('auth.register.confirm_password')}</Label>
+        <Input
+          id="confirm_new_password"
+          name="confirm_new_password"
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          className={`mt-1 ${
+            confirmPassword && newPassword !== confirmPassword
+              ? 'border-red-500'
+              : confirmPassword && newPassword === confirmPassword
+              ? 'border-green-500'
+              : ''
+          }`}
+          placeholder="Подтвердите новый пароль"
+        />
+        {confirmPassword && newPassword !== confirmPassword && (
+          <p className="text-xs text-red-500 mt-1">{t('auth.register.password_mismatch')}</p>
+        )}
+        {confirmPassword && newPassword === confirmPassword && newPassword.length > 0 && (
+          <p className="text-xs text-green-500 mt-1">{t('auth.register.password_match')}</p>
+        )}
+      </div>
+
+      <Button
+        onClick={handleChangePassword}
+        disabled={changing || !oldPassword || !newPassword || !confirmPassword || newPassword !== confirmPassword}
+        className="w-full"
+      >
+        {changing ? 'Изменение...' : 'Изменить пароль'}
+      </Button>
+    </div>
+  );
+};
+
 const ProfilePage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
