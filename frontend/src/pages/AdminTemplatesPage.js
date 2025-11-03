@@ -142,7 +142,8 @@ const AdminTemplatesPage = () => {
       description: template.description,
       category: template.category,
       content: template.content,
-      content_type: template.content_type || 'plain'
+      content_type: template.content_type || 'plain',
+      placeholders: template.placeholders || {}
     });
     setShowDialog(true);
   };
