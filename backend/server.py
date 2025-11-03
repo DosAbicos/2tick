@@ -1152,9 +1152,10 @@ async def reset_password(request: ResetPassword):
     expires_at = reset_doc.get('expires_at')
     if isinstance(expires_at, str):
         expires_at = datetime.fromisoformat(expires_at)
-        # Ensure expires_at has timezone info
-        if expires_at.tzinfo is None:
-            expires_at = expires_at.replace(tzinfo=timezone.utc)
+    
+    # Ensure expires_at has timezone info (whether from string or datetime)
+    if isinstance(expires_at, datetime) and expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=timezone.utc)
     
     if datetime.now(timezone.utc) > expires_at:
         raise HTTPException(status_code=400, detail="Reset code has expired")
