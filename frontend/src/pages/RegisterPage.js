@@ -190,10 +190,30 @@ const RegisterPage = () => {
                 />
               </div>
               
+              <div>
+                <Label htmlFor="confirmPassword">{t('auth.register.confirm_password')}</Label>
+                <Input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  required
+                  data-testid="confirm-password-input"
+                  className={`mt-1 ${formData.confirmPassword && formData.password !== formData.confirmPassword ? 'border-red-500' : formData.confirmPassword && formData.password === formData.confirmPassword ? 'border-green-500' : ''}`}
+                />
+                {formData.confirmPassword && formData.password !== formData.confirmPassword && (
+                  <p className="text-xs text-red-500 mt-1">{t('auth.register.password_mismatch')}</p>
+                )}
+                {formData.confirmPassword && formData.password === formData.confirmPassword && formData.password.length > 0 && (
+                  <p className="text-xs text-green-500 mt-1">✓ Пароли совпадают</p>
+                )}
+              </div>
+              
               <Button
                 type="submit"
                 className="w-full"
-                disabled={loading}
+                disabled={loading || (formData.password !== formData.confirmPassword)}
                 data-testid="register-submit-button"
               >
                 {loading ? t('common.loading') : t('auth.register.submit')}
