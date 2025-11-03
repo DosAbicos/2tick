@@ -47,7 +47,16 @@ const AdminTemplatesPage = () => {
     description: '',
     category: 'real_estate',
     content: '',
-    content_type: 'plain'
+    content_type: 'plain',
+    placeholders: {} // { PLACEHOLDER_NAME: { label, type, owner, required } }
+  });
+  const [showPlaceholderDialog, setShowPlaceholderDialog] = useState(false);
+  const [currentPlaceholder, setCurrentPlaceholder] = useState({
+    name: '',
+    label: '',
+    type: 'text',
+    owner: 'signer',
+    required: true
   });
 
   useEffect(() => {
