@@ -46,10 +46,13 @@ function App() {
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
           <Route path="/contracts/create" element={<PrivateRoute><CreateContractPage /></PrivateRoute>} />
+          <Route path="/contracts/upload-pdf" element={<PrivateRoute><UploadPdfContractPage /></PrivateRoute>} />
           <Route path="/contracts/:id" element={<PrivateRoute><ContractDetailsPage /></PrivateRoute>} />
+          <Route path="/templates" element={<TemplatesPage />} />
           <Route path="/sign/:id" element={<SignContractPage />} />
           <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
           <Route path="/admin" element={<PrivateRoute><AdminPage /></PrivateRoute>} />
+          <Route path="/admin/templates" element={<PrivateRoute><AdminTemplatesPage /></PrivateRoute>} />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" />
