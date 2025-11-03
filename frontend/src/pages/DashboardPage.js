@@ -128,14 +128,30 @@ const DashboardPage = () => {
           <h1 className="text-3xl font-bold text-neutral-900" data-testid="dashboard-title">
             {t('dashboard.title')}
           </h1>
-          <Button
-            onClick={handleCreateContract}
-            disabled={limitInfo?.exceeded}
-            data-testid="create-contract-primary-button"
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            {t('dashboard.new_contract')}
-          </Button>
+          <div className="flex gap-3">
+            <Button
+              variant="outline"
+              onClick={() => navigate('/templates')}
+            >
+              <FileText className="mr-2 h-4 w-4" />
+              Библиотека шаблонов
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => navigate('/contracts/upload-pdf')}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Загрузить PDF
+            </Button>
+            <Button
+              onClick={handleCreateContract}
+              disabled={limitInfo?.exceeded}
+              data-testid="create-contract-primary-button"
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              {t('dashboard.new_contract')}
+            </Button>
+          </div>
         </div>
 
         {/* Limit warning */}
