@@ -178,6 +178,7 @@ const resources = {
       "auth.register.phone": "Phone",
       "auth.register.confirm_password": "Confirm Password",
       "auth.register.password_mismatch": "Passwords do not match",
+      "auth.register.password_match": "✓ Passwords match",
       "auth.register.submit": "Register",
       
       // Dashboard
