@@ -1784,7 +1784,14 @@ async def get_contract_limit_info(current_user: dict = Depends(get_current_user)
 
 @api_router.get("/contracts", response_model=List[Contract])
 async def get_contracts(current_user: dict = Depends(get_current_user)):
-    contracts = await db.contracts.find({"creator_id": current_user['user_id']}, {"_id": 0}).to_list(1000)
+    # Filter out deleted contracts
+    contracts = await db.contracts.find({
+        "creator_id": current_user['user_id'],
+        "$or": [
+            {"deleted": {"$exists": False}},  # Old contracts without deleted field
+            {"deleted": False}  # New contracts that are not deleted
+        ]
+    }, {"_id": 0}).to_list(1000)
     for c in contracts:
         if isinstance(c.get('created_at'), str):
             c['created_at'] = datetime.fromisoformat(c['created_at'])
