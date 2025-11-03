@@ -2891,10 +2891,24 @@ async def get_stats(current_user: dict = Depends(get_current_user)):
     if current_user.get('role') != 'admin':
         raise HTTPException(status_code=403, detail="Admin access required")
     
+    # Query для не удаленных договоров
+    not_deleted_query = {
+        "$or": [
+            {"deleted": {"$exists": False}},
+            {"deleted": False}
+        ]
+    }
+    
     total_users = await db.users.count_documents({})
-    total_contracts = await db.contracts.count_documents({})
+    total_contracts = await db.contracts.count_documents(not_deleted_query)
+    
+    # Подписанные договоры - считаем ВСЕ, включая удаленные (для статистики использования лимитов)
     signed_contracts = await db.contracts.count_documents({"status": "signed"})
-    pending_contracts = await db.contracts.count_documents({"status": "pending-signature"})
+    
+    pending_contracts = await db.contracts.count_documents({
+        **not_deleted_query,
+        "status": "pending-signature"
+    })
     
     return {
         "total_users": total_users,
