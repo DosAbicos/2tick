@@ -351,6 +351,17 @@ const ProfilePage = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Security Section - Password Change */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Безопасность</CardTitle>
+              <CardDescription>Управление паролем и безопасностью аккаунта</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ChangePasswordSection />
+            </CardContent>
+          </Card>
         </div>
       </div>
       
