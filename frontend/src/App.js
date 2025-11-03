@@ -16,6 +16,9 @@ import ContractDetailsPage from './pages/ContractDetailsPage';
 import SignContractPage from './pages/SignContractPage';
 import AdminPage from './pages/AdminPage';
 import ProfilePage from './pages/ProfilePage';
+import TemplatesPage from './pages/TemplatesPage';
+import UploadPdfContractPage from './pages/UploadPdfContractPage';
+import AdminTemplatesPage from './pages/AdminTemplatesPage';
 
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem('token');
