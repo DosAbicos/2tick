@@ -174,6 +174,8 @@ const resources = {
       "auth.register.title": "Register",
       "auth.register.full_name": "Full name",
       "auth.register.phone": "Phone",
+      "auth.register.confirm_password": "Confirm Password",
+      "auth.register.password_mismatch": "Passwords do not match",
       "auth.register.submit": "Register",
       
       // Dashboard
