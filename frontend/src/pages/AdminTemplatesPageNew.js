@@ -1,0 +1,753 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import Header from '@/components/Header';
+import { Plus, Edit, Trash2, Save, GripVertical, Type, Hash, Calendar, Phone, Mail, FileText, User, Building } from 'lucide-react';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
+
+const CATEGORIES = [
+  { value: 'real_estate', label: '🏠 Недвижимость' },
+  { value: 'services', label: '💼 Услуги' },
+  { value: 'employment', label: '👔 Трудоустройство' },
+  { value: 'other', label: '📄 Другое' }
+];
+
+const FIELD_TYPES = [
+  { value: 'text', label: 'Текст', icon: Type },
+  { value: 'number', label: 'Число', icon: Hash },
+  { value: 'date', label: 'Дата', icon: Calendar },
+  { value: 'phone', label: 'Телефон', icon: Phone },
+  { value: 'email', label: 'Email', icon: Mail },
+  { value: 'textarea', label: 'Длинный текст', icon: FileText }
+];
+
+// Sortable Placeholder Item Component
+const SortablePlaceholder = ({ id, placeholder, config, onInsert, onRemove }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  const TypeIcon = FIELD_TYPES.find(t => t.value === config.type)?.icon || Type;
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`group relative bg-white border rounded-lg p-4 hover:shadow-md transition-all ${
+        isDragging ? 'shadow-2xl ring-2 ring-primary' : ''
+      }`}
+    >
+      {/* Drag Handle */}
+      <div
+        {...attributes}
+        {...listeners}
+        className="absolute left-2 top-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing text-neutral-400 hover:text-neutral-600"
+      >
+        <GripVertical className="h-5 w-5" />
+      </div>
+
+      <div className="ml-8">
+        {/* Header */}
+        <div className="flex items-start justify-between mb-2">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 flex-wrap mb-2">
+              <code className="text-sm font-mono bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-1 rounded-md">
+                {'{{'}{id}{'}}'}
+              </code>
+              
+              {/* Type Badge */}
+              <div className="flex items-center gap-1 bg-neutral-100 text-neutral-700 px-2 py-1 rounded text-xs">
+                <TypeIcon className="h-3 w-3" />
+                <span>{FIELD_TYPES.find(t => t.value === config.type)?.label}</span>
+              </div>
+
+              {/* Owner Badge */}
+              <div className={`flex items-center gap-1 px-2 py-1 rounded text-xs ${
+                config.owner === 'landlord'
+                  ? 'bg-purple-100 text-purple-700'
+                  : 'bg-green-100 text-green-700'
+              }`}>
+                {config.owner === 'landlord' ? (
+                  <>
+                    <Building className="h-3 w-3" />
+                    <span>Наймодатель</span>
+                  </>
+                ) : (
+                  <>
+                    <User className="h-3 w-3" />
+                    <span>Наниматель</span>
+                  </>
+                )}
+              </div>
+
+              {/* Required Badge */}
+              {config.required && (
+                <div className="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-medium">
+                  обязательно
+                </div>
+              )}
+            </div>
+
+            {/* Label */}
+            <p className="text-sm text-neutral-700 font-medium">{config.label}</p>
+          </div>
+
+          {/* Actions */}
+          <div className="flex gap-1 ml-4">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => onInsert(id)}
+              className="opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              Вставить
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => onRemove(id)}
+              className="opacity-0 group-hover:opacity-100 transition-opacity text-red-600 hover:text-red-700 hover:bg-red-50"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const AdminTemplatesPageNew = () => {
+  const navigate = useNavigate();
+  const token = localStorage.getItem('token');
+  
+  const [templates, setTemplates] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showDialog, setShowDialog] = useState(false);
+  const [editingTemplate, setEditingTemplate] = useState(null);
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    category: 'real_estate',
+    content: '',
+    content_type: 'plain',
+    placeholders: {}
+  });
+  const [placeholderOrder, setPlaceholderOrder] = useState([]);
+  
+  const [showPlaceholderDialog, setShowPlaceholderDialog] = useState(false);
+  const [currentPlaceholder, setCurrentPlaceholder] = useState({
+    name: '',
+    label: '',
+    type: 'text',
+    owner: 'signer',
+    required: true
+  });
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  useEffect(() => {
+    fetchTemplates();
+  }, []);
+
+  const fetchTemplates = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${API}/admin/templates`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setTemplates(response.data);
+    } catch (error) {
+      if (error.response?.status === 403) {
+        toast.error('Доступ запрещен');
+        navigate('/dashboard');
+      } else {
+        toast.error('Ошибка загрузки шаблонов');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleCategoryChange = (value) => {
+    setFormData({
+      ...formData,
+      category: value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!formData.title || !formData.content) {
+      toast.error('Заполните все обязательные поля');
+      return;
+    }
+
+    try {
+      if (editingTemplate) {
+        await axios.put(
+          `${API}/admin/templates/${editingTemplate.id}`,
+          formData,
+          {
+            headers: { Authorization: `Bearer ${token}` }
+          }
+        );
+        toast.success('Шаблон обновлен');
+      } else {
+        await axios.post(
+          `${API}/admin/templates`,
+          formData,
+          {
+            headers: { Authorization: `Bearer ${token}` }
+          }
+        );
+        toast.success('Шаблон создан');
+      }
+
+      setShowDialog(false);
+      resetForm();
+      fetchTemplates();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Ошибка при сохранении');
+    }
+  };
+
+  const handleEdit = (template) => {
+    setEditingTemplate(template);
+    setFormData({
+      title: template.title,
+      description: template.description,
+      category: template.category,
+      content: template.content,
+      content_type: template.content_type || 'plain',
+      placeholders: template.placeholders || {}
+    });
+    setPlaceholderOrder(Object.keys(template.placeholders || {}));
+    setShowDialog(true);
+  };
+
+  const handleDelete = async (templateId) => {
+    if (!window.confirm('Вы уверены, что хотите удалить этот шаблон?')) {
+      return;
+    }
+
+    try {
+      await axios.delete(`${API}/admin/templates/${templateId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Шаблон удален');
+      fetchTemplates();
+    } catch (error) {
+      toast.error('Ошибка при удалении');
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      title: '',
+      description: '',
+      category: 'real_estate',
+      content: '',
+      content_type: 'plain',
+      placeholders: {}
+    });
+    setPlaceholderOrder([]);
+    setEditingTemplate(null);
+  };
+
+  const handleDialogClose = () => {
+    setShowDialog(false);
+    resetForm();
+  };
+
+  const handleAddPlaceholder = () => {
+    if (!currentPlaceholder.name || !currentPlaceholder.label) {
+      toast.error('Укажите имя и метку плейсхолдера');
+      return;
+    }
+
+    const placeholderName = currentPlaceholder.name.toUpperCase().replace(/\s+/g, '_');
+    
+    setFormData({
+      ...formData,
+      placeholders: {
+        ...formData.placeholders,
+        [placeholderName]: {
+          label: currentPlaceholder.label,
+          type: currentPlaceholder.type,
+          owner: currentPlaceholder.owner,
+          required: currentPlaceholder.required
+        }
+      }
+    });
+
+    setPlaceholderOrder([...placeholderOrder, placeholderName]);
+
+    setCurrentPlaceholder({
+      name: '',
+      label: '',
+      type: 'text',
+      owner: 'signer',
+      required: true
+    });
+    setShowPlaceholderDialog(false);
+    toast.success(`Плейсхолдер {{${placeholderName}}} добавлен`);
+  };
+
+  const handleRemovePlaceholder = (name) => {
+    const newPlaceholders = { ...formData.placeholders };
+    delete newPlaceholders[name];
+    setFormData({
+      ...formData,
+      placeholders: newPlaceholders
+    });
+    setPlaceholderOrder(placeholderOrder.filter(id => id !== name));
+  };
+
+  const insertPlaceholderToContent = (name) => {
+    const placeholder = `{{${name}}}`;
+    setFormData({
+      ...formData,
+      content: formData.content + ' ' + placeholder
+    });
+    toast.success(`Вставлен ${placeholder}`);
+  };
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      setPlaceholderOrder((items) => {
+        const oldIndex = items.indexOf(active.id);
+        const newIndex = items.indexOf(over.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100">
+      <Header />
+      
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-neutral-900 mb-2">⚙️ Управление Шаблонами</h1>
+            <p className="text-neutral-600">
+              Создавайте и редактируйте шаблоны договоров с конструктором плейсхолдеров
+            </p>
+          </div>
+          <Button onClick={() => setShowDialog(true)} className="shadow-lg">
+            <Plus className="mr-2 h-4 w-4" />
+            Создать шаблон
+          </Button>
+        </div>
+
+        {/* Templates List */}
+        {loading ? (
+          <div className="text-center py-12">
+            <p className="text-neutral-600">Загрузка...</p>
+          </div>
+        ) : templates.length === 0 ? (
+          <Card className="shadow-lg">
+            <CardContent className="py-12 text-center">
+              <p className="text-neutral-600 mb-4">Шаблоны еще не созданы</p>
+              <Button onClick={() => setShowDialog(true)}>
+                <Plus className="mr-2 h-4 w-4" />
+                Создать первый шаблон
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid grid-cols-1 gap-4">
+            {templates.map((template) => (
+              <Card key={template.id} className={`shadow-md hover:shadow-lg transition-shadow ${!template.is_active ? 'opacity-50' : ''}`}>
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <CardTitle className="flex items-center gap-2">
+                        {template.title}
+                        {!template.is_active && (
+                          <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">
+                            Неактивен
+                          </span>
+                        )}
+                      </CardTitle>
+                      <CardDescription className="mt-2">
+                        {template.description}
+                      </CardDescription>
+                      <div className="mt-2 text-xs text-neutral-500">
+                        Категория: {CATEGORIES.find(c => c.value === template.category)?.label}
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleEdit(template)}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDelete(template.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </CardHeader>
+              </Card>
+            ))}
+          </div>
+        )}
+
+        {/* Create/Edit Dialog */}
+        <Dialog open={showDialog} onOpenChange={handleDialogClose}>
+          <DialogContent className="max-w-5xl max-h-[90vh] overflow-auto">
+            <DialogHeader>
+              <DialogTitle className="text-2xl">
+                {editingTemplate ? '✏️ Редактировать шаблон' : '✨ Создать новый шаблон'}
+              </DialogTitle>
+              <DialogDescription>
+                Заполните информацию о шаблоне договора и настройте плейсхолдеры
+              </DialogDescription>
+            </DialogHeader>
+
+            <form onSubmit={handleSubmit} className="space-y-6 mt-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="title">Название *</Label>
+                  <Input
+                    id="title"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleChange}
+                    placeholder="Договор аренды квартиры"
+                    required
+                    className="mt-1"
+                  />
+                </div>
+
+                <div>
+                  <Label>Категория *</Label>
+                  <Select value={formData.category} onValueChange={handleCategoryChange}>
+                    <SelectTrigger className="mt-1">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {CATEGORIES.map((cat) => (
+                        <SelectItem key={cat.value} value={cat.value}>
+                          {cat.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="description">Описание *</Label>
+                <Textarea
+                  id="description"
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  placeholder="Краткое описание шаблона..."
+                  rows={2}
+                  required
+                  className="mt-1"
+                />
+              </div>
+
+              {/* Beautiful Placeholder Constructor */}
+              <div className="border-2 border-dashed border-neutral-200 rounded-xl p-6 bg-gradient-to-br from-blue-50/50 to-purple-50/50">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <Label className="text-lg font-bold text-neutral-900 flex items-center gap-2">
+                      🎨 Конструктор плейсхолдеров
+                    </Label>
+                    <p className="text-sm text-neutral-600 mt-1">
+                      Перетаскивайте для изменения порядка
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    onClick={() => setShowPlaceholderDialog(true)}
+                    className="shadow-md"
+                  >
+                    <Plus className="mr-2 h-4 w-4" />
+                    Добавить плейсхолдер
+                  </Button>
+                </div>
+
+                {placeholderOrder.length === 0 ? (
+                  <div className="text-center py-12 bg-white/50 rounded-lg border-2 border-dashed border-neutral-200">
+                    <div className="text-6xl mb-4">🎯</div>
+                    <p className="text-neutral-500 mb-2 font-medium">
+                      Нет плейсхолдеров
+                    </p>
+                    <p className="text-sm text-neutral-400">
+                      Добавьте плейсхолдеры для создания динамических форм
+                    </p>
+                  </div>
+                ) : (
+                  <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleDragEnd}
+                  >
+                    <SortableContext
+                      items={placeholderOrder}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      <div className="space-y-3">
+                        {placeholderOrder.map((name) => (
+                          <SortablePlaceholder
+                            key={name}
+                            id={name}
+                            placeholder={name}
+                            config={formData.placeholders[name]}
+                            onInsert={insertPlaceholderToContent}
+                            onRemove={handleRemovePlaceholder}
+                          />
+                        ))}
+                      </div>
+                    </SortableContext>
+                  </DndContext>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="content">Содержание договора *</Label>
+                <Textarea
+                  id="content"
+                  name="content"
+                  value={formData.content}
+                  onChange={handleChange}
+                  placeholder="Текст договора с плейсхолдерами: {{LANDLORD_NAME}}, {{SIGNER_NAME}} и т.д."
+                  rows={12}
+                  required
+                  className="mt-1 font-mono text-sm"
+                />
+                <p className="text-xs text-neutral-500 mt-1">
+                  Вставляйте плейсхолдеры из конструктора выше
+                </p>
+              </div>
+
+              <div className="flex gap-3 pt-4 border-t">
+                <Button type="submit" className="flex-1 shadow-md">
+                  <Save className="mr-2 h-4 w-4" />
+                  {editingTemplate ? 'Сохранить изменения' : 'Создать шаблон'}
+                </Button>
+                <Button type="button" variant="outline" onClick={handleDialogClose}>
+                  Отмена
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
+
+        {/* Placeholder Creation Dialog */}
+        <Dialog open={showPlaceholderDialog} onOpenChange={setShowPlaceholderDialog}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle className="text-xl">✨ Добавить плейсхолдер</DialogTitle>
+              <DialogDescription>
+                Создайте новый плейсхолдер для формы заполнения
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4 mt-4">
+              <div>
+                <Label>Имя плейсхолдера *</Label>
+                <Input
+                  value={currentPlaceholder.name}
+                  onChange={(e) => setCurrentPlaceholder({
+                    ...currentPlaceholder,
+                    name: e.target.value.toUpperCase().replace(/\s+/g, '_')
+                  })}
+                  placeholder="RENT_AMOUNT"
+                  className="mt-1 font-mono"
+                />
+                <p className="text-xs text-neutral-500 mt-1">
+                  Будет использоваться как {'{{'}{currentPlaceholder.name || 'ИМЯ'}{'}}'}
+                </p>
+              </div>
+
+              <div>
+                <Label>Метка (Label) *</Label>
+                <Input
+                  value={currentPlaceholder.label}
+                  onChange={(e) => setCurrentPlaceholder({
+                    ...currentPlaceholder,
+                    label: e.target.value
+                  })}
+                  placeholder="Сумма аренды"
+                  className="mt-1"
+                />
+                <p className="text-xs text-neutral-500 mt-1">
+                  Будет показано пользователю в форме
+                </p>
+              </div>
+
+              <div>
+                <Label>Тип поля *</Label>
+                <Select
+                  value={currentPlaceholder.type}
+                  onValueChange={(value) => setCurrentPlaceholder({
+                    ...currentPlaceholder,
+                    type: value
+                  })}
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {FIELD_TYPES.map(type => (
+                      <SelectItem key={type.value} value={type.value}>
+                        <div className="flex items-center gap-2">
+                          <type.icon className="h-4 w-4" />
+                          {type.label}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label>Кто заполняет? *</Label>
+                <Select
+                  value={currentPlaceholder.owner}
+                  onValueChange={(value) => setCurrentPlaceholder({
+                    ...currentPlaceholder,
+                    owner: value
+                  })}
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="landlord">
+                      <div className="flex items-center gap-2">
+                        <Building className="h-4 w-4" />
+                        Наймодатель
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="signer">
+                      <div className="flex items-center gap-2">
+                        <User className="h-4 w-4" />
+                        Наниматель
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex items-center gap-2 p-3 bg-neutral-50 rounded-lg">
+                <input
+                  type="checkbox"
+                  id="required"
+                  checked={currentPlaceholder.required}
+                  onChange={(e) => setCurrentPlaceholder({
+                    ...currentPlaceholder,
+                    required: e.target.checked
+                  })}
+                  className="h-4 w-4"
+                />
+                <Label htmlFor="required" className="cursor-pointer">
+                  Обязательное поле
+                </Label>
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <Button
+                  onClick={handleAddPlaceholder}
+                  className="flex-1"
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Добавить
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowPlaceholderDialog(false)}
+                >
+                  Отмена
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+    </div>
+  );
+};
+
+export default AdminTemplatesPageNew;
