@@ -3026,6 +3026,174 @@ async def add_contracts_to_limit(user_id: str, contracts_to_add: int, current_us
         "contracts_added": contracts_to_add
     }
 
+# ==================== CONTRACT TEMPLATES ENDPOINTS ====================
+
+@api_router.get("/templates")
+async def get_templates(category: Optional[str] = None):
+    """Получить список активных шаблонов (для маркетплейса)"""
+    query = {"is_active": True}
+    if category:
+        query["category"] = category
+    
+    templates = await db.contract_templates.find(query, {"_id": 0}).sort("created_at", -1).to_list(100)
+    return templates
+
+@api_router.get("/templates/{template_id}")
+async def get_template(template_id: str):
+    """Получить детали шаблона"""
+    template = await db.contract_templates.find_one({"id": template_id, "is_active": True}, {"_id": 0})
+    if not template:
+        raise HTTPException(status_code=404, detail="Template not found")
+    return template
+
+@api_router.post("/admin/templates")
+async def create_template(
+    template: ContractTemplate,
+    current_user: dict = Depends(get_current_user)
+):
+    """Создать новый шаблон (только админ)"""
+    if current_user.get('role') != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    template_dict = template.model_dump()
+    await db.contract_templates.insert_one(template_dict)
+    
+    await log_audit("template_created", user_id=current_user['user_id'], 
+                   details=f"Created template: {template.title}")
+    
+    return {"message": "Template created successfully", "template_id": template.id}
+
+@api_router.put("/admin/templates/{template_id}")
+async def update_template(
+    template_id: str,
+    template: ContractTemplate,
+    current_user: dict = Depends(get_current_user)
+):
+    """Обновить шаблон (только админ)"""
+    if current_user.get('role') != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    template_dict = template.model_dump()
+    template_dict['updated_at'] = datetime.now(timezone.utc)
+    
+    result = await db.contract_templates.update_one(
+        {"id": template_id},
+        {"$set": template_dict}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Template not found")
+    
+    await log_audit("template_updated", user_id=current_user['user_id'], 
+                   details=f"Updated template: {template_id}")
+    
+    return {"message": "Template updated successfully"}
+
+@api_router.delete("/admin/templates/{template_id}")
+async def delete_template(
+    template_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Удалить шаблон (только админ) - soft delete"""
+    if current_user.get('role') != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    result = await db.contract_templates.update_one(
+        {"id": template_id},
+        {"$set": {"is_active": False, "updated_at": datetime.now(timezone.utc)}}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Template not found")
+    
+    await log_audit("template_deleted", user_id=current_user['user_id'], 
+                   details=f"Deleted template: {template_id}")
+    
+    return {"message": "Template deleted successfully"}
+
+@api_router.get("/admin/templates")
+async def get_all_templates(current_user: dict = Depends(get_current_user)):
+    """Получить все шаблоны включая неактивные (только админ)"""
+    if current_user.get('role') != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    templates = await db.contract_templates.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    return templates
+
+# ==================== UPLOAD PDF CONTRACT ====================
+
+@api_router.post("/contracts/upload-pdf")
+async def upload_pdf_contract(
+    file: UploadFile = File(...),
+    title: str = Form(...),
+    signer_email: str = Form(...),
+    signer_phone: str = Form(...),
+    signer_name: str = Form(None),
+    current_user: dict = Depends(get_current_user)
+):
+    """Загрузить готовый PDF договор для подписания"""
+    
+    # Validate file type
+    if not file.filename.lower().endswith('.pdf'):
+        raise HTTPException(status_code=400, detail="Only PDF files are allowed")
+    
+    # Validate file size (max 10MB)
+    content = await file.read()
+    if len(content) > 10 * 1024 * 1024:
+        raise HTTPException(status_code=400, detail="File size must be less than 10MB")
+    
+    # Save file to server
+    upload_dir = "/app/backend/uploaded_contracts"
+    os.makedirs(upload_dir, exist_ok=True)
+    
+    file_id = str(uuid.uuid4())
+    file_path = f"{upload_dir}/{file_id}.pdf"
+    
+    with open(file_path, "wb") as f:
+        f.write(content)
+    
+    # Get user info for landlord fields
+    user = await db.users.find_one({"id": current_user['user_id']})
+    
+    # Create contract
+    contract = Contract(
+        title=title,
+        content="",  # Empty for uploaded PDF
+        content_type="plain",
+        creator_id=current_user['user_id'],
+        source_type="uploaded_pdf",
+        uploaded_pdf_path=file_path,
+        signer_name=signer_name or "",
+        signer_email=signer_email,
+        signer_phone=signer_phone,
+        status="sent",
+        landlord_name=user.get('company_name', ''),
+        landlord_email=user.get('email', ''),
+        landlord_full_name=user.get('full_name', ''),
+        landlord_iin_bin=user.get('iin', ''),
+        contract_number="PDF-" + str(uuid.uuid4())[:8].upper(),
+        contract_code=generate_contract_code()
+    )
+    
+    contract_dict = contract.model_dump()
+    await db.contracts.insert_one(contract_dict)
+    
+    # Generate signature link
+    signature_link = f"/sign/{contract.id}"
+    await db.contracts.update_one(
+        {"id": contract.id},
+        {"$set": {"signature_link": signature_link}}
+    )
+    
+    await log_audit("pdf_contract_uploaded", user_id=current_user['user_id'], 
+                   contract_id=contract.id, details=f"Uploaded PDF: {title}")
+    
+    return {
+        "message": "PDF uploaded successfully",
+        "contract_id": contract.id,
+        "signature_link": signature_link
+    }
+
 # Include router
 app.include_router(api_router)
 
