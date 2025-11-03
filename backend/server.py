@@ -1058,6 +1058,128 @@ async def get_me(current_user: dict = Depends(get_current_user)):
         user_doc['created_at'] = datetime.fromisoformat(user_doc['created_at'])
     return User(**user_doc)
 
+@api_router.post("/auth/change-password")
+async def change_password(
+    change_pwd: ChangePassword,
+    current_user: dict = Depends(get_current_user)
+):
+    """Change password for logged-in user"""
+    # Get user from database
+    user_doc = await db.users.find_one({"id": current_user['user_id']})
+    if not user_doc:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Verify old password
+    if not verify_password(change_pwd.old_password, user_doc['password']):
+        raise HTTPException(status_code=400, detail="Current password is incorrect")
+    
+    # Hash new password
+    new_password_hash = hash_password(change_pwd.new_password)
+    
+    # Update password in database
+    await db.users.update_one(
+        {"id": current_user['user_id']},
+        {"$set": {"password": new_password_hash}}
+    )
+    
+    await log_audit("password_changed", user_id=current_user['user_id'], details="User changed password")
+    
+    return {"message": "Password changed successfully"}
+
+@api_router.post("/auth/forgot-password")
+async def forgot_password(request: ForgotPasswordRequest):
+    """Send password reset code to user's email"""
+    # Find user by email
+    user_doc = await db.users.find_one({"email": request.email})
+    if not user_doc:
+        # Don't reveal if user exists or not for security
+        return {"message": "If the email exists, a reset code has been sent"}
+    
+    # Generate 6-digit code
+    reset_code = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+    
+    # Delete any existing reset codes for this email
+    await db.password_resets.delete_many({"email": request.email})
+    
+    # Save reset code to database
+    reset_doc = PasswordReset(
+        email=request.email,
+        reset_code=reset_code
+    )
+    await db.password_resets.insert_one(reset_doc.model_dump())
+    
+    # Send email with reset code
+    subject = "Password Reset Code - Signify KZ"
+    body = f"""
+    <html>
+        <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+            <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+                <h2 style="color: #2563eb;">Password Reset Request</h2>
+                <p>You requested to reset your password for Signify KZ.</p>
+                <p>Your password reset code is:</p>
+                <div style="background-color: #f3f4f6; padding: 20px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 5px; margin: 20px 0;">
+                    {reset_code}
+                </div>
+                <p>This code will expire in <strong>1 hour</strong>.</p>
+                <p>If you didn't request this, please ignore this email.</p>
+                <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
+                <p style="color: #6b7280; font-size: 12px;">Signify KZ - Remote Contract Signing Platform</p>
+            </div>
+        </body>
+    </html>
+    """
+    
+    send_email(request.email, subject, body)
+    
+    await log_audit("password_reset_requested", details=f"Reset code sent to {request.email}")
+    
+    return {"message": "If the email exists, a reset code has been sent"}
+
+@api_router.post("/auth/reset-password")
+async def reset_password(request: ResetPassword):
+    """Reset password using the code sent via email"""
+    # Find reset code in database
+    reset_doc = await db.password_resets.find_one({
+        "email": request.email,
+        "reset_code": request.reset_code,
+        "used": False
+    })
+    
+    if not reset_doc:
+        raise HTTPException(status_code=400, detail="Invalid or expired reset code")
+    
+    # Check if code is expired
+    expires_at = reset_doc.get('expires_at')
+    if isinstance(expires_at, str):
+        expires_at = datetime.fromisoformat(expires_at)
+    
+    if datetime.now(timezone.utc) > expires_at:
+        raise HTTPException(status_code=400, detail="Reset code has expired")
+    
+    # Find user
+    user_doc = await db.users.find_one({"email": request.email})
+    if not user_doc:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Hash new password
+    new_password_hash = hash_password(request.new_password)
+    
+    # Update password
+    await db.users.update_one(
+        {"email": request.email},
+        {"$set": {"password": new_password_hash}}
+    )
+    
+    # Mark reset code as used
+    await db.password_resets.update_one(
+        {"email": request.email, "reset_code": request.reset_code},
+        {"$set": {"used": True}}
+    )
+    
+    await log_audit("password_reset", details=f"Password reset for {request.email}")
+    
+    return {"message": "Password has been reset successfully"}
+
 @api_router.get("/users/{user_id}")
 async def get_user_by_id(user_id: str, current_user: dict = Depends(get_current_user)):
     """Get user by ID - for displaying landlord info in contracts"""
