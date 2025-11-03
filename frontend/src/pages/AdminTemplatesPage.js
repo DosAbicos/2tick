@@ -169,9 +169,60 @@ const AdminTemplatesPage = () => {
       description: '',
       category: 'real_estate',
       content: '',
-      content_type: 'plain'
+      content_type: 'plain',
+      placeholders: {}
     });
     setEditingTemplate(null);
+  };
+
+  const handleAddPlaceholder = () => {
+    if (!currentPlaceholder.name || !currentPlaceholder.label) {
+      toast.error('Укажите имя и метку плейсхолдера');
+      return;
+    }
+
+    const placeholderName = currentPlaceholder.name.toUpperCase().replace(/\s+/g, '_');
+    
+    setFormData({
+      ...formData,
+      placeholders: {
+        ...formData.placeholders,
+        [placeholderName]: {
+          label: currentPlaceholder.label,
+          type: currentPlaceholder.type,
+          owner: currentPlaceholder.owner,
+          required: currentPlaceholder.required
+        }
+      }
+    });
+
+    setCurrentPlaceholder({
+      name: '',
+      label: '',
+      type: 'text',
+      owner: 'signer',
+      required: true
+    });
+    setShowPlaceholderDialog(false);
+    toast.success(`Плейсхолдер {{${placeholderName}}} добавлен`);
+  };
+
+  const handleRemovePlaceholder = (name) => {
+    const newPlaceholders = { ...formData.placeholders };
+    delete newPlaceholders[name];
+    setFormData({
+      ...formData,
+      placeholders: newPlaceholders
+    });
+  };
+
+  const insertPlaceholderToContent = (name) => {
+    const placeholder = `{{${name}}}`;
+    setFormData({
+      ...formData,
+      content: formData.content + ' ' + placeholder
+    });
+    toast.success(`Вставлен ${placeholder}`);
   };
 
   const handleDialogClose = () => {
