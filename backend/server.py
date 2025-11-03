@@ -1719,7 +1719,9 @@ async def create_contract(contract_data: ContractCreate, current_user: dict = De
             detail=f"Contract limit reached. You have signed {signed_contract_count}/{contract_limit} contracts. Please upgrade your subscription."
         )
     
-    contract_num = contract_count + 1
+    # For contract numbering, count ALL contracts (not just signed)
+    total_contract_count = await db.contracts.count_documents({"creator_id": current_user['user_id']})
+    contract_num = total_contract_count + 1
     
     # Always start with 0, then the number: 01, 02, 03...09, 010, 011
     contract_number = f"0{contract_num}"
