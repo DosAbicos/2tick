@@ -48,7 +48,7 @@ function App() {
           <Route path="/contracts/create" element={<PrivateRoute><CreateContractPage /></PrivateRoute>} />
           <Route path="/contracts/upload-pdf" element={<PrivateRoute><UploadPdfContractPage /></PrivateRoute>} />
           <Route path="/contracts/:id" element={<PrivateRoute><ContractDetailsPage /></PrivateRoute>} />
-          <Route path="/templates" element={<TemplatesPage />} />
+          <Route path="/templates" element={<PrivateRoute><TemplatesPage /></PrivateRoute>} />
           <Route path="/sign/:id" element={<SignContractPage />} />
           <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
           <Route path="/admin" element={<PrivateRoute><AdminPage /></PrivateRoute>} />
