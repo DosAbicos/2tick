@@ -369,12 +369,39 @@ const AdminTemplatesPageNew = () => {
     setPlaceholderOrder(placeholderOrder.filter(id => id !== name));
   };
 
+  const contentTextareaRef = React.useRef(null);
+
   const insertPlaceholderToContent = (name) => {
     const placeholder = `{{${name}}}`;
-    setFormData({
-      ...formData,
-      content: formData.content + ' ' + placeholder
-    });
+    const textarea = contentTextareaRef.current;
+    
+    if (textarea) {
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const text = formData.content;
+      
+      // Вставить в позицию курсора
+      const newText = text.substring(0, start) + placeholder + text.substring(end);
+      
+      setFormData(prev => ({
+        ...prev,
+        content: newText
+      }));
+      
+      // Установить курсор после вставленного плейсхолдера
+      setTimeout(() => {
+        textarea.focus();
+        const newPosition = start + placeholder.length;
+        textarea.setSelectionRange(newPosition, newPosition);
+      }, 0);
+    } else {
+      // Fallback - добавить в конец
+      setFormData(prev => ({
+        ...prev,
+        content: prev.content + ' ' + placeholder
+      }));
+    }
+    
     toast.success(`Вставлен ${placeholder}`);
   };
 
