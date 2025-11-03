@@ -2859,10 +2859,17 @@ async def get_all_contracts(
         raise HTTPException(status_code=403, detail="Admin access required")
     
     # Получить договоры с пагинацией, отсортированные от новых к старым
-    contracts = await db.contracts.find({}, {"_id": 0}).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
+    # Фильтруем удаленные договоры
+    query = {
+        "$or": [
+            {"deleted": {"$exists": False}},  # Old contracts without deleted field
+            {"deleted": False}  # New contracts that are not deleted
+        ]
+    }
+    contracts = await db.contracts.find(query, {"_id": 0}).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
     
-    # Получить общее количество договоров
-    total_count = await db.contracts.count_documents({})
+    # Получить общее количество договоров (не удаленных)
+    total_count = await db.contracts.count_documents(query)
     
     return {
         "contracts": contracts,
