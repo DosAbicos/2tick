@@ -1706,14 +1706,17 @@ async def create_contract(contract_data: ContractCreate, current_user: dict = De
     landlord_iin_bin = user.get('iin', '') if user else ''
     landlord_full_name = user.get('full_name', '') if user else ''
     
-    # Check contract limit
-    contract_count = await db.contracts.count_documents({"creator_id": current_user['user_id']})
+    # Check contract limit - count only SIGNED contracts
+    signed_contract_count = await db.contracts.count_documents({
+        "creator_id": current_user['user_id'],
+        "status": "signed"
+    })
     contract_limit = user.get('contract_limit', 10) if user else 10
     
-    if contract_count >= contract_limit:
+    if signed_contract_count >= contract_limit:
         raise HTTPException(
             status_code=403, 
-            detail=f"Contract limit reached. You have created {contract_count}/{contract_limit} contracts. Please upgrade your subscription."
+            detail=f"Contract limit reached. You have signed {signed_contract_count}/{contract_limit} contracts. Please upgrade your subscription."
         )
     
     contract_num = contract_count + 1
