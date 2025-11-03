@@ -88,7 +88,12 @@ const LoginPage = () => {
               </div>
               
               <div>
-                <Label htmlFor="password">{t('auth.login.password')}</Label>
+                <div className="flex items-center justify-between mb-1">
+                  <Label htmlFor="password">{t('auth.login.password')}</Label>
+                  <Link to="/forgot-password" className="text-xs text-primary hover:underline">
+                    Забыл пароль?
+                  </Link>
+                </div>
                 <Input
                   id="password"
                   name="password"
