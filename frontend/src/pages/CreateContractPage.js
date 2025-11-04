@@ -687,7 +687,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                   ) : (
                     <div className="prose prose-sm max-w-none">
                       <pre className="whitespace-pre-wrap text-xs font-['IBM_Plex_Sans'] leading-relaxed text-neutral-800">
-                        {generateContractContent()}
+                        {generatePreviewContent()}
                       </pre>
                     </div>
                   )}
