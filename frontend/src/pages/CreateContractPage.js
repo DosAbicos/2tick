@@ -1034,8 +1034,10 @@ Email: ${templateData.tenant_email || '[Email]'}
                     />
                   </div>
                 </div>
+                )}
 
                 {/* Financial Terms */}
+                {!selectedTemplate && (
                 <div className="space-y-4">
                   <h3 className="font-semibold text-neutral-900 border-b pb-2">Финансовые условия</h3>
                   <div className="grid grid-cols-2 gap-4">
