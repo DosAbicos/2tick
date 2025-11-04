@@ -823,22 +823,24 @@ Email: ${templateData.tenant_email || '[Email]'}
                 {/* Dynamic Template Fields */}
                 {selectedTemplate && selectedTemplate.placeholders && Object.keys(selectedTemplate.placeholders).length > 0 && (
                   <>
-                    {/* Landlord Fields (owner: 'landlord') */}
-                    {Object.entries(selectedTemplate.placeholders).some(([_, config]) => config.owner === 'landlord' && config.type !== 'calculated') && (
-                      <div className="space-y-4 p-6 bg-gradient-to-br from-blue-50/50 to-purple-50/50 border-2 border-dashed border-blue-200 rounded-xl">
-                        <div className="border-b pb-2">
-                          <h3 className="font-semibold text-neutral-900 flex items-center gap-2">
-                            📋 Обязательные поля для заполнения
-                          </h3>
-                          <p className="text-xs text-neutral-600 mt-1">
-                            Эти поля вы должны заполнить как наймодатель
-                          </p>
-                        </div>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {Object.entries(selectedTemplate.placeholders).map(([key, config]) => {
-                            // Only show landlord fields
-                            if (config.type === 'calculated' || config.owner !== 'landlord') return null;
+                    {/* All Fields - divided by owner */}
+                    <div className="space-y-4">
+                      {/* Landlord Fields - Always visible */}
+                      {Object.entries(selectedTemplate.placeholders).some(([_, config]) => config.owner === 'landlord' && config.type !== 'calculated') && (
+                        <div className="p-6 bg-gradient-to-br from-blue-50/50 to-purple-50/50 border-2 border-dashed border-blue-200 rounded-xl">
+                          <div className="border-b pb-2 mb-4">
+                            <h3 className="font-semibold text-neutral-900 flex items-center gap-2">
+                              📋 Обязательные поля для заполнения
+                            </h3>
+                            <p className="text-xs text-neutral-600 mt-1">
+                              Эти поля вы должны заполнить как наймодатель
+                            </p>
+                          </div>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {Object.entries(selectedTemplate.placeholders).map(([key, config]) => {
+                              // Only show landlord fields
+                              if (config.type === 'calculated' || config.owner !== 'landlord') return null;
                         
                         return (
                           <div key={key} className={config.type === 'text' ? 'md:col-span-2' : ''}>
