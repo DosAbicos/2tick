@@ -603,6 +603,23 @@ const AdminTemplatesPageNew = () => {
                 />
               </div>
 
+              {/* Настройка требования документа нанимателя */}
+              <div className="flex items-start space-x-3 p-4 border border-amber-200 rounded-lg bg-amber-50/30">
+                <Checkbox 
+                  id="requires_tenant_document"
+                  checked={formData.requires_tenant_document}
+                  onCheckedChange={(checked) => setFormData({...formData, requires_tenant_document: checked})}
+                />
+                <div className="flex-1">
+                  <label htmlFor="requires_tenant_document" className="text-sm font-medium text-neutral-900 cursor-pointer">
+                    Требуется удостоверение личности нанимателя
+                  </label>
+                  <p className="text-xs text-neutral-600 mt-1">
+                    При подписании договора наниматель должен будет загрузить копию своего удостоверения личности
+                  </p>
+                </div>
+              </div>
+
               {/* Beautiful Placeholder Constructor */}
               <div className="border-2 border-dashed border-neutral-200 rounded-xl p-6 bg-gradient-to-br from-blue-50/50 to-purple-50/50">
                 <div className="flex items-center justify-between mb-4">
