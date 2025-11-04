@@ -933,9 +933,9 @@ Email: ${templateData.tenant_email || '[Email]'}
                                 <span className="text-xs text-amber-600">▼ Развернуть</span>
                               </Button>
                             </CollapsibleTrigger>
-                          
-                          <CollapsibleContent className="mt-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            
+                            <CollapsibleContent className="mt-4">
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               {Object.entries(selectedTemplate.placeholders).map(([key, config]) => {
                                 // Only show tenant fields
                                 if (config.type === 'calculated' || config.owner !== 'tenant') return null;
