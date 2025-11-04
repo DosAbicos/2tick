@@ -214,12 +214,16 @@ const TemplatesPage = () => {
                 <div className="flex gap-2">
                   <Button
                     onClick={() => {
+                      handleToggleFavorite(previewTemplate.id);
                       setPreviewTemplate(null);
-                      handleUseTemplate(previewTemplate);
                     }}
+                    variant={favoriteTemplates.includes(previewTemplate.id) ? "default" : "outline"}
                     className="flex-1"
                   >
-                    Использовать этот шаблон
+                    <Heart 
+                      className={`mr-2 h-4 w-4 ${favoriteTemplates.includes(previewTemplate.id) ? 'fill-current' : ''}`} 
+                    />
+                    {favoriteTemplates.includes(previewTemplate.id) ? 'Удалить из избранного' : 'Добавить в избранное'}
                   </Button>
                   <Button
                     variant="outline"
