@@ -317,6 +317,82 @@ const DashboardPage = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Template Selection Modal */}
+      <Dialog open={showTemplateModal} onOpenChange={setShowTemplateModal}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>⭐ Выберите шаблон договора</DialogTitle>
+            <DialogDescription>
+              Выберите один из ваших избранных шаблонов или перейдите в библиотеку
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            {favoriteTemplates.length === 0 ? (
+              <div className="text-center py-12 space-y-4">
+                <Heart className="w-16 h-16 mx-auto text-neutral-300" />
+                <div>
+                  <p className="text-neutral-600 font-medium">У вас пока нет избранных шаблонов</p>
+                  <p className="text-sm text-neutral-500 mt-2">
+                    Добавьте шаблоны в избранное из библиотеки для быстрого доступа
+                  </p>
+                </div>
+                <Button
+                  onClick={() => {
+                    setShowTemplateModal(false);
+                    navigate('/templates');
+                  }}
+                >
+                  <FileText className="mr-2 h-4 w-4" />
+                  Перейти в библиотеку
+                </Button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {favoriteTemplates.map((template) => (
+                  <Card
+                    key={template.id}
+                    className="cursor-pointer hover:shadow-md transition-shadow"
+                    onClick={() => handleSelectTemplate(template.id)}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-start justify-between mb-2">
+                        <h3 className="font-semibold text-lg">{template.title}</h3>
+                        <Heart className="w-5 h-5 text-red-500 fill-current flex-shrink-0" />
+                      </div>
+                      <p className="text-sm text-neutral-600 line-clamp-2 mb-3">
+                        {template.description}
+                      </p>
+                      <Badge variant="outline">{template.category}</Badge>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+
+            <div className="flex gap-2 pt-4 border-t">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowTemplateModal(false);
+                  navigate('/templates');
+                }}
+                className="flex-1"
+              >
+                <FileText className="mr-2 h-4 w-4" />
+                Посмотреть все шаблоны
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setShowTemplateModal(false)}
+              >
+                Отмена
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
