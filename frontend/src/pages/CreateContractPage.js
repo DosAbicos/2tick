@@ -939,8 +939,8 @@ Email: ${templateData.tenant_email || '[Email]'}
                             <CollapsibleContent className="mt-4">
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               {Object.entries(selectedTemplate.placeholders).map(([key, config]) => {
-                                // Only show tenant fields
-                                if (config.type === 'calculated' || config.owner !== 'tenant') return null;
+                                // Only show tenant/signer fields
+                                if (config.type === 'calculated' || (config.owner !== 'tenant' && config.owner !== 'signer')) return null;
                                 
                                 return (
                                   <div key={key} className={config.type === 'text' ? 'md:col-span-2' : ''}>
