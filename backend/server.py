@@ -93,6 +93,7 @@ class User(BaseModel):
     document_upload: Optional[str] = None  # Landlord's ID/passport
     document_filename: Optional[str] = None
     contract_limit: int = 5  # Лимит на количество договоров (по умолчанию 5)
+    is_admin: bool = False  # Администратор
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class UserCreate(BaseModel):
