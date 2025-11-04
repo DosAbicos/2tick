@@ -74,6 +74,18 @@ const DashboardPage = () => {
     }
   };
 
+  const fetchFavoriteTemplates = async () => {
+    try {
+      const response = await axios.get(`${API}/users/favorites/templates`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setFavoriteTemplates(response.data);
+    } catch (error) {
+      console.error('Error fetching favorites:', error);
+    }
+  };
+
+
   const handleCreateContract = async () => {
     // Обновить лимит перед проверкой
     const freshLimitInfo = await fetchLimitInfo();
