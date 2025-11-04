@@ -133,7 +133,39 @@ const CreateContractPage = () => {
     };
     
     fetchNextContractNumber();
-  }, []);
+
+    // Load template if template_id is provided
+    if (templateId) {
+      loadTemplateFromMarket(templateId);
+    }
+  }, [templateId]);
+
+  const loadTemplateFromMarket = async (id) => {
+    setLoadingTemplate(true);
+    try {
+      const response = await axios.get(`${API}/templates/${id}`);
+      const template = response.data;
+      
+      setSelectedTemplate(template);
+      setManualContent(template.content || '');
+      
+      // Initialize placeholder values
+      const initialValues = {};
+      if (template.placeholders) {
+        Object.keys(template.placeholders).forEach(key => {
+          initialValues[key] = '';
+        });
+      }
+      setPlaceholderValues(initialValues);
+      
+      toast.success(`Шаблон "${template.title}" загружен`);
+    } catch (error) {
+      console.error('Error loading template:', error);
+      toast.error('Ошибка загрузки шаблона');
+    } finally {
+      setLoadingTemplate(false);
+    }
+  };
 
   const loadLastTemplate = () => {
     try {
