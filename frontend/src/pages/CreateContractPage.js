@@ -380,15 +380,54 @@ Email: ${templateData.tenant_email || '[Email]'}
     
     try {
       // Use saved content if available, otherwise generate from form
-      let contentToSave = isContentSaved ? manualContent : generateContractContent();
+      let contentToSave = isContentSaved ? manualContent : (selectedTemplate ? selectedTemplate.content : generateContractContent());
+      
+      // Replace placeholders with actual values
+      if (selectedTemplate && placeholderValues) {
+        Object.entries(placeholderValues).forEach(([key, value]) => {
+          const regex = new RegExp(`{{${key}}}`, 'g');
+          contentToSave = contentToSave.replace(regex, value || `[${key}]`);
+        });
+        
+        // Calculate computed fields
+        if (selectedTemplate.placeholders) {
+          Object.entries(selectedTemplate.placeholders).forEach(([key, config]) => {
+            if (config.type === 'calculated' && config.formula) {
+              const { operand1, operation, operand2 } = config.formula;
+              const val1 = parseFloat(placeholderValues[operand1]) || 0;
+              const val2 = parseFloat(placeholderValues[operand2]) || 0;
+              
+              let result = 0;
+              switch(operation) {
+                case 'add': result = val1 + val2; break;
+                case 'subtract': result = val1 - val2; break;
+                case 'multiply': result = val1 * val2; break;
+                case 'divide': result = val2 !== 0 ? val1 / val2 : 0; break;
+                case 'modulo': result = val2 !== 0 ? val1 % val2 : 0; break;
+                case 'days_between':
+                  const date1 = new Date(placeholderValues[operand1]);
+                  const date2 = new Date(placeholderValues[operand2]);
+                  result = Math.abs(Math.ceil((date2 - date1) / (1000 * 60 * 60 * 24)));
+                  break;
+                default: result = 0;
+              }
+              
+              const regex = new RegExp(`{{${key}}}`, 'g');
+              contentToSave = contentToSave.replace(regex, result.toString());
+            }
+          });
+        }
+      }
       
       // Store metadata about whether content is HTML or plain text
       const isHtmlContent = isContentSaved && manualContent.includes('<');
       
       const contractData = {
-        title: `Договор от ${templateData.contract_date}`,  // Temporary title, will be updated with backend contract_number
+        title: selectedTemplate ? selectedTemplate.title : `Договор от ${templateData.contract_date}`,
         content: contentToSave,
-        content_type: isHtmlContent ? 'html' : 'plain', // Add metadata
+        content_type: selectedTemplate ? selectedTemplate.content_type : (isHtmlContent ? 'html' : 'plain'),
+        source_type: selectedTemplate ? 'template' : 'manual',
+        template_id: selectedTemplate ? selectedTemplate.id : undefined,
         signer_name: templateData.tenant_name,
         signer_phone: templateData.tenant_phone,
         signer_email: templateData.tenant_email,
