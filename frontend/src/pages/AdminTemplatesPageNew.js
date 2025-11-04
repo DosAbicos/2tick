@@ -877,21 +877,29 @@ const AdminTemplatesPageNew = () => {
                 </div>
               )}
 
-              <div className="flex items-center gap-2 p-3 bg-neutral-50 rounded-lg">
-                <input
-                  type="checkbox"
-                  id="required"
-                  checked={currentPlaceholder.required}
-                  onChange={(e) => setCurrentPlaceholder({
-                    ...currentPlaceholder,
-                    required: e.target.checked
-                  })}
-                  className="h-4 w-4"
-                />
-                <Label htmlFor="required" className="cursor-pointer">
-                  Обязательное поле
-                </Label>
-              </div>
+              {/* Required checkbox - only for non-calculated */}
+              {currentPlaceholder.type !== 'calculated' && (
+                <div className="border rounded-lg p-3 bg-blue-50 border-blue-200">
+                  <div className="flex items-center gap-2 mb-2">
+                    <input
+                      type="checkbox"
+                      id="required"
+                      checked={currentPlaceholder.required}
+                      onChange={(e) => setCurrentPlaceholder({
+                        ...currentPlaceholder,
+                        required: e.target.checked
+                      })}
+                      className="h-4 w-4"
+                    />
+                    <Label htmlFor="required" className="cursor-pointer font-medium">
+                      Обязательное поле для наймодателя
+                    </Label>
+                  </div>
+                  <p className="text-xs text-blue-700 ml-6">
+                    ℹ️ Если не обязательно для наймодателя, наниматель всё равно должен заполнить
+                  </p>
+                </div>
+              )}
 
               <div className="flex gap-3 pt-2">
                 <Button
