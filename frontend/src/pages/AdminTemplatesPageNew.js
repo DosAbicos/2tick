@@ -348,18 +348,33 @@ const AdminTemplatesPageNew = () => {
       return;
     }
 
+    // Validation for calculated fields
+    if (currentPlaceholder.type === 'calculated') {
+      if (!currentPlaceholder.formula.operand1 || !currentPlaceholder.formula.operand2) {
+        toast.error('Укажите оба операнда для вычисляемого поля');
+        return;
+      }
+    }
+
     const placeholderName = currentPlaceholder.name.toUpperCase().replace(/\s+/g, '_');
     
+    const placeholderConfig = {
+      label: currentPlaceholder.label,
+      type: currentPlaceholder.type,
+      owner: currentPlaceholder.owner,
+      required: currentPlaceholder.required
+    };
+
+    // Add formula for calculated fields
+    if (currentPlaceholder.type === 'calculated') {
+      placeholderConfig.formula = currentPlaceholder.formula;
+    }
+
     setFormData({
       ...formData,
       placeholders: {
         ...formData.placeholders,
-        [placeholderName]: {
-          label: currentPlaceholder.label,
-          type: currentPlaceholder.type,
-          owner: currentPlaceholder.owner,
-          required: currentPlaceholder.required
-        }
+        [placeholderName]: placeholderConfig
       }
     });
 
@@ -370,7 +385,13 @@ const AdminTemplatesPageNew = () => {
       label: '',
       type: 'text',
       owner: 'signer',
-      required: true
+      required: true,
+      isCalculated: false,
+      formula: {
+        operand1: '',
+        operation: 'add',
+        operand2: ''
+      }
     });
     setShowPlaceholderDialog(false);
     toast.success(`Плейсхолдер {{${placeholderName}}} добавлен`);
