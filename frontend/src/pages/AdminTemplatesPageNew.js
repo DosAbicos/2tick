@@ -614,18 +614,36 @@ const AdminTemplatesPageNew = () => {
 
               <div>
                 <Label htmlFor="content">Содержание договора *</Label>
-                <Textarea
-                  id="content"
-                  name="content"
-                  value={formData.content}
-                  onChange={handleChange}
-                  placeholder="Текст договора с плейсхолдерами: {{LANDLORD_NAME}}, {{SIGNER_NAME}} и т.д."
-                  rows={12}
-                  required
-                  className="mt-1 font-mono text-sm"
-                />
+                <div
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    const placeholderName = e.dataTransfer.getData('text/plain');
+                    if (placeholderName) {
+                      insertPlaceholderToContent(placeholderName);
+                    }
+                  }}
+                  onDragOver={(e) => e.preventDefault()}
+                  className="relative"
+                >
+                  <Textarea
+                    ref={contentTextareaRef}
+                    id="content"
+                    name="content"
+                    value={formData.content}
+                    onChange={handleChange}
+                    placeholder="Текст договора с плейсхолдерами: {{LANDLORD_NAME}}, {{SIGNER_NAME}} и т.д."
+                    rows={12}
+                    required
+                    className="mt-1 font-mono text-sm"
+                  />
+                  <div className="absolute top-2 right-2 pointer-events-none">
+                    <div className="text-xs text-neutral-400 bg-white/80 px-2 py-1 rounded">
+                      💡 Перетащите плейсхолдер сюда
+                    </div>
+                  </div>
+                </div>
                 <p className="text-xs text-neutral-500 mt-1">
-                  Вставляйте плейсхолдеры из конструктора выше
+                  💡 Перетащите плейсхолдер из конструктора выше или нажмите "Вставить"
                 </p>
               </div>
 
