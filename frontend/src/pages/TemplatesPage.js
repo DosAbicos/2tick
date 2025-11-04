@@ -46,36 +46,45 @@ const TemplatesPage = () => {
     }
   };
 
-  const handleUseTemplate = async (template) => {
+  const fetchFavorites = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+      const response = await axios.get(`${API}/users/favorites/templates`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setFavoriteTemplates(response.data.map(t => t.id));
+    } catch (error) {
+      // Игнорируем ошибки для избранного
+    }
+  };
+
+  const handleToggleFavorite = async (templateId) => {
     const token = localStorage.getItem('token');
     if (!token) {
       navigate('/login');
       return;
     }
 
-    try {
-      // Создать договор из шаблона
-      const response = await axios.post(
-        `${API}/contracts`,
-        {
-          title: template.title,
-          content: template.content,
-          content_type: template.content_type || 'plain',
-          source_type: 'template',
-          template_id: template.id,
-          signer_name: '',
-          signer_phone: '',
-          signer_email: ''
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      );
+    const isFavorite = favoriteTemplates.includes(templateId);
 
-      toast.success('Шаблон добавлен в ваши договоры');
-      navigate(`/contracts/${response.data.contract_id}/edit`);
+    try {
+      if (isFavorite) {
+        await axios.delete(`${API}/users/favorites/templates/${templateId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setFavoriteTemplates(favoriteTemplates.filter(id => id !== templateId));
+        toast.success('Удалено из избранного');
+      } else {
+        await axios.post(`${API}/users/favorites/templates/${templateId}`, {}, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setFavoriteTemplates([...favoriteTemplates, templateId]);
+        toast.success('Добавлено в избранное');
+      }
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Ошибка при создании договора');
+      toast.error(error.response?.data?.detail || 'Ошибка');
     }
   };
 
