@@ -171,11 +171,14 @@ const TemplatesPage = () => {
                     </Button>
                     <Button
                       size="sm"
-                      onClick={() => handleUseTemplate(template)}
+                      onClick={() => handleToggleFavorite(template.id)}
+                      variant={favoriteTemplates.includes(template.id) ? "default" : "outline"}
                       className="flex-1"
                     >
-                      <Plus className="mr-2 h-4 w-4" />
-                      Использовать
+                      <Heart 
+                        className={`mr-2 h-4 w-4 ${favoriteTemplates.includes(template.id) ? 'fill-current' : ''}`} 
+                      />
+                      {favoriteTemplates.includes(template.id) ? 'В избранном' : 'В избранное'}
                     </Button>
                   </div>
                 </CardContent>
