@@ -995,9 +995,11 @@ Email: ${templateData.tenant_email || '[Email]'}
                       </div>
                     </div>
                   )}
-                </div>
+                  </div>
+                )}
 
-                {/* Property Details */}
+                {/* Property Details (only show if no template selected) */}
+                {!selectedTemplate && (
                 <div className="space-y-4">
                   <h3 className="font-semibold text-neutral-900 border-b pb-2">Описание и адрес квартиры</h3>
                   <div>
