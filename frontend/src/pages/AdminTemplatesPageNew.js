@@ -1116,6 +1116,96 @@ const AdminTemplatesPageNew = () => {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Preset Placeholders Dialog */}
+        <Dialog open={showPresetDialog} onOpenChange={setShowPresetDialog}>
+          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-xl">⚡ Быстрая вставка готовых плейсхолдеров</DialogTitle>
+              <DialogDescription>
+                Выберите готовый плейсхолдер для быстрой вставки в шаблон
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {PRESET_PLACEHOLDERS.map((preset) => {
+                const isAlreadyAdded = formData.placeholders[preset.name];
+                
+                return (
+                  <button
+                    key={preset.name}
+                    onClick={() => {
+                      if (!isAlreadyAdded) {
+                        handleInsertPreset(preset);
+                        setShowPresetDialog(false);
+                      }
+                    }}
+                    disabled={isAlreadyAdded}
+                    className={`p-4 text-left border-2 rounded-lg transition-all ${
+                      isAlreadyAdded 
+                        ? 'border-neutral-200 bg-neutral-50 cursor-not-allowed opacity-50' 
+                        : 'border-blue-200 bg-blue-50/50 hover:border-blue-400 hover:bg-blue-100/50 cursor-pointer'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="font-semibold text-neutral-900">{preset.label}</h3>
+                      {isAlreadyAdded && (
+                        <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded">
+                          ✓ Добавлен
+                        </span>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-1">
+                      <p className="text-xs text-neutral-600 font-mono">
+                        {'{{'}{preset.name}{'}}'}
+                      </p>
+                      
+                      <div className="flex gap-2 flex-wrap">
+                        <span className={`text-xs px-2 py-0.5 rounded ${
+                          preset.type === 'date' ? 'bg-purple-100 text-purple-700' :
+                          preset.type === 'number' ? 'bg-blue-100 text-blue-700' :
+                          preset.type === 'phone' ? 'bg-green-100 text-green-700' :
+                          preset.type === 'email' ? 'bg-orange-100 text-orange-700' :
+                          'bg-neutral-100 text-neutral-700'
+                        }`}>
+                          {preset.type === 'date' ? '📅 Дата' :
+                           preset.type === 'number' ? '🔢 Число' :
+                           preset.type === 'phone' ? '📞 Телефон' :
+                           preset.type === 'email' ? '📧 Email' :
+                           '✏️ Текст'}
+                        </span>
+                        
+                        <span className={`text-xs px-2 py-0.5 rounded ${
+                          preset.owner === 'landlord' 
+                            ? 'bg-blue-100 text-blue-700' 
+                            : 'bg-amber-100 text-amber-700'
+                        }`}>
+                          {preset.owner === 'landlord' ? '🏢 Наймодатель' : '👤 Наниматель'}
+                        </span>
+                        
+                        {preset.required && (
+                          <span className="text-xs px-2 py-0.5 rounded bg-red-100 text-red-700">
+                            * Обязательное
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="flex justify-end pt-4 border-t">
+              <Button
+                variant="outline"
+                onClick={() => setShowPresetDialog(false)}
+              >
+                Закрыть
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
