@@ -764,24 +764,74 @@ const AdminTemplatesPageNew = () => {
                 <div className="border-2 border-dashed border-amber-200 rounded-lg p-4 bg-amber-50/50 space-y-3">
                   <Label className="text-sm font-bold text-amber-900">🧮 Настройка формулы</Label>
                   
+                  {/* Step 1: Choose operation first */}
                   <div>
-                    <Label className="text-xs">Первый операнд</Label>
+                    <Label className="text-xs">Шаг 1: Выберите операцию</Label>
+                    <Select
+                      value={currentPlaceholder.formula.operation}
+                      onValueChange={(value) => setCurrentPlaceholder({
+                        ...currentPlaceholder,
+                        formula: { 
+                          operand1: '',
+                          operation: value,
+                          operand2: ''
+                        }
+                      })}
+                    >
+                      <SelectTrigger className="mt-1">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {CALCULATOR_OPERATIONS.map((op) => (
+                          <SelectItem key={op.value} value={op.value}>
+                            {op.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-amber-700 mt-1">
+                      {currentPlaceholder.formula.operation === 'days_between' 
+                        ? '📅 Будут доступны только поля типа "Дата"'
+                        : '🔢 Будут доступны только поля типа "Число" и вычисляемые'}
+                    </p>
+                  </div>
+
+                  {/* Step 2: Choose operands */}
+                  <div>
+                    <Label className="text-xs">Шаг 2: Первый операнд</Label>
                     <Select
                       value={currentPlaceholder.formula.operand1}
                       onValueChange={(value) => setCurrentPlaceholder({
                         ...currentPlaceholder,
                         formula: { ...currentPlaceholder.formula, operand1: value }
                       })}
+                      disabled={!currentPlaceholder.formula.operation}
                     >
                       <SelectTrigger className="mt-1">
-                        <SelectValue placeholder="Выберите плейсхолдер" />
+                        <SelectValue placeholder="Сначала выберите операцию" />
                       </SelectTrigger>
                       <SelectContent>
-                        {placeholderOrder.filter(name => formData.placeholders[name].type !== 'calculated').map((name) => (
-                          <SelectItem key={name} value={name}>
-                            {'{{'}{name}{'}}'} - {formData.placeholders[name].label}
-                          </SelectItem>
-                        ))}
+                        {placeholderOrder
+                          .filter(name => {
+                            const ph = formData.placeholders[name];
+                            // Для days_between - только date
+                            if (currentPlaceholder.formula.operation === 'days_between') {
+                              return ph.type === 'date';
+                            }
+                            // Для математических операций - только number и calculated
+                            return ph.type === 'number' || ph.type === 'calculated';
+                          })
+                          .map((name) => (
+                            <SelectItem key={name} value={name}>
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs text-neutral-500">
+                                  {formData.placeholders[name].type === 'date' ? '📅' : 
+                                   formData.placeholders[name].type === 'calculated' ? '🧮' : '🔢'}
+                                </span>
+                                {'{{'}{name}{'}}'} - {formData.placeholders[name].label}
+                              </div>
+                            </SelectItem>
+                          ))}
                       </SelectContent>
                     </Select>
                   </div>
