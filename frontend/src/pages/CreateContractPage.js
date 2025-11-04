@@ -214,7 +214,7 @@ const CreateContractPage = () => {
     if (!manualEditMode) {
       // If content was already saved, use it; otherwise generate new
       if (!isContentSaved) {
-        const content = generateContractContent();
+        const content = generatePreviewContent();
         // Просто конвертируем переносы строк в <br>, БЕЗ подсветки
         setManualContent(content.replace(/\n/g, '<br>'));
       }
