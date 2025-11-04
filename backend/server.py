@@ -159,6 +159,7 @@ class ContractTemplate(BaseModel):
     content: str
     content_type: str = "plain"  # "plain" or "html"
     placeholders: Optional[dict] = None  # Конфигурация плейсхолдеров
+    requires_tenant_document: bool = False  # Требуется ли удостоверение нанимателя
     is_active: bool = True
     created_by: str = "admin"
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
