@@ -912,8 +912,10 @@ Email: ${templateData.tenant_email || '[Email]'}
                         </div>
                       )}
 
-                      {/* Tenant Fields (owner: 'tenant') - Collapsible */}
-                      {Object.entries(selectedTemplate.placeholders).some(([_, config]) => config.owner === 'tenant' && config.type !== 'calculated') && (
+                      {/* Tenant/Signer Fields - Collapsible */}
+                      {Object.entries(selectedTemplate.placeholders).some(([_, config]) => 
+                        (config.owner === 'tenant' || config.owner === 'signer') && config.type !== 'calculated'
+                      ) && (
                         <Collapsible>
                           <div className="p-4 bg-amber-50/50 border border-amber-200 rounded-lg">
                             <CollapsibleTrigger asChild>
