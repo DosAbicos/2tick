@@ -26,9 +26,11 @@ const TemplatesPage = () => {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [previewTemplate, setPreviewTemplate] = useState(null);
+  const [favoriteTemplates, setFavoriteTemplates] = useState([]);
 
   useEffect(() => {
     fetchTemplates();
+    fetchFavorites();
   }, [selectedCategory]);
 
   const fetchTemplates = async () => {
