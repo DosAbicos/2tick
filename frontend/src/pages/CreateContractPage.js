@@ -471,15 +471,34 @@ Email: ${templateData.tenant_email || '[Email]'}
       // Store metadata about whether content is HTML or plain text
       const isHtmlContent = isContentSaved && manualContent.includes('<');
       
+      // Extract tenant info from placeholders or templateData
+      let signerName = templateData.tenant_name;
+      let signerPhone = templateData.tenant_phone;
+      let signerEmail = templateData.tenant_email;
+      
+      if (selectedTemplate && selectedTemplate.placeholders) {
+        // Try to find tenant info in placeholders
+        Object.entries(selectedTemplate.placeholders).forEach(([key, config]) => {
+          const value = placeholderValues[key];
+          if (config.type === 'text' && (key.toLowerCase().includes('tenant') || key.toLowerCase().includes('наниматель'))) {
+            signerName = value || signerName;
+          } else if (config.type === 'phone') {
+            signerPhone = value || signerPhone;
+          } else if (config.type === 'email') {
+            signerEmail = value || signerEmail;
+          }
+        });
+      }
+      
       const contractData = {
         title: selectedTemplate ? selectedTemplate.title : `Договор от ${templateData.contract_date}`,
         content: contentToSave,
         content_type: selectedTemplate ? selectedTemplate.content_type : (isHtmlContent ? 'html' : 'plain'),
         source_type: selectedTemplate ? 'template' : 'manual',
         template_id: selectedTemplate ? selectedTemplate.id : undefined,
-        signer_name: templateData.tenant_name,
-        signer_phone: templateData.tenant_phone,
-        signer_email: templateData.tenant_email,
+        signer_name: signerName || 'Не указано',
+        signer_phone: signerPhone || '',
+        signer_email: signerEmail,
         move_in_date: templateData.move_in_date,
         move_out_date: templateData.move_out_date,
         property_address: templateData.property_address,
