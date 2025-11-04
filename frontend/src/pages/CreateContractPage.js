@@ -262,6 +262,55 @@ const CreateContractPage = () => {
     toast.success('Документ клиента выбран');
   };
 
+
+  const generatePreviewContent = () => {
+    // If template is selected, use template content with replaced placeholders
+    if (selectedTemplate && selectedTemplate.content) {
+      let content = selectedTemplate.content;
+      
+      // Replace placeholders with actual values
+      if (selectedTemplate.placeholders) {
+        Object.entries(selectedTemplate.placeholders).forEach(([key, config]) => {
+          const value = placeholderValues[key] || `[${config.label}]`;
+          const regex = new RegExp(`{{${key}}}`, 'g');
+          
+          // For calculated fields, compute the value
+          if (config.type === 'calculated' && config.formula) {
+            const { operand1, operation, operand2 } = config.formula;
+            const val1 = parseFloat(placeholderValues[operand1]) || 0;
+            const val2 = parseFloat(placeholderValues[operand2]) || 0;
+            
+            let result = 0;
+            switch(operation) {
+              case 'add': result = val1 + val2; break;
+              case 'subtract': result = val1 - val2; break;
+              case 'multiply': result = val1 * val2; break;
+              case 'divide': result = val2 !== 0 ? val1 / val2 : 0; break;
+              case 'modulo': result = val2 !== 0 ? val1 % val2 : 0; break;
+              case 'days_between':
+                if (placeholderValues[operand1] && placeholderValues[operand2]) {
+                  const date1 = new Date(placeholderValues[operand1]);
+                  const date2 = new Date(placeholderValues[operand2]);
+                  result = Math.abs(Math.ceil((date2 - date1) / (1000 * 60 * 60 * 24)));
+                }
+                break;
+              default: result = 0;
+            }
+            
+            content = content.replace(regex, result.toString() || `[${config.label}]`);
+          } else {
+            content = content.replace(regex, value);
+          }
+        });
+      }
+      
+      return content;
+    }
+    
+    // Fallback to old template generation
+    return generateContractContent();
+  };
+
   const generateContractContent = () => {
     const { 
       contract_date,
