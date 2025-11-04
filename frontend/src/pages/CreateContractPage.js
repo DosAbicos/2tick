@@ -507,6 +507,16 @@ Email: ${templateData.tenant_email || '[Email]'}
         
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-neutral-900">{t('contract.create.title')}</h1>
+          {loadingTemplate && (
+            <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-sm text-blue-800">⏳ Загрузка шаблона...</p>
+            </div>
+          )}
+          {selectedTemplate && (
+            <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+              <p className="text-sm text-green-800">✓ Шаблон загружен: <strong>{selectedTemplate.title}</strong></p>
+            </div>
+          )}
           {nextContractNumber && (
             <p className="text-xl font-bold text-neutral-900 mt-3">
               Номер договора: {nextContractNumber}
