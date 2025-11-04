@@ -771,72 +771,32 @@ const AdminTemplatesPageNew = () => {
                       • Вычисляемые поля автоматически рассчитываются на основе других плейсхолдеров
                     </p>
                     <p className="text-neutral-700">
-                      • Для математических операций (+, −, ×, ÷, %) доступны только поля типа "Число" и другие вычисляемые поля
-                    </p>
-                    <p className="text-neutral-700">
-                      • Для расчёта разницы в днях (📅) доступны только поля типа "Дата"
+                      • Калькулятор работает только с полями типа "Число" и "Дата"
                     </p>
                     <p className="text-amber-800 font-medium mt-2">
                       Пример: {{СУММА_АРЕНДЫ}} = {{ЦЕНА_ЗА_ДЕНЬ}} × {{КОЛИЧЕСТВО_ДНЕЙ}}
                     </p>
                   </div>
                   
-                  {/* Step 1: Choose operation first */}
+                  {/* 1. Первый операнд */}
                   <div>
-                    <Label className="text-xs font-semibold">Шаг 1: Выберите операцию</Label>
-                    <Select
-                      value={currentPlaceholder.formula.operation}
-                      onValueChange={(value) => setCurrentPlaceholder({
-                        ...currentPlaceholder,
-                        formula: { 
-                          operand1: '',
-                          operation: value,
-                          operand2: ''
-                        }
-                      })}
-                    >
-                      <SelectTrigger className="mt-1">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {CALCULATOR_OPERATIONS.map((op) => (
-                          <SelectItem key={op.value} value={op.value}>
-                            {op.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <p className="text-xs text-amber-700 mt-1">
-                      {currentPlaceholder.formula.operation === 'days_between' 
-                        ? '📅 Будут доступны только поля типа "Дата"'
-                        : '🔢 Будут доступны только поля типа "Число" и вычисляемые'}
-                    </p>
-                  </div>
-
-                  {/* Step 2: Choose operands */}
-                  <div>
-                    <Label className="text-xs font-semibold">Шаг 2: Первый операнд</Label>
+                    <Label className="text-xs font-semibold">1. Первый операнд</Label>
                     <Select
                       value={currentPlaceholder.formula.operand1}
                       onValueChange={(value) => setCurrentPlaceholder({
                         ...currentPlaceholder,
                         formula: { ...currentPlaceholder.formula, operand1: value }
                       })}
-                      disabled={!currentPlaceholder.formula.operation}
                     >
                       <SelectTrigger className="mt-1">
-                        <SelectValue placeholder="Сначала выберите операцию" />
+                        <SelectValue placeholder="Выберите плейсхолдер" />
                       </SelectTrigger>
                       <SelectContent>
                         {placeholderOrder
                           .filter(name => {
                             const ph = formData.placeholders[name];
-                            // Для days_between - только date
-                            if (currentPlaceholder.formula.operation === 'days_between') {
-                              return ph.type === 'date';
-                            }
-                            // Для математических операций - только number и calculated
-                            return ph.type === 'number' || ph.type === 'calculated';
+                            // Только number, date и calculated
+                            return ph.type === 'number' || ph.type === 'date' || ph.type === 'calculated';
                           })
                           .map((name) => (
                             <SelectItem key={name} value={name}>
@@ -853,8 +813,35 @@ const AdminTemplatesPageNew = () => {
                     </Select>
                   </div>
 
+                  {/* 2. Выберите операцию */}
                   <div>
-                    <Label className="text-xs font-semibold">Шаг 3: Второй операнд</Label>
+                    <Label className="text-xs font-semibold">2. Выберите операцию</Label>
+                    <Select
+                      value={currentPlaceholder.formula.operation}
+                      onValueChange={(value) => setCurrentPlaceholder({
+                        ...currentPlaceholder,
+                        formula: { 
+                          ...currentPlaceholder.formula,
+                          operation: value
+                        }
+                      })}
+                    >
+                      <SelectTrigger className="mt-1">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {CALCULATOR_OPERATIONS.map((op) => (
+                          <SelectItem key={op.value} value={op.value}>
+                            {op.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* 3. Второй операнд */}
+                  <div>
+                    <Label className="text-xs font-semibold">3. Второй операнд</Label>
                     <Select
                       value={currentPlaceholder.formula.operand2}
                       onValueChange={(value) => setCurrentPlaceholder({
