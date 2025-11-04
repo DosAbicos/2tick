@@ -27,6 +27,8 @@ const DashboardPage = () => {
   const [contracts, setContracts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [limitInfo, setLimitInfo] = useState(null);
+  const [showTemplateModal, setShowTemplateModal] = useState(false);
+  const [favoriteTemplates, setFavoriteTemplates] = useState([]);
   const token = localStorage.getItem('token');
 
   useEffect(() => {
