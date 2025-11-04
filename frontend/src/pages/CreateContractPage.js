@@ -894,23 +894,24 @@ Email: ${templateData.tenant_email || '[Email]'}
                   </div>
                 )}
 
-                {/* Tenant Info - Optional Fields */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between border-b pb-2">
-                    <div>
-                      <h3 className="font-semibold text-neutral-900">Наниматель (Клиент)</h3>
-                      <p className="text-xs text-neutral-500">Необязательные поля - клиент заполнит при подписании</p>
+                {/* Tenant Info - Optional Fields (only show if no template selected) */}
+                {!selectedTemplate && (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between border-b pb-2">
+                      <div>
+                        <h3 className="font-semibold text-neutral-900">Наниматель (Клиент)</h3>
+                        <p className="text-xs text-neutral-500">Необязательные поля - клиент заполнит при подписании</p>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowOptionalFields(!showOptionalFields)}
+                        className="text-sm"
+                      >
+                        {showOptionalFields ? '▼ Скрыть' : '▶ Показать опциональные поля'}
+                      </Button>
                     </div>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setShowOptionalFields(!showOptionalFields)}
-                      className="text-sm"
-                    >
-                      {showOptionalFields ? '▼ Скрыть' : '▶ Показать опциональные поля'}
-                    </Button>
-                  </div>
                   
                   {showOptionalFields && (
                     <div className="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
