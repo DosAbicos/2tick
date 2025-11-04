@@ -505,6 +505,33 @@ const AdminTemplatesPageNew = () => {
     toast.success(`Плейсхолдер {{${placeholderName}}} добавлен`);
   };
 
+
+  const handleInsertPreset = (preset) => {
+    // Check if placeholder with this name already exists
+    if (formData.placeholders[preset.name]) {
+      toast.error(`Плейсхолдер "${preset.name}" уже существует`);
+      return;
+    }
+
+    const placeholderConfig = {
+      label: preset.label,
+      type: preset.type,
+      owner: preset.owner,
+      required: preset.required
+    };
+
+    setFormData({
+      ...formData,
+      placeholders: {
+        ...formData.placeholders,
+        [preset.name]: placeholderConfig
+      }
+    });
+
+    setPlaceholderOrder([...placeholderOrder, preset.name]);
+    toast.success(`Плейсхолдер "${preset.label}" добавлен`);
+  };
+
   const handleRemovePlaceholder = (name) => {
     const newPlaceholders = { ...formData.placeholders };
     delete newPlaceholders[name];
