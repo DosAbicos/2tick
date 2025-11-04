@@ -739,7 +739,8 @@ const AdminTemplatesPageNew = () => {
                   value={currentPlaceholder.type}
                   onValueChange={(value) => setCurrentPlaceholder({
                     ...currentPlaceholder,
-                    type: value
+                    type: value,
+                    isCalculated: value === 'calculated'
                   })}
                 >
                   <SelectTrigger className="mt-1">
@@ -757,6 +758,124 @@ const AdminTemplatesPageNew = () => {
                   </SelectContent>
                 </Select>
               </div>
+
+              {/* Calculator for calculated fields */}
+              {currentPlaceholder.type === 'calculated' && (
+                <div className="border-2 border-dashed border-amber-200 rounded-lg p-4 bg-amber-50/50 space-y-3">
+                  <Label className="text-sm font-bold text-amber-900">🧮 Настройка формулы</Label>
+                  
+                  <div>
+                    <Label className="text-xs">Первый операнд</Label>
+                    <Select
+                      value={currentPlaceholder.formula.operand1}
+                      onValueChange={(value) => setCurrentPlaceholder({
+                        ...currentPlaceholder,
+                        formula: { ...currentPlaceholder.formula, operand1: value }
+                      })}
+                    >
+                      <SelectTrigger className="mt-1">
+                        <SelectValue placeholder="Выберите плейсхолдер" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {placeholderOrder.filter(name => formData.placeholders[name].type !== 'calculated').map((name) => (
+                          <SelectItem key={name} value={name}>
+                            {'{{'}{name}{'}}'} - {formData.placeholders[name].label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label className="text-xs">Операция</Label>
+                    <Select
+                      value={currentPlaceholder.formula.operation}
+                      onValueChange={(value) => setCurrentPlaceholder({
+                        ...currentPlaceholder,
+                        formula: { ...currentPlaceholder.formula, operation: value }
+                      })}
+                    >
+                      <SelectTrigger className="mt-1">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {CALCULATOR_OPERATIONS.map((op) => (
+                          <SelectItem key={op.value} value={op.value}>
+                            {op.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label className="text-xs">Второй операнд</Label>
+                    <Select
+                      value={currentPlaceholder.formula.operand2}
+                      onValueChange={(value) => setCurrentPlaceholder({
+                        ...currentPlaceholder,
+                        formula: { ...currentPlaceholder.formula, operand2: value }
+                      })}
+                    >
+                      <SelectTrigger className="mt-1">
+                        <SelectValue placeholder="Выберите плейсхолдер" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {placeholderOrder.filter(name => formData.placeholders[name].type !== 'calculated').map((name) => (
+                          <SelectItem key={name} value={name}>
+                            {'{{'}{name}{'}}'} - {formData.placeholders[name].label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Preview */}
+                  {currentPlaceholder.formula.operand1 && currentPlaceholder.formula.operand2 && (
+                    <div className="bg-white border border-amber-300 rounded p-2 text-xs font-mono">
+                      <span className="text-amber-700">Формула:</span>
+                      <br />
+                      {'{{'}{currentPlaceholder.formula.operand1}{'}}'}
+                      {' '}{CALCULATOR_OPERATIONS.find(op => op.value === currentPlaceholder.formula.operation)?.symbol || '+'}{' '}
+                      {'{{'}{currentPlaceholder.formula.operand2}{'}}'}
+                      {' = '}
+                      {'{{'}{currentPlaceholder.name || 'РЕЗУЛЬТАТ'}{'}}'}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Owner - only if NOT calculated */}
+              {currentPlaceholder.type !== 'calculated' && (
+                <div>
+                  <Label>Кто заполняет? *</Label>
+                  <Select
+                    value={currentPlaceholder.owner}
+                    onValueChange={(value) => setCurrentPlaceholder({
+                      ...currentPlaceholder,
+                      owner: value
+                    })}
+                  >
+                    <SelectTrigger className="mt-1">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="landlord">
+                        <div className="flex items-center gap-2">
+                          <Building className="h-4 w-4" />
+                          Наймодатель
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="signer">
+                        <div className="flex items-center gap-2">
+                          <User className="h-4 w-4" />
+                          Наниматель
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
 
               <div>
                 <Label>Кто заполняет? *</Label>
