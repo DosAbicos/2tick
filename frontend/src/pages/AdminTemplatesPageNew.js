@@ -70,6 +70,102 @@ const CALCULATOR_OPERATIONS = [
   { value: 'days_between', label: '📅  Разница в днях (для дат)', symbol: 'days' }
 ];
 
+// Predefined placeholder templates for quick insertion
+const PRESET_PLACEHOLDERS = [
+  {
+    name: 'CONTRACT_DATE',
+    label: 'Дата составления договора',
+    type: 'date',
+    owner: 'landlord',
+    required: true
+  },
+  {
+    name: 'SIGNING_DATETIME',
+    label: 'Дата и время подписания',
+    type: 'text',
+    owner: 'tenant',
+    required: false
+  },
+  {
+    name: 'COMPANY_NAME',
+    label: 'Наименование компании',
+    type: 'text',
+    owner: 'landlord',
+    required: true
+  },
+  {
+    name: 'COMPANY_IIN',
+    label: 'ИИН/БИН компании',
+    type: 'text',
+    owner: 'landlord',
+    required: true
+  },
+  {
+    name: 'CITY',
+    label: 'Город',
+    type: 'text',
+    owner: 'landlord',
+    required: true
+  },
+  {
+    name: 'ADDRESS',
+    label: 'Адрес',
+    type: 'text',
+    owner: 'landlord',
+    required: true
+  },
+  {
+    name: 'TENANT_FULL_NAME',
+    label: 'ФИО нанимателя',
+    type: 'text',
+    owner: 'tenant',
+    required: true
+  },
+  {
+    name: 'TENANT_PHONE',
+    label: 'Телефон нанимателя',
+    type: 'phone',
+    owner: 'tenant',
+    required: true
+  },
+  {
+    name: 'TENANT_EMAIL',
+    label: 'Email нанимателя',
+    type: 'email',
+    owner: 'tenant',
+    required: false
+  },
+  {
+    name: 'TENANT_IIN',
+    label: 'ИИН нанимателя',
+    type: 'text',
+    owner: 'tenant',
+    required: true
+  },
+  {
+    name: 'START_DATE',
+    label: 'Дата начала',
+    type: 'date',
+    owner: 'landlord',
+    required: true
+  },
+  {
+    name: 'END_DATE',
+    label: 'Дата окончания',
+    type: 'date',
+    owner: 'landlord',
+    required: true
+  },
+  {
+    name: 'AMOUNT',
+    label: 'Сумма',
+    type: 'number',
+    owner: 'landlord',
+    required: true
+  }
+];
+
+
 // Sortable Placeholder Item Component
 const SortablePlaceholder = ({ id, placeholder, config, onInsert, onRemove }) => {
   const {
