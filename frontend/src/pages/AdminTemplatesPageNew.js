@@ -100,15 +100,7 @@ const SortablePlaceholder = ({ id, placeholder, config, onInsert, onRemove }) =>
         <div className="flex items-start justify-between mb-2">
           <div className="flex-1">
             <div className="flex items-center gap-2 flex-wrap mb-2">
-              <code 
-                draggable="true"
-                onDragStart={(e) => {
-                  e.dataTransfer.setData('text/plain', id);
-                  e.dataTransfer.effectAllowed = 'copy';
-                }}
-                className="text-sm font-mono bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-1 rounded-md cursor-move hover:from-blue-600 hover:to-blue-700 transition-all"
-                title="Перетащите в текст договора"
-              >
+              <code className="text-sm font-mono bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-1 rounded-md">
                 {'{{'}{id}{'}}'}
               </code>
               
