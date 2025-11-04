@@ -1001,12 +1001,13 @@ Email: ${templateData.tenant_email || '[Email]'}
                                     )}
                                   </div>
                                 );
-                              })}
-                            </div>
-                          </CollapsibleContent>
-                        </div>
-                      </Collapsible>
-                    )}
+                                })}
+                              </div>
+                            </CollapsibleContent>
+                          </div>
+                        </Collapsible>
+                      )}
+                    </div>
 
                     {/* Tenant Document Upload (if required by template) */}
                     {selectedTemplate.requires_tenant_document && (
