@@ -1051,7 +1051,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                         )}
                       </div>
                     )}
-                  </div>
+                  </>
                 )}
 
                 {/* Tenant Info - Optional Fields (only show if no template selected) */}
