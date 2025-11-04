@@ -900,8 +900,106 @@ Email: ${templateData.tenant_email || '[Email]'}
                             )}
                           </div>
                         );
-                      })}
-                    </div>
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Tenant Fields (owner: 'tenant') - Collapsible */}
+                    {Object.entries(selectedTemplate.placeholders).some(([_, config]) => config.owner === 'tenant' && config.type !== 'calculated') && (
+                      <Collapsible className="space-y-4">
+                        <div className="p-4 bg-amber-50/50 border border-amber-200 rounded-lg">
+                          <CollapsibleTrigger asChild>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              className="flex w-full items-center justify-between p-0 hover:bg-transparent"
+                            >
+                              <div className="text-left">
+                                <h3 className="font-semibold text-amber-900 flex items-center gap-2">
+                                  👤 Поля для заполнения клиентом
+                                </h3>
+                                <p className="text-xs text-amber-700 mt-1">
+                                  Эти поля может заполнить клиент при подписании (опционально заполнить сейчас)
+                                </p>
+                              </div>
+                              <span className="text-xs text-amber-600">▼ Развернуть</span>
+                            </Button>
+                          </CollapsibleTrigger>
+                          
+                          <CollapsibleContent className="mt-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              {Object.entries(selectedTemplate.placeholders).map(([key, config]) => {
+                                // Only show tenant fields
+                                if (config.type === 'calculated' || config.owner !== 'tenant') return null;
+                                
+                                return (
+                                  <div key={key} className={config.type === 'text' ? 'md:col-span-2' : ''}>
+                                    <Label htmlFor={`placeholder_${key}`}>
+                                      {config.label} {config.required && <span className="text-amber-500">*</span>}
+                                    </Label>
+                                    
+                                    {config.type === 'text' && (
+                                      <Input
+                                        id={`placeholder_${key}`}
+                                        value={placeholderValues[key] || ''}
+                                        onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
+                                        className="mt-1"
+                                        placeholder={`Клиент заполнит: ${config.label.toLowerCase()}`}
+                                      />
+                                    )}
+                                    
+                                    {config.type === 'number' && (
+                                      <Input
+                                        id={`placeholder_${key}`}
+                                        type="number"
+                                        value={placeholderValues[key] || ''}
+                                        onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
+                                        className="mt-1"
+                                        placeholder={`Клиент заполнит`}
+                                      />
+                                    )}
+                                    
+                                    {config.type === 'date' && (
+                                      <Input
+                                        id={`placeholder_${key}`}
+                                        type="date"
+                                        value={placeholderValues[key] || ''}
+                                        onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
+                                        className="mt-1"
+                                      />
+                                    )}
+                                    
+                                    {config.type === 'phone' && (
+                                      <IMaskInput
+                                        mask="+7 (000) 000-00-00"
+                                        value={placeholderValues[key] || ''}
+                                        onAccept={(value) => setPlaceholderValues({...placeholderValues, [key]: value})}
+                                        placeholder="+7 (___) ___-__-__"
+                                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1"
+                                        id={`placeholder_${key}`}
+                                        type="tel"
+                                      />
+                                    )}
+                                    
+                                    {config.type === 'email' && (
+                                      <Input
+                                        id={`placeholder_${key}`}
+                                        type="email"
+                                        value={placeholderValues[key] || ''}
+                                        onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
+                                        className="mt-1"
+                                        placeholder={`Клиент заполнит`}
+                                      />
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </CollapsibleContent>
+                        </div>
+                      </Collapsible>
+                    )}
 
                     {/* Tenant Document Upload (if required by template) */}
                     {selectedTemplate.requires_tenant_document && (
