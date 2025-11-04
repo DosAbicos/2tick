@@ -304,6 +304,7 @@ const AdminTemplatesPageNew = () => {
   const [placeholderOrder, setPlaceholderOrder] = useState([]);
   
   const [showPlaceholderDialog, setShowPlaceholderDialog] = useState(false);
+  const [showPresetDialog, setShowPresetDialog] = useState(false);
   const [currentPlaceholder, setCurrentPlaceholder] = useState({
     name: '',
     label: '',
