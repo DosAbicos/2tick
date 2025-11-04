@@ -755,14 +755,24 @@ const AdminTemplatesPageNew = () => {
                       Перетаскивайте для изменения порядка
                     </p>
                   </div>
-                  <Button
-                    type="button"
-                    onClick={() => setShowPlaceholderDialog(true)}
-                    className="shadow-md"
-                  >
-                    <Plus className="mr-2 h-4 w-4" />
-                    Добавить плейсхолдер
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      onClick={() => setShowPlaceholderDialog(true)}
+                      className="shadow-md"
+                    >
+                      <Plus className="mr-2 h-4 w-4" />
+                      Добавить плейсхолдер
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setShowPresetDialog(true)}
+                      className="shadow-md"
+                    >
+                      ⚡ Быстрая вставка
+                    </Button>
+                  </div>
                 </div>
 
                 {placeholderOrder.length === 0 ? (
