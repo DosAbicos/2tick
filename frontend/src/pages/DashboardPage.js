@@ -93,8 +93,14 @@ const DashboardPage = () => {
     if (freshLimitInfo?.exceeded) {
       toast.error(`Достигнут лимит договоров (${freshLimitInfo.limit}). Пожалуйста, обновите подписку.`);
     } else {
-      navigate('/contracts/create');
+      // Открыть модальное окно выбора шаблона
+      setShowTemplateModal(true);
     }
+  };
+
+  const handleSelectTemplate = (templateId) => {
+    setShowTemplateModal(false);
+    navigate(`/contracts/create?template_id=${templateId}`);
   };
 
   const getStatusBadge = (status) => {
