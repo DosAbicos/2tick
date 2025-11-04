@@ -202,7 +202,14 @@ const AdminTemplatesPageNew = () => {
     label: '',
     type: 'text',
     owner: 'signer',
-    required: true
+    required: true,
+    // For calculated fields
+    isCalculated: false,
+    formula: {
+      operand1: '',
+      operation: 'add',
+      operand2: ''
+    }
   });
 
   const sensors = useSensors(
