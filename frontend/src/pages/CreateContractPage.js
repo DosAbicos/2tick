@@ -907,32 +907,32 @@ Email: ${templateData.tenant_email || '[Email]'}
                             )}
                           </div>
                         );
-                          })}
+                            })}
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
 
-                    {/* Tenant Fields (owner: 'tenant') - Collapsible */}
-                    {Object.entries(selectedTemplate.placeholders).some(([_, config]) => config.owner === 'tenant' && config.type !== 'calculated') && (
-                      <Collapsible className="space-y-4">
-                        <div className="p-4 bg-amber-50/50 border border-amber-200 rounded-lg">
-                          <CollapsibleTrigger asChild>
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              className="flex w-full items-center justify-between p-0 hover:bg-transparent"
-                            >
-                              <div className="text-left">
-                                <h3 className="font-semibold text-amber-900 flex items-center gap-2">
-                                  👤 Поля для заполнения клиентом
-                                </h3>
-                                <p className="text-xs text-amber-700 mt-1">
-                                  Эти поля может заполнить клиент при подписании (опционально заполнить сейчас)
-                                </p>
-                              </div>
-                              <span className="text-xs text-amber-600">▼ Развернуть</span>
-                            </Button>
-                          </CollapsibleTrigger>
+                      {/* Tenant Fields (owner: 'tenant') - Collapsible */}
+                      {Object.entries(selectedTemplate.placeholders).some(([_, config]) => config.owner === 'tenant' && config.type !== 'calculated') && (
+                        <Collapsible>
+                          <div className="p-4 bg-amber-50/50 border border-amber-200 rounded-lg">
+                            <CollapsibleTrigger asChild>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                className="flex w-full items-center justify-between p-0 hover:bg-transparent"
+                              >
+                                <div className="text-left">
+                                  <h3 className="font-semibold text-amber-900 flex items-center gap-2">
+                                    👤 Поля для заполнения клиентом
+                                  </h3>
+                                  <p className="text-xs text-amber-700 mt-1">
+                                    Эти поля может заполнить клиент при подписании (опционально заполнить сейчас)
+                                  </p>
+                                </div>
+                                <span className="text-xs text-amber-600">▼ Развернуть</span>
+                              </Button>
+                            </CollapsibleTrigger>
                           
                           <CollapsibleContent className="mt-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
