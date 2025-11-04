@@ -201,7 +201,8 @@ const AdminTemplatesPageNew = () => {
     category: 'real_estate',
     content: '',
     content_type: 'plain',
-    placeholders: {}
+    placeholders: {},
+    requires_tenant_document: false
   });
   const [placeholderOrder, setPlaceholderOrder] = useState([]);
   
