@@ -3056,6 +3056,69 @@ async def get_template(template_id: str):
         raise HTTPException(status_code=404, detail="Template not found")
     return template
 
+# === Favorite Templates Endpoints ===
+
+@api_router.post("/users/favorites/templates/{template_id}")
+async def add_favorite_template(
+    template_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Добавить шаблон в избранное"""
+    user_id = current_user['user_id']
+    
+    # Проверить что шаблон существует
+    template = await db.contract_templates.find_one({"id": template_id, "is_active": True})
+    if not template:
+        raise HTTPException(status_code=404, detail="Template not found")
+    
+    # Добавить в избранное (если еще не добавлен)
+    result = await db.users.update_one(
+        {"id": user_id},
+        {"$addToSet": {"favorite_templates": template_id}}
+    )
+    
+    return {"message": "Template added to favorites", "template_id": template_id}
+
+@api_router.delete("/users/favorites/templates/{template_id}")
+async def remove_favorite_template(
+    template_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Удалить шаблон из избранного"""
+    user_id = current_user['user_id']
+    
+    # Удалить из избранного
+    result = await db.users.update_one(
+        {"id": user_id},
+        {"$pull": {"favorite_templates": template_id}}
+    )
+    
+    return {"message": "Template removed from favorites", "template_id": template_id}
+
+@api_router.get("/users/favorites/templates")
+async def get_favorite_templates(current_user: dict = Depends(get_current_user)):
+    """Получить список избранных шаблонов пользователя"""
+    user_id = current_user['user_id']
+    
+    # Получить пользователя
+    user = await db.users.find_one({"id": user_id}, {"_id": 0, "favorite_templates": 1})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    favorite_ids = user.get("favorite_templates", [])
+    
+    if not favorite_ids:
+        return []
+    
+    # Получить шаблоны
+    templates = await db.contract_templates.find(
+        {"id": {"$in": favorite_ids}, "is_active": True},
+        {"_id": 0}
+    ).to_list(100)
+    
+    return templates
+
+
 @api_router.post("/admin/templates")
 async def create_template(
     template: ContractTemplate,
