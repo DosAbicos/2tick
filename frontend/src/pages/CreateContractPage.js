@@ -18,8 +18,16 @@ const API = `${BACKEND_URL}/api`;
 const CreateContractPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const templateId = searchParams.get('template_id');
+  
   const [loading, setLoading] = useState(false);
+  const [loadingTemplate, setLoadingTemplate] = useState(false);
   const token = localStorage.getItem('token');
+  
+  // Template data from marketplace
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [placeholderValues, setPlaceholderValues] = useState({});
   
   // Next contract number (for display)
   const [nextContractNumber, setNextContractNumber] = useState(null);
