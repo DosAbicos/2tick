@@ -1,53 +1,85 @@
 <analysis>
-The AI engineer's work on Signify KZ has been an iterative process, evolving from an MVP to address complex user requirements and persistent technical challenges. Initially, the focus was on establishing core functionalities and resolving critical bugs, particularly with PDF generation ( installation issues), mobile responsiveness (meta tags), and rich text editor formatting. The AI demonstrated resilience by trying multiple editor solutions before settling on a custom  div and later troubleshooting persistent  failures.
-
-Subsequent efforts integrated Twilio for SMS and Call OTP, and SendGrid/SMTP for email notifications, each requiring extensive debugging, including diagnosing Twilio geo-permissions and SendGrid account blockages. A significant portion of the work involved refining placeholder replacement for dynamic contract content in both the UI and generated PDFs. Towards the end, the AI introduced features like contract template saving, UI/UX enhancements (cooldowns, back buttons), and began integrating Telegram for OTP. The trajectory concludes with the AI actively working on frontend issues related to displaying all verification methods, while some backend PDF and email issues persist as recurring problems. The AI's approach is characterized by detailed logging, troubleshooting agent calls, and direct engagement with user feedback.
+The previous AI engineer developed the Signify KZ platform, implementing crucial features and resolving bugs. Initial work focused on multi-factor authentication, refining contract signing, and fixing  PDF conversion issues. Key achievements include a robust Telegram bot integration, comprehensive admin panel enhancements (user/contract management, custom contract limits), and fixing database query inconsistencies. Subsequent tasks involved adding password confirmation during registration, implementing password reset/forgot functionality with email integration, and a thorough project cleanup to remove legacy files. The contract limit logic was refined to count only *signed* contracts using a soft-delete mechanism. A significant feature addition was the Templates Marketplace for admins to manage contract templates, which evolved into a sophisticated placeholder constructor with a calculator for computed fields. The current work revolves around making this calculator intuitive by filtering placeholder options based on data types and explaining its usage.
 </analysis>
 
 <product_requirements>
-Signify KZ is a B2C web/mobile platform for remote contract signing in Kazakhstan, supporting RU, KZ, EN. It enables a Creator to generate and share contracts, while a Signer uploads ID, verifies via SMS/Call/Telegram OTP, and signs. The Creator approves, triggering final PDF generation with metadata. MVP features include user authentication, multi-language support, roles (Creator, Signer, Admin), contract creation (text/file), link sharing, mock ID upload, Twilio SMS/Call OTP, PDF generation with metadata, contract storage, mock email/SMS notifications (now real via SMTP), audit log, and an admin panel. Current implementation enhances contract editing, adds mobile adaptivity, integrates Twilio Call OTP, SendGrid/SMTP email for signed contracts, and Telegram OTP (backend). Key fixes include addressing PDF generation, mobile display errors, rich text formatting, and download issues. Recent additions include contract template saving/loading, cooldowns for OTP requests, and improved placeholder handling.
+Signify KZ is a B2C platform for remote contract signing in Kazakhstan, supporting RU, KZ, EN. It allows Creators to generate contracts and Signers to verify identity and sign. The platform has evolved to include expanded registration with mandatory phone verification (SMS, Call, Telegram), rich text contract creation with unique  and auto-inclusion of Creator details, and a multi-step signing flow with MFA. PDF generation embeds metadata, IDs, and two-column signature info. A comprehensive admin panel () manages users, contracts (with unique codes, landlord names, pagination), and allows manual contract limit adjustments (default 5). Contract limits now count *only signed* contracts, with a soft-delete mechanism for signed contracts. New features include password confirmation during registration, a Forgot Password flow, an Upload PDF option for contracts, a Templates Marketplace for admin-managed templates, and a Placeholder Constructor with basic calculator functionality to create dynamic contract fields.
 </product_requirements>
 
 <key_technical_concepts>
--   **Backend**: FastAPI, MongoDB, Pydantic, pdfkit, Pillow, python-poppler, Twilio, SendGrid, SMTPlib, python-telegram-bot.
--   **Frontend**: React, Shadcn UI, Tailwind CSS, i18next, react-imask, custom ContentEditable.
--   **Auth**: JWT.
--   **Deployment**: Kubernetes.
+-   **Backend**: FastAPI, MongoDB (UUIDs, DateTime UTC), Pydantic, python-poppler (PDF rendering, installed ), Twilio (SMS/Call OTP), python-telegram-bot, JWT.
+-   **Frontend**: React, Shadcn UI, Tailwind CSS, i18next (multilingual), react-imask,  (removed).
+-   **Deployment**: Kubernetes, Supervisor.
+-   **Core Features**: Multi-factor authentication, dynamic forms, real-time updates, role-based access, contract limits (soft-delete), unique contract codes, password reset/forgot, template management, placeholder constructor, calculated fields.
 </key_technical_concepts>
 
 <code_architecture>
+The application uses a FastAPI backend and a React frontend, deployed in Kubernetes.
 
--   ****: Main FastAPI application. Handles authentication, contract CRUD, PDF generation, image processing, Twilio SMS/Call OTP, SendGrid/SMTP email, and Telegram OTP. It was extensively modified for HTML content storage, placeholder replacement, PDF generation logic, and integration of Twilio Proxy, SendGrid, and . New endpoints for Call and Telegram OTP were added.
--   ****: Stores backend environment variables. Updated with Twilio (SID, Auth Token, Phone, Verify Service SID, API SID, API Secret, Proxy Service SID), SendGrid (API Key), SMTP (Host, Port, User, Pass), and Telegram (Bot Token).
--   ****: Python dependencies. Added , , , , and ensured  (via apt-get) is handled for PDF conversion.
--   ****: Main React router. Imports  for mobile styles.
--   ****: Contract creation page. Auto-generates  (UUID), uses custom  for rich text (replacing  from older trajectory summary, which was a bug), handles landlord document upload UI, and now supports saving/loading contract templates.
--   ****: Contract signing page. Updated to fetch and display HTML content, uses  for phone input, and now includes UI for selecting SMS, Call, or Telegram verification methods with cooldowns, and a Back button to edit input data.
--   ****: Contract details page for Creator. Displays signer email, includes reworked action buttons (Edit, Approve, Send Link, Copy link), and now correctly displays contract content with filled placeholders.
--   ****: Creator profile. Document upload section removed.
--   ****: User registration. Uses  for phone input.
--   ****: CSS for mobile responsiveness.
--   ****: Main HTML file. Updated viewport meta tag and included Bootstrap JS.
+
+
+-   ****:
+    -   **Importance**: Central FastAPI backend.
+    -   **Changes**: Updated  and  models for new fields (, , , ,  for soft delete). Corrected all MongoDB queries to use  for user data retrieval. Implemented , ,  endpoints. Added  model and endpoints for template management (, , , ). Modified  to handle PDF uploads. Updated contract limit logic to count only  contracts, and soft-delete contracts by setting . Adjusted  and  to filter out  contracts. Fixed timezone comparison errors in password reset.
+-   ****:
+    -   **Importance**: User registration interface.
+    -   **Changes**: Added Confirm Password field with client-side validation for matching passwords and i18n support.
+-   ****:
+    -   **Importance**: Internationalization configuration.
+    -   **Changes**: Added new translations for Confirm Password, Passwords do not match, and Passwords match.
+-   ****:
+    -   **Importance**: User profile management.
+    -   **Changes**: Added a Security section with a form for changing passwords (requiring old password, new password, and confirmation).
+-   ****:
+    -   **Importance**: User login interface.
+    -   **Changes**: Added a Forgot Password? link leading to .
+-   ** (NEW FILE)**:
+    -   **Importance**: Initiates the password reset process.
+    -   **Changes**: Allows users to enter their email to receive a password reset code.
+-   ** (NEW FILE)**:
+    -   **Importance**: Enables users to set a new password.
+    -   **Changes**: Provides fields for entering the reset code and the new password with confirmation.
+-   ****:
+    -   **Importance**: Displays details of a specific contract.
+    -   **Changes**: Corrected the positioning of the Delete button.
+-   ****:
+    -   **Importance**: Creator's main dashboard.
+    -   **Changes**: Modified the Create Contract button into a dropdown menu offering Create Contract from Template or Upload PDF Contract.
+-   ****:
+    -   **Importance**: Enhanced admin panel.
+    -   **Changes**: Added a link to the Manage Templates section (). Updated contract count in statistics to filter out deleted contracts.
+-   ** (NEW FILE)**:
+    -   **Importance**: User-facing marketplace for contract templates.
+    -   **Changes**: Provides UI for viewing available templates, with filtering capabilities.
+-   ** (NEW FILE)**:
+    -   **Importance**: Allows users to upload their own PDF contracts.
+    -   **Changes**: Implemented PDF file upload functionality, resolving  issues.
+-   ** (NEW FILE)**:
+    -   **Importance**: Admin interface for creating and managing contract templates and placeholders. Replaced .
+    -   **Changes**: Implemented a sophisticated Placeholder Constructor with fields (Name, Label, Type, Owner, Required), dynamic adding/editing, and initially drag-and-drop (later removed). Updated to support  for calculated placeholders. Added an optional Note about mandatory fields for the tenant.
+-   ****:
+    -   **Importance**: Defines application routes.
+    -   **Changes**: Added new routes for , , , , and . Implemented  to restrict access to  for unauthorized users.
 </code_architecture>
 
 <pending_tasks>
--   Robustly fix PDF conversion for identity document uploads (persistent Poppler-related issues).
--   Robustly fix contract download functionality (recurrent bug).
--   Ensure Call OTP verification uses varied phone numbers (Twilio configuration issue, requires user action on Twilio console).
--   Implement the frontend UI/UX for Telegram OTP verification (backend is ready).
+-   Explain the functionality and usage of the placeholder calculator.
+-   Implement intelligent filtering for placeholder options within the calculator, showing only relevant types (Date/Number) when constructing formulas.
 </pending_tasks>
 
 <current_work>
-The AI engineer is currently addressing multiple critical issues reported by the user, immediately before this summary request. The last reported problems were:
-1.  **Email Attachment Quality**: PDF in the email attachment has a cropped/low-quality image for the uploaded ID/passport. (Addressed by improving image quality in PDF generation).
-2.  **Contract Download Failure (Creator)**: The Download Contract button on the Creator's side is not working, resulting in a frontend script error (). (Addressed by importing  in  and re-installing Poppler, but user reports it's still an issue).
-3.  **PDF ID Upload Error**: When a signer uploads an identity document in PDF format, the conversion to an image fails with an error. (Re-installation of Poppler was done multiple times, but the user reports it's still an issue).
-4.  **Single Phone for Calls**: Twilio Call OTP consistently originates from a single phone number. (This is a Twilio configuration issue related to Proxy Service, not a code bug, but the user repeatedly mentions it).
-5.  **Missing SMS Verification Option**: After recent changes to allow method selection for OTP, the SMS option is no longer displayed on the .
+Immediately prior to this summary, the AI engineer was working on enhancing the Placeholder Constructor feature within the  file. The user had requested a calculator functionality for placeholders, allowing admins to create new placeholders based on mathematical operations (+, -, *, /, %) of existing placeholders. The engineer successfully integrated the basic calculator functionality into the placeholder creation dialog and updated the UI to display the formula on the placeholder cards.
 
-The immediate work is focused on resolving problem 5 by re-introducing the SMS verification button in the frontend. The last action performed by the AI was an attempt to add the SMS button to  after the user pointed out its absence.
+Specifically, the AI engineer:
+1.  Modified the  and  state in  to include a  field.
+2.  Updated the logic for adding/editing placeholders to correctly handle and store these formulas.
+3.  Adjusted the rendering of placeholder cards to display the  when present.
+4.  Refactored the placeholder creation/editing dialog to include controls for building formulas, allowing selection of existing placeholders and operators.
+5.  Removed an old Who fills field and added a note about mandatory fields for the tenant.
+
+The user's latest feedback indicates a need for clearer instructions on how to use the calculator and requested умная фильтрация плейсхолдеров по типу (intelligent filtering of placeholders by type) within the calculator interface (e.g., only showing Date or Number placeholders for calculations). The  is the primary file being modified for this.
 </current_work>
 
 <optional_next_step>
-Re-add the SMS verification option to the  UI.
+Explain the placeholder calculator usage and implement intelligent filtering for calculator inputs in .
 </optional_next_step>
