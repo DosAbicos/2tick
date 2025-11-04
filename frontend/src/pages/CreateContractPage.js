@@ -765,55 +765,60 @@ Email: ${templateData.tenant_email || '[Email]'}
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6" data-testid="create-contract-form">
-                {/* Contract Info */}
-                <div className="space-y-4">
-                  <h3 className="font-semibold text-neutral-900 border-b pb-2">Информация о договоре</h3>
-                  <div className="grid grid-cols-1 gap-4">
-                    <div>
-                      <Label htmlFor="contract_date">Дата договора *</Label>
-                      <Input
-                        id="contract_date"
-                        type="date"
-                        value={templateData.contract_date}
-                        onChange={(e) => handleFieldChange('contract_date', e.target.value)}
-                        required
-                        data-testid="contract-date-input"
-                        className="mt-1"
-                      />
-                      <p className="text-sm text-neutral-500 mt-1">
-                        💡 Номер договора будет сгенерирован автоматически (01, 02, 010, 0110...)
-                      </p>
+                {/* Only show old fields if no template selected */}
+                {!selectedTemplate && (
+                  <>
+                    {/* Contract Info */}
+                    <div className="space-y-4">
+                      <h3 className="font-semibold text-neutral-900 border-b pb-2">Информация о договоре</h3>
+                      <div className="grid grid-cols-1 gap-4">
+                        <div>
+                          <Label htmlFor="contract_date">Дата договора *</Label>
+                          <Input
+                            id="contract_date"
+                            type="date"
+                            value={templateData.contract_date}
+                            onChange={(e) => handleFieldChange('contract_date', e.target.value)}
+                            required
+                            data-testid="contract-date-input"
+                            className="mt-1"
+                          />
+                          <p className="text-sm text-neutral-500 mt-1">
+                            💡 Номер договора будет сгенерирован автоматически (01, 02, 010, 0110...)
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
 
-                {/* Landlord Info */}
-                <div className="space-y-4">
-                  <h3 className="font-semibold text-neutral-900 border-b pb-2">Наймодатель (Вы)</h3>
-                  <div>
-                    <Label htmlFor="landlord_name">Наименование *</Label>
-                    <Input
-                      id="landlord_name"
-                      value={templateData.landlord_name}
-                      onChange={(e) => handleFieldChange('landlord_name', e.target.value)}
-                      required
-                      data-testid="landlord-name-input"
-                      className="mt-1"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="landlord_representative">Представитель (кто составил договор) *</Label>
-                    <Input
-                      id="landlord_representative"
-                      value={templateData.landlord_representative}
-                      onChange={(e) => handleFieldChange('landlord_representative', e.target.value)}
-                      required
-                      data-testid="landlord-rep-input"
-                      className="mt-1"
-                      placeholder="ФИО"
-                    />
-                  </div>
-                </div>
+                    {/* Landlord Info */}
+                    <div className="space-y-4">
+                      <h3 className="font-semibold text-neutral-900 border-b pb-2">Наймодатель (Вы)</h3>
+                      <div>
+                        <Label htmlFor="landlord_name">Наименование *</Label>
+                        <Input
+                          id="landlord_name"
+                          value={templateData.landlord_name}
+                          onChange={(e) => handleFieldChange('landlord_name', e.target.value)}
+                          required
+                          data-testid="landlord-name-input"
+                          className="mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="landlord_representative">Представитель (кто составил договор) *</Label>
+                        <Input
+                          id="landlord_representative"
+                          value={templateData.landlord_representative}
+                          onChange={(e) => handleFieldChange('landlord_representative', e.target.value)}
+                          required
+                          data-testid="landlord-rep-input"
+                          className="mt-1"
+                          placeholder="ФИО"
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
 
                 {/* Dynamic Template Fields */}
                 {selectedTemplate && selectedTemplate.placeholders && Object.keys(selectedTemplate.placeholders).length > 0 && (
