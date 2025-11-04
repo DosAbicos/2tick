@@ -149,6 +149,15 @@ const SortablePlaceholder = ({ id, placeholder, config, onInsert, onRemove }) =>
 
             {/* Label */}
             <p className="text-sm text-neutral-700 font-medium">{config.label}</p>
+            
+            {/* Formula for calculated fields */}
+            {config.type === 'calculated' && config.formula && (
+              <div className="mt-2 text-xs bg-amber-50 border border-amber-200 rounded px-2 py-1 font-mono">
+                🧮 {'{{'}{config.formula.operand1}{'}}'}
+                {' '}{CALCULATOR_OPERATIONS.find(op => op.value === config.formula.operation)?.symbol || config.formula.operation}{' '}
+                {'{{'}{config.formula.operand2}{'}}'}
+              </div>
+            )}
           </div>
 
           {/* Actions */}
