@@ -877,35 +877,6 @@ const AdminTemplatesPageNew = () => {
                 </div>
               )}
 
-              <div>
-                <Label>Кто заполняет? *</Label>
-                <Select
-                  value={currentPlaceholder.owner}
-                  onValueChange={(value) => setCurrentPlaceholder({
-                    ...currentPlaceholder,
-                    owner: value
-                  })}
-                >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="landlord">
-                      <div className="flex items-center gap-2">
-                        <Building className="h-4 w-4" />
-                        Наймодатель
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="signer">
-                      <div className="flex items-center gap-2">
-                        <User className="h-4 w-4" />
-                        Наниматель
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
               <div className="flex items-center gap-2 p-3 bg-neutral-50 rounded-lg">
                 <input
                   type="checkbox"
