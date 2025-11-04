@@ -658,6 +658,144 @@ Email: ${templateData.tenant_email || '[Email]'}
                   </div>
                 </div>
 
+                {/* Dynamic Template Fields */}
+                {selectedTemplate && selectedTemplate.placeholders && Object.keys(selectedTemplate.placeholders).length > 0 && (
+                  <div className="space-y-4 p-6 bg-gradient-to-br from-blue-50/50 to-purple-50/50 border-2 border-dashed border-blue-200 rounded-xl">
+                    <div className="border-b pb-2">
+                      <h3 className="font-semibold text-neutral-900 flex items-center gap-2">
+                        📋 Поля шаблона "{selectedTemplate.title}"
+                      </h3>
+                      <p className="text-xs text-neutral-600 mt-1">
+                        Заполните необходимые поля для договора
+                      </p>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {Object.entries(selectedTemplate.placeholders).map(([key, config]) => {
+                        // Skip calculated fields - they will be computed automatically
+                        if (config.type === 'calculated') return null;
+                        
+                        return (
+                          <div key={key} className={config.type === 'text' ? 'md:col-span-2' : ''}>
+                            <Label htmlFor={`placeholder_${key}`}>
+                              {config.label} {config.required && <span className="text-red-500">*</span>}
+                            </Label>
+                            
+                            {config.type === 'text' && (
+                              <Input
+                                id={`placeholder_${key}`}
+                                value={placeholderValues[key] || ''}
+                                onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
+                                required={config.required}
+                                className="mt-1"
+                                placeholder={`Введите ${config.label.toLowerCase()}`}
+                              />
+                            )}
+                            
+                            {config.type === 'number' && (
+                              <Input
+                                id={`placeholder_${key}`}
+                                type="number"
+                                value={placeholderValues[key] || ''}
+                                onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
+                                required={config.required}
+                                className="mt-1"
+                                placeholder={`Введите ${config.label.toLowerCase()}`}
+                              />
+                            )}
+                            
+                            {config.type === 'date' && (
+                              <Input
+                                id={`placeholder_${key}`}
+                                type="date"
+                                value={placeholderValues[key] || ''}
+                                onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
+                                required={config.required}
+                                className="mt-1"
+                              />
+                            )}
+                            
+                            {config.type === 'phone' && (
+                              <IMaskInput
+                                mask="+7 (000) 000-00-00"
+                                value={placeholderValues[key] || ''}
+                                onAccept={(value) => setPlaceholderValues({...placeholderValues, [key]: value})}
+                                placeholder="+7 (___) ___-__-__"
+                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1"
+                                id={`placeholder_${key}`}
+                                type="tel"
+                              />
+                            )}
+                            
+                            {config.type === 'email' && (
+                              <Input
+                                id={`placeholder_${key}`}
+                                type="email"
+                                value={placeholderValues[key] || ''}
+                                onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
+                                required={config.required}
+                                className="mt-1"
+                                placeholder={`Введите ${config.label.toLowerCase()}`}
+                              />
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Tenant Document Upload (if required by template) */}
+                    {selectedTemplate.requires_tenant_document && (
+                      <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                        <Label className="font-semibold text-amber-900">
+                          📄 Удостоверение личности нанимателя
+                        </Label>
+                        <p className="text-xs text-amber-700 mt-1 mb-3">
+                          Вы можете загрузить удостоверение нанимателя сейчас (если есть копия), 
+                          или наниматель загрузит его при подписании
+                        </p>
+                        
+                        <div className="flex gap-2 items-center">
+                          <Input
+                            type="file"
+                            accept="image/*,application/pdf"
+                            onChange={(e) => {
+                              const file = e.target.files[0];
+                              if (file) {
+                                setTenantDocument(file);
+                                // Create preview
+                                const reader = new FileReader();
+                                reader.onload = () => setTenantDocPreview(reader.result);
+                                reader.readAsDataURL(file);
+                                toast.success('Документ выбран');
+                              }
+                            }}
+                            className="flex-1"
+                          />
+                          {tenantDocument && (
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setTenantDocument(null);
+                                setTenantDocPreview(null);
+                              }}
+                            >
+                              Удалить
+                            </Button>
+                          )}
+                        </div>
+                        
+                        {tenantDocPreview && (
+                          <div className="mt-2">
+                            <p className="text-xs text-green-600">✓ Документ загружен: {tenantDocument.name}</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* Tenant Info - Optional Fields */}
                 <div className="space-y-4">
                   <div className="flex items-center justify-between border-b pb-2">
