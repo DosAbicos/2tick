@@ -1060,6 +1060,11 @@ async def login(credentials: UserLogin):
     user_doc.pop('password', None)
     if isinstance(user_doc.get('created_at'), str):
         user_doc['created_at'] = datetime.fromisoformat(user_doc['created_at'])
+    
+    # Set role based on is_admin flag
+    if user_doc.get('is_admin'):
+        user_doc['role'] = 'admin'
+    
     user = User(**user_doc)
     
     # Generate token
