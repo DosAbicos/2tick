@@ -56,7 +56,17 @@ const FIELD_TYPES = [
   { value: 'date', label: 'Дата', icon: Calendar },
   { value: 'phone', label: 'Телефон', icon: Phone },
   { value: 'email', label: 'Email', icon: Mail },
-  { value: 'textarea', label: 'Длинный текст', icon: FileText }
+  { value: 'textarea', label: 'Длинный текст', icon: FileText },
+  { value: 'calculated', label: '🧮 Вычисляемое', icon: Hash }
+];
+
+const CALCULATOR_OPERATIONS = [
+  { value: 'add', label: '+  Сложение', symbol: '+' },
+  { value: 'subtract', label: '−  Вычитание', symbol: '-' },
+  { value: 'multiply', label: '×  Умножение', symbol: '*' },
+  { value: 'divide', label: '÷  Деление', symbol: '/' },
+  { value: 'modulo', label: '%  Остаток от деления', symbol: '%' },
+  { value: 'days_between', label: '📅  Разница в днях (для дат)', symbol: 'days' }
 ];
 
 // Sortable Placeholder Item Component
