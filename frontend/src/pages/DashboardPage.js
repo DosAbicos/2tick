@@ -7,6 +7,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import {
   Table,
   TableBody,
   TableCell,
@@ -15,7 +22,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import Header from '@/components/Header';
-import { FileText, Clock, CheckCircle, Plus } from 'lucide-react';
+import { FileText, Clock, CheckCircle, Plus, Star, Heart } from 'lucide-react';
 import { format } from 'date-fns';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
