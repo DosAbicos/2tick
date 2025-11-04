@@ -848,21 +848,16 @@ const AdminTemplatesPageNew = () => {
                         ...currentPlaceholder,
                         formula: { ...currentPlaceholder.formula, operand2: value }
                       })}
-                      disabled={!currentPlaceholder.formula.operation}
                     >
                       <SelectTrigger className="mt-1">
-                        <SelectValue placeholder="Сначала выберите операцию" />
+                        <SelectValue placeholder="Выберите плейсхолдер" />
                       </SelectTrigger>
                       <SelectContent>
                         {placeholderOrder
                           .filter(name => {
                             const ph = formData.placeholders[name];
-                            // Применяем ту же фильтрацию, что и для первого операнда
-                            if (currentPlaceholder.formula.operation === 'days_between') {
-                              return ph.type === 'date';
-                            }
-                            // Для математических операций - только number и calculated
-                            return ph.type === 'number' || ph.type === 'calculated';
+                            // Только number, date и calculated
+                            return ph.type === 'number' || ph.type === 'date' || ph.type === 'calculated';
                           })
                           .map((name) => (
                             <SelectItem key={name} value={name}>
