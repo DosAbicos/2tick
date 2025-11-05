@@ -777,8 +777,8 @@ Email: ${templateData.tenant_email || '[Email]'}
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6" data-testid="create-contract-form">
-                {/* Only show old fields if no template selected */}
-                {!selectedTemplate && (
+                {/* Only show old fields if no template selected AND not loading template */}
+                {!selectedTemplate && !loadingTemplate && !templateId && (
                   <>
                     {/* Contract Info */}
                     <div className="space-y-4">
