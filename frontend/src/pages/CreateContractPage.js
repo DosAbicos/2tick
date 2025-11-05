@@ -597,6 +597,8 @@ Email: ${templateData.tenant_email || '[Email]'}
         toast.success(t('common.success'));
       }
       
+      // Clear stored template ID
+      sessionStorage.removeItem('selectedTemplateId');
       navigate(`/contracts/${contractId}`);
     } catch (error) {
       toast.error(error.response?.data?.detail || t('common.error'));
