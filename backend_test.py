@@ -163,7 +163,8 @@ class BackendTester:
             "signer_email": "ivanov@test.kz"
         }
         
-        response = self.session.post(f"{BASE_URL}/sign/{contract_id}/update-signer-info", data=signer_data)
+        response = self.session.post(f"{BASE_URL}/sign/{contract_id}/update-signer-info", data=signer_data, 
+                                   headers={'Content-Type': 'application/x-www-form-urlencoded'})
         
         if response.status_code == 200:
             result = response.json()
