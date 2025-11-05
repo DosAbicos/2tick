@@ -1025,11 +1025,11 @@ Email: ${templateData.tenant_email || '[Email]'}
 
                     {/* Tenant Document Upload (if required by template) */}
                     {selectedTemplate.requires_tenant_document && (
-                      <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-                        <Label className="font-semibold text-amber-900">
+                      <div className="mt-4 p-4 bg-gradient-to-br from-indigo-50 to-blue-50 border-2 border-indigo-200 rounded-xl">
+                        <Label className="font-semibold text-indigo-900 flex items-center gap-2">
                           📄 Удостоверение личности нанимателя
                         </Label>
-                        <p className="text-xs text-amber-700 mt-1 mb-3">
+                        <p className="text-xs text-indigo-700 mt-1 mb-3">
                           Вы можете загрузить удостоверение нанимателя сейчас (если есть копия), 
                           или наниматель загрузит его при подписании
                         </p>
