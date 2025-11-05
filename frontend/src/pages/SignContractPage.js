@@ -569,54 +569,128 @@ const SignContractPage = () => {
                   <p className="text-neutral-600 text-sm">Для подписания договора необходима дополнительная информация</p>
                 </div>
                 
-                {(!contract.signer_name || contract.signer_name === 'Не указано') && (
-                  <div>
-                    <Label htmlFor="signer_name">ФИО *</Label>
-                    <Input
-                      id="signer_name"
-                      value={signerInfo.name}
-                      onChange={(e) => setSignerInfo({...signerInfo, name: e.target.value})}
-                      required
-                      data-testid="signer-name-input"
-                      className="mt-1"
-                      placeholder="Иванов Иван Иванович"
-                    />
+                {/* If contract has template with unfilled placeholders, show them */}
+                {template && unfilledPlaceholders.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {unfilledPlaceholders.map(({ key, config }) => (
+                      <div key={key} className={config.type === 'text' && config.label.length > 20 ? 'md:col-span-2' : ''}>
+                        <Label htmlFor={`placeholder_${key}`}>
+                          {config.label} {config.required && <span className="text-red-500">*</span>}
+                        </Label>
+                        
+                        {config.type === 'text' && (
+                          <Input
+                            id={`placeholder_${key}`}
+                            value={placeholderValues[key] || ''}
+                            onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
+                            className="mt-1"
+                            placeholder={`Введите ${config.label.toLowerCase()}`}
+                            required={config.required}
+                          />
+                        )}
+                        
+                        {config.type === 'number' && (
+                          <Input
+                            id={`placeholder_${key}`}
+                            type="number"
+                            value={placeholderValues[key] || ''}
+                            onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
+                            className="mt-1"
+                            placeholder={`Введите ${config.label.toLowerCase()}`}
+                            required={config.required}
+                          />
+                        )}
+                        
+                        {config.type === 'date' && (
+                          <Input
+                            id={`placeholder_${key}`}
+                            type="date"
+                            value={placeholderValues[key] || ''}
+                            onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
+                            className="mt-1"
+                            required={config.required}
+                          />
+                        )}
+                        
+                        {config.type === 'phone' && (
+                          <IMaskInput
+                            mask="+7 (000) 000-00-00"
+                            value={placeholderValues[key] || ''}
+                            onAccept={(value) => setPlaceholderValues({...placeholderValues, [key]: value})}
+                            placeholder="+7 (___) ___-__-__"
+                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1"
+                            id={`placeholder_${key}`}
+                            type="tel"
+                          />
+                        )}
+                        
+                        {config.type === 'email' && (
+                          <Input
+                            id={`placeholder_${key}`}
+                            type="email"
+                            value={placeholderValues[key] || ''}
+                            onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
+                            className="mt-1"
+                            placeholder="example@email.com"
+                            required={config.required}
+                          />
+                        )}
+                      </div>
+                    ))}
                   </div>
-                )}
-                
-                {!contract.signer_phone && (
-                  <div>
-                    <Label htmlFor="signer_phone">Номер телефона *</Label>
-                    <IMaskInput
-                      mask="+7 (000) 000-00-00"
-                      value={signerInfo.phone}
-                      onAccept={(value) => setSignerInfo({...signerInfo, phone: value})}
-                      placeholder="+7 (___) ___-__-__"
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1"
-                      id="signer_phone"
-                      type="tel"
-                      required
-                      data-testid="signer-phone-input"
-                    />
-                  </div>
-                )}
-                
-                {(!contract.signer_email) && (
-                  <div>
-                    <Label htmlFor="signer_email">Email</Label>
-                    <Input
-                      id="signer_email"
-                      type="email"
-                      value={signerInfo.email}
-                      onChange={(e) => setSignerInfo({...signerInfo, email: e.target.value})}
-                      data-testid="signer-email-input"
-                      className={`mt-1 ${signerInfo.email && !validateEmail(signerInfo.email) ? 'border-red-500' : ''}`}
-                      placeholder="example@mail.com"
-                    />
-                    {signerInfo.email && !validateEmail(signerInfo.email) && (
-                      <p className="text-xs text-red-500 mt-1">Введите корректный email</p>
+                ) : (
+                  // For old contracts without template, show old fields
+                  <>
+                    {(!contract.signer_name || contract.signer_name === 'Не указано') && (
+                      <div>
+                        <Label htmlFor="signer_name">ФИО *</Label>
+                        <Input
+                          id="signer_name"
+                          value={signerInfo.name}
+                          onChange={(e) => setSignerInfo({...signerInfo, name: e.target.value})}
+                          required
+                          data-testid="signer-name-input"
+                          className="mt-1"
+                          placeholder="Иванов Иван Иванович"
+                        />
+                      </div>
                     )}
-                  </div>
+                    
+                    {!contract.signer_phone && (
+                      <div>
+                        <Label htmlFor="signer_phone">Номер телефона *</Label>
+                        <IMaskInput
+                          mask="+7 (000) 000-00-00"
+                          value={signerInfo.phone}
+                          onAccept={(value) => setSignerInfo({...signerInfo, phone: value})}
+                          placeholder="+7 (___) ___-__-__"
+                          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1"
+                          id="signer_phone"
+                          type="tel"
+                          required
+                          data-testid="signer-phone-input"
+                        />
+                      </div>
+                    )}
+                    
+                    {(!contract.signer_email) && (
+                      <div>
+                        <Label htmlFor="signer_email">Email</Label>
+                        <Input
+                          id="signer_email"
+                          type="email"
+                          value={signerInfo.email}
+                          onChange={(e) => setSignerInfo({...signerInfo, email: e.target.value})}
+                          data-testid="signer-email-input"
+                          className={`mt-1 ${signerInfo.email && !validateEmail(signerInfo.email) ? 'border-red-500' : ''}`}
+                          placeholder="example@mail.com"
+                        />
+                        {signerInfo.email && !validateEmail(signerInfo.email) && (
+                          <p className="text-xs text-red-500 mt-1">Введите корректный email</p>
+                        )}
+                      </div>
+                    )}
+                  </>
                 )}
                 
  
