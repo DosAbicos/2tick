@@ -271,17 +271,36 @@ class BackendTester:
             self.log(f"❌ Get templates failed: {response.status_code} - {response.text}")
             return None, []
     
-    def test_create_contract_from_template(self, template_id):
-        """Test 4: Create contract from template (basic contract creation)"""
-        self.log(f"\n📝 TEST 4: Creating contract with empty tenant fields...")
+    def test_create_contract_from_template_with_tenant_placeholders(self):
+        """Тест 1: Создание контракта из шаблона с tenant плейсхолдерами"""
+        self.log(f"\n📝 ТЕСТ 1: Создание контракта из шаблона с tenant плейсхолдерами...")
         
+        # First get a template with tenant placeholders
+        template_response = self.session.get(f"{BASE_URL}/templates")
+        if template_response.status_code != 200:
+            self.log(f"❌ ТЕСТ 1 FAILED: Cannot get templates: {template_response.status_code}")
+            return None, False
+            
+        templates = template_response.json()
+        if not templates:
+            self.log("❌ ТЕСТ 1 FAILED: No templates available")
+            return None, False
+            
+        # Use first template
+        template = templates[0]
+        template_id = template["id"]
+        self.log(f"📋 Using template: {template['title']} (ID: {template_id})")
+        
+        # Create contract from template with empty tenant fields
         contract_data = {
-            "title": "Договор из шаблона",
-            "content": "Содержимое из шаблона с плейсхолдерами [ФИО Нанимателя] и [Телефон]",
+            "title": "Договор из шаблона с tenant плейсхолдерами",
+            "content": template.get("content", "Договор с плейсхолдерами {{tenant_fio}} {{tenant_phone}} {{tenant_email}}"),
             "content_type": "plain",
+            "template_id": template_id,  # Link to template
             "signer_name": "",  # Empty tenant fields
             "signer_phone": "",
-            "signer_email": ""
+            "signer_email": "",
+            "placeholder_values": {}  # Empty placeholder values initially
         }
         
         response = self.session.post(f"{BASE_URL}/contracts", json=contract_data)
@@ -292,30 +311,163 @@ class BackendTester:
             
             self.log(f"✅ Contract created with ID: {contract_id}")
             
-            # Verify contract was created correctly
-            contract_code = contract.get("contract_code")
-            contract_number = contract.get("contract_number")
+            # Verify contract has template_id and empty placeholder_values
+            returned_template_id = contract.get("template_id")
+            returned_placeholder_values = contract.get("placeholder_values", {})
             
-            self.log(f"📋 contract_code: {contract_code}")
-            self.log(f"📋 contract_number: {contract_number}")
+            self.log(f"📋 template_id: {returned_template_id}")
+            self.log(f"📋 placeholder_values: {returned_placeholder_values}")
             
             success = True
-            if not contract_code:
-                self.log("❌ FAIL: contract_code not generated")
+            if returned_template_id != template_id:
+                self.log(f"❌ FAIL: template_id mismatch. Expected: {template_id}, Got: {returned_template_id}")
                 success = False
-            if not contract_number:
-                self.log("❌ FAIL: contract_number not generated")
+            if returned_placeholder_values != {}:
+                self.log(f"❌ FAIL: placeholder_values should be empty, got: {returned_placeholder_values}")
                 success = False
                 
             if success:
-                self.log("✅ TEST 4 PASSED: Contract created correctly with code and number")
+                self.log("✅ ТЕСТ 1 PASSED: Contract created from template with empty placeholder_values")
             else:
-                self.log("❌ TEST 4 FAILED: Contract creation issues")
+                self.log("❌ ТЕСТ 1 FAILED: Contract creation issues")
                 
             return contract_id, success
         else:
-            self.log(f"❌ TEST 4 FAILED: Contract creation failed: {response.status_code} - {response.text}")
+            self.log(f"❌ ТЕСТ 1 FAILED: Contract creation failed: {response.status_code} - {response.text}")
             return None, False
+    
+    def test_update_placeholder_values_via_patch(self, contract_id):
+        """Тест 2: Обновление placeholder_values через PATCH"""
+        self.log(f"\n📝 ТЕСТ 2: Обновление placeholder_values через PATCH для contract {contract_id}...")
+        
+        # Get contract first to see current state
+        get_response = self.session.get(f"{BASE_URL}/sign/{contract_id}")
+        if get_response.status_code == 200:
+            contract_before = get_response.json()
+            self.log(f"📋 Contract before update: placeholder_values = {contract_before.get('placeholder_values', {})}")
+        
+        # Update placeholder_values via PATCH (using PUT endpoint)
+        update_data = {
+            "placeholder_values": {
+                "tenant_fio": "Иванов Иван",
+                "tenant_phone": "+77071234567",
+                "tenant_email": "ivanov@test.kz",
+                "tenant_iin": "123456789012",
+                "people_count": "3"
+            }
+        }
+        
+        response = self.session.put(f"{BASE_URL}/contracts/{contract_id}", json=update_data)
+        
+        if response.status_code == 200:
+            self.log("✅ PATCH request successful")
+            
+            # Verify placeholder_values were updated
+            get_response = self.session.get(f"{BASE_URL}/sign/{contract_id}")
+            if get_response.status_code == 200:
+                updated_contract = get_response.json()
+                updated_placeholder_values = updated_contract.get("placeholder_values", {})
+                updated_content = updated_contract.get("content", "")
+                
+                self.log(f"📋 Updated placeholder_values: {updated_placeholder_values}")
+                self.log(f"📋 Updated content preview: {updated_content[:200]}...")
+                
+                # Check if placeholder_values match what we sent
+                expected_values = update_data["placeholder_values"]
+                success = True
+                
+                for key, expected_value in expected_values.items():
+                    actual_value = updated_placeholder_values.get(key)
+                    if actual_value != expected_value:
+                        self.log(f"❌ FAIL: {key} mismatch. Expected: '{expected_value}', Got: '{actual_value}'")
+                        success = False
+                    else:
+                        self.log(f"✅ {key}: '{actual_value}' ✓")
+                
+                # Check if content was updated with replaced placeholders
+                if "Иванов Иван" in updated_content:
+                    self.log("✅ Content updated with replaced placeholders")
+                else:
+                    self.log("⚠️ Content may not have been updated with placeholders")
+                
+                if success:
+                    self.log("✅ ТЕСТ 2 PASSED: placeholder_values updated correctly")
+                else:
+                    self.log("❌ ТЕСТ 2 FAILED: placeholder_values update issues")
+                    
+                return success
+            else:
+                self.log(f"❌ ТЕСТ 2 FAILED: Cannot get updated contract: {get_response.status_code}")
+                return False
+        else:
+            self.log(f"❌ ТЕСТ 2 FAILED: PATCH request failed: {response.status_code} - {response.text}")
+            return False
+    
+    def test_tenant_placeholder_filtering(self, template_id):
+        """Тест 3: Проверка фильтрации tenant плейсхолдеров"""
+        self.log(f"\n📝 ТЕСТ 3: Проверка фильтрации tenant плейсхолдеров для template {template_id}...")
+        
+        # Get template details
+        template_response = self.session.get(f"{BASE_URL}/templates/{template_id}")
+        if template_response.status_code != 200:
+            self.log(f"❌ ТЕСТ 3 FAILED: Cannot get template: {template_response.status_code}")
+            return False
+            
+        template = template_response.json()
+        placeholders = template.get("placeholders", {})
+        
+        self.log(f"📋 Template placeholders: {placeholders}")
+        
+        # Check for tenant/signer placeholders
+        tenant_placeholders = []
+        for key, config in placeholders.items():
+            owner = config.get("owner", "")
+            if owner in ["tenant", "signer"]:
+                tenant_placeholders.append(key)
+                self.log(f"✅ Found tenant placeholder: {key} (owner: {owner})")
+        
+        if not tenant_placeholders:
+            self.log("⚠️ No tenant placeholders found in template")
+            return True  # Not a failure, just no tenant placeholders
+        
+        # Create contract without filling tenant fields
+        contract_data = {
+            "title": "Тест фильтрации tenant плейсхолдеров",
+            "content": template.get("content", ""),
+            "content_type": "plain",
+            "template_id": template_id,
+            "signer_name": "",
+            "signer_phone": "",
+            "signer_email": ""
+        }
+        
+        create_response = self.session.post(f"{BASE_URL}/contracts", json=contract_data)
+        if create_response.status_code != 200:
+            self.log(f"❌ ТЕСТ 3 FAILED: Contract creation failed: {create_response.status_code}")
+            return False
+            
+        contract = create_response.json()
+        contract_id = contract["id"]
+        content = contract.get("content", "")
+        
+        self.log(f"📋 Contract content: {content[:300]}...")
+        
+        # Check that tenant placeholders remain as {{placeholder}} in content
+        success = True
+        for placeholder_key in tenant_placeholders:
+            placeholder_pattern = f"{{{{{placeholder_key}}}}}"
+            if placeholder_pattern in content:
+                self.log(f"✅ Tenant placeholder {placeholder_pattern} correctly preserved in content")
+            else:
+                self.log(f"❌ FAIL: Tenant placeholder {placeholder_pattern} not found in content")
+                success = False
+        
+        if success:
+            self.log("✅ ТЕСТ 3 PASSED: Tenant placeholders correctly filtered and preserved")
+        else:
+            self.log("❌ ТЕСТ 3 FAILED: Tenant placeholder filtering issues")
+            
+        return success
     
     def run_all_tests(self):
         """Run all backend tests"""
