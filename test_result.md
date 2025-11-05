@@ -932,3 +932,19 @@ agent_communication:
 agent_communication:
   - agent: "main"
     message: "✅ ИСПРАВЛЕНА КРИТИЧЕСКАЯ ОШИБКА: При сохранении плейсхолдеров нанимателя возникала ошибка 405 'Method Not Allowed'. Проблема была в том что использовался PATCH вместо PUT метода. Backend эндпоинт PUT /api/contracts/{id} поддерживает обновление placeholder_values и автоматически заменяет плейсхолдеры в контенте. Изменен метод на axios.put, добавлено логирование и улучшена обработка ошибок. Frontend hot reload применил изменения. Готов к финальному тестированию пользователем."
+
+  - task: "Исправление ошибки авторизации при сохранении плейсхолдеров нанимателя"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py, /app/frontend/src/pages/SignContractPage.js"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "ПРОБЛЕМА: При нажатии 'Сохранить и продолжить' на Step 1.5 возникала ошибка 'Not authenticated'. ПРИЧИНА: Frontend пытался использовать PUT /api/contracts/{id} который требует авторизации (токен), но наниматель не имеет токена - он использует публичную ссылку для подписания. ИСПРАВЛЕНИЕ: 1) Backend (server.py): расширен эндпоинт POST /api/sign/{contract_id}/update-signer-info - добавлено поле placeholder_values в модель SignerInfoUpdate (строка 2065), добавлена логика замены плейсхолдеров в контенте при наличии template_id (строки 2093-2115). 2) Frontend (SignContractPage.js): изменен запрос с axios.put(/api/contracts/{id}) на axios.post(/api/sign/{id}/update-signer-info) который не требует авторизации (строки 228-242). Backend и frontend hot reload применили изменения. Backend тест подтвердил работу - плейсхолдеры заменяются корректно. Готов к тестированию."
+
+agent_communication:
+  - agent: "main"
+    message: "✅ ИСПРАВЛЕНА КРИТИЧЕСКАЯ ОШИБКА АВТОРИЗАЦИИ: Наниматель получал ошибку 'Not authenticated' при сохранении плейсхолдеров. Проблема была в том что использовался защищенный эндпоинт PUT /api/contracts/{id} требующий токен. Решение: расширен публичный эндпоинт POST /api/sign/{contract_id}/update-signer-info для поддержки placeholder_values с автоматической заменой плейсхолдеров в контенте. Backend тест подтвердил: плейсхолдеры {{ФИО_НАНИМАТЕЛЯ}}, {{ИИН_КЛИЕНТА}}, {{НОМЕР_КЛИЕНТА}}, {{EMAIL_КЛИЕНТА}}, {{КОЛИЧЕСТВО_ЧЕЛОВЕК}} заменяются корректно. Frontend использует этот публичный эндпоинт. Готов к финальному тестированию пользователем."
