@@ -2063,6 +2063,7 @@ class SignerInfoUpdate(BaseModel):
     signer_name: Optional[str] = None
     signer_phone: Optional[str] = None
     signer_email: Optional[str] = None
+    placeholder_values: Optional[dict] = None
 
 @api_router.post("/sign/{contract_id}/update-signer-info")
 async def update_signer_info(contract_id: str, data: SignerInfoUpdate):
