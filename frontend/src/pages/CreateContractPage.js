@@ -746,6 +746,14 @@ Email: ${templateData.tenant_email || '[Email]'}
                     }}
                   />
                 </div>
+              ) : loadingTemplate ? (
+                // Show loading indicator while template is being loaded
+                <div className="bg-white border rounded-lg p-6 max-h-[800px] overflow-y-auto flex items-center justify-center" data-testid="contract-preview">
+                  <div className="text-center py-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <p className="text-neutral-600">Загрузка шаблона...</p>
+                  </div>
+                </div>
               ) : (
                 <div className="bg-white border rounded-lg p-6 max-h-[800px] overflow-y-auto" data-testid="contract-preview">
                   {isContentSaved ? (
