@@ -614,7 +614,10 @@ Email: ${templateData.tenant_email || '[Email]'}
       <div className="max-w-[1600px] mx-auto px-4 py-8">
         <Button
           variant="ghost"
-          onClick={() => navigate('/dashboard')}
+          onClick={() => {
+            sessionStorage.removeItem('selectedTemplateId');
+            navigate('/dashboard');
+          }}
           className="mb-6"
           data-testid="back-button"
         >
