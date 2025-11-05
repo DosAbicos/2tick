@@ -152,7 +152,8 @@ const SignContractPage = () => {
         setStep(1);
         
         // Check if we need additional info for signer data
-        const needsName = !contractData.signer_name;
+        // Also check for "Не указано" for backwards compatibility with old contracts
+        const needsName = !contractData.signer_name || contractData.signer_name === 'Не указано';
         const needsPhone = !contractData.signer_phone;
         const needsEmail = !contractData.signer_email;
         
