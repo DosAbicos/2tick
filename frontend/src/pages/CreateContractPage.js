@@ -788,8 +788,16 @@ Email: ${templateData.tenant_email || '[Email]'}
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-6" data-testid="create-contract-form">
-                {/* Only show old fields if no template selected AND not loading template */}
-                {!selectedTemplate && !loadingTemplate && !templateId && (
+                {/* Show loading indicator while template is loading */}
+                {loadingTemplate ? (
+                  <div className="text-center py-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <p className="text-neutral-600">Загрузка полей шаблона...</p>
+                  </div>
+                ) : (
+                  <>
+                {/* Only show old fields if no template selected */}
+                {!selectedTemplate && (
                   <>
                     {/* Contract Info */}
                     <div className="space-y-4">
