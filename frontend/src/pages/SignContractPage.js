@@ -583,7 +583,7 @@ const SignContractPage = () => {
                   </div>
                 )}
                 
-                {!contract.signer_email && (
+                {(!contract.signer_email) && (
                   <div>
                     <Label htmlFor="signer_email">Email</Label>
                     <Input
