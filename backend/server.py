@@ -1863,13 +1863,13 @@ async def update_contract(contract_id: str, update_data: dict, current_user: dic
                 content = contract.get('content', '')
                 placeholder_values = filtered_data['placeholder_values']
                 
-                # Replace all placeholders with their values
+                # Replace ONLY placeholders that have values (keep empty ones as {{key}})
                 for key, value in placeholder_values.items():
-                    if key in template['placeholders']:
+                    if key in template['placeholders'] and value:  # Only replace if value is not empty
                         config = template['placeholders'][key]
                         
                         # Format dates to DD.MM.YYYY
-                        if config.get('type') == 'date' and value:
+                        if config.get('type') == 'date':
                             try:
                                 from datetime import datetime as dt
                                 date_obj = dt.fromisoformat(value.replace('Z', '+00:00'))
@@ -1880,7 +1880,7 @@ async def update_contract(contract_id: str, update_data: dict, current_user: dic
                         # Replace placeholder
                         import re
                         pattern = re.compile(f'{{{{\\s*{key}\\s*}}}}')
-                        content = pattern.sub(str(value) if value else f'[{config.get("label", key)}]', content)
+                        content = pattern.sub(str(value), content)
                 
                 # Update content with replaced placeholders
                 filtered_data['content'] = content
