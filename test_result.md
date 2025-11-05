@@ -1007,3 +1007,14 @@ agent_communication:
 agent_communication:
   - agent: "main"
     message: "✅ ИСПРАВЛЕНА ПРОБЛЕМА С ОТОБРАЖЕНИЕМ КОНТЕНТА: После сохранения данных нанимателя контент не обновлялся, показывались {{плейсхолдеры}} вместо заполненных данных. Изменена логика handleSaveSignerInfo - теперь после сохранения загружается полный контракт с обновленным content. Frontend hot reload применил изменения. Протестируйте на НОВОМ контракте (старые контракты созданные до фикса не будут работать правильно)."
+
+  - task: "Мердж placeholder_values при сохранении данных нанимателя"
+    implemented: true
+    working: "YES"
+    file: "/app/backend/server.py"
+    priority: "critical"
+    needs_retesting: false
+    status_history:
+      - working: "YES"
+        agent: "main"
+        comment: "ПРОБЛЕМА: Когда наниматель сохранял данные, теряли значения наймодателя. Backend ПЕРЕЗАПИСЫВАЛ placeholder_values вместо мерджа. ИСПРАВЛЕНИЕ: update_data['placeholder_values'] = {**existing_values, **data.placeholder_values} (строка 2083). Тест подтвердил: оба набора значений сохраняются и заменяются в контенте. ГОТОВО."
