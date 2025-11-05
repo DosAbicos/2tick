@@ -574,6 +574,14 @@ Email: ${templateData.tenant_email || '[Email]'}
       const contractId = response.data.id;
       const contractNumber = response.data.contract_number;  // Get contract number from backend
       
+      // If contract has placeholder_values, update it to replace placeholders in content
+      if (selectedTemplate && placeholderValues && Object.keys(placeholderValues).length > 0) {
+        await axios.put(`${API}/contracts/${contractId}`, 
+          { placeholder_values: placeholderValues },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      }
+      
       // Update contract title with proper contract number from backend
       if (contractNumber) {
         await axios.put(`${API}/contracts/${contractId}`, 
