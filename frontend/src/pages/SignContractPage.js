@@ -225,7 +225,7 @@ const SignContractPage = () => {
       
       // Save placeholder values to contract
       try {
-        await axios.patch(`${API}/contracts/${id}`, {
+        await axios.put(`${API}/contracts/${id}`, {
           placeholder_values: { ...contract.placeholder_values, ...placeholderValues }
         });
         
@@ -241,7 +241,8 @@ const SignContractPage = () => {
         // Always move to document step after saving info
         setStep(2);
       } catch (error) {
-        toast.error(t('common.error'));
+        console.error('Error saving placeholder values:', error);
+        toast.error(error.response?.data?.detail || t('common.error'));
       }
     } else {
       // For old contracts without template, validate old fields
