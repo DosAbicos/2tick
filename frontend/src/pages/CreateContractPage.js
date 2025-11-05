@@ -135,9 +135,16 @@ const CreateContractPage = () => {
     
     fetchNextContractNumber();
 
-    // Load template if template_id is provided
-    if (templateId) {
-      loadTemplateFromMarket(templateId);
+    // Load template if template_id is provided (from URL or sessionStorage)
+    const storedTemplateId = sessionStorage.getItem('selectedTemplateId');
+    const templateIdToLoad = templateId || storedTemplateId;
+    
+    if (templateIdToLoad) {
+      loadTemplateFromMarket(templateIdToLoad);
+      // Save to sessionStorage for page refresh
+      if (templateId) {
+        sessionStorage.setItem('selectedTemplateId', templateId);
+      }
     }
   }, [templateId]);
 
