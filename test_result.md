@@ -916,3 +916,19 @@ agent_communication:
 agent_communication:
   - agent: "main"
     message: "✅ ИСПРАВЛЕНЫ ДВЕ ПРОБЛЕМЫ ПОВТОРНО: 1) Дублирование полей плейсхолдеров - удален блок отображения плейсхолдеров из Step 1, теперь они показываются только на Step 1.5. 2) Дублирование сообщения о загрузке шаблона - добавлен useRef для отслеживания процесса загрузки и предотвращения двойного вызова loadTemplateFromMarket. Frontend hot reload применил изменения. Готов к финальному тестированию пользователем."
+
+  - task: "Исправление ошибки при сохранении плейсхолдеров нанимателя"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/SignContractPage.js"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "ПРОБЛЕМА: При нажатии 'Сохранить и продолжить' на Step 1.5 возникала ошибка 'Method Not Allowed'. ПРИЧИНА: В handleSaveSignerInfo использовался метод PATCH для обновления контракта (axios.patch), но backend поддерживает только PUT метод для эндпоинта /api/contracts/{id}. ИСПРАВЛЕНИЕ: Изменен метод с axios.patch на axios.put (строка 227). Добавлено логирование для отладки (console.log 'Saving placeholder values'). Добавлена более детальная обработка ошибок с отображением error.response?.data?.detail. Frontend hot reload применил изменения. Готов к тестированию."
+
+agent_communication:
+  - agent: "main"
+    message: "✅ ИСПРАВЛЕНА КРИТИЧЕСКАЯ ОШИБКА: При сохранении плейсхолдеров нанимателя возникала ошибка 405 'Method Not Allowed'. Проблема была в том что использовался PATCH вместо PUT метода. Backend эндпоинт PUT /api/contracts/{id} поддерживает обновление placeholder_values и автоматически заменяет плейсхолдеры в контенте. Изменен метод на axios.put, добавлено логирование и улучшена обработка ошибок. Frontend hot reload применил изменения. Готов к финальному тестированию пользователем."
