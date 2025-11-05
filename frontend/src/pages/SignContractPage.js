@@ -197,7 +197,7 @@ const SignContractPage = () => {
   const handleSaveSignerInfo = async () => {
     // Validate required fields
     if (needsInfo) {
-      if (!contract.signer_name && !signerInfo.name) {
+      if ((!contract.signer_name || contract.signer_name === 'Не указано') && !signerInfo.name) {
         toast.error('Пожалуйста, укажите ФИО');
         return;
       }
