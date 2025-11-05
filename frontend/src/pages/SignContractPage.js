@@ -344,6 +344,14 @@ const SignContractPage = () => {
     
     setVerifying(true);
     try {
+      // Save placeholder values before signing if there are any unfilled placeholders
+      if (unfilledPlaceholders.length > 0 && template) {
+        // Update contract with filled placeholder values
+        await axios.patch(`${API}/contracts/${id}`, {
+          placeholder_values: { ...contract.placeholder_values, ...placeholderValues }
+        });
+      }
+      
       // Use the actual phone from contract (which may have been updated by signer)
       const phoneToUse = contract.signer_phone || signerInfo.phone;
       
