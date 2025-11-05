@@ -1850,6 +1850,39 @@ async def update_contract(contract_id: str, update_data: dict, current_user: dic
     allowed_fields = ['title', 'content', 'signer_name', 'signer_phone', 'signer_email', 'placeholder_values']
     filtered_data = {k: v for k, v in update_data.items() if k in allowed_fields}
     
+    # If placeholder_values are being updated and contract has a template, replace placeholders in content
+    if 'placeholder_values' in filtered_data and contract.get('template_id'):
+        try:
+            # Load template to get placeholder configs
+            template = await db.contract_templates.find_one({"id": contract['template_id']})
+            if template and template.get('placeholders'):
+                content = contract.get('content', '')
+                placeholder_values = filtered_data['placeholder_values']
+                
+                # Replace all placeholders with their values
+                for key, value in placeholder_values.items():
+                    if key in template['placeholders']:
+                        config = template['placeholders'][key]
+                        
+                        # Format dates to DD.MM.YYYY
+                        if config.get('type') == 'date' and value:
+                            try:
+                                from datetime import datetime as dt
+                                date_obj = dt.fromisoformat(value.replace('Z', '+00:00'))
+                                value = date_obj.strftime('%d.%m.%Y')
+                            except:
+                                pass
+                        
+                        # Replace placeholder
+                        import re
+                        pattern = re.compile(f'{{{{\\s*{key}\\s*}}}}')
+                        content = pattern.sub(str(value) if value else f'[{config.get("label", key)}]', content)
+                
+                # Update content with replaced placeholders
+                filtered_data['content'] = content
+        except Exception as e:
+            print(f"Error replacing placeholders: {e}")
+    
     if filtered_data:
         filtered_data['updated_at'] = datetime.now(timezone.utc).isoformat()
         await db.contracts.update_one(
