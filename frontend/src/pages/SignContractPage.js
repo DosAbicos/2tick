@@ -232,14 +232,9 @@ const SignContractPage = () => {
           placeholder_values: mergedValues
         });
         
-        // Update local contract state with response from backend
-        if (response.data.contract) {
-          setContract(prev => ({
-            ...prev,
-            placeholder_values: mergedValues,
-            content: response.data.contract.content || prev.content
-          }));
-        }
+        // Reload contract from backend to get updated content
+        const updatedContractResponse = await axios.get(`${API}/sign/${id}`);
+        setContract(updatedContractResponse.data);
         
         // Mark that all required info is now filled
         setNeedsInfo(false);
