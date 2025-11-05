@@ -170,9 +170,10 @@ class BackendTester:
             self.log("✅ Signer info updated successfully")
             
             # Verify the data was saved correctly
-            updated_name = result.get("signer_name", "NOT_FOUND")
-            updated_phone = result.get("signer_phone", "NOT_FOUND")
-            updated_email = result.get("signer_email", "NOT_FOUND")
+            contract_data = result.get("contract", {})
+            updated_name = contract_data.get("signer_name", "NOT_FOUND")
+            updated_phone = contract_data.get("signer_phone", "NOT_FOUND")
+            updated_email = contract_data.get("signer_email", "NOT_FOUND")
             
             self.log(f"📋 Updated signer_name: '{updated_name}'")
             self.log(f"📋 Updated signer_phone: '{updated_phone}'")
