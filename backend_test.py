@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 """
 Backend Testing Script for Contract Management System
-Tests the specific scenarios mentioned in the review request
+Tests the specific scenarios mentioned in the Russian review request:
+
+Тест 1: Создание контракта из шаблона с tenant плейсхолдерами
+Тест 2: Обновление placeholder_values через PATCH
+Тест 3: Проверка фильтрации tenant плейсхолдеров
 """
 
 import requests
