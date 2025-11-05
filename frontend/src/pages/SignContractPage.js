@@ -106,24 +106,55 @@ const SignContractPage = () => {
   const fetchContract = async () => {
     try {
       const response = await axios.get(`${API}/sign/${id}`);
-      setContract(response.data);
+      const contractData = response.data;
+      setContract(contractData);
+      
+      // Load template if contract was created from template
+      if (contractData.template_id) {
+        try {
+          const templateResponse = await axios.get(`${API}/templates/${contractData.template_id}`);
+          setTemplate(templateResponse.data);
+          
+          // Initialize placeholder values with existing values
+          const existingValues = contractData.placeholder_values || {};
+          setPlaceholderValues(existingValues);
+          
+          // Find unfilled placeholders (those that are still in {{}} format in content)
+          const unfilled = [];
+          if (templateResponse.data.placeholders) {
+            Object.entries(templateResponse.data.placeholders).forEach(([key, config]) => {
+              // Skip calculated fields
+              if (config.type === 'calculated') return;
+              
+              // Check if placeholder is still in content (not filled)
+              const regex = new RegExp(`{{${key}}}`, 'g');
+              if (contractData.content.match(regex) && !existingValues[key]) {
+                unfilled.push({ key, config });
+              }
+            });
+          }
+          setUnfilledPlaceholders(unfilled);
+        } catch (err) {
+          console.error('Error loading template:', err);
+        }
+      }
       
       // Check if document already uploaded by landlord
-      if (response.data.signature?.document_upload) {
+      if (contractData.signature?.document_upload) {
         setDocumentUploaded(true);
       }
       
       // Check if already signed
-      if (response.data.status === 'pending-signature' || response.data.status === 'signed') {
+      if (contractData.status === 'pending-signature' || contractData.status === 'signed') {
         setStep(4); // Go directly to success
       } else {
         // Always start with step 1 - contract review
         setStep(1);
         
         // Check if we need additional info for signer data
-        const needsName = !response.data.signer_name;
-        const needsPhone = !response.data.signer_phone;
-        const needsEmail = !response.data.signer_email;
+        const needsName = !contractData.signer_name;
+        const needsPhone = !contractData.signer_phone;
+        const needsEmail = !contractData.signer_email;
         
         // Show form if ANY required field is missing (email is also important for notifications)
         if (needsName || needsPhone || needsEmail) {
