@@ -54,6 +54,11 @@ const SignContractPage = () => {
     email: ''
   });
   const [needsInfo, setNeedsInfo] = useState(false);
+  
+  // Template and placeholder states
+  const [template, setTemplate] = useState(null);
+  const [placeholderValues, setPlaceholderValues] = useState({});
+  const [unfilledPlaceholders, setUnfilledPlaceholders] = useState([]);
 
   // Cooldown timer
   useEffect(() => {
