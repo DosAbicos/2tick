@@ -223,18 +223,23 @@ const SignContractPage = () => {
         }
       }
       
-      // Save placeholder values to contract
+      // Save placeholder values to contract using public endpoint
       try {
         const mergedValues = { ...contract.placeholder_values, ...placeholderValues };
         console.log('Saving placeholder values:', mergedValues);
         
-        await axios.put(`${API}/contracts/${id}`, {
+        const response = await axios.post(`${API}/sign/${id}/update-signer-info`, {
           placeholder_values: mergedValues
         });
         
-        // Reload contract to get updated content
-        const response = await axios.get(`${API}/sign/${id}`);
-        setContract(response.data);
+        // Update local contract state with response from backend
+        if (response.data.contract) {
+          setContract(prev => ({
+            ...prev,
+            placeholder_values: mergedValues,
+            content: response.data.contract.content || prev.content
+          }));
+        }
         
         // Mark that all required info is now filled
         setNeedsInfo(false);
