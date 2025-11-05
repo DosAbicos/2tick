@@ -23,7 +23,9 @@ const CreateContractPage = () => {
   const templateId = searchParams.get('template_id');
   
   const [loading, setLoading] = useState(false);
-  const [loadingTemplate, setLoadingTemplate] = useState(false);
+  const storedTemplateId = sessionStorage.getItem('selectedTemplateId');
+  const hasTemplateId = templateId || storedTemplateId;
+  const [loadingTemplate, setLoadingTemplate] = useState(!!hasTemplateId); // true if template should be loaded
   const token = localStorage.getItem('token');
   
   // Template data from marketplace
