@@ -2067,7 +2067,7 @@ class SignerInfoUpdate(BaseModel):
 
 @api_router.post("/sign/{contract_id}/update-signer-info")
 async def update_signer_info(contract_id: str, data: SignerInfoUpdate):
-    logging.info(f"Update signer info called: name={data.signer_name}, phone={data.signer_phone}, email={data.signer_email}")
+    logging.info(f"Update signer info called: name={data.signer_name}, phone={data.signer_phone}, email={data.signer_email}, placeholder_values={data.placeholder_values}")
     
     contract = await db.contracts.find_one({"id": contract_id})
     if not contract:
@@ -2081,39 +2081,75 @@ async def update_signer_info(contract_id: str, data: SignerInfoUpdate):
     if data.signer_email:
         update_data['signer_email'] = data.signer_email
     
+    # Handle placeholder_values if provided
+    if data.placeholder_values:
+        update_data['placeholder_values'] = data.placeholder_values
+    
     logging.info(f"Update data: {update_data}")
     
     if update_data:
-        # Update the content with new signer information
+        # Update the content with new signer information or placeholder values
         current_content = contract.get('content', '')
         updated_content = current_content
         
-        # Get current and new values
-        old_name = contract.get('signer_name', '[ФИО]')
-        old_phone = contract.get('signer_phone', '[Телефон]')
-        old_email = contract.get('signer_email', '[Email]')
-        
-        new_name = data.signer_name or old_name
-        new_phone = data.signer_phone or old_phone
-        new_email = data.signer_email or old_email
-        
-        # Replace placeholders or old values with new values
-        # Support both [ФИО] and [ФИО Нанимателя] placeholders
-        if data.signer_name:
-            updated_content = updated_content.replace('[ФИО Нанимателя]', new_name)
-            updated_content = updated_content.replace('[ФИО]', new_name)
-            if old_name and old_name not in ['[ФИО]', '[ФИО Нанимателя]']:
-                updated_content = updated_content.replace(old_name, new_name)
-        
-        if data.signer_phone:
-            updated_content = updated_content.replace('[Телефон]', new_phone)
-            if old_phone and old_phone != '[Телефон]':
-                updated_content = updated_content.replace(old_phone, new_phone)
-        
-        if data.signer_email:
-            updated_content = updated_content.replace('[Email]', new_email)
-            if old_email and old_email != '[Email]':
-                updated_content = updated_content.replace(old_email, new_email)
+        # If placeholder_values are being updated and contract has a template, replace placeholders in content
+        if data.placeholder_values and contract.get('template_id'):
+            try:
+                # Load template to get placeholder configs
+                template = await db.contract_templates.find_one({"id": contract['template_id']})
+                if template and template.get('placeholders'):
+                    placeholder_values = data.placeholder_values
+                    
+                    # Replace all placeholders with their values
+                    for key, value in placeholder_values.items():
+                        if key in template['placeholders']:
+                            config = template['placeholders'][key]
+                            
+                            # Format dates to DD.MM.YYYY
+                            if config.get('type') == 'date' and value:
+                                try:
+                                    from datetime import datetime as dt
+                                    date_obj = dt.fromisoformat(value.replace('Z', '+00:00'))
+                                    value = date_obj.strftime('%d.%m.%Y')
+                                except:
+                                    pass
+                            
+                            # Replace placeholder
+                            import re
+                            pattern = re.compile(f'{{{{\\s*{key}\\s*}}}}')
+                            updated_content = pattern.sub(str(value) if value else f'[{config.get("label", key)}]', updated_content)
+                    
+                    logging.info(f"Placeholders replaced in content")
+            except Exception as e:
+                logging.error(f"Error replacing placeholders: {e}")
+        else:
+            # Old logic for contracts without template
+            # Get current and new values
+            old_name = contract.get('signer_name', '[ФИО]')
+            old_phone = contract.get('signer_phone', '[Телефон]')
+            old_email = contract.get('signer_email', '[Email]')
+            
+            new_name = data.signer_name or old_name
+            new_phone = data.signer_phone or old_phone
+            new_email = data.signer_email or old_email
+            
+            # Replace placeholders or old values with new values
+            # Support both [ФИО] and [ФИО Нанимателя] placeholders
+            if data.signer_name:
+                updated_content = updated_content.replace('[ФИО Нанимателя]', new_name)
+                updated_content = updated_content.replace('[ФИО]', new_name)
+                if old_name and old_name not in ['[ФИО]', '[ФИО Нанимателя]']:
+                    updated_content = updated_content.replace(old_name, new_name)
+            
+            if data.signer_phone:
+                updated_content = updated_content.replace('[Телефон]', new_phone)
+                if old_phone and old_phone != '[Телефон]':
+                    updated_content = updated_content.replace(old_phone, new_phone)
+            
+            if data.signer_email:
+                updated_content = updated_content.replace('[Email]', new_email)
+                if old_email and old_email != '[Email]':
+                    updated_content = updated_content.replace(old_email, new_email)
         
         # Add content to update data
         update_data['content'] = updated_content
