@@ -213,51 +213,83 @@ const SignContractPage = () => {
   };
 
   const handleSaveSignerInfo = async () => {
-    // Validate required fields
-    if (needsInfo) {
-      if ((!contract.signer_name || contract.signer_name === 'Не указано') && !signerInfo.name) {
-        toast.error('Пожалуйста, укажите ФИО');
+    // If contract has template with placeholders, validate them
+    if (template && unfilledPlaceholders.length > 0) {
+      // Check if all required placeholders are filled
+      for (const { key, config } of unfilledPlaceholders) {
+        if (config.required && !placeholderValues[key]) {
+          toast.error(`Пожалуйста, заполните поле: ${config.label}`);
+          return;
+        }
+      }
+      
+      // Save placeholder values to contract
+      try {
+        await axios.patch(`${API}/contracts/${id}`, {
+          placeholder_values: { ...contract.placeholder_values, ...placeholderValues }
+        });
+        
+        // Reload contract to get updated content
+        const response = await axios.get(`${API}/sign/${id}`);
+        setContract(response.data);
+        
+        // Mark that all required info is now filled
+        setNeedsInfo(false);
+        
+        toast.success('Информация сохранена');
+        
+        // Always move to document step after saving info
+        setStep(2);
+      } catch (error) {
+        toast.error(t('common.error'));
+      }
+    } else {
+      // For old contracts without template, validate old fields
+      if (needsInfo) {
+        if ((!contract.signer_name || contract.signer_name === 'Не указано') && !signerInfo.name) {
+          toast.error('Пожалуйста, укажите ФИО');
+          return;
+        }
+        if (!contract.signer_phone && !signerInfo.phone) {
+          toast.error('Пожалуйста, укажите телефон');
+          return;
+        }
+      }
+      
+      // Validate email if provided
+      if (signerInfo.email && !validateEmail(signerInfo.email)) {
+        toast.error('Введите корректный email адрес');
         return;
       }
-      if (!contract.signer_phone && !signerInfo.phone) {
-        toast.error('Пожалуйста, укажите телефон');
-        return;
+      
+      try {
+        const response = await axios.post(`${API}/sign/${id}/update-signer-info`, {
+          signer_name: signerInfo.name || undefined,
+          signer_phone: signerInfo.phone || undefined,
+          signer_email: signerInfo.email || undefined
+        });
+        
+        // Update local contract state with response from backend
+        if (response.data.contract) {
+          setContract(prev => ({
+            ...prev,
+            signer_name: response.data.contract.signer_name || prev.signer_name,
+            signer_phone: response.data.contract.signer_phone || prev.signer_phone,
+            signer_email: response.data.contract.signer_email || prev.signer_email,
+            content: response.data.contract.content || prev.content // Update content as well
+          }));
+        }
+        
+        // Mark that all required info is now filled
+        setNeedsInfo(false);
+        
+        toast.success('Информация сохранена');
+        
+        // Always move to document step after saving info
+        setStep(2);
+      } catch (error) {
+        toast.error(t('common.error'));
       }
-    }
-    
-    // Validate email if provided
-    if (signerInfo.email && !validateEmail(signerInfo.email)) {
-      toast.error('Введите корректный email адрес');
-      return;
-    }
-    
-    try {
-      const response = await axios.post(`${API}/sign/${id}/update-signer-info`, {
-        signer_name: signerInfo.name || undefined,
-        signer_phone: signerInfo.phone || undefined,
-        signer_email: signerInfo.email || undefined
-      });
-      
-      // Update local contract state with response from backend
-      if (response.data.contract) {
-        setContract(prev => ({
-          ...prev,
-          signer_name: response.data.contract.signer_name || prev.signer_name,
-          signer_phone: response.data.contract.signer_phone || prev.signer_phone,
-          signer_email: response.data.contract.signer_email || prev.signer_email,
-          content: response.data.contract.content || prev.content // Update content as well
-        }));
-      }
-      
-      // Mark that all required info is now filled
-      setNeedsInfo(false);
-      
-      toast.success('Информация сохранена');
-      
-      // Always move to document step after saving info
-      setStep(2);
-    } catch (error) {
-      toast.error(t('common.error'));
     }
   };
 
