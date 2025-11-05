@@ -470,9 +470,10 @@ class BackendTester:
         return success
     
     def run_all_tests(self):
-        """Run all backend tests"""
+        """Run all backend tests based on Russian review request"""
         self.log("🚀 Starting Backend Tests for Contract Management System")
-        self.log("=" * 60)
+        self.log("🇷🇺 Testing specific scenarios from Russian review request")
+        self.log("=" * 80)
         
         # Login first
         if not self.login_as_creator():
@@ -481,33 +482,53 @@ class BackendTester:
         
         all_tests_passed = True
         
-        # Test 1: Create contract with empty signer fields
-        contract_id, test1_passed = self.test_create_contract_with_empty_signer_fields()
+        # ТЕСТ 1: Создание контракта из шаблона с tenant плейсхолдерами
+        contract_id, test1_passed = self.test_create_contract_from_template_with_tenant_placeholders()
         all_tests_passed = all_tests_passed and test1_passed
         
         if contract_id:
-            # Test 2: Update signer info
-            test2_passed = self.test_update_signer_info(contract_id)
+            # ТЕСТ 2: Обновление placeholder_values через PATCH
+            test2_passed = self.test_update_placeholder_values_via_patch(contract_id)
             all_tests_passed = all_tests_passed and test2_passed
-            
-            # Test 3: Verify data persistence
-            test3_passed = self.test_verify_data_persistence(contract_id)
-            all_tests_passed = all_tests_passed and test3_passed
         
-        # Test 4: Template tests
+        # ТЕСТ 3: Проверка фильтрации tenant плейсхолдеров
         template_id, templates = self.test_get_templates()
         if template_id:
-            template_contract_id, test4_passed = self.test_create_contract_from_template(template_id)
-            all_tests_passed = all_tests_passed and test4_passed
+            test3_passed = self.test_tenant_placeholder_filtering(template_id)
+            all_tests_passed = all_tests_passed and test3_passed
         else:
-            self.log("⚠️ Skipping template tests - no templates available")
+            self.log("⚠️ Skipping template filtering test - no templates available")
+            test3_passed = True  # Don't fail if no templates
+        
+        # Additional legacy tests for completeness
+        self.log(f"\n📝 ДОПОЛНИТЕЛЬНЫЕ ТЕСТЫ: Базовая функциональность...")
+        
+        # Legacy Test 1: Create contract with empty signer fields
+        legacy_contract_id, legacy_test1_passed = self.test_create_contract_with_empty_signer_fields()
+        all_tests_passed = all_tests_passed and legacy_test1_passed
+        
+        if legacy_contract_id:
+            # Legacy Test 2: Update signer info
+            legacy_test2_passed = self.test_update_signer_info(legacy_contract_id)
+            all_tests_passed = all_tests_passed and legacy_test2_passed
+            
+            # Legacy Test 3: Verify data persistence
+            legacy_test3_passed = self.test_verify_data_persistence(legacy_contract_id)
+            all_tests_passed = all_tests_passed and legacy_test3_passed
         
         # Summary
-        self.log("\n" + "=" * 60)
+        self.log("\n" + "=" * 80)
+        self.log("📊 РЕЗУЛЬТАТЫ ТЕСТИРОВАНИЯ:")
+        self.log(f"   ТЕСТ 1 (Создание из шаблона): {'✅ ПРОЙДЕН' if test1_passed else '❌ ПРОВАЛЕН'}")
+        if contract_id:
+            self.log(f"   ТЕСТ 2 (Обновление placeholder_values): {'✅ ПРОЙДЕН' if test2_passed else '❌ ПРОВАЛЕН'}")
+        if template_id:
+            self.log(f"   ТЕСТ 3 (Фильтрация tenant плейсхолдеров): {'✅ ПРОЙДЕН' if test3_passed else '❌ ПРОВАЛЕН'}")
+        
         if all_tests_passed:
-            self.log("🎉 ALL TESTS PASSED! Backend is working correctly.")
+            self.log("🎉 ВСЕ ТЕСТЫ ПРОЙДЕНЫ! Backend работает корректно после исправлений.")
         else:
-            self.log("❌ SOME TESTS FAILED! Check the logs above for details.")
+            self.log("❌ НЕКОТОРЫЕ ТЕСТЫ ПРОВАЛЕНЫ! Проверьте логи выше для деталей.")
         
         return all_tests_passed
 
