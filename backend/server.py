@@ -2101,7 +2101,7 @@ async def update_signer_info(contract_id: str, data: SignerInfoUpdate):
                 if template and template.get('placeholders'):
                     placeholder_values = data.placeholder_values
                     
-                    # Replace ONLY placeholders that have values (keep empty ones as {{key}})
+                    # Replace ONLY placeholders that have values
                     for key, value in placeholder_values.items():
                         if key in template['placeholders'] and value:  # Only replace if value is not empty
                             config = template['placeholders'][key]
@@ -2115,10 +2115,14 @@ async def update_signer_info(contract_id: str, data: SignerInfoUpdate):
                                 except:
                                     pass
                             
-                            # Replace placeholder
+                            # Replace placeholder (both {{key}} and [label] for backwards compatibility)
                             import re
+                            # Replace {{key}}
                             pattern = re.compile(f'{{{{\\s*{key}\\s*}}}}')
                             updated_content = pattern.sub(str(value), updated_content)
+                            # Replace [label] (for old contracts)
+                            label = config.get('label', key)
+                            updated_content = updated_content.replace(f'[{label}]', str(value))
                     
                     logging.info(f"Placeholders replaced in content")
             except Exception as e:
