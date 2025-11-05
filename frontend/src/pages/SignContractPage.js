@@ -110,6 +110,7 @@ const SignContractPage = () => {
       setContract(contractData);
       
       // Load template if contract was created from template
+      let unfilledTenantPlaceholders = [];
       if (contractData.template_id) {
         try {
           const templateResponse = await axios.get(`${API}/templates/${contractData.template_id}`);
@@ -119,21 +120,28 @@ const SignContractPage = () => {
           const existingValues = contractData.placeholder_values || {};
           setPlaceholderValues(existingValues);
           
-          // Find unfilled placeholders (those that are still in {{}} format in content)
+          // Find unfilled placeholders for tenant/signer (those that are still in {{}} format in content OR not filled in placeholder_values)
           const unfilled = [];
           if (templateResponse.data.placeholders) {
             Object.entries(templateResponse.data.placeholders).forEach(([key, config]) => {
               // Skip calculated fields
               if (config.type === 'calculated') return;
               
-              // Check if placeholder is still in content (not filled)
+              // Check if this is a tenant/signer placeholder
+              const isTenantField = config.owner === 'tenant' || config.owner === 'signer';
+              
+              // Check if placeholder is not filled (either still in {{}} format OR not in placeholder_values)
               const regex = new RegExp(`{{${key}}}`, 'g');
-              if (contractData.content.match(regex) && !existingValues[key]) {
+              const isInContent = contractData.content.match(regex);
+              const isNotFilled = !existingValues[key];
+              
+              if (isTenantField && (isInContent || isNotFilled)) {
                 unfilled.push({ key, config });
               }
             });
           }
           setUnfilledPlaceholders(unfilled);
+          unfilledTenantPlaceholders = unfilled;
         } catch (err) {
           console.error('Error loading template:', err);
         }
@@ -151,16 +159,26 @@ const SignContractPage = () => {
         // Always start with step 1 - contract review
         setStep(1);
         
-        // Check if we need additional info for signer data
-        // Also check for "Не указано" for backwards compatibility with old contracts
-        const needsName = !contractData.signer_name || contractData.signer_name === 'Не указано';
-        const needsPhone = !contractData.signer_phone;
-        const needsEmail = !contractData.signer_email;
+        // Check if we need additional info
+        let needsInfoFlag = false;
         
-        // Show form if ANY required field is missing (email is also important for notifications)
-        if (needsName || needsPhone || needsEmail) {
-          setNeedsInfo(true);
+        // If contract has template, check unfilled tenant placeholders
+        if (contractData.template_id && unfilledTenantPlaceholders.length > 0) {
+          needsInfoFlag = true;
+        } else {
+          // For old contracts without template, check old fields
+          // Also check for "Не указано" for backwards compatibility
+          const needsName = !contractData.signer_name || contractData.signer_name === 'Не указано';
+          const needsPhone = !contractData.signer_phone;
+          const needsEmail = !contractData.signer_email;
+          
+          // Show form if ANY required field is missing
+          if (needsName || needsPhone || needsEmail) {
+            needsInfoFlag = true;
+          }
         }
+        
+        setNeedsInfo(needsInfoFlag);
       }
     } catch (error) {
       toast.error(t('common.error'));
