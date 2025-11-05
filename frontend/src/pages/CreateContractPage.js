@@ -929,7 +929,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                         (config.owner === 'tenant' || config.owner === 'signer') && config.type !== 'calculated'
                       ) && (
                         <Collapsible>
-                          <div className="p-4 bg-amber-50/50 border border-amber-200 rounded-lg">
+                          <div className="p-4 bg-gradient-to-br from-purple-50/50 to-pink-50/50 border-2 border-dashed border-purple-200 rounded-xl">
                             <CollapsibleTrigger asChild>
                               <Button
                                 type="button"
@@ -937,14 +937,14 @@ Email: ${templateData.tenant_email || '[Email]'}
                                 className="flex w-full items-center justify-between p-0 hover:bg-transparent"
                               >
                                 <div className="text-left">
-                                  <h3 className="font-semibold text-amber-900 flex items-center gap-2">
+                                  <h3 className="font-semibold text-purple-900 flex items-center gap-2">
                                     👤 Поля для заполнения клиентом (нанимателем)
                                   </h3>
-                                  <p className="text-xs text-amber-700 mt-1">
+                                  <p className="text-xs text-purple-700 mt-1">
                                     Эти поля может заполнить клиент при подписании. Вы можете заполнить их сейчас, если есть данные
                                   </p>
                                 </div>
-                                <span className="text-xs text-amber-600">▼ Развернуть</span>
+                                <span className="text-xs text-purple-600">▼ Развернуть</span>
                               </Button>
                             </CollapsibleTrigger>
                             
