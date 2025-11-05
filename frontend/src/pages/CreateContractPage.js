@@ -543,6 +543,7 @@ Email: ${templateData.tenant_email || '[Email]'}
         content_type: selectedTemplate ? selectedTemplate.content_type : (isHtmlContent ? 'html' : 'plain'),
         source_type: selectedTemplate ? 'template' : 'manual',
         template_id: selectedTemplate ? selectedTemplate.id : undefined,
+        placeholder_values: selectedTemplate ? placeholderValues : undefined,
         signer_name: signerName || 'Не указано',
         signer_phone: signerPhone || '',
         signer_email: signerEmail,
