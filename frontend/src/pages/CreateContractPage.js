@@ -1299,7 +1299,10 @@ Email: ${templateData.tenant_email || '[Email]'}
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => navigate('/dashboard')}
+                    onClick={() => {
+                      sessionStorage.removeItem('selectedTemplateId');
+                      navigate('/dashboard');
+                    }}
                     data-testid="cancel-button"
                   >
                     {t('common.cancel')}
