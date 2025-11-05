@@ -151,6 +151,11 @@ const CreateContractPage = () => {
   }, [templateId]);
 
   const loadTemplateFromMarket = async (id) => {
+    // Prevent double loading
+    if (selectedTemplate && selectedTemplate.id === id) {
+      return;
+    }
+    
     setLoadingTemplate(true);
     try {
       const response = await axios.get(`${API}/templates/${id}`);
