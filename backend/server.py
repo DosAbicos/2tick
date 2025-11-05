@@ -211,6 +211,8 @@ class ContractCreate(BaseModel):
     title: str
     content: str
     content_type: str = "plain"  # "plain" or "html"
+    template_id: Optional[str] = None  # ID шаблона, если создан из шаблона
+    placeholder_values: Optional[dict] = None  # Значения placeholders {key: value}
     signer_name: Optional[str] = None  # Can be filled by signer
     signer_phone: Optional[str] = None  # Can be filled by signer
     signer_email: Optional[str] = None
