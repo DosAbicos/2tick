@@ -1320,6 +1320,8 @@ Email: ${templateData.tenant_email || '[Email]'}
                   </div>
                 </div>
                 )}
+                  </>
+                )}
 
                 {/* Submit Buttons */}
                 <div className="flex gap-3 pt-4 border-t">
