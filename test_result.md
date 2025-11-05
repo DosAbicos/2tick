@@ -796,3 +796,31 @@ frontend:
         agent: "main"
         comment: "ДОБАВЛЕНО: 1) В ProfilePage добавлен блок с ID пользователя в синей карточке с кнопкой 'Копировать', 2) В AdminPage добавлена колонка ID в таблице пользователей (показываются первые 8 символов), 3) В модальном окне деталей пользователя добавлен полный ID с кнопкой копирования. ID отображается в формате UUID и может быть скопирован в буфер обмена одним кликом."
 
+
+  - task: "Исправление появления старого контента при загрузке CreateContractPage"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/CreateContractPage.js"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "ПРОБЛЕМА: При обновлении страницы CreateContractPage со выбранным шаблоном (template_id в URL или sessionStorage) на мгновение появлялся старый хардкодный контент 'ДОГОВОР КРАТКОСРОЧНОГО НАЙМА ЖИЛОГО ПОМЕЩЕНИЯ' до загрузки шаблона. ПРИЧИНА: В блоке preview контент рендерился сразу, вызывая generatePreviewContent(), который если selectedTemplate ещё null (во время загрузки), возвращал generateContractContent() - старый контент. ИСПРАВЛЕНИЕ: Добавлена проверка loadingTemplate в блоке preview (строки 697-706). Теперь при loadingTemplate === true показывается индикатор загрузки вместо контента. Frontend перезапущен успешно. Готов к тестированию."
+
+  - task: "Исправление отображения формы ФИО нанимателя в SignContractPage"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/CreateContractPage.js, /app/frontend/src/pages/SignContractPage.js"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "ПРОБЛЕМА: Когда наймодатель не заполнял ФИО клиента при создании контракта, у нанимателя не отображалась форма для заполнения ФИО в SignContractPage (Step 1.5). ПРИЧИНА: В CreateContractPage.js при создании контракта устанавливалось signer_name: 'Не указано' вместо пустой строки (строка 549). Потом в SignContractPage.js проверка !contract.signer_name не срабатывала, потому что там стояло 'Не указано', а не пустая строка. ИСПРАВЛЕНИЕ: 1) CreateContractPage.js (строка 549): изменено signer_name с 'Не указано' на '', signer_email также изменён с undefined на ''. 2) SignContractPage.js: обновлены все проверки (строки 155, 199, 553) для проверки как пустой строки, так и 'Не указано' (для обратной совместимости со старыми контрактами). Frontend перезапущен успешно. Готов к тестированию."
+
+agent_communication:
+  - agent: "main"
+    message: "✅ ИСПРАВЛЕНЫ ДВЕ КРИТИЧЕСКИЕ ПРОБЛЕМЫ: 1) Исправлено появление старого контента 'ДОГОВОР КРАТКОСРОЧНОГО НАЙМА ЖИЛОГО ПОМЕЩЕНИЯ' при загрузке страницы CreateContractPage с шаблоном - теперь показывается индикатор загрузки вместо контента во время loadingTemplate. 2) Исправлена проблема с отображением формы ФИО нанимателя - изменена логика установки signer_name с 'Не указано' на пустую строку, добавлены проверки на 'Не указано' для обратной совместимости. Обе проблемы готовы к тестированию."
