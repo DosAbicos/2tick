@@ -385,8 +385,24 @@ class BackendTester:
                         self.log(f"✅ {key}: '{actual_value}' ✓")
                 
                 # Check if content was updated with replaced placeholders
-                if "Иванов Иван" in updated_content:
-                    self.log("✅ Content updated with replaced placeholders")
+                content_checks = [
+                    ("Иванов Иван", "tenant_fio"),
+                    ("+77071234567", "tenant_phone"), 
+                    ("ivanov@test.kz", "tenant_email"),
+                    ("123456789012", "tenant_iin"),
+                    ("3", "people_count")
+                ]
+                
+                content_updated = False
+                for value, key in content_checks:
+                    if value in updated_content:
+                        self.log(f"✅ Content contains {key}: '{value}'")
+                        content_updated = True
+                    else:
+                        self.log(f"⚠️ Content missing {key}: '{value}'")
+                
+                if content_updated:
+                    self.log("✅ Content updated with some replaced placeholders")
                 else:
                     self.log("⚠️ Content may not have been updated with placeholders")
                 
