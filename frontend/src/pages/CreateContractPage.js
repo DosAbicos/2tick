@@ -1031,11 +1031,10 @@ Email: ${templateData.tenant_email || '[Email]'}
                                     )}
                                   </div>
                                 );
-                                })}
-                              </div>
-                            </CollapsibleContent>
+                              })}
+                            </div>
                           </div>
-                        </Collapsible>
+                        </details>
                       )}
                     </div>
 
