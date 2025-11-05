@@ -174,6 +174,7 @@ class Contract(BaseModel):
     creator_id: str
     source_type: str = "manual"  # "manual", "template", "uploaded_pdf"
     template_id: Optional[str] = None  # ID шаблона, если создан из шаблона
+    placeholder_values: Optional[dict] = None  # Значения placeholders {key: value}
     uploaded_pdf_path: Optional[str] = None  # Путь к загруженному PDF
     contract_number: Optional[str] = None  # Sequential number: 01, 02, 010, 0110, etc.
     contract_code: Optional[str] = None  # Unique short code: ABC-1234
