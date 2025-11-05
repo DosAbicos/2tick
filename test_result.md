@@ -846,3 +846,31 @@ metadata:
 agent_communication:
   - agent: "main"
     message: "✅ ИСПРАВЛЕНА ПРОБЛЕМА С ОТОБРАЖЕНИЕМ СТАРЫХ ПОЛЕЙ ПРИ ЗАГРУЗКЕ ШАБЛОНА: Добавлена проверка loadingTemplate в форме CreateContractPage (строки 785-792). Теперь при загрузке шаблона (loadingTemplate === true) показывается индикатор 'Загрузка полей шаблона...' вместо старых полей формы. Frontend hot reload применил изменения автоматически. Backend тест подтвердил что signer_name сохраняется как пустая строка. Готов к финальному тестированию пользователем."
+
+  - task: "Исправление дублирования загрузки шаблона в CreateContractPage"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/CreateContractPage.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "ПРОБЛЕМА: Сообщение 'Шаблон загружен' появлялось дважды при загрузке CreateContractPage с шаблоном. ПРИЧИНА: Функция loadTemplateFromMarket вызывалась дважды из-за двойного рендера или изменения зависимостей в useEffect. ИСПРАВЛЕНИЕ: Добавлена проверка в начале loadTemplateFromMarket (строка 154-157) - если шаблон уже загружен (selectedTemplate.id === id), функция завершается без повторной загрузки. Frontend hot reload применил изменения. Готов к тестированию."
+
+  - task: "Отображение всех незаполненных плейсхолдеров нанимателя при подписании"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/SignContractPage.js"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "ПРОБЛЕМА: При подписании контракта нанимателю показывались только поля ФИО, телефон и email, хотя в шаблоне были и другие плейсхолдеры (ИИН клиента, количество человек и т.д.). ПРИЧИНА: Логика needsInfo проверяла только старые хардкодные поля (signer_name, signer_phone, signer_email), но не проверяла незаполненные плейсхолдеры из шаблона с owner='tenant' или 'signer'. ИСПРАВЛЕНИЕ: 1) Обновлена логика в fetchContract (строки 112-168) - теперь ищутся все незаполненные плейсхолдеры с owner='tenant'/'signer', и если они есть, устанавливается needsInfo=true. 2) Обновлен Step 1.5 (строки 559-690) - теперь показывает либо динамические плейсхолдеры из шаблона (если есть), либо старые поля (для совместимости). 3) Обновлена handleSaveSignerInfo (строки 215-279) - теперь сохраняет плейсхолдеры через PATCH /api/contracts/{id} если есть шаблон. Frontend hot reload применил изменения. Готов к тестированию."
+
+agent_communication:
+  - agent: "main"
+    message: "✅ ИСПРАВЛЕНЫ ДВЕ НОВЫЕ ПРОБЛЕМЫ: 1) Дублирование загрузки шаблона - добавлена проверка в loadTemplateFromMarket чтобы предотвратить повторную загрузку уже загруженного шаблона. 2) Отображение всех плейсхолдеров нанимателя - обновлена логика SignContractPage для поиска всех незаполненных плейсхолдеров с owner='tenant'/'signer' и их отображения в форме Step 1.5. Теперь наниматель видит ВСЕ плейсхолдеры из шаблона (ИИН, ФИО, телефон, email, количество человек и т.д.), которые не заполнил наймодатель. Frontend hot reload применил изменения. Готов к тестированию пользователем."
