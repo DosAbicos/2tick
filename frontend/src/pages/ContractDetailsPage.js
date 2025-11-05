@@ -525,19 +525,46 @@ const ContractDetailsPage = () => {
                     )}
                     
                     <div className="space-y-2 text-sm">
-                      <div>
-                        <span className="text-neutral-500">Имя:</span>
-                        <p className="font-medium">{contract.signer_name}</p>
-                      </div>
-                      <div>
-                        <span className="text-neutral-500">Телефон:</span>
-                        <p className="font-medium">{contract.signer_phone}</p>
-                      </div>
-                      {contract.signer_email && (
-                        <div>
-                          <span className="text-neutral-500">Email:</span>
-                          <p className="font-medium">{contract.signer_email}</p>
-                        </div>
+                      {/* Show dynamic placeholders from template if available */}
+                      {template && template.placeholders && contract.placeholder_values ? (
+                        <>
+                          {Object.entries(template.placeholders)
+                            .filter(([key, config]) => config.owner === 'tenant' || config.owner === 'signer')
+                            .map(([key, config]) => {
+                              const value = contract.placeholder_values[key];
+                              if (value) {
+                                return (
+                                  <div key={key}>
+                                    <span className="text-neutral-500">{config.label}:</span>
+                                    <p className="font-medium">{value}</p>
+                                  </div>
+                                );
+                              }
+                              return null;
+                            })}
+                        </>
+                      ) : (
+                        // Fallback to old fields for contracts without template
+                        <>
+                          {contract.signer_name && (
+                            <div>
+                              <span className="text-neutral-500">Имя:</span>
+                              <p className="font-medium">{contract.signer_name}</p>
+                            </div>
+                          )}
+                          {contract.signer_phone && (
+                            <div>
+                              <span className="text-neutral-500">Телефон:</span>
+                              <p className="font-medium">{contract.signer_phone}</p>
+                            </div>
+                          )}
+                          {contract.signer_email && (
+                            <div>
+                              <span className="text-neutral-500">Email:</span>
+                              <p className="font-medium">{contract.signer_email}</p>
+                            </div>
+                          )}
+                        </>
                       )}
                       <div>
                         <span className="text-neutral-500">Метод подписания:</span>
