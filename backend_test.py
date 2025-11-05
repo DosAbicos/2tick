@@ -26,6 +26,58 @@ class BackendTester:
         timestamp = datetime.now().strftime("%H:%M:%S")
         print(f"[{timestamp}] {message}")
         
+    def register_test_user(self):
+        """Register a test user for testing"""
+        self.log("📝 Registering test user...")
+        
+        user_data = {
+            "email": TEST_USER_EMAIL,
+            "password": TEST_USER_PASSWORD,
+            "full_name": "Test Creator",
+            "phone": "+77012345678",
+            "company_name": "Test Company",
+            "iin": "123456789012",
+            "legal_address": "Test Address, Almaty"
+        }
+        
+        response = self.session.post(f"{BASE_URL}/auth/register", json=user_data)
+        
+        if response.status_code == 200:
+            data = response.json()
+            registration_id = data["registration_id"]
+            self.log(f"✅ Registration created. ID: {registration_id}")
+            
+            # For testing, we'll use SMS verification with mock OTP
+            otp_response = self.session.post(f"{BASE_URL}/auth/registration/{registration_id}/request-otp?method=sms")
+            if otp_response.status_code == 200:
+                otp_data = otp_response.json()
+                mock_otp = otp_data.get("mock_otp")
+                if mock_otp:
+                    self.log(f"📱 Mock OTP received: {mock_otp}")
+                    
+                    # Verify OTP
+                    verify_response = self.session.post(f"{BASE_URL}/auth/registration/{registration_id}/verify-otp", 
+                                                      json={"otp_code": mock_otp})
+                    if verify_response.status_code == 200:
+                        verify_data = verify_response.json()
+                        self.token = verify_data["token"]
+                        self.user_id = verify_data["user"]["id"]
+                        self.session.headers.update({"Authorization": f"Bearer {self.token}"})
+                        self.log(f"✅ User registered and verified. User ID: {self.user_id}")
+                        return True
+                    else:
+                        self.log(f"❌ OTP verification failed: {verify_response.status_code} - {verify_response.text}")
+                        return False
+                else:
+                    self.log("❌ No mock OTP received")
+                    return False
+            else:
+                self.log(f"❌ OTP request failed: {otp_response.status_code} - {otp_response.text}")
+                return False
+        else:
+            self.log(f"❌ Registration failed: {response.status_code} - {response.text}")
+            return False
+
     def login_as_creator(self):
         """Login as creator user"""
         self.log("🔐 Logging in as creator...")
@@ -46,7 +98,9 @@ class BackendTester:
             return True
         else:
             self.log(f"❌ Login failed: {response.status_code} - {response.text}")
-            return False
+            # Try to register if login fails
+            self.log("🔄 Attempting to register new user...")
+            return self.register_test_user()
     
     def test_create_contract_with_empty_signer_fields(self):
         """Test 1: Create contract with empty signer fields"""
