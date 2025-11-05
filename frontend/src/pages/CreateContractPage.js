@@ -1036,61 +1036,62 @@ Email: ${templateData.tenant_email || '[Email]'}
                                 );
                               })}
                             </div>
+                            
+                            {/* Tenant Document Upload inside tenant fields */}
+                            {selectedTemplate.requires_tenant_document && (
+                              <div className="mt-6 pt-6 border-t border-slate-200">
+                                <div className="p-4 bg-gradient-to-br from-indigo-50 to-blue-50 border-2 border-indigo-200 rounded-xl">
+                                  <Label className="font-semibold text-indigo-900 flex items-center gap-2">
+                                    📄 Удостоверение личности нанимателя
+                                  </Label>
+                                  <p className="text-xs text-indigo-700 mt-1 mb-3">
+                                    Вы можете загрузить удостоверение нанимателя сейчас (если есть копия), 
+                                    или наниматель загрузит его при подписании
+                                  </p>
+                                  
+                                  <div className="flex gap-2 items-center">
+                                    <Input
+                                      type="file"
+                                      accept="image/*,application/pdf"
+                                      onChange={(e) => {
+                                        const file = e.target.files[0];
+                                        if (file) {
+                                          setTenantDocument(file);
+                                          const reader = new FileReader();
+                                          reader.onload = () => setTenantDocPreview(reader.result);
+                                          reader.readAsDataURL(file);
+                                          toast.success('Документ выбран');
+                                        }
+                                      }}
+                                      className="flex-1"
+                                    />
+                                    {tenantDocument && (
+                                      <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => {
+                                          setTenantDocument(null);
+                                          setTenantDocPreview(null);
+                                        }}
+                                      >
+                                        Удалить
+                                      </Button>
+                                    )}
+                                  </div>
+                                  
+                                  {tenantDocPreview && (
+                                    <div className="mt-2">
+                                      <p className="text-xs text-green-600">✓ Документ загружен: {tenantDocument.name}</p>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            )}
                           </div>
                         </details>
                       )}
                     </div>
-
-                    {/* Tenant Document Upload (if required by template) */}
-                    {selectedTemplate.requires_tenant_document && (
-                      <div className="mt-4 p-4 bg-gradient-to-br from-indigo-50 to-blue-50 border-2 border-indigo-200 rounded-xl">
-                        <Label className="font-semibold text-indigo-900 flex items-center gap-2">
-                          📄 Удостоверение личности нанимателя
-                        </Label>
-                        <p className="text-xs text-indigo-700 mt-1 mb-3">
-                          Вы можете загрузить удостоверение нанимателя сейчас (если есть копия), 
-                          или наниматель загрузит его при подписании
-                        </p>
-                        
-                        <div className="flex gap-2 items-center">
-                          <Input
-                            type="file"
-                            accept="image/*,application/pdf"
-                            onChange={(e) => {
-                              const file = e.target.files[0];
-                              if (file) {
-                                setTenantDocument(file);
-                                // Create preview
-                                const reader = new FileReader();
-                                reader.onload = () => setTenantDocPreview(reader.result);
-                                reader.readAsDataURL(file);
-                                toast.success('Документ выбран');
-                              }
-                            }}
-                            className="flex-1"
-                          />
-                          {tenantDocument && (
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => {
-                                setTenantDocument(null);
-                                setTenantDocPreview(null);
-                              }}
-                            >
-                              Удалить
-                            </Button>
-                          )}
-                        </div>
-                        
-                        {tenantDocPreview && (
-                          <div className="mt-2">
-                            <p className="text-xs text-green-600">✓ Документ загружен: {tenantDocument.name}</p>
-                          </div>
-                        )}
-                      </div>
-                    )}
                   </>
                 )}
 
