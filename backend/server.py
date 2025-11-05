@@ -1847,7 +1847,7 @@ async def update_contract(contract_id: str, update_data: dict, current_user: dic
         raise HTTPException(status_code=404, detail="Contract not found")
     
     # Only allow updating certain fields
-    allowed_fields = ['title', 'content', 'signer_name', 'signer_phone', 'signer_email']
+    allowed_fields = ['title', 'content', 'signer_name', 'signer_phone', 'signer_email', 'placeholder_values']
     filtered_data = {k: v for k, v in update_data.items() if k in allowed_fields}
     
     if filtered_data:
