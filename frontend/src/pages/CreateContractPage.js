@@ -32,6 +32,9 @@ const CreateContractPage = () => {
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [placeholderValues, setPlaceholderValues] = useState({});
   
+  // Ref to track if template is being loaded to prevent duplicate loads
+  const loadingTemplateRef = useRef(false);
+  
   // Next contract number (for display)
   const [nextContractNumber, setNextContractNumber] = useState(null);
   
