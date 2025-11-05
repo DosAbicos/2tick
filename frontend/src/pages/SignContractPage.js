@@ -551,7 +551,7 @@ const SignContractPage = () => {
                   <p className="text-neutral-600 text-sm">Для подписания договора необходима дополнительная информация</p>
                 </div>
                 
-                {!contract.signer_name && (
+                {(!contract.signer_name || contract.signer_name === 'Не указано') && (
                   <div>
                     <Label htmlFor="signer_name">ФИО *</Label>
                     <Input
