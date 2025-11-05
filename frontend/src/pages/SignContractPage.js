@@ -225,8 +225,11 @@ const SignContractPage = () => {
       
       // Save placeholder values to contract
       try {
+        const mergedValues = { ...contract.placeholder_values, ...placeholderValues };
+        console.log('Saving placeholder values:', mergedValues);
+        
         await axios.put(`${API}/contracts/${id}`, {
-          placeholder_values: { ...contract.placeholder_values, ...placeholderValues }
+          placeholder_values: mergedValues
         });
         
         // Reload contract to get updated content
