@@ -924,32 +924,48 @@ Email: ${templateData.tenant_email || '[Email]'}
                         </div>
                       )}
 
-                      {/* Tenant/Signer Fields - Collapsible */}
+                      {/* Tenant/Signer Fields - Beautiful design */}
                       {Object.entries(selectedTemplate.placeholders).some(([_, config]) => 
                         (config.owner === 'tenant' || config.owner === 'signer') && config.type !== 'calculated'
                       ) && (
-                        <Collapsible>
-                          <div className="p-4 bg-gradient-to-br from-purple-50/50 to-pink-50/50 border-2 border-dashed border-purple-200 rounded-xl">
-                            <CollapsibleTrigger asChild>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                className="flex w-full items-center justify-between p-0 hover:bg-transparent"
-                              >
-                                <div className="text-left">
-                                  <h3 className="font-semibold text-purple-900 flex items-center gap-2">
-                                    👤 Поля для заполнения клиентом (нанимателем)
-                                  </h3>
-                                  <p className="text-xs text-purple-700 mt-1">
-                                    Эти поля может заполнить клиент при подписании. Вы можете заполнить их сейчас, если есть данные
-                                  </p>
+                        <details className="group" open={false}>
+                          <summary className="cursor-pointer list-none">
+                            <div className="p-6 bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30 border-2 border-slate-200 rounded-xl hover:border-blue-300 transition-all duration-200 shadow-sm hover:shadow-md">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-lg">
+                                    👤
+                                  </div>
+                                  <div>
+                                    <h3 className="font-semibold text-slate-900 text-base">
+                                      Данные клиента (нанимателя)
+                                    </h3>
+                                    <p className="text-xs text-slate-600 mt-0.5">
+                                      Опционально • Клиент заполнит при подписании
+                                    </p>
+                                  </div>
                                 </div>
-                                <span className="text-xs text-purple-600">▼ Развернуть</span>
-                              </Button>
-                            </CollapsibleTrigger>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 font-medium">
+                                    <span className="group-open:hidden">Развернуть</span>
+                                    <span className="hidden group-open:inline">Свернуть</span>
+                                  </span>
+                                  <svg className="w-5 h-5 text-slate-400 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                  </svg>
+                                </div>
+                              </div>
+                            </div>
+                          </summary>
+                          
+                          <div className="mt-4 p-6 bg-white border-2 border-slate-200 rounded-xl">
+                            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                              <p className="text-sm text-blue-800">
+                                💡 <strong>Совет:</strong> Вы можете заполнить эти поля сейчас, если у вас есть данные клиента, или оставить пустыми — клиент заполнит их при подписании договора.
+                              </p>
+                            </div>
                             
-                            <CollapsibleContent className="mt-4">
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               {Object.entries(selectedTemplate.placeholders).map(([key, config]) => {
                                 // Only show tenant/signer fields
                                 if (config.type === 'calculated' || (config.owner !== 'tenant' && config.owner !== 'signer')) return null;
