@@ -63,6 +63,16 @@ const ContractDetailsPage = () => {
       });
       setContract(response.data);
       
+      // Fetch template if contract was created from template
+      if (response.data.template_id) {
+        try {
+          const templateResponse = await axios.get(`${API}/templates/${response.data.template_id}`);
+          setTemplate(templateResponse.data);
+        } catch (error) {
+          console.error('Failed to fetch template:', error);
+        }
+      }
+      
       // Fetch creator info
       if (response.data.creator_id) {
         try {
