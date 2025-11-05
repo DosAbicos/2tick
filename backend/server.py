@@ -2081,9 +2081,10 @@ async def update_signer_info(contract_id: str, data: SignerInfoUpdate):
     if data.signer_email:
         update_data['signer_email'] = data.signer_email
     
-    # Handle placeholder_values if provided
+    # Handle placeholder_values if provided - MERGE with existing values
     if data.placeholder_values:
-        update_data['placeholder_values'] = data.placeholder_values
+        existing_values = contract.get('placeholder_values', {})
+        update_data['placeholder_values'] = {**existing_values, **data.placeholder_values}
     
     logging.info(f"Update data: {update_data}")
     
