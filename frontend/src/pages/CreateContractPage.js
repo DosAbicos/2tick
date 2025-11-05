@@ -154,11 +154,12 @@ const CreateContractPage = () => {
   }, [templateId]);
 
   const loadTemplateFromMarket = async (id) => {
-    // Prevent double loading
-    if (selectedTemplate && selectedTemplate.id === id) {
+    // Prevent double loading using ref
+    if (loadingTemplateRef.current || (selectedTemplate && selectedTemplate.id === id)) {
       return;
     }
     
+    loadingTemplateRef.current = true;
     setLoadingTemplate(true);
     try {
       const response = await axios.get(`${API}/templates/${id}`);
@@ -182,6 +183,7 @@ const CreateContractPage = () => {
       toast.error('Ошибка загрузки шаблона');
     } finally {
       setLoadingTemplate(false);
+      loadingTemplateRef.current = false;
     }
   };
 
