@@ -88,8 +88,7 @@ const NotificationsAdminPage = () => {
     try {
       await axios.post(`${API}/admin/notifications`, {
         title,
-        message,
-        image_url: imageUrl || null
+        message
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
