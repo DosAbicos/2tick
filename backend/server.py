@@ -3102,11 +3102,19 @@ async def get_stats(current_user: dict = Depends(get_current_user)):
         "status": "pending-signature"
     })
     
+    # Online users (logged in last 15 minutes)
+    fifteen_min_ago = datetime.now(timezone.utc) - timedelta(minutes=15)
+    online_users = await db.user_logs.count_documents({
+        "action": "login_success",
+        "timestamp": {"$gte": fifteen_min_ago.isoformat()}
+    })
+    
     return {
         "total_users": total_users,
         "total_contracts": total_contracts,
         "signed_contracts": signed_contracts,
-        "pending_contracts": pending_contracts
+        "pending_contracts": pending_contracts,
+        "online_users": online_users
     }
 
 @api_router.get("/admin/users/{user_id}")
