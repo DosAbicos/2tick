@@ -53,6 +53,7 @@ function App() {
           <Route path="/sign/:id" element={<SignContractPage />} />
           <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
           <Route path="/admin" element={<PrivateRoute><AdminPage /></PrivateRoute>} />
+          <Route path="/admin/notifications" element={<PrivateRoute><NotificationsAdminPage /></PrivateRoute>} />
           <Route path="/admin/templates" element={<PrivateRoute><AdminTemplatesPage /></PrivateRoute>} />
         </Routes>
       </BrowserRouter>
