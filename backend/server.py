@@ -2827,6 +2827,16 @@ async def verify_otp(contract_id: str, otp_data: OTPVerify):
     
     await log_audit("signature_verified", contract_id=contract_id)
     
+    # Get contract info for logging
+    contract = await db.contracts.find_one({"id": contract_id})
+    if contract:
+        # Log to creator's logs that tenant signed
+        await log_user_action(
+            contract.get('creator_id'),
+            "contract_signed_by_tenant",
+            f"Наниматель подписал договор {contract.get('contract_code')} и отправил на утверждение"
+        )
+    
     return {"message": "Signature verified successfully", "signature_hash": signature_hash}
 
 @api_router.post("/contracts/{contract_id}/approve")
