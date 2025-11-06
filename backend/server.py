@@ -892,10 +892,17 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             p.drawString(tenant_x, y_tenant, signature.get('signature_hash', 'N/A'))
             y_tenant -= 18
             
-            # ФИО нанимателя (aligned)
+            # ФИО нанимателя (aligned) - try placeholder_values first
             p.drawString(tenant_x, y_tenant, "ФИО нанимателя:")
             y_tenant -= 12
-            p.drawString(tenant_x, y_tenant, contract.get('signer_name', 'N/A'))
+            tenant_name = contract.get('signer_name', 'N/A')
+            # Try to find from placeholder_values if template exists
+            if contract.get('placeholder_values'):
+                for key, value in contract['placeholder_values'].items():
+                    if 'ФИО' in key.upper() and 'НАНИМАТЕЛЬ' in key.upper() and value:
+                        tenant_name = value
+                        break
+            p.drawString(tenant_x, y_tenant, tenant_name)
             y_tenant -= 18
             
             # Представитель - skip for tenant to keep alignment
