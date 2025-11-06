@@ -36,6 +36,8 @@ const DashboardPage = () => {
   const [limitInfo, setLimitInfo] = useState(null);
   const [showTemplateModal, setShowTemplateModal] = useState(false);
   const [favoriteTemplates, setFavoriteTemplates] = useState([]);
+  const [notification, setNotification] = useState(null);
+  const [showNotification, setShowNotification] = useState(false);
   const token = localStorage.getItem('token');
 
   useEffect(() => {
