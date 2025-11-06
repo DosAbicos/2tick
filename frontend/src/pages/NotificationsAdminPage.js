@@ -196,9 +196,6 @@ const NotificationsAdminPage = () => {
                       <div className="flex-1">
                         <h3 className="font-semibold text-blue-900">{title}</h3>
                         <p className="text-sm text-blue-800 mt-1 whitespace-pre-wrap">{message}</p>
-                        {imageUrl && (
-                          <img src={`${BACKEND_URL}${imageUrl}`} alt="Notification" className="mt-3 rounded max-h-48" />
-                        )}
                       </div>
                     </div>
                   </div>
