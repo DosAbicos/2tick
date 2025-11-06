@@ -1044,3 +1044,25 @@ agent_communication:
 agent_communication:
   - agent: "main"
     message: "✅ РЕАЛИЗОВАНЫ ДВЕ ЗАДАЧИ: 1) Исправлены избранные шаблоны - теперь не пропадают при изменении админом. 2) Создана полная система оповещений: админ может создавать оповещения с заголовком, текстом и картинкой, есть предпросмотр, пользователи видят баннер на Dashboard один раз. Backend и frontend готовы. Протестируйте создание оповещения в /admin/notifications."
+
+  - task: "Исправление избранных шаблонов (v2)"
+    implemented: true
+    working: "YES"
+    file: "/app/backend/server.py"
+    priority: "critical"
+    needs_retesting: false
+    status_history:
+      - working: "YES"
+        agent: "main"
+        comment: "ПРОБЛЕМА: Шаблоны все равно пропадали из избранного при редактировании админом. ПРИЧИНА: В update_template использовался template.model_dump() без exclude ID, что перезаписывало ID шаблона новым значением из request body. Favorite_templates хранили старый ID, поэтому не находили шаблон. ИСПРАВЛЕНИЕ: Добавлен exclude={'id'} в model_dump (строка 3247), теперь ID не перезаписывается при обновлении. Избранные шаблоны сохраняются. ГОТОВО."
+
+  - task: "Убрать загрузку фото из оповещений"
+    implemented: true
+    working: "YES"
+    file: "/app/frontend/src/pages/NotificationsAdminPage.js, /app/frontend/src/pages/DashboardPage.js"
+    priority: "low"
+    needs_retesting: false
+    status_history:
+      - working: "YES"
+        agent: "main"
+        comment: "Убрана вся функциональность загрузки картинок из оповещений. Удалены: поле загрузки файла, preview картинки, отображение в списке и на Dashboard. ГОТОВО."
