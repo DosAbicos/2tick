@@ -44,6 +44,7 @@ const DashboardPage = () => {
     fetchContracts();
     fetchLimitInfo();
     fetchFavoriteTemplates();
+    fetchActiveNotification();
     
     // Обновлять лимит при возврате на страницу (после работы админа)
     const handleFocus = () => {
