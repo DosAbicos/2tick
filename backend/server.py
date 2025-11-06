@@ -3204,6 +3204,8 @@ async def add_favorite_template(
         {"$addToSet": {"favorite_templates": template_id}}
     )
     
+    await log_user_action(user_id, "template_favorited", f"Шаблон {template.get('title')} добавлен в избранное")
+    
     return {"message": "Template added to favorites", "template_id": template_id}
 
 @api_router.delete("/users/favorites/templates/{template_id}")
