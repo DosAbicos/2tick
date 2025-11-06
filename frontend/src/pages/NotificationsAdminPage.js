@@ -202,7 +202,7 @@ const NotificationsAdminPage = () => {
                 </DialogContent>
               </Dialog>
               
-              <Button onClick={handleCreate} disabled={creating || !title || !message}>
+              <Button onClick={handleCreate} disabled={creating || !title || !message} className="ml-auto">
                 <Bell className="mr-2 h-4 w-4" />
                 {creating ? 'Создание...' : 'Создать оповещение'}
               </Button>
