@@ -2696,6 +2696,16 @@ async def verify_telegram_otp(contract_id: str, data: dict):
     
     await log_audit("signature_verified_telegram", contract_id=contract_id)
     
+    # Get contract info for logging
+    contract = await db.contracts.find_one({"id": contract_id})
+    if contract:
+        # Log to creator's logs that tenant signed via Telegram
+        await log_user_action(
+            contract.get('creator_id'),
+            "contract_signed_by_tenant",
+            f"✅ Верификация через Telegram успешна. Наниматель подписал договор {contract.get('contract_code')} и отправил на утверждение"
+        )
+    
     logging.info(f"✅ Contract {contract_id} signed with Telegram OTP: {entered_code}")
     
     return {"message": "Договор успешно подписан!", "verified": True, "signature_hash": signature_hash}
