@@ -494,23 +494,43 @@ const AdminPage = () => {
           <TabsContent value="activity" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Логи активности</CardTitle>
-                <CardDescription>Последние действия в системе</CardDescription>
+                <CardTitle>Системные метрики</CardTitle>
+                <CardDescription>Показатели производительности системы</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {auditLogs.slice(0, 20).map((log, idx) => (
-                    <div key={idx} className="flex items-start gap-3 p-3 rounded-lg bg-neutral-50">
-                      <Activity className="h-4 w-4 text-neutral-500 mt-0.5" />
-                      <div className="flex-1">
-                        <div className="font-medium text-sm">{log.action}</div>
-                        <div className="text-xs text-neutral-600">{log.details}</div>
-                        <div className="text-xs text-neutral-400 mt-1">
-                          {new Date(log.timestamp).toLocaleString('ru-RU')}
-                        </div>
+                  {systemMetrics ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div className="text-2xl font-bold text-blue-600">{systemMetrics.cpu_usage || 'N/A'}%</div>
+                        <p className="text-sm text-blue-700">Использование CPU</p>
+                      </div>
+                      <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                        <div className="text-2xl font-bold text-green-600">{systemMetrics.memory_usage || 'N/A'}%</div>
+                        <p className="text-sm text-green-700">Использование памяти</p>
+                      </div>
+                      <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                        <div className="text-2xl font-bold text-purple-600">{systemMetrics.disk_usage || 'N/A'}%</div>
+                        <p className="text-sm text-purple-700">Использование диска</p>
+                      </div>
+                      <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
+                        <div className="text-2xl font-bold text-amber-600">{systemMetrics.active_sessions || 'N/A'}</div>
+                        <p className="text-sm text-amber-700">Активные сессии</p>
+                      </div>
+                      <div className="p-4 bg-red-50 rounded-lg border border-red-200">
+                        <div className="text-2xl font-bold text-red-600">{systemMetrics.error_rate || 'N/A'}%</div>
+                        <p className="text-sm text-red-700">Частота ошибок</p>
+                      </div>
+                      <div className="p-4 bg-indigo-50 rounded-lg border border-indigo-200">
+                        <div className="text-2xl font-bold text-indigo-600">{systemMetrics.uptime || 'N/A'}</div>
+                        <p className="text-sm text-indigo-700">Время работы</p>
                       </div>
                     </div>
-                  ))}
+                  ) : (
+                    <div className="text-center py-8 text-neutral-500">
+                      Системные метрики недоступны
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
