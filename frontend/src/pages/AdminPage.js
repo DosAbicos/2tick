@@ -75,6 +75,8 @@ const AdminPage = () => {
   // Form states
   const [newPassword, setNewPassword] = useState('');
   const [contractsToAdd, setContractsToAdd] = useState(1);
+  const [userLogs, setUserLogs] = useState([]);
+  const [loadingLogs, setLoadingLogs] = useState(false);
 
   useEffect(() => {
     fetchAdminData();
