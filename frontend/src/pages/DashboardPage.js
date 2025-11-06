@@ -215,6 +215,32 @@ const DashboardPage = () => {
           </div>
         </div>
 
+        {/* Notification Banner */}
+        {showNotification && notification && (
+          <div className="mb-6 p-4 rounded-lg border bg-blue-50 border-blue-200">
+            <div className="flex items-start gap-3">
+              <Bell className="h-5 w-5 text-blue-600 mt-1 flex-shrink-0" />
+              <div className="flex-1 min-w-0">
+                <h3 className="font-semibold text-blue-900">{notification.title}</h3>
+                <p className="text-sm text-blue-800 mt-1 whitespace-pre-wrap">{notification.message}</p>
+                {notification.image_url && (
+                  <img 
+                    src={`${BACKEND_URL}${notification.image_url}`} 
+                    alt="Notification" 
+                    className="mt-3 rounded max-h-48 object-contain"
+                  />
+                )}
+              </div>
+              <button
+                onClick={handleDismissNotification}
+                className="text-blue-600 hover:text-blue-800 font-medium text-sm flex-shrink-0"
+              >
+                ✕ Закрыть
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Limit warning */}
         {limitInfo && (
           <div className={`mb-6 p-4 rounded-lg border ${
