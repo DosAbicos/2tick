@@ -414,14 +414,6 @@ const AdminPage = () => {
                             >
                               <Plus className="h-4 w-4 text-green-600" />
                             </Button>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => navigate(`/admin/logs/${user.id}`)}
-                              title="Просмотр логов пользователя"
-                            >
-                              <ScrollText className="h-4 w-4 text-blue-600" />
-                            </Button>
                           </div>
                         </TableCell>
                       </TableRow>
