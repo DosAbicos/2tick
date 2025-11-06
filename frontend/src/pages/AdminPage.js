@@ -95,7 +95,17 @@ const AdminPage = () => {
       setContractsTotal(contractsRes.data.total);
       setContractsSkip(contractsRes.data.skip);
       setContractsHasMore(contractsRes.data.has_more);
-      setSystemMetrics(logsRes.data || null);
+      
+      // Format system metrics
+      const metrics = metricsRes.data;
+      setSystemMetrics({
+        cpu_usage: metrics.cpu_percent,
+        memory_usage: metrics.memory.percent,
+        disk_usage: metrics.disk.percent,
+        active_sessions: metrics.active_users_24h,
+        error_rate: metrics.recent_errors?.length || 0,
+        uptime: `${metrics.uptime.days}д ${metrics.uptime.hours}ч`
+      });
     } catch (error) {
       toast.error('Ошибка загрузки данных');
       if (error.response?.status === 403) {
