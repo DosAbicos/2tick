@@ -1829,6 +1829,13 @@ async def create_contract(contract_data: ContractCreate, current_user: dict = De
     await db.contracts.insert_one(doc)
     await log_audit("contract_created", contract_id=contract.id, user_id=current_user['user_id'])
     
+    # Log user action
+    await log_user_action(
+        current_user['user_id'],
+        "contract_created",
+        f"Договор #{contract_number} ({contract_code})"
+    )
+    
     return contract
 
 @api_router.get("/contracts/limit/info")
