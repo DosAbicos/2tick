@@ -3590,6 +3590,7 @@ async def get_system_metrics(current_user: dict = Depends(get_current_user)):
             "indexes": db_stats.get('indexes', 0)
         },
         "active_users_24h": active_users_count,
+        "online_users": online_users_count,
         "recent_errors": recent_errors[-5:] if recent_errors else []
     }
 
