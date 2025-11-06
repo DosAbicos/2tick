@@ -2858,11 +2858,18 @@ async def approve_signature(contract_id: str, current_user: dict = Depends(get_c
     
     await log_audit("contract_approved", contract_id=contract_id, user_id=current_user['user_id'])
     
+    # Get contract info for logging
+    contract = await db.contracts.find_one({"id": contract_id})
+    await log_user_action(
+        current_user['user_id'],
+        "contract_approved",
+        f"Утвержден договор {contract.get('contract_code', contract_id)}"
+    )
+    
     print(f"🔥 DEBUG: Approve called for contract {contract_id}")
     logging.info(f"🔥 DEBUG: Approve called for contract {contract_id}")
     
     # Get contract and signature for email
-    contract = await db.contracts.find_one({"id": contract_id})
     signature = await db.signatures.find_one({"contract_id": contract_id})
     creator = await db.users.find_one({"id": contract['creator_id']})
     
