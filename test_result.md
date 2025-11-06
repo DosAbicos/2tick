@@ -1018,3 +1018,29 @@ agent_communication:
       - working: "YES"
         agent: "main"
         comment: "ПРОБЛЕМА: Когда наниматель сохранял данные, теряли значения наймодателя. Backend ПЕРЕЗАПИСЫВАЛ placeholder_values вместо мерджа. ИСПРАВЛЕНИЕ: update_data['placeholder_values'] = {**existing_values, **data.placeholder_values} (строка 2083). Тест подтвердил: оба набора значений сохраняются и заменяются в контенте. ГОТОВО."
+
+  - task: "Исправление избранных шаблонов при изменении админом"
+    implemented: true
+    working: "YES"
+    file: "/app/backend/server.py"
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: "YES"
+        agent: "main"
+        comment: "ПРОБЛЕМА: При изменении шаблона админом он пропадал из избранного наймодателя. ПРИЧИНА: В get_favorite_templates была проверка is_active=True, что фильтровало измененные шаблоны. ИСПРАВЛЕНИЕ: Убрана проверка is_active (строка 3195), теперь возвращаются все избранные шаблоны независимо от статуса. ГОТОВО."
+
+  - task: "Система оповещений для пользователей"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py, /app/frontend/src/pages/NotificationsAdminPage.js, /app/frontend/src/pages/DashboardPage.js"
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "РЕАЛИЗОВАНО: Полная система оповещений. Backend: добавлена модель Notification, эндпоинты для создания/получения/удаления оповещений, загрузки картинок, отметки как просмотренное. User модель дополнена полем viewed_notifications. Frontend: создана админ страница NotificationsAdminPage с формой создания (заголовок+текст+картинка), предпросмотром и списком оповещений. DashboardPage дополнен баннером оповещений который показывается один раз. Логика: админ создает оповещение → оно активно → пользователи видят баннер → после закрытия добавляется в viewed_notifications → больше не показывается. Готово к тестированию."
+
+agent_communication:
+  - agent: "main"
+    message: "✅ РЕАЛИЗОВАНЫ ДВЕ ЗАДАЧИ: 1) Исправлены избранные шаблоны - теперь не пропадают при изменении админом. 2) Создана полная система оповещений: админ может создавать оповещения с заголовком, текстом и картинкой, есть предпросмотр, пользователи видят баннер на Dashboard один раз. Backend и frontend готовы. Протестируйте создание оповещения в /admin/notifications."
