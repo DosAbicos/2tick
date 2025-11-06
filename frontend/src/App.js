@@ -15,6 +15,7 @@ import CreateContractPage from './pages/CreateContractPage';
 import ContractDetailsPage from './pages/ContractDetailsPage';
 import SignContractPage from './pages/SignContractPage';
 import AdminPage from './pages/AdminPage';
+import NotificationsAdminPage from './pages/NotificationsAdminPage';
 import ProfilePage from './pages/ProfilePage';
 import TemplatesPage from './pages/TemplatesPage';
 import UploadPdfContractPage from './pages/UploadPdfContractPage';
