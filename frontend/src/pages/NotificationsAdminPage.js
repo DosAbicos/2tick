@@ -178,25 +178,6 @@ const NotificationsAdminPage = () => {
               />
             </div>
             
-            <div>
-              <Label htmlFor="image">Картинка (опционально)</Label>
-              <div className="mt-1 flex items-center gap-2">
-                <Input
-                  id="image"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  disabled={uploadingImage}
-                />
-                {uploadingImage && <span className="text-sm text-neutral-600">Загрузка...</span>}
-              </div>
-              {imageUrl && (
-                <div className="mt-2">
-                  <img src={`${BACKEND_URL}${imageUrl}`} alt="Preview" className="h-32 rounded border" />
-                </div>
-              )}
-            </div>
-            
             <div className="flex gap-2">
               <Dialog open={showPreview} onOpenChange={setShowPreview}>
                 <DialogTrigger asChild>
