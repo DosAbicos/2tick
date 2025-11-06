@@ -22,7 +22,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import Header from '@/components/Header';
-import { FileText, Clock, CheckCircle, Plus, Star, Heart } from 'lucide-react';
+import { FileText, Clock, CheckCircle, Plus, Star, Heart, Bell } from 'lucide-react';
 import { format } from 'date-fns';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
