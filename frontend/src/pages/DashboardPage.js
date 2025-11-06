@@ -108,6 +108,36 @@ const DashboardPage = () => {
     }
   };
 
+
+  const fetchActiveNotification = async () => {
+    try {
+      const response = await axios.get(`${API}/notifications/active`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (response.data) {
+        setNotification(response.data);
+        setShowNotification(true);
+      }
+    } catch (error) {
+      console.log('No active notification');
+    }
+  };
+
+  const handleDismissNotification = async () => {
+    if (!notification) return;
+    
+    try {
+      await axios.post(`${API}/notifications/${notification.id}/mark-viewed`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setShowNotification(false);
+    } catch (error) {
+      console.error('Error marking notification as viewed:', error);
+    }
+  };
+
+
   const handleSelectTemplate = (templateId) => {
     setShowTemplateModal(false);
     navigate(`/contracts/create?template_id=${templateId}`);
