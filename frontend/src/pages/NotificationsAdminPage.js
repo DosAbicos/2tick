@@ -227,9 +227,6 @@ const NotificationsAdminPage = () => {
                         {notif.is_active && <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Активно</span>}
                       </div>
                       <p className="text-sm text-neutral-600 mt-1">{notif.message}</p>
-                      {notif.image_url && (
-                        <img src={`${BACKEND_URL}${notif.image_url}`} alt="Notification" className="mt-2 h-24 rounded" />
-                      )}
                       <p className="text-xs text-neutral-500 mt-2">
                         Создано: {new Date(notif.created_at).toLocaleString('ru-RU')}
                       </p>
