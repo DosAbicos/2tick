@@ -655,6 +655,40 @@ const AdminPage = () => {
                   </div>
                 </div>
               )}
+              
+              {/* User Logs Section */}
+              <div className="pt-4 border-t">
+                <Label className="text-sm font-medium mb-3 block flex items-center gap-2">
+                  <Activity className="h-4 w-4" />
+                  История действий (последние 50)
+                </Label>
+                {loadingLogs ? (
+                  <div className="text-center py-4 text-neutral-500">Загрузка...</div>
+                ) : userLogs.length === 0 ? (
+                  <div className="text-center py-4 text-neutral-500">Нет логов</div>
+                ) : (
+                  <div className="max-h-64 overflow-y-auto space-y-2 border rounded-lg p-3 bg-neutral-50">
+                    {userLogs.map((log, index) => (
+                      <div key={index} className="text-xs p-2 bg-white rounded border">
+                        <div className="flex items-center justify-between mb-1">
+                          <Badge variant="outline" className="text-xs">
+                            {log.action.replace(/_/g, ' ')}
+                          </Badge>
+                          <span className="text-neutral-500">
+                            {new Date(log.timestamp).toLocaleString('ru-RU')}
+                          </span>
+                        </div>
+                        {log.details && (
+                          <p className="text-neutral-600 mt-1">{log.details}</p>
+                        )}
+                        {log.ip_address && (
+                          <p className="text-neutral-400 mt-1">IP: {log.ip_address}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </DialogContent>
