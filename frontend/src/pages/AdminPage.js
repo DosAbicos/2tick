@@ -94,7 +94,7 @@ const AdminPage = () => {
       setContractsTotal(contractsRes.data.total);
       setContractsSkip(contractsRes.data.skip);
       setContractsHasMore(contractsRes.data.has_more);
-      setAuditLogs(logsRes.data || []);
+      setSystemMetrics(logsRes.data || null);
     } catch (error) {
       toast.error('Ошибка загрузки данных');
       if (error.response?.status === 403) {
