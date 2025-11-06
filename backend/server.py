@@ -3567,12 +3567,15 @@ async def get_system_metrics(current_user: dict = Depends(get_current_user)):
         "timestamp": {"$gte": yesterday.isoformat()}
     })
     
-    # Online users (logged in last 15 minutes)
+    # Online users (any activity in last 15 minutes) - count unique users
     fifteen_min_ago = datetime.now(timezone.utc) - timedelta(minutes=15)
-    online_users_count = await db.user_logs.count_documents({
-        "action": "login_success",
-        "timestamp": {"$gte": fifteen_min_ago.isoformat()}
-    })
+    online_pipeline = [
+        {"$match": {"timestamp": {"$gte": fifteen_min_ago.isoformat()}}},
+        {"$group": {"_id": "$user_id"}},
+        {"$count": "unique_users"}
+    ]
+    online_result = await db.user_logs.aggregate(online_pipeline).to_list(1)
+    online_users_count = online_result[0]['unique_users'] if online_result else 0
     
     return {
         "status": "healthy",
