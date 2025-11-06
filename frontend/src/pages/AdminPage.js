@@ -520,48 +520,11 @@ const AdminPage = () => {
 
           {/* Activity Tab */}
           <TabsContent value="activity" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Системные метрики</CardTitle>
-                <CardDescription>Показатели производительности системы</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {systemMetrics ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                        <div className="text-2xl font-bold text-blue-600">{systemMetrics.cpu_usage || 'N/A'}%</div>
-                        <p className="text-sm text-blue-700">Использование CPU</p>
-                      </div>
-                      <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                        <div className="text-2xl font-bold text-green-600">{systemMetrics.memory_usage || 'N/A'}%</div>
-                        <p className="text-sm text-green-700">Использование памяти</p>
-                      </div>
-                      <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
-                        <div className="text-2xl font-bold text-purple-600">{systemMetrics.disk_usage || 'N/A'}%</div>
-                        <p className="text-sm text-purple-700">Использование диска</p>
-                      </div>
-                      <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
-                        <div className="text-2xl font-bold text-amber-600">{systemMetrics.active_sessions || 'N/A'}</div>
-                        <p className="text-sm text-amber-700">Активные сессии</p>
-                      </div>
-                      <div className="p-4 bg-red-50 rounded-lg border border-red-200">
-                        <div className="text-2xl font-bold text-red-600">{systemMetrics.error_rate || 'N/A'}%</div>
-                        <p className="text-sm text-red-700">Частота ошибок</p>
-                      </div>
-                      <div className="p-4 bg-indigo-50 rounded-lg border border-indigo-200">
-                        <div className="text-2xl font-bold text-indigo-600">{systemMetrics.uptime || 'N/A'}</div>
-                        <p className="text-sm text-indigo-700">Время работы</p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-center py-8 text-neutral-500">
-                      Системные метрики недоступны
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+            <div className="mb-4">
+              <h3 className="text-lg font-semibold mb-1">Системные метрики</h3>
+              <p className="text-sm text-neutral-600">Показатели производительности системы в реальном времени (обновление каждые 10 сек)</p>
+            </div>
+            <SystemMetricsWidget />
           </TabsContent>
         </Tabs>
       </div>
