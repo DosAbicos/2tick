@@ -73,3 +73,4 @@ uvicorn==0.25.0
 watchfiles==1.1.0
 sendgrid==6.12.5
 python-telegram-bot==20.8
+psutil==5.9.8
