@@ -1027,6 +1027,18 @@ async def log_audit(action: str, contract_id: str = None, user_id: str = None, d
     doc['timestamp'] = doc['timestamp'].isoformat()
     await db.audit_logs.insert_one(doc)
 
+async def log_user_action(user_id: str, action: str, details: str = None, ip: str = None, metadata: dict = None):
+    """Enhanced logging for user actions"""
+    log_entry = {
+        "user_id": user_id,
+        "action": action,
+        "details": details,
+        "ip_address": ip,
+        "metadata": metadata or {},
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }
+    await db.user_logs.insert_one(log_entry)
+
 # ===== AUTH ROUTES =====
 @api_router.post("/auth/register")
 async def register(user_data: UserCreate):
