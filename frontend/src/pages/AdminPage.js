@@ -145,6 +145,21 @@ const AdminPage = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setSelectedUser(response.data);
+      
+      // Load user logs
+      setLoadingLogs(true);
+      try {
+        const logsResponse = await axios.get(`${API}/admin/users/${userId}/logs?limit=50`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setUserLogs(logsResponse.data.logs);
+      } catch (error) {
+        console.error('Error loading logs:', error);
+        setUserLogs([]);
+      } finally {
+        setLoadingLogs(false);
+      }
+      
       setUserDetailsOpen(true);
     } catch (error) {
       toast.error('Ошибка загрузки данных пользователя');
