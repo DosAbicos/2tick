@@ -318,17 +318,17 @@ const AdminPage = () => {
         {/* Tabs */}
         <Tabs defaultValue="users" className="space-y-4">
           <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="activity">
+              <Activity className="h-4 w-4 mr-2" />
+              Активность
+            </TabsTrigger>
             <TabsTrigger value="users">
               <Users className="h-4 w-4 mr-2" />
-              Пользователи
+              Пользователи ({stats?.total_users || 0})
             </TabsTrigger>
             <TabsTrigger value="contracts">
               <FileText className="h-4 w-4 mr-2" />
               Договоры
-            </TabsTrigger>
-            <TabsTrigger value="activity">
-              <Activity className="h-4 w-4 mr-2" />
-              Активность
             </TabsTrigger>
           </TabsList>
 
