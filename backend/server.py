@@ -95,6 +95,7 @@ class User(BaseModel):
     contract_limit: int = 5  # Лимит на количество договоров (по умолчанию 5)
     is_admin: bool = False  # Администратор
     favorite_templates: List[str] = []  # ID избранных шаблонов
+    viewed_notifications: List[str] = []  # ID просмотренных оповещений
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class UserCreate(BaseModel):
