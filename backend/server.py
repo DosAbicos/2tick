@@ -1972,6 +1972,11 @@ async def send_contract(contract_id: str, current_user: dict = Depends(get_curre
     await db.signatures.insert_one(sig_doc)
     
     await log_audit("contract_sent", contract_id=contract_id, user_id=current_user['user_id'])
+    await log_user_action(
+        current_user['user_id'],
+        "contract_sent",
+        f"Отправлен договор {contract.get('contract_code', contract_id)}"
+    )
     
     return {"message": "Contract sent successfully", "signature_link": signature_link, "mock_otp": otp_code}
 
