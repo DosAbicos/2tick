@@ -3244,7 +3244,7 @@ async def update_template(
     if current_user.get('role') != 'admin':
         raise HTTPException(status_code=403, detail="Admin access required")
     
-    template_dict = template.model_dump()
+    template_dict = template.model_dump(exclude={'id'})  # Exclude ID to preserve original
     template_dict['updated_at'] = datetime.now(timezone.utc)
     
     result = await db.contract_templates.update_one(
