@@ -3291,6 +3291,143 @@ async def get_all_templates(current_user: dict = Depends(get_current_user)):
     templates = await db.contract_templates.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
     return templates
 
+
+
+# ==================== NOTIFICATIONS ====================
+
+@api_router.post("/admin/notifications")
+async def create_notification(
+    notification: NotificationCreate,
+    current_user: dict = Depends(get_current_user)
+):
+    """Создать оповещение (только админ)"""
+    if current_user.get('role') != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    # Deactivate all existing notifications
+    await db.notifications.update_many(
+        {"is_active": True},
+        {"$set": {"is_active": False}}
+    )
+    
+    # Create new notification
+    new_notification = Notification(
+        title=notification.title,
+        message=notification.message,
+        image_url=notification.image_url
+    )
+    
+    await db.notifications.insert_one(new_notification.model_dump(by_alias=True))
+    await log_audit("notification_created", details=f"Title: {notification.title}")
+    
+    return {"message": "Notification created", "notification": new_notification}
+
+@api_router.get("/notifications/active")
+async def get_active_notification(current_user: dict = Depends(get_current_user)):
+    """Получить активное оповещение"""
+    user_id = current_user['user_id']
+    
+    # Get active notification
+    notification = await db.notifications.find_one(
+        {"is_active": True},
+        {"_id": 0}
+    )
+    
+    if not notification:
+        return None
+    
+    # Get user to check if already viewed
+    user = await db.users.find_one(
+        {"id": user_id},
+        {"_id": 0, "viewed_notifications": 1}
+    )
+    
+    viewed_notifications = user.get("viewed_notifications", [])
+    
+    # If already viewed, return None
+    if notification['id'] in viewed_notifications:
+        return None
+    
+    return notification
+
+@api_router.post("/notifications/{notification_id}/mark-viewed")
+async def mark_notification_viewed(
+    notification_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Отметить оповещение как просмотренное"""
+    user_id = current_user['user_id']
+    
+    await db.users.update_one(
+        {"id": user_id},
+        {"$addToSet": {"viewed_notifications": notification_id}}
+    )
+    
+    return {"message": "Notification marked as viewed"}
+
+@api_router.delete("/admin/notifications/{notification_id}")
+async def delete_notification(
+    notification_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Удалить оповещение (только админ)"""
+    if current_user.get('role') != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    result = await db.notifications.delete_one({"id": notification_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Notification not found")
+    
+    await log_audit("notification_deleted", details=f"ID: {notification_id}")
+    
+    return {"message": "Notification deleted"}
+
+@api_router.get("/admin/notifications")
+async def get_all_notifications(current_user: dict = Depends(get_current_user)):
+    """Получить все оповещения (только админ)"""
+    if current_user.get('role') != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    notifications = await db.notifications.find(
+        {},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    
+    return notifications
+
+@api_router.post("/admin/notifications/upload-image")
+async def upload_notification_image(
+    file: UploadFile = File(...),
+    current_user: dict = Depends(get_current_user)
+):
+    """Загрузить картинку для оповещения"""
+    if current_user.get('role') != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    # Validate image
+    if not file.content_type.startswith('image/'):
+        raise HTTPException(status_code=400, detail="Only image files allowed")
+    
+    # Generate unique filename
+    ext = file.filename.split('.')[-1]
+    filename = f"notification_{uuid.uuid4()}.{ext}"
+    filepath = f"/app/uploads/notifications/{filename}"
+    
+    # Create directory if not exists
+    os.makedirs("/app/uploads/notifications", exist_ok=True)
+    
+    # Save file
+    with open(filepath, "wb") as f:
+        content = await file.read()
+        f.write(content)
+    
+    # Return URL
+    image_url = f"/uploads/notifications/{filename}"
+    
+    return {"image_url": image_url}
+
+
 # ==================== UPLOAD PDF CONTRACT ====================
 
 @api_router.post("/contracts/upload-pdf")
