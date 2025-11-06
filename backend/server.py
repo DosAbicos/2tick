@@ -908,10 +908,16 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             # Представитель - skip for tenant to keep alignment
             y_tenant -= 30  # Skip this section
             
-            # Телефон (aligned)
+            # Телефон (aligned) - try placeholder_values first
             p.drawString(tenant_x, y_tenant, "Телефон:")
             y_tenant -= 12
-            p.drawString(tenant_x, y_tenant, contract.get('signer_phone', 'N/A'))
+            tenant_phone = contract.get('signer_phone', 'N/A')
+            if contract.get('placeholder_values'):
+                for key, value in contract['placeholder_values'].items():
+                    if 'НОМЕР' in key.upper() and 'КЛИЕНТ' in key.upper() and value:
+                        tenant_phone = value
+                        break
+            p.drawString(tenant_x, y_tenant, tenant_phone)
             y_tenant -= 18
             
             # Email (aligned)
