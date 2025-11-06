@@ -1109,7 +1109,8 @@ async def login(credentials: UserLogin, request: Request):
     # Generate token
     token = create_jwt_token(user.id, user.email, user.role)
     
-    await log_audit("user_login", user_id=user.id, details=f"User {user.email} logged in")
+    # Log successful login
+    await log_user_action(user.id, "login_success", f"Email: {user.email}", request.client.host)
     
     return {"token": token, "user": user}
 
