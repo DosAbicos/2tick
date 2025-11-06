@@ -220,13 +220,22 @@ const AdminPage = () => {
             <h1 className="text-3xl font-bold text-neutral-900">Панель администратора</h1>
             <p className="text-neutral-600 mt-1">Управление пользователями и договорами</p>
           </div>
-          <Button
-            onClick={() => navigate('/admin/templates')}
-            variant="outline"
-          >
-            <FileText className="mr-2 h-4 w-4" />
-            Управление шаблонами
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => navigate('/admin/notifications')}
+              variant="outline"
+            >
+              <Bell className="mr-2 h-4 w-4" />
+              Оповещения
+            </Button>
+            <Button
+              onClick={() => navigate('/admin/templates')}
+              variant="outline"
+            >
+              <FileText className="mr-2 h-4 w-4" />
+              Управление шаблонами
+            </Button>
+          </div>
         </div>
 
         {/* Stats Cards */}
