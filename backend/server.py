@@ -920,13 +920,16 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             p.drawString(tenant_x, y_tenant, tenant_phone)
             y_tenant -= 18
             
-            # Email (aligned)
+            # Email (aligned) - try placeholder_values first
             p.drawString(tenant_x, y_tenant, "Email:")
             y_tenant -= 12
-            if contract.get('signer_email'):
-                p.drawString(tenant_x, y_tenant, contract.get('signer_email'))
-            else:
-                p.drawString(tenant_x, y_tenant, "Не указан")
+            tenant_email = contract.get('signer_email', 'Не указан')
+            if contract.get('placeholder_values'):
+                for key, value in contract['placeholder_values'].items():
+                    if 'EMAIL' in key.upper() and 'КЛИЕНТ' in key.upper() and value:
+                        tenant_email = value
+                        break
+            p.drawString(tenant_x, y_tenant, tenant_email if tenant_email else 'Не указан')
             y_tenant -= 18
             
             # Метод подписания (instead of IIN/BIN - aligned)
