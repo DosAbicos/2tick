@@ -2780,6 +2780,16 @@ async def verify_call_otp(contract_id: str, data: dict):
         
         await log_audit("signature_verified", contract_id=contract_id)
         
+        # Get contract info for logging
+        contract = await db.contracts.find_one({"id": contract_id})
+        if contract:
+            # Log to creator's logs that tenant signed via Call
+            await log_user_action(
+                contract.get('creator_id'),
+                "contract_signed_by_tenant",
+                f"✅ Верификация через входящий звонок успешна. Наниматель подписал договор {contract.get('contract_code')} и отправил на утверждение"
+            )
+        
         return {"message": "Договор успешно подписан!", "verified": True, "signature_hash": signature_hash}
     else:
         logging.warning(f"❌ Wrong code entered: {entered_code}, expected: {expected_code}")
