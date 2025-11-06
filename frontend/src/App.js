@@ -55,6 +55,7 @@ function App() {
           <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
           <Route path="/admin" element={<PrivateRoute><AdminPage /></PrivateRoute>} />
           <Route path="/admin/notifications" element={<PrivateRoute><NotificationsAdminPage /></PrivateRoute>} />
+          <Route path="/admin/logs/:userId" element={<PrivateRoute><UserLogsPage /></PrivateRoute>} />
           <Route path="/admin/templates" element={<PrivateRoute><AdminTemplatesPage /></PrivateRoute>} />
         </Routes>
       </BrowserRouter>
