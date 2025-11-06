@@ -58,7 +58,7 @@ const AdminPage = () => {
   const [contractsSkip, setContractsSkip] = useState(0);
   const [contractsHasMore, setContractsHasMore] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
-  const [auditLogs, setAuditLogs] = useState([]);
+  const [systemMetrics, setSystemMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
   
   // Filters
