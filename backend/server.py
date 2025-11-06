@@ -2850,11 +2850,11 @@ async def verify_otp(contract_id: str, otp_data: OTPVerify):
     # Get contract info for logging
     contract = await db.contracts.find_one({"id": contract_id})
     if contract:
-        # Log to creator's logs that tenant signed
+        # Log to creator's logs that tenant signed via SMS
         await log_user_action(
             contract.get('creator_id'),
             "contract_signed_by_tenant",
-            f"Наниматель подписал договор {contract.get('contract_code')} и отправил на утверждение"
+            f"✅ Верификация через SMS успешна. Наниматель подписал договор {contract.get('contract_code')} и отправил на утверждение"
         )
     
     return {"message": "Signature verified successfully", "signature_hash": signature_hash}
