@@ -3190,9 +3190,9 @@ async def get_favorite_templates(current_user: dict = Depends(get_current_user))
     if not favorite_ids:
         return []
     
-    # Получить шаблоны
+    # Получить шаблоны (не проверяем is_active, показываем все избранные)
     templates = await db.contract_templates.find(
-        {"id": {"$in": favorite_ids}, "is_active": True},
+        {"id": {"$in": favorite_ids}},
         {"_id": 0}
     ).to_list(100)
     
