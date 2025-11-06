@@ -3152,6 +3152,20 @@ async def admin_reset_password(user_id: str, new_password: str, current_user: di
     await log_audit("admin_password_reset", user_id=current_user.get('id'), 
                    details=f"Reset password for user: {user.get('email')}")
     
+    # Log for admin
+    await log_user_action(
+        current_user['user_id'],
+        "password_reset_admin",
+        f"Вы сменили пароль пользователю {user.get('full_name')} ({user.get('email')})"
+    )
+    
+    # Log for user
+    await log_user_action(
+        user_id,
+        "password_reset_by_admin",
+        f"Администратор сменил ваш пароль"
+    )
+    
     return {"message": "Password reset successfully", "new_password": new_password}
 
 @api_router.post("/admin/users/{user_id}/update-contract-limit")
