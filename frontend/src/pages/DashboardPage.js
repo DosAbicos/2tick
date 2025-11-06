@@ -223,13 +223,6 @@ const DashboardPage = () => {
               <div className="flex-1 min-w-0">
                 <h3 className="font-semibold text-blue-900">{notification.title}</h3>
                 <p className="text-sm text-blue-800 mt-1 whitespace-pre-wrap">{notification.message}</p>
-                {notification.image_url && (
-                  <img 
-                    src={`${BACKEND_URL}${notification.image_url}`} 
-                    alt="Notification" 
-                    className="mt-3 rounded max-h-48 object-contain"
-                  />
-                )}
               </div>
               <button
                 onClick={handleDismissNotification}
