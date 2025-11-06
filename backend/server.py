@@ -2008,12 +2008,14 @@ async def delete_contract(contract_id: str, current_user: dict = Depends(get_cur
             raise HTTPException(status_code=404, detail="Contract not found")
         await log_audit("contract_soft_deleted", contract_id=contract_id, user_id=current_user['user_id'], 
                        details="Signed contract marked as deleted")
+        await log_user_action(current_user['user_id'], "contract_deleted", f"Удален договор {contract.get('contract_code')}")
     else:
         # For non-signed contracts, permanently delete
         result = await db.contracts.delete_one({"id": contract_id, "creator_id": current_user['user_id']})
         if result.deleted_count == 0:
             raise HTTPException(status_code=404, detail="Contract not found")
         await log_audit("contract_deleted", contract_id=contract_id, user_id=current_user['user_id'])
+        await log_user_action(current_user['user_id'], "contract_deleted", f"Удален договор {contract.get('contract_code')}")
     
     return {"message": "Contract deleted"}
 
