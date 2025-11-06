@@ -38,7 +38,8 @@ import {
   Key,
   Plus,
   Minus,
-  Settings
+  Settings,
+  Bell
 } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
