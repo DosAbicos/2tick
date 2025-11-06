@@ -3408,6 +3408,118 @@ async def get_all_notifications(current_user: dict = Depends(get_current_user)):
         {},
         {"_id": 0}
     ).sort("created_at", -1).to_list(100)
+
+
+# ==================== USER LOGS & SYSTEM METRICS ====================
+
+@api_router.get("/admin/users/{user_id}/logs")
+async def get_user_logs(
+    user_id: str,
+    limit: int = 100,
+    current_user: dict = Depends(get_current_user)
+):
+    """Получить логи конкретного пользователя (только админ)"""
+    if current_user.get('role') != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    # Get user info
+    user = await db.users.find_one({"id": user_id}, {"_id": 0, "email": 1, "full_name": 1})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Get user logs
+    logs = await db.user_logs.find(
+        {"user_id": user_id},
+        {"_id": 0}
+    ).sort("timestamp", -1).limit(limit).to_list(limit)
+    
+    return {
+        "user": user,
+        "logs": logs,
+        "total": len(logs)
+    }
+
+@api_router.get("/admin/system/metrics")
+async def get_system_metrics(current_user: dict = Depends(get_current_user)):
+    """Получить системные метрики (только админ)"""
+    if current_user.get('role') != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    import psutil
+    import time
+    
+    # CPU и память
+    cpu_percent = psutil.cpu_percent(interval=1)
+    memory = psutil.virtual_memory()
+    disk = psutil.disk_usage('/')
+    
+    # Uptime
+    boot_time = psutil.boot_time()
+    uptime_seconds = time.time() - boot_time
+    uptime_days = int(uptime_seconds // 86400)
+    uptime_hours = int((uptime_seconds % 86400) // 3600)
+    
+    # Network
+    try:
+        net_io = psutil.net_io_counters()
+        network_stats = {
+            "bytes_sent": net_io.bytes_sent,
+            "bytes_recv": net_io.bytes_recv,
+            "packets_sent": net_io.packets_sent,
+            "packets_recv": net_io.packets_recv
+        }
+    except:
+        network_stats = None
+    
+    # Recent errors from logs
+    try:
+        with open('/var/log/supervisor/backend.err.log', 'r') as f:
+            error_lines = f.readlines()[-50:]  # Last 50 lines
+            recent_errors = [line.strip() for line in error_lines if 'ERROR' in line or 'Exception' in line][-10:]
+    except:
+        recent_errors = []
+    
+    # Database stats
+    db_stats = await db.command("dbStats")
+    
+    # Active users (logged in last 24h)
+    yesterday = datetime.now(timezone.utc) - timedelta(days=1)
+    active_users_count = await db.user_logs.count_documents({
+        "action": "login_success",
+        "timestamp": {"$gte": yesterday.isoformat()}
+    })
+    
+    return {
+        "status": "healthy",
+        "cpu_percent": cpu_percent,
+        "memory": {
+            "total_gb": round(memory.total / (1024**3), 2),
+            "used_gb": round(memory.used / (1024**3), 2),
+            "available_gb": round(memory.available / (1024**3), 2),
+            "percent": memory.percent
+        },
+        "disk": {
+            "total_gb": round(disk.total / (1024**3), 2),
+            "used_gb": round(disk.used / (1024**3), 2),
+            "free_gb": round(disk.free / (1024**3), 2),
+            "percent": disk.percent
+        },
+        "uptime": {
+            "days": uptime_days,
+            "hours": uptime_hours,
+            "total_seconds": int(uptime_seconds)
+        },
+        "network": network_stats,
+        "database": {
+            "size_mb": round(db_stats.get('dataSize', 0) / (1024**2), 2),
+            "collections": db_stats.get('collections', 0),
+            "indexes": db_stats.get('indexes', 0)
+        },
+        "active_users_24h": active_users_count,
+        "recent_errors": recent_errors[-5:] if recent_errors else []
+    }
+
+
     
     return notifications
 
