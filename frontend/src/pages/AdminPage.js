@@ -316,7 +316,7 @@ const AdminPage = () => {
         </div>
 
         {/* Tabs */}
-        <Tabs defaultValue="users" className="space-y-4">
+        <Tabs defaultValue="activity" className="space-y-4">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="activity">
               <Activity className="h-4 w-4 mr-2" />
