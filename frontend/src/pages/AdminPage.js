@@ -312,6 +312,26 @@ const AdminPage = () => {
     <div className="min-h-screen bg-neutral-50">
       <Header />
       
+      {/* Notification Banner */}
+      {showNotification && notification && (
+        <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mx-4 mt-4 rounded-lg">
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <h3 className="font-semibold text-blue-900">{notification.title}</h3>
+              <p className="text-sm text-blue-800 mt-1 whitespace-pre-wrap">{notification.message}</p>
+            </div>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={handleDismissNotification}
+              className="text-blue-600 hover:text-blue-800"
+            >
+              ✕
+            </Button>
+          </div>
+        </div>
+      )}
+      
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <div>
