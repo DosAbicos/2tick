@@ -178,10 +178,10 @@ const SignContractPage = () => {
         let needsInfoFlag = false;
         
         // If contract has template, check unfilled tenant placeholders
-        if (contractData.template_id && unfilledTenantPlaceholders.length > 0) {
-          // NEW LOGIC: Check if there are any REQUIRED unfilled placeholders
-          // Only show form if there are REQUIRED fields that are truly empty
-          needsInfoFlag = false; // Start with false, only set to true if required fields are missing
+        if (contractData.template_id) {
+          // ИСПРАВЛЕНО: Проверяем только если есть незаполненные ОБЯЗАТЕЛЬНЫЕ поля
+          needsInfoFlag = unfilledTenantPlaceholders.length > 0;
+          console.log('needsInfoFlag based on unfilled required placeholders:', needsInfoFlag);
         } else {
           // For old contracts without template, check old fields
           // Also check for "Не указано" for backwards compatibility
