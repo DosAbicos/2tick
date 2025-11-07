@@ -3231,7 +3231,7 @@ async def update_contract_limit(user_id: str, contract_limit: int, current_user:
         {"$set": {"contract_limit": contract_limit}}
     )
     
-    await log_audit("admin_contract_limit_update", user_id=current_user.get('id'), 
+    await log_audit("admin_contract_limit_update", user_id=current_user.get('user_id'), 
                    details=f"Updated contract limit for {user.get('email')} to {contract_limit}")
     
     return {"message": "Contract limit updated successfully", "contract_limit": contract_limit}
