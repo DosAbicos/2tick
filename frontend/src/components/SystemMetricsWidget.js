@@ -150,7 +150,10 @@ const SystemMetricsWidget = ({ onErrorsClick }) => {
       </Card>
 
       {/* Errors */}
-      <Card className={`border-2 ${metrics.recent_errors.length > 0 ? 'border-red-200 bg-red-50' : 'border-green-200 bg-green-50'}`}>
+      <Card 
+        className={`border-2 ${metrics.recent_errors.length > 0 ? 'border-red-200 bg-red-50 cursor-pointer hover:shadow-md' : 'border-green-200 bg-green-50'} transition-all`}
+        onClick={() => metrics.recent_errors.length > 0 && onErrorsClick && onErrorsClick(metrics.recent_errors)}
+      >
         <CardHeader className="pb-3">
           <CardTitle className={`text-sm font-medium flex items-center gap-2 ${metrics.recent_errors.length > 0 ? 'text-red-900' : 'text-green-900'}`}>
             <AlertCircle className="h-4 w-4" />
@@ -162,7 +165,7 @@ const SystemMetricsWidget = ({ onErrorsClick }) => {
             {metrics.recent_errors.length}
           </div>
           <div className={`text-xs mt-1 ${metrics.recent_errors.length > 0 ? 'text-red-700' : 'text-green-700'}`}>
-            {metrics.recent_errors.length > 0 ? 'Найдены ошибки' : 'Нет ошибок'}
+            {metrics.recent_errors.length > 0 ? 'Нажмите для просмотра' : 'Нет ошибок'}
           </div>
         </CardContent>
       </Card>
