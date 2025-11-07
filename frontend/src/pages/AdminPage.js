@@ -127,19 +127,14 @@ const AdminPage = () => {
 
   const fetchAdminData = async () => {
     try {
-      const [statsRes, usersRes, contractsRes, metricsRes] = await Promise.all([
+      const [statsRes, usersRes, metricsRes] = await Promise.all([
         axios.get(`${API}/admin/stats`, { headers: { Authorization: `Bearer ${token}` } }),
         axios.get(`${API}/admin/users`, { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get(`${API}/admin/contracts?limit=20&skip=0`, { headers: { Authorization: `Bearer ${token}` } }),
         axios.get(`${API}/admin/system/metrics`, { headers: { Authorization: `Bearer ${token}` } })
       ]);
       
       setStats(statsRes.data);
       setUsers(usersRes.data);
-      setContracts(contractsRes.data.contracts);
-      setContractsTotal(contractsRes.data.total);
-      setContractsSkip(contractsRes.data.skip);
-      setContractsHasMore(contractsRes.data.has_more);
       
       // Format system metrics
       const metrics = metricsRes.data;
