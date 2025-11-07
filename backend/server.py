@@ -3564,6 +3564,8 @@ async def get_all_notifications(current_user: dict = Depends(get_current_user)):
         {},
         {"_id": 0}
     ).sort("created_at", -1).to_list(100)
+    
+    return notifications  # ИСПРАВЛЕНО: добавлен return
 
 
 # ==================== USER LOGS & SYSTEM METRICS ====================
