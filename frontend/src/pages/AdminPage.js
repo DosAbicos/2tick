@@ -547,7 +547,12 @@ const AdminPage = () => {
               <h3 className="text-lg font-semibold mb-1">Системные метрики</h3>
               <p className="text-sm text-neutral-600">Показатели производительности системы в реальном времени (обновление каждые 10 сек)</p>
             </div>
-            <SystemMetricsWidget />
+            <SystemMetricsWidget 
+              onErrorsClick={(errors) => {
+                setRecentErrors(errors);
+                setErrorsModalOpen(true);
+              }}
+            />
           </TabsContent>
         </Tabs>
       </div>
