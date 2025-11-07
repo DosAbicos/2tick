@@ -135,23 +135,26 @@ const SignContractPage = () => {
               const isTenantField = config.owner === 'tenant' || config.owner === 'signer';
               
               // Check if placeholder value is not filled in placeholder_values
-              const isNotFilled = !existingValues[key] || existingValues[key].trim() === '';
+              const value = existingValues[key];
+              const isNotFilled = !value || (typeof value === 'string' && value.trim() === '');
               
               console.log(`Placeholder ${key}:`, {
+                owner: config.owner,
                 isTenantField,
                 required: config.required,
-                value: existingValues[key],
+                value: value,
                 isNotFilled,
-                willShow: isTenantField && config.required && isNotFilled
+                willAddToUnfilled: isTenantField && config.required && isNotFilled
               });
               
-              // Only add to unfilled if it's a tenant field AND required AND not filled
+              // КРИТИЧНО: Только обязательные незаполненные tenant поля
               if (isTenantField && config.required && isNotFilled) {
                 unfilled.push({ key, config });
               }
             });
           }
-          console.log('unfilled placeholders:', unfilled);
+          
+          console.log('Final unfilled REQUIRED placeholders:', unfilled);
           setUnfilledPlaceholders(unfilled);
           unfilledTenantPlaceholders = unfilled;
         } catch (err) {
