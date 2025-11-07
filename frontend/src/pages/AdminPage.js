@@ -128,6 +128,9 @@ const AdminPage = () => {
         error_rate: metrics.recent_errors?.length || 0,
         uptime: `${metrics.uptime.days}д ${metrics.uptime.hours}ч`
       });
+      
+      // Save recent errors for modal
+      setRecentErrors(metrics.recent_errors || []);
     } catch (error) {
       toast.error('Ошибка загрузки данных');
       if (error.response?.status === 403) {
