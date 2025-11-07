@@ -81,6 +81,8 @@ const AdminPage = () => {
   const [userLogs, setUserLogs] = useState([]);
   const [loadingLogs, setLoadingLogs] = useState(false);
   const [recentErrors, setRecentErrors] = useState([]);
+  const [userContracts, setUserContracts] = useState([]);
+  const [loadingUserContracts, setLoadingUserContracts] = useState(false);
 
   useEffect(() => {
     fetchAdminData();
