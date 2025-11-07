@@ -777,6 +777,47 @@ const AdminPage = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Errors Modal */}
+      <Dialog open={errorsModalOpen} onOpenChange={setErrorsModalOpen}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-red-600">
+              <AlertCircle className="h-5 w-5" />
+              Системные ошибки
+            </DialogTitle>
+            <DialogDescription>
+              Последние {recentErrors.length} ошибок из логов системы
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 mt-4">
+            {recentErrors.length > 0 ? (
+              recentErrors.map((error, index) => (
+                <div key={index} className="bg-red-50 border border-red-200 rounded-lg p-3">
+                  <div className="flex items-start gap-2">
+                    <span className="text-red-600 font-mono text-xs font-bold">#{index + 1}</span>
+                    <pre className="text-xs text-red-800 font-mono whitespace-pre-wrap break-all flex-1">
+                      {error}
+                    </pre>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-8 text-neutral-500">
+                Ошибок не обнаружено
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button 
+              variant="outline" 
+              onClick={() => setErrorsModalOpen(false)}
+            >
+              Закрыть
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
