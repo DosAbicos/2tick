@@ -467,13 +467,49 @@ backend:
         comment: "✅ ПРОБЛЕМА ИСПРАВЛЕНА: Добавлен fallback механизм для Telegram API аналогично Twilio. При ошибках 'Chat not found', 'User not found', 'Forbidden', 'Unauthorized' система переключается в mock режим. Обновлен Telegram бот для сохранения chat_id пользователей в /tmp/telegram_chat_ids.json. Теперь POST /api/sign/{contract_id}/request-telegram-otp с телом {'telegram_username': 'ngzadl'} возвращает статус 200 с message 'Код отправлен в Telegram @ngzadl' и mock_otp для тестирования."
 
 frontend:
+  - task: "Модальное окно для просмотра системных ошибок"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/SystemMetricsWidget.js, /app/frontend/src/pages/AdminPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "РЕАЛИЗОВАНО: Добавлено модальное окно для просмотра деталей системных ошибок. Изменения: 1) SystemMetricsWidget.js - добавлен prop onErrorsClick, карточка ошибок теперь кликабельная (cursor-pointer, hover:shadow-md), текст изменен на 'Нажмите для просмотра', 2) AdminPage.js - добавлен state errorsModalOpen и recentErrors, добавлен callback для SystemMetricsWidget который открывает модальное окно, создан новый Dialog для отображения ошибок с красным дизайном и pre-форматированием для каждой ошибки. Теперь при клике на карточку с ошибками открывается модальное окно со списком всех недавних ошибок из логов."
+
+  - task: "Исправление логики плейсхолдеров нанимателя - показ только обязательных"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/SignContractPage.js"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "ИСПРАВЛЕНО: Изменена логика определения незаполненных плейсхолдеров в fetchContract() (строка 123-142). Старая логика: if (isTenantField && (isInContent || isNotFilled)) - добавляла ВСЕ незаполненные tenant поля. Новая логика: if (isTenantField && config.required && isNotFilled) - добавляет только ОБЯЗАТЕЛЬНЫЕ незаполненные поля. Убрана проверка isInContent (наличие {{key}} в контенте) так как она была избыточной. Теперь форма Step 1.5 показывается только если есть незаполненные ОБЯЗАТЕЛЬНЫЕ поля, а необязательные поля игнорируются."
+
+  - task: "Отображение ВСЕХ плейсхолдеров в Contract Details (не только tenant/signer)"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/ContractDetailsPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "ИСПРАВЛЕНО: Изменена логика фильтрации плейсхолдеров в секции 'Подпись Нанимателя' (строка 527-547). Старая логика: фильтр по config.owner === 'tenant' || config.owner === 'signer' - показывал только специфичные поля. Новая логика: return true (без фильтра по owner) - показывает ВСЕ плейсхолдеры кроме calculated. Убрана проверка contract.placeholder_values в условии (строка 529), добавлена безопасная проверка в map. Добавлено отображение (owner) рядом с label для отладки. Теперь отображаются все плейсхолдеры независимо от owner, пустые показываются как 'Не заполнено'."
+
   - task: "Логика формы нанимателя - пропуск если все обязательные поля заполнены"
     implemented: true
-    working: false
+    working: "NA"
     file: "/app/frontend/src/pages/SignContractPage.js"
     stuck_count: 1
     priority: "critical"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
       - working: "NA"
         agent: "main"
