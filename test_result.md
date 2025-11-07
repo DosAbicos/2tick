@@ -105,6 +105,30 @@
 user_problem_statement: "Выполнение 5 новых задач: 1) Логика формы нанимателя - пропускать форму ФИО если наймодатель заполнил все обязательные поля, 2) Real-time счетчик онлайн пользователей в админ-панели, 3) Логирование изменений лимитов договоров админом, 4) Замена UUID на 10-значные рандомные ID для пользователей, 5) Отображение ВСЕХ плейсхолдеров нанимателя на странице деталей договора."
 
 backend:
+  - task: "Замена UUID на 10-значные рандомные ID для пользователей"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Создана функция generate_user_id() для генерации 10-значных рандомных ID (например: 2394820934, 2348755244). Обновлена модель User - заменен default_factory с uuid.uuid4() на generate_user_id(). Теперь все новые пользователи будут получать 10-значный ID вместо длинного UUID."
+
+  - task: "Логирование изменений лимитов договоров админом"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Проверено что логирование уже реализовано в обоих endpoint'ах: 1) /admin/users/{user_id}/update-contract-limit (строка 3217) логирует 'admin_contract_limit_update', 2) /admin/users/{user_id}/add-contracts (строка 3239) логирует 'admin_contracts_added'. Оба endpoint записывают детали действия в audit logs с информацией о пользователе и новом лимите."
+
   - task: "Исправление ошибки сохранения профиля"
     implemented: true
     working: true
