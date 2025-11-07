@@ -6,7 +6,7 @@ import { Activity, Cpu, HardDrive, Users, AlertCircle, Clock } from 'lucide-reac
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const SystemMetricsWidget = () => {
+const SystemMetricsWidget = ({ onErrorsClick }) => {
   const [metrics, setMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem('token');
