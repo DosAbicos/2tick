@@ -3089,22 +3089,28 @@ async def get_all_users(current_user: dict = Depends(get_current_user)):
 async def get_all_contracts(
     current_user: dict = Depends(get_current_user),
     limit: int = 20,
-    skip: int = 0
+    skip: int = 0,
+    landlord_id: str = None  # Добавлен параметр для фильтрации по наймодателю
 ):
     if current_user.get('role') != 'admin':
         raise HTTPException(status_code=403, detail="Admin access required")
     
-    # Получить договоры с пагинацией, отсортированные от новых к старым
-    # Фильтруем удаленные договоры
+    # Базовый запрос исключающий удаленные договоры
     query = {
         "$or": [
             {"deleted": {"$exists": False}},  # Old contracts without deleted field
             {"deleted": False}  # New contracts that are not deleted
         ]
     }
+    
+    # Добавляем фильтр по landlord_id если указан
+    if landlord_id:
+        query["landlord_id"] = landlord_id
+    
+    # Получить договоры с пагинацией, отсортированные от новых к старым
     contracts = await db.contracts.find(query, {"_id": 0}).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
     
-    # Получить общее количество договоров (не удаленных)
+    # Получить общее количество договоров
     total_count = await db.contracts.count_documents(query)
     
     return {
