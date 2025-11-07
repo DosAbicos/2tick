@@ -199,22 +199,40 @@ const AdminPage = () => {
       setSelectedUser(response.data);
       
       // Load user logs
-      setLoadingLogs(true);
-      try {
-        const logsResponse = await axios.get(`${API}/admin/users/${userId}/logs?limit=50`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setUserLogs(logsResponse.data.logs);
-      } catch (error) {
-        console.error('Error loading logs:', error);
-        setUserLogs([]);
-      } finally {
-        setLoadingLogs(false);
-      }
+      await fetchUserLogs(userId);
       
       setUserDetailsOpen(true);
     } catch (error) {
       toast.error('Ошибка загрузки данных пользователя');
+    }
+  };
+
+  const fetchUserLogs = async (userId) => {
+    setLoadingLogs(true);
+    try {
+      const response = await axios.get(`${API}/admin/users/${userId}/logs`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setUserLogs(response.data);
+    } catch (error) {
+      toast.error('Ошибка загрузки логов');
+    } finally {
+      setLoadingLogs(false);
+    }
+  };
+
+  const fetchUserContracts = async (userId) => {
+    setLoadingUserContracts(true);
+    try {
+      const response = await axios.get(`${API}/admin/contracts?landlord_id=${userId}&limit=50`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setUserContracts(response.data.contracts || []);
+    } catch (error) {
+      toast.error('Ошибка загрузки договоров');
+      setUserContracts([]);
+    } finally {
+      setLoadingUserContracts(false);
     }
   };
 
