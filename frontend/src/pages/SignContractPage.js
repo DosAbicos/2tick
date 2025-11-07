@@ -120,6 +120,10 @@ const SignContractPage = () => {
           const existingValues = contractData.placeholder_values || {};
           setPlaceholderValues(existingValues);
           
+          console.log('Debug SignContractPage:');
+          console.log('contractData.placeholder_values:', contractData.placeholder_values);
+          console.log('existingValues:', existingValues);
+          
           // Find unfilled REQUIRED placeholders for tenant/signer
           const unfilled = [];
           if (templateResponse.data.placeholders) {
@@ -133,13 +137,21 @@ const SignContractPage = () => {
               // Check if placeholder value is not filled in placeholder_values
               const isNotFilled = !existingValues[key] || existingValues[key].trim() === '';
               
-              // Only add to unfilled if it's a tenant field AND (required OR not filled)
-              // This ensures we show form only when there are truly missing required fields
+              console.log(`Placeholder ${key}:`, {
+                isTenantField,
+                required: config.required,
+                value: existingValues[key],
+                isNotFilled,
+                willShow: isTenantField && config.required && isNotFilled
+              });
+              
+              // Only add to unfilled if it's a tenant field AND required AND not filled
               if (isTenantField && config.required && isNotFilled) {
                 unfilled.push({ key, config });
               }
             });
           }
+          console.log('unfilled placeholders:', unfilled);
           setUnfilledPlaceholders(unfilled);
           unfilledTenantPlaceholders = unfilled;
         } catch (err) {
