@@ -3085,55 +3085,6 @@ async def get_all_users(current_user: dict = Depends(get_current_user)):
     users = await db.users.find({}, {"_id": 0, "password": 0}).to_list(1000)
     return users
 
-@api_router.post("/admin/cleanup-database")
-async def cleanup_database(current_user: dict = Depends(get_current_user)):
-    """Очистить базу данных, оставив только указанных пользователей"""
-    if current_user.get('role') != 'admin':
-        raise HTTPException(status_code=403, detail="Admin access required")
-    
-    # Пользователи которых нужно сохранить
-    keep_emails = ['asl@asl.kz', '2asl@asl.kz']
-    
-    try:
-        # Найти пользователей которых нужно сохранить
-        users_to_keep = await db.users.find({"email": {"$in": keep_emails}}, {"_id": 0, "id": 1, "email": 1}).to_list(None)
-        keep_user_ids = [user["id"] for user in users_to_keep]
-        
-        print(f"DEBUG: Keeping users: {users_to_keep}")
-        print(f"DEBUG: Keeping user IDs: {keep_user_ids}")
-        
-        # Удалить всех пользователей кроме указанных
-        delete_users_result = await db.users.delete_many({"email": {"$nin": keep_emails}})
-        
-        # Удалить все договоры кроме тех что принадлежат оставшимся пользователям
-        delete_contracts_result = await db.contracts.delete_many({"landlord_id": {"$nin": keep_user_ids}})
-        
-        # Удалить логи пользователей (кроме оставшихся)
-        delete_logs_result = await db.user_logs.delete_many({"user_id": {"$nin": keep_user_ids}})
-        
-        # Удалить уведомления
-        delete_notifications_result = await db.notifications.delete_many({})
-        
-        # Удалить pending_registrations (они больше не актуальны)
-        delete_registrations_result = await db.pending_registrations.delete_many({})
-        
-        return {
-            "message": "Database cleanup completed",
-            "results": {
-                "users_kept": len(users_to_keep),
-                "users_deleted": delete_users_result.deleted_count,
-                "contracts_deleted": delete_contracts_result.deleted_count, 
-                "logs_deleted": delete_logs_result.deleted_count,
-                "notifications_deleted": delete_notifications_result.deleted_count,
-                "registrations_deleted": delete_registrations_result.deleted_count
-            },
-            "kept_users": users_to_keep
-        }
-        
-    except Exception as e:
-        print(f"ERROR in cleanup: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Cleanup failed: {str(e)}")
-
 @api_router.get("/debug/contracts-landlords")
 async def debug_contracts_landlords(current_user: dict = Depends(get_current_user)):
     """Временный endpoint для отладки landlord_id в договорах"""
