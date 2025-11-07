@@ -196,10 +196,14 @@ const AdminPage = () => {
       const response = await axios.get(`${API}/admin/users/${userId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      
       setSelectedUser(response.data);
       
-      // Load user logs
-      await fetchUserLogs(userId);
+      // Load user logs and contracts
+      await Promise.all([
+        fetchUserLogs(userId),
+        fetchUserContracts(userId)
+      ]);
       
       setUserDetailsOpen(true);
     } catch (error) {
