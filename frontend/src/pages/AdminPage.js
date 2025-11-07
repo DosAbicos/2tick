@@ -78,6 +78,8 @@ const AdminPage = () => {
   const [recentErrors, setRecentErrors] = useState([]);
   const [userContracts, setUserContracts] = useState([]);
   const [loadingUserContracts, setLoadingUserContracts] = useState(false);
+  const [notification, setNotification] = useState(null);
+  const [showNotification, setShowNotification] = useState(false);
 
   useEffect(() => {
     fetchAdminData();
