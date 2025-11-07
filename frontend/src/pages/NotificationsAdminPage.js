@@ -41,9 +41,10 @@ const NotificationsAdminPage = () => {
       const response = await axios.get(`${API}/admin/notifications`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setNotifications(response.data);
+      setNotifications(response.data || []); // Исправлено: fallback на пустой массив
     } catch (error) {
       console.error('Error fetching notifications:', error);
+      setNotifications([]); // Исправлено: установка пустого массива при ошибке
     } finally {
       setLoading(false);
     }
