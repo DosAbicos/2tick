@@ -197,13 +197,16 @@ const AdminPage = () => {
 
   const fetchUserContracts = async (userId) => {
     setLoadingUserContracts(true);
+    console.log('Fetching contracts for user ID:', userId); // Отладка
     try {
       const response = await axios.get(`${API}/admin/contracts?landlord_id=${userId}&limit=50`, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      console.log('Contracts API response:', response.data); // Отладка
       setUserContracts(response.data.contracts || []);
     } catch (error) {
       toast.error('Ошибка загрузки договоров');
+      console.error('Error fetching user contracts:', error); // Отладка
       setUserContracts([]);
     } finally {
       setLoadingUserContracts(false);
