@@ -437,6 +437,42 @@ backend:
         comment: "✅ ПРОБЛЕМА ИСПРАВЛЕНА: Добавлен fallback механизм для Telegram API аналогично Twilio. При ошибках 'Chat not found', 'User not found', 'Forbidden', 'Unauthorized' система переключается в mock режим. Обновлен Telegram бот для сохранения chat_id пользователей в /tmp/telegram_chat_ids.json. Теперь POST /api/sign/{contract_id}/request-telegram-otp с телом {'telegram_username': 'ngzadl'} возвращает статус 200 с message 'Код отправлен в Telegram @ngzadl' и mock_otp для тестирования."
 
 frontend:
+  - task: "Логика формы нанимателя - пропуск если все обязательные поля заполнены"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/SignContractPage.js"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Исправлена логика проверки needsInfo в функции fetchContract(). Теперь проверяется не просто наличие незаполненных tenant плейсхолдеров, а конкретно наличие ОБЯЗАТЕЛЬНЫХ (required: true) незаполненных плейсхолдеров. Изменена строка 167: const hasRequiredUnfilled = unfilledTenantPlaceholders.some(({ config }) => config.required). Если все обязательные поля заполнены наймодателем, нанимателя сразу переводит на Step 2 (загрузка документа) без показа Step 1.5 (форма ФИО)."
+
+  - task: "Real-time счетчик онлайн пользователей в админ-панели"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/AdminPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Реализован polling для обновления статистики каждые 30 секунд. Добавлена функция fetchStatsOnly() которая обновляет только stats без перезагрузки всех данных. В useEffect добавлен setInterval который вызывает fetchStatsOnly() каждые 30000ms. Теперь счетчик онлайн пользователей обновляется автоматически в реальном времени без необходимости обновления страницы."
+
+  - task: "Отображение ВСЕХ плейсхолдеров нанимателя на странице деталей договора"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/ContractDetailsPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Обновлена логика отображения плейсхолдеров в секции 'Подпись Нанимателя'. Удалена проверка if (value) которая пропускала незаполненные поля. Добавлен фильтр для пропуска только calculated полей (config.type === 'calculated'). Теперь отображаются ВСЕ tenant/signer плейсхолдеры, а для незаполненных показывается 'Не заполнено' серым цветом. Это позволяет видеть полную картину всех полей договора включая незаполненные."
+
   - task: "Исправление ошибки в ProfilePage - undefined setIin"
     implemented: true
     working: "NA"
