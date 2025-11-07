@@ -107,15 +107,18 @@ user_problem_statement: "Выполнение 5 новых задач: 1) Лог
 backend:
   - task: "Замена UUID на 10-значные рандомные ID для пользователей"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Создана функция generate_user_id() для генерации 10-значных рандомных ID (например: 2394820934, 2348755244). Обновлена модель User - заменен default_factory с uuid.uuid4() на generate_user_id(). Теперь все новые пользователи будут получать 10-значный ID вместо длинного UUID."
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. Генерация 10-значных User ID работает корректно: 1) POST /api/auth/register создает пользователя через временную регистрацию, 2) После верификации OTP создается пользователь с user.id в формате 10-значного числа (примеры: 7553797806, 9634638832, 5078675716), 3) user.id является строкой из ровно 10 цифр (проверено regex ^\d{10}$), 4) user.id НЕ в формате UUID (проверено отсутствие дефисов и hex символов), 5) ID корректно сохраняется в базе данных (проверено через GET /api/auth/me). ✅ ВСЕ КРИТЕРИИ ВЫПОЛНЕНЫ: ID генерируется как 10-значное число, сохраняется в БД, не является UUID."
 
   - task: "Логирование изменений лимитов договоров админом"
     implemented: true
@@ -128,6 +131,9 @@ backend:
       - working: true
         agent: "main"
         comment: "Проверено что логирование уже реализовано в обоих endpoint'ах: 1) /admin/users/{user_id}/update-contract-limit (строка 3217) логирует 'admin_contract_limit_update', 2) /admin/users/{user_id}/add-contracts (строка 3239) логирует 'admin_contracts_added'. Оба endpoint записывают детали действия в audit logs с информацией о пользователе и новом лимите."
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. Логирование изменений лимитов договоров админом работает корректно: 1) Создан тестовый админ пользователь (admin@2tick.kz) с is_admin=true и role='admin', 2) POST /api/admin/users/{user_id}/update-contract-limit с contract_limit=15 успешно обновляет лимит пользователя (статус 200), 3) В коллекции audit_logs появилась запись с action='admin_contract_limit_update' и details='Updated contract limit for {email} to 15', 4) POST /api/admin/users/{user_id}/add-contracts с contracts_to_add=5 успешно добавляет контракты (previous_limit=15, new_limit=20), 5) В audit_logs появилась запись с action='admin_contracts_added' и details='Added 5 contracts to {email}. New limit: 20'. ✅ ОБА ENDPOINT'А ЛОГИРУЮТ ДЕЙСТВИЯ: admin_contract_limit_update и admin_contracts_added записываются в audit_logs с полной информацией о пользователе и изменениях."
 
   - task: "Исправление ошибки сохранения профиля"
     implemented: true
