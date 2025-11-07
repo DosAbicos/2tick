@@ -79,9 +79,14 @@ api_router = APIRouter(prefix="/api")
 security = HTTPBearer()
 
 # ===== HELPER FUNCTIONS =====
-def generate_user_id():
-    """Generate a random 10-digit user ID"""
-    return str(random.randint(1000000000, 9999999999))
+async def generate_unique_user_id():
+    """Generate a unique random 10-digit user ID"""
+    while True:
+        user_id = str(random.randint(1000000000, 9999999999))
+        # Check if ID already exists in database
+        existing = await db.users.find_one({"id": user_id})
+        if not existing:
+            return user_id
 
 # ===== MODELS =====
 class User(BaseModel):
