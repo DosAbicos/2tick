@@ -91,7 +91,7 @@ async def generate_unique_user_id():
 # ===== MODELS =====
 class User(BaseModel):
     model_config = ConfigDict(extra="ignore")
-    id: str = Field(default_factory=generate_user_id)
+    id: str = ""  # Will be set during user creation
     email: EmailStr
     full_name: str
     phone: str
