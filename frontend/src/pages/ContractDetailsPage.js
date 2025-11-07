@@ -394,19 +394,46 @@ const ContractDetailsPage = () => {
             <div>
               <h3 className="text-lg font-semibold mb-2">Contract Details</h3>
               <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="text-neutral-500">Signer:</span>
-                  <p className="font-medium" data-testid="signer-name">{contract.signer_name}</p>
-                </div>
-                <div>
-                  <span className="text-neutral-500">Phone:</span>
-                  <p className="font-medium" data-testid="signer-phone">{contract.signer_phone}</p>
-                </div>
-                {contract.signer_email && (
-                  <div>
-                    <span className="text-neutral-500">Email:</span>
-                    <p className="font-medium">{contract.signer_email}</p>
-                  </div>
+                {/* Show dynamic placeholders from template if available */}
+                {template && template.placeholders ? (
+                  <>
+                    {Object.entries(template.placeholders)
+                      .filter(([key, config]) => {
+                        // Skip calculated fields as they are computed
+                        if (config.type === 'calculated') return false;
+                        // Show all tenant/signer placeholders in Contract Details
+                        return config.owner === 'tenant' || config.owner === 'signer';
+                      })
+                      .map(([key, config]) => {
+                        const value = contract.placeholder_values ? contract.placeholder_values[key] : null;
+                        return (
+                          <div key={key}>
+                            <span className="text-neutral-500">{config.label}:</span>
+                            <p className="font-medium" data-testid={`placeholder-${key}`}>
+                              {value || <span className="text-neutral-400">Не заполнено</span>}
+                            </p>
+                          </div>
+                        );
+                      })}
+                  </>
+                ) : (
+                  // Fallback to old fields for contracts without template
+                  <>
+                    <div>
+                      <span className="text-neutral-500">Signer:</span>
+                      <p className="font-medium" data-testid="signer-name">{contract.signer_name}</p>
+                    </div>
+                    <div>
+                      <span className="text-neutral-500">Phone:</span>
+                      <p className="font-medium" data-testid="signer-phone">{contract.signer_phone}</p>
+                    </div>
+                    {contract.signer_email && (
+                      <div>
+                        <span className="text-neutral-500">Email:</span>
+                        <p className="font-medium">{contract.signer_email}</p>
+                      </div>
+                    )}
+                  </>
                 )}
                 {contract.amount && (
                   <div>
