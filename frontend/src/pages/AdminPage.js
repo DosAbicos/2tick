@@ -470,7 +470,6 @@ const AdminPage = () => {
             </Card>
           </TabsContent>
 
- 
           {/* Activity Tab */}
           <TabsContent value="activity" className="space-y-4">
             <div className="mb-4">
