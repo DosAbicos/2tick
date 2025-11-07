@@ -93,6 +93,22 @@ const AdminPage = () => {
     return () => clearInterval(statsInterval);
   }, []);
 
+  // Polling для ошибок когда модальное окно открыто
+  useEffect(() => {
+    let errorsInterval;
+    
+    if (errorsModalOpen) {
+      // Обновляем ошибки каждые 5 секунд когда модальное окно открыто
+      errorsInterval = setInterval(() => {
+        fetchErrorsOnly();
+      }, 5000);
+    }
+    
+    return () => {
+      if (errorsInterval) clearInterval(errorsInterval);
+    };
+  }, [errorsModalOpen]);
+
   const fetchStatsOnly = async () => {
     try {
       const statsRes = await axios.get(`${API}/admin/stats`, { headers: { Authorization: `Bearer ${token}` } });
