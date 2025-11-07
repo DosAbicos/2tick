@@ -3604,8 +3604,8 @@ async def get_system_metrics(current_user: dict = Depends(get_current_user)):
     # Recent errors from logs
     try:
         with open('/var/log/supervisor/backend.err.log', 'r') as f:
-            error_lines = f.readlines()[-50:]  # Last 50 lines
-            recent_errors = [line.strip() for line in error_lines if 'ERROR' in line or 'Exception' in line][-10:]
+            error_lines = f.readlines()[-100:]  # Last 100 lines
+            recent_errors = [line.strip() for line in error_lines if 'ERROR' in line or 'Exception' in line][-20:]  # Last 20 errors
     except:
         recent_errors = []
     
