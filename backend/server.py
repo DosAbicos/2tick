@@ -1483,7 +1483,11 @@ async def verify_registration_otp(registration_id: str, otp_data: dict):
             raise HTTPException(status_code=400, detail="Invalid OTP code")
     
     # OTP verified! Create user account
+    # Generate unique user ID
+    unique_id = await generate_unique_user_id()
+    
     user = User(
+        id=unique_id,
         email=registration['email'],
         full_name=registration['full_name'],
         phone=registration['phone'],
