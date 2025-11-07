@@ -1865,7 +1865,13 @@ async def create_contract(contract_data: ContractCreate, current_user: dict = De
     doc['updated_at'] = doc['updated_at'].isoformat()
     
     await db.contracts.insert_one(doc)
-    await log_audit("contract_created", contract_id=contract.id, user_id=current_user['user_id'])
+    
+    # Log contract creation
+    if contract_data.template_id:
+        await log_audit("contract_created_from_template", contract_id=contract.id, user_id=current_user['user_id'],
+                       details=f"Contract created from template {contract_data.template_id}")
+    else:
+        await log_audit("contract_created", contract_id=contract.id, user_id=current_user['user_id'])
     
     # Log user action
     await log_user_action(
