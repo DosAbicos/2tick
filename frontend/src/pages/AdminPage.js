@@ -109,6 +109,16 @@ const AdminPage = () => {
     };
   }, [errorsModalOpen]);
 
+  const fetchErrorsOnly = async () => {
+    try {
+      const metricsRes = await axios.get(`${API}/admin/system/metrics`, { headers: { Authorization: `Bearer ${token}` } });
+      setRecentErrors(metricsRes.data.recent_errors || []);
+    } catch (error) {
+      // Silently fail for background updates
+      console.error('Error updating errors:', error);
+    }
+  };
+
   const fetchStatsOnly = async () => {
     try {
       const statsRes = await axios.get(`${API}/admin/stats`, { headers: { Authorization: `Bearer ${token}` } });
