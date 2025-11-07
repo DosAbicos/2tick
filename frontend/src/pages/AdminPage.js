@@ -163,6 +163,32 @@ const AdminPage = () => {
     }
   };
 
+  const fetchActiveNotification = async () => {
+    try {
+      const response = await axios.get(`${API}/notifications/active`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.data) {
+        setNotification(response.data);
+        setShowNotification(true);
+      }
+    } catch (error) {
+      // Silently fail - notification is not critical
+    }
+  };
+
+  const handleDismissNotification = async () => {
+    if (!notification) return;
+    try {
+      await axios.post(`${API}/notifications/${notification.id}/mark-viewed`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setShowNotification(false);
+    } catch (error) {
+      console.error('Error marking notification as viewed:', error);
+    }
+  };
+
   const fetchUserDetails = async (userId) => {
     try {
       const response = await axios.get(`${API}/admin/users/${userId}`, {
