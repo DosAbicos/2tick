@@ -3657,7 +3657,7 @@ async def get_system_metrics(current_user: dict = Depends(get_current_user)):
         },
         "active_users_24h": active_users_count,
         "online_users": online_users_count,
-        "recent_errors": recent_errors[-5:] if recent_errors else []
+        "recent_errors": recent_errors[-20:] if recent_errors else []  # Return last 20 errors
     }
 
 
