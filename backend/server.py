@@ -78,10 +78,15 @@ app = FastAPI()
 api_router = APIRouter(prefix="/api")
 security = HTTPBearer()
 
+# ===== HELPER FUNCTIONS =====
+def generate_user_id():
+    """Generate a random 10-digit user ID"""
+    return str(random.randint(1000000000, 9999999999))
+
 # ===== MODELS =====
 class User(BaseModel):
     model_config = ConfigDict(extra="ignore")
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    id: str = Field(default_factory=generate_user_id)
     email: EmailStr
     full_name: str
     phone: str
