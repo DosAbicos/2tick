@@ -90,6 +90,16 @@ const AdminPage = () => {
     return () => clearInterval(statsInterval);
   }, []);
 
+  const fetchStatsOnly = async () => {
+    try {
+      const statsRes = await axios.get(`${API}/admin/stats`, { headers: { Authorization: `Bearer ${token}` } });
+      setStats(statsRes.data);
+    } catch (error) {
+      // Silently fail for background updates
+      console.error('Error updating stats:', error);
+    }
+  };
+
   const fetchAdminData = async () => {
     try {
       const [statsRes, usersRes, contractsRes, metricsRes] = await Promise.all([
