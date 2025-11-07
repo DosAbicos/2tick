@@ -186,9 +186,10 @@ const AdminPage = () => {
       const response = await axios.get(`${API}/admin/users/${userId}/logs`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setUserLogs(response.data);
+      setUserLogs(response.data.logs || []); // Исправлено: берём logs из response.data
     } catch (error) {
       toast.error('Ошибка загрузки логов');
+      setUserLogs([]); // Устанавливаем пустой массив при ошибке
     } finally {
       setLoadingLogs(false);
     }
