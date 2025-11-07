@@ -600,38 +600,105 @@ const AdminPage = () => {
                 </div>
               )}
               
-              {/* User Logs Section */}
+              {/* User Details Tabs */}
               <div className="pt-4 border-t">
-                <Label className="text-sm font-medium mb-3 block flex items-center gap-2">
-                  <Activity className="h-4 w-4" />
-                  История действий (последние 50)
-                </Label>
-                {loadingLogs ? (
-                  <div className="text-center py-4 text-neutral-500">Загрузка...</div>
-                ) : userLogs.length === 0 ? (
-                  <div className="text-center py-4 text-neutral-500">Нет логов</div>
-                ) : (
-                  <div className="max-h-64 overflow-y-auto space-y-2 border rounded-lg p-3 bg-neutral-50">
-                    {userLogs.map((log, index) => (
-                      <div key={index} className="text-xs p-2 bg-white rounded border">
-                        <div className="flex items-center justify-between mb-1">
-                          <Badge variant="outline" className="text-xs">
-                            {log.action.replace(/_/g, ' ')}
-                          </Badge>
-                          <span className="text-neutral-500">
-                            {new Date(log.timestamp).toLocaleString('ru-RU')}
-                          </span>
-                        </div>
-                        {log.details && (
-                          <p className="text-neutral-600 mt-1">{log.details}</p>
-                        )}
-                        {log.ip_address && (
-                          <p className="text-neutral-400 mt-1">IP: {log.ip_address}</p>
-                        )}
+                <Tabs defaultValue="activity" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="activity" className="flex items-center gap-2">
+                      <Activity className="h-4 w-4" />
+                      История действий
+                    </TabsTrigger>
+                    <TabsTrigger value="contracts" className="flex items-center gap-2">
+                      <FileText className="h-4 w-4" />
+                      Договоры
+                    </TabsTrigger>
+                  </TabsList>
+
+                  {/* Activity Tab */}
+                  <TabsContent value="activity" className="mt-4">
+                    {loadingLogs ? (
+                      <div className="text-center py-4 text-neutral-500">Загрузка...</div>
+                    ) : userLogs.length === 0 ? (
+                      <div className="text-center py-4 text-neutral-500">Нет логов</div>
+                    ) : (
+                      <div className="max-h-64 overflow-y-auto space-y-2 border rounded-lg p-3 bg-neutral-50">
+                        {userLogs.map((log, index) => (
+                          <div key={index} className="text-xs p-2 bg-white rounded border">
+                            <div className="flex items-center justify-between mb-1">
+                              <Badge variant="outline" className="text-xs">
+                                {log.action.replace(/_/g, ' ')}
+                              </Badge>
+                              <span className="text-neutral-500">
+                                {new Date(log.timestamp).toLocaleString('ru-RU')}
+                              </span>
+                            </div>
+                            {log.details && (
+                              <p className="text-neutral-600 mt-1">{log.details}</p>
+                            )}
+                            {log.ip_address && (
+                              <p className="text-neutral-400 mt-1">IP: {log.ip_address}</p>
+                            )}
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                )}
+                    )}
+                  </TabsContent>
+
+                  {/* Contracts Tab */}
+                  <TabsContent value="contracts" className="mt-4">
+                    {loadingUserContracts ? (
+                      <div className="text-center py-4 text-neutral-500">Загрузка...</div>
+                    ) : userContracts.length === 0 ? (
+                      <div className="text-center py-4 text-neutral-500">У пользователя нет договоров</div>
+                    ) : (
+                      <div className="border rounded-lg">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Код</TableHead>
+                              <TableHead>Название</TableHead>
+                              <TableHead>Статус</TableHead>
+                              <TableHead>Дата</TableHead>
+                              <TableHead>Действия</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {userContracts.map((contract) => (
+                              <TableRow key={contract.id}>
+                                <TableCell>
+                                  <code className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                                    {contract.contract_code || 'N/A'}
+                                  </code>
+                                </TableCell>
+                                <TableCell className="font-medium">{contract.title}</TableCell>
+                                <TableCell>
+                                  <Badge 
+                                    variant={contract.status === 'signed' ? 'default' : contract.status === 'pending-signature' ? 'secondary' : 'outline'}
+                                  >
+                                    {contract.status === 'signed' ? 'Подписан' : 
+                                     contract.status === 'pending-signature' ? 'На подписи' : 'Черновик'}
+                                  </Badge>
+                                </TableCell>
+                                <TableCell className="text-xs">
+                                  {new Date(contract.created_at).toLocaleDateString('ru-RU')}
+                                </TableCell>
+                                <TableCell>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => window.open(`/contracts/${contract.id}?readonly=true`, '_blank')}
+                                  >
+                                    <Eye className="h-4 w-4" />
+                                  </Button>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    )}
+                  </TabsContent>
+                </Tabs>
               </div>
             </div>
           )}
