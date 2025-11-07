@@ -552,21 +552,21 @@ const ContractDetailsPage = () => {
                     )}
                     
                     <div className="space-y-2 text-sm">
-                      {/* Show ALL dynamic placeholders from template if available */}
-                      {template && template.placeholders ? (
+                      {/* Show dynamic placeholders from template if available */}
+                      {template && template.placeholders && contract.placeholder_values ? (
                         <>
                           {Object.entries(template.placeholders)
                             .filter(([key, config]) => {
                               // Skip calculated fields as they are computed
                               if (config.type === 'calculated') return false;
-                              // Show all placeholders (not just tenant/signer - show ALL)
-                              return true;
+                              // Show only tenant/signer placeholders (NOT all placeholders)
+                              return config.owner === 'tenant' || config.owner === 'signer';
                             })
                             .map(([key, config]) => {
-                              const value = contract.placeholder_values ? contract.placeholder_values[key] : null;
+                              const value = contract.placeholder_values[key];
                               return (
                                 <div key={key}>
-                                  <span className="text-neutral-500">{config.label} {config.owner && <span className="text-xs">({config.owner})</span>}:</span>
+                                  <span className="text-neutral-500">{config.label}:</span>
                                   <p className="font-medium">{value || <span className="text-neutral-400">Не заполнено</span>}</p>
                                 </div>
                               );
