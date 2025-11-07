@@ -3175,24 +3175,9 @@ async def get_all_contracts(
     # Добавляем фильтр по landlord_id если указан
     if landlord_id:
         query["landlord_id"] = landlord_id
-        # Отладочная информация
-        print(f"DEBUG: Searching contracts for landlord_id: {landlord_id}")
     
     # Получить договоры с пагинацией, отсортированные от новых к старым
     contracts = await db.contracts.find(query, {"_id": 0}).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
-    
-    # Отладочная информация
-    if landlord_id:
-        print(f"DEBUG: Found {len(contracts)} contracts for landlord_id: {landlord_id}")
-        if len(contracts) == 0:
-            # Проверим есть ли вообще договоры в базе
-            all_contracts_count = await db.contracts.count_documents({})
-            print(f"DEBUG: Total contracts in database: {all_contracts_count}")
-            
-            # Проверим несколько landlord_id из базы
-            sample_contracts = await db.contracts.find({}, {"landlord_id": 1}).limit(3).to_list(3)
-            sample_landlord_ids = [c.get('landlord_id') for c in sample_contracts]
-            print(f"DEBUG: Sample landlord_ids from database: {sample_landlord_ids}")
     
     # Получить общее количество договоров
     total_count = await db.contracts.count_documents(query)
