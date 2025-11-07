@@ -3198,7 +3198,7 @@ async def admin_reset_password(user_id: str, new_password: str, current_user: di
         {"$set": {"password": password_hash}}
     )
     
-    await log_audit("admin_password_reset", user_id=current_user.get('id'), 
+    await log_audit("admin_password_reset", user_id=current_user.get('user_id'), 
                    details=f"Reset password for user: {user.get('email')}")
     
     # Log for admin
