@@ -72,6 +72,7 @@ const AdminPage = () => {
   // Form states
   const [newPassword, setNewPassword] = useState('');
   const [contractsToAdd, setContractsToAdd] = useState(1);
+  const [userSearch, setUserSearch] = useState('');
   const [userLogs, setUserLogs] = useState([]);
   const [loadingLogs, setLoadingLogs] = useState(false);
   const [recentErrors, setRecentErrors] = useState([]);
