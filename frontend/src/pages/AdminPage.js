@@ -617,7 +617,7 @@ const AdminPage = () => {
                     ) : userContracts.length === 0 ? (
                       <div className="text-center py-4 text-neutral-500">У пользователя нет договоров</div>
                     ) : (
-                      <div className="border rounded-lg">
+                      <div className="border rounded-lg max-h-96 overflow-y-auto">
                         <Table>
                           <TableHeader>
                             <TableRow>
@@ -661,6 +661,11 @@ const AdminPage = () => {
                             ))}
                           </TableBody>
                         </Table>
+                        {userContracts.length > 0 && (
+                          <div className="p-2 text-xs text-center text-neutral-500 border-t">
+                            Показано {userContracts.length} договоров
+                          </div>
+                        )}
                       </div>
                     )}
                   </TabsContent>
