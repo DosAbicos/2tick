@@ -135,6 +135,18 @@ backend:
         agent: "testing"
         comment: "✅ ТЕСТ ПРОЙДЕН. Логирование изменений лимитов договоров админом работает корректно: 1) Создан тестовый админ пользователь (admin@2tick.kz) с is_admin=true и role='admin', 2) POST /api/admin/users/{user_id}/update-contract-limit с contract_limit=15 успешно обновляет лимит пользователя (статус 200), 3) В коллекции audit_logs появилась запись с action='admin_contract_limit_update' и details='Updated contract limit for {email} to 15', 4) POST /api/admin/users/{user_id}/add-contracts с contracts_to_add=5 успешно добавляет контракты (previous_limit=15, new_limit=20), 5) В audit_logs появилась запись с action='admin_contracts_added' и details='Added 5 contracts to {email}. New limit: 20'. ✅ ОБА ENDPOINT'А ЛОГИРУЮТ ДЕЙСТВИЯ: admin_contract_limit_update и admin_contracts_added записываются в audit_logs с полной информацией о пользователе и изменениях."
 
+  - task: "Real-time stats endpoint для админ-панели"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. Real-time stats endpoint работает корректно: 1) GET /api/admin/stats возвращает статус 200 для админ пользователя, 2) Ответ содержит поле 'online_users' с числовым значением (пример: 3), 3) Поле 'online_users' является числом (int), не строкой, 4) Ответ также содержит другие ожидаемые поля: total_users (71), total_contracts (251), signed_contracts (91), pending_contracts (24). ✅ ФОРМАТ ОТВЕТА КОРРЕКТЕН: все поля присутствуют, online_users возвращается как число, endpoint доступен только для админов (403 для обычных пользователей). Backend endpoint готов для использования frontend polling каждые 30 секунд."
+
   - task: "Исправление ошибки сохранения профиля"
     implemented: true
     working: true
