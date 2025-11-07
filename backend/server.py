@@ -1641,7 +1641,11 @@ async def verify_registration_call_otp(registration_id: str, data: dict):
     )
     
     # Create user account
+    # Generate unique user ID
+    unique_id = await generate_unique_user_id()
+    
     user = User(
+        id=unique_id,
         email=registration['email'],
         full_name=registration['full_name'],
         phone=registration['phone'],
@@ -1757,7 +1761,11 @@ async def verify_registration_telegram_otp(registration_id: str, data: dict):
     )
     
     # Create user account
+    # Generate unique user ID
+    unique_id = await generate_unique_user_id()
+    
     user = User(
+        id=unique_id,
         email=registration['email'],
         full_name=registration['full_name'],
         phone=registration['phone'],
