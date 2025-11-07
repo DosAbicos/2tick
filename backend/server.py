@@ -3085,6 +3085,26 @@ async def get_all_users(current_user: dict = Depends(get_current_user)):
     users = await db.users.find({}, {"_id": 0, "password": 0}).to_list(1000)
     return users
 
+@api_router.get("/debug/contracts-landlords")
+async def debug_contracts_landlords(current_user: dict = Depends(get_current_user)):
+    """Временный endpoint для отладки landlord_id в договорах"""
+    if current_user.get('role') != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    # Получить все уникальные landlord_id
+    pipeline = [
+        {"$group": {"_id": "$landlord_id", "count": {"$sum": 1}}},
+        {"$sort": {"count": -1}},
+        {"$limit": 10}
+    ]
+    
+    landlord_ids = await db.contracts.aggregate(pipeline).to_list(10)
+    
+    return {
+        "message": "Top landlord IDs in contracts",
+        "landlord_ids": landlord_ids
+    }
+
 @api_router.get("/admin/contracts")
 async def get_all_contracts(
     current_user: dict = Depends(get_current_user),
