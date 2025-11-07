@@ -3253,7 +3253,7 @@ async def add_contracts_to_limit(user_id: str, contracts_to_add: int, current_us
         {"$set": {"contract_limit": new_limit}}
     )
     
-    await log_audit("admin_contracts_added", user_id=current_user.get('id'), 
+    await log_audit("admin_contracts_added", user_id=current_user.get('user_id'), 
                    details=f"Added {contracts_to_add} contracts to {user.get('email')}. New limit: {new_limit}")
     
     return {
