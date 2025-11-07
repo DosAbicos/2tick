@@ -159,27 +159,6 @@ const AdminPage = () => {
     }
   };
 
-  const loadMoreContracts = async () => {
-    if (!contractsHasMore || loadingMore) return;
-    
-    setLoadingMore(true);
-    try {
-      const newSkip = contractsSkip + 20;
-      const response = await axios.get(
-        `${API}/admin/contracts?limit=20&skip=${newSkip}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      
-      setContracts([...contracts, ...response.data.contracts]);
-      setContractsSkip(response.data.skip);
-      setContractsHasMore(response.data.has_more);
-    } catch (error) {
-      toast.error('Ошибка загрузки договоров');
-    } finally {
-      setLoadingMore(false);
-    }
-  };
-
   const fetchUserDetails = async (userId) => {
     try {
       const response = await axios.get(`${API}/admin/users/${userId}`, {
