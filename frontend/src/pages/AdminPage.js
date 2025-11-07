@@ -262,12 +262,8 @@ const AdminPage = () => {
   };
 
   const filteredUsers = users.filter(user =>
-    user.email?.toLowerCase().includes(userSearch.toLowerCase()) ||
-    user.full_name?.toLowerCase().includes(userSearch.toLowerCase())
-  );
-
-  const filteredContracts = contracts.filter(contract =>
-    contractStatusFilter === 'all' || contract.status === contractStatusFilter
+    user.full_name?.toLowerCase().includes(userSearch.toLowerCase()) ||
+    user.email?.toLowerCase().includes(userSearch.toLowerCase())
   );
 
   if (loading) {
