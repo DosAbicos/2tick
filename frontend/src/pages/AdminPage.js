@@ -81,6 +81,13 @@ const AdminPage = () => {
 
   useEffect(() => {
     fetchAdminData();
+    
+    // Set up polling for real-time stats updates (every 30 seconds)
+    const statsInterval = setInterval(() => {
+      fetchStatsOnly();
+    }, 30000);
+    
+    return () => clearInterval(statsInterval);
   }, []);
 
   const fetchAdminData = async () => {
