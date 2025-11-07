@@ -304,7 +304,8 @@ class NewFeaturesTester:
             logs = logs_response.json()
             limit_update_log = None
             for log in logs:
-                if log.get("action") == "admin_contract_limit_update" and test_user_id in str(log.get("details", "")):
+                # Check if action matches and details contains the test user email
+                if log.get("action") == "admin_contract_limit_update" and test_email in str(log.get("details", "")):
                     limit_update_log = log
                     break
             
@@ -313,6 +314,7 @@ class NewFeaturesTester:
                 self.log(f"   Details: {limit_update_log.get('details')}")
             else:
                 self.log(f"❌ FAIL: No audit log found with action='admin_contract_limit_update'")
+                self.log(f"   Searched for email: {test_email}")
                 return False
         else:
             self.log(f"⚠️ WARNING: Cannot fetch audit logs: {logs_response.status_code}")
