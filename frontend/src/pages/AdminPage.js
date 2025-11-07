@@ -53,20 +53,14 @@ const AdminPage = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
   
-  // State
-  const [stats, setStats] = useState(null);
+  // Data states
+  const [stats, setStats] = useState({});
   const [users, setUsers] = useState([]);
-  const [contracts, setContracts] = useState([]);
-  const [contractsTotal, setContractsTotal] = useState(0);
-  const [contractsSkip, setContractsSkip] = useState(0);
-  const [contractsHasMore, setContractsHasMore] = useState(false);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [systemMetrics, setSystemMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   
-  // Filters
-  const [userSearch, setUserSearch] = useState('');
-  const [contractStatusFilter, setContractStatusFilter] = useState('all');
+  // System metrics
+  const [systemMetrics, setSystemMetrics] = useState(null);
   
   // Modal states
   const [selectedUser, setSelectedUser] = useState(null);
