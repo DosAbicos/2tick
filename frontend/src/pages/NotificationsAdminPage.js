@@ -216,7 +216,7 @@ const NotificationsAdminPage = () => {
             <CardTitle>Все оповещения</CardTitle>
           </CardHeader>
           <CardContent>
-            {notifications.length === 0 ? (
+            {!notifications || notifications.length === 0 ? (
               <p className="text-neutral-600 text-center py-8">Нет оповещений</p>
             ) : (
               <div className="space-y-3">
