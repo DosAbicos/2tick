@@ -3122,6 +3122,14 @@ async def get_audit_logs(current_user: dict = Depends(get_current_user)):
     logs = await db.audit_logs.find({}, {"_id": 0}).sort("timestamp", -1).to_list(1000)
     return logs
 
+@api_router.get("/test-error")
+async def test_error():
+    """Тестовый endpoint для генерации ошибки"""
+    import logging
+    logging.error("TEST ERROR: This is a test error for modal testing")
+    logging.error("TEST ERROR: Another error line for demonstration")
+    raise HTTPException(status_code=500, detail="Test error generated")
+
 @api_router.get("/admin/stats")
 async def get_stats(current_user: dict = Depends(get_current_user)):
     if current_user.get('role') != 'admin':
