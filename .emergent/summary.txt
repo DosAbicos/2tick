@@ -1,16 +1,16 @@
 <analysis>
-The previous AI engineer successfully implemented the Signify KZ platform, establishing core features like multi-factor authentication, contract signing, and an admin panel. During this trajectory, the engineer addressed several user requests and challenges. Key achievements include enhancing the Placeholder Constructor with calculated fields and intelligent filtering, implementing a comprehensive Favorite Templates system for users, and enabling conditional document uploads. Significant effort was dedicated to resolving persistent login issues related to database synchronization and Pydantic model mismatches across two MongoDB databases. The engineer also iterated on UI/UX for placeholder forms and contract previews, ensuring dynamic content updates and separating landlord and tenant fields. The work concluded with the AI focusing on fixing a persistent issue where an old contract content briefly appeared on page refresh.
+The AI engineer successfully built the Signify KZ platform, implementing core features like MFA, contract signing, and an admin panel. Throughout the trajectory, the engineer addressed a continuous stream of user feedback and bug reports, demonstrating an iterative development approach. Key achievements included enhancing the Placeholder Constructor, developing a Favorite Templates system, and enabling conditional document uploads. Significant effort was dedicated to resolving a critical bug where empty placeholders were prematurely replaced with  strings, preventing tenant data from being displayed correctly in signed contracts and PDFs. The engineer also implemented a comprehensive user activity logging system and an admin notification system, alongside various UI/UX refinements. At the end of the trajectory, the engineer was actively addressing five new issues, including real-time online user metrics, further logging enhancements, conditional form display for tenants, user ID formatting, and dynamic placeholder display in contract details.
 </analysis>
 
 <product_requirements>
-Signify KZ is a B2C platform for remote contract signing in Kazakhstan, supporting RU, KZ, EN. It allows Creators (Наймодатель) to generate contracts and Signers (Наниматель) to verify identity and sign. The platform features robust registration with phone verification (SMS, Call, Telegram), rich text contract creation with unique  and auto-inclusion of Creator details, and a multi-step signing flow with MFA. PDF generation embeds metadata, IDs, and signature info. The admin panel () manages users, contracts, and custom contract limits (counting *only signed* contracts with soft-delete). New features include: password confirmation during registration, Forgot Password flow, Upload PDF option for contracts, Templates Marketplace for admin-managed templates, and a Placeholder Constructor with calculator functionality for dynamic contract fields. Recent requests involved refining the calculator UI for data type filtering (Date/Number), implementing a Favorite Templates system for creators, and allowing for conditional tenant document uploads during contract signing.
+Signify KZ is a B2C platform for remote contract signing in Kazakhstan, supporting RU, KZ, EN. It enables Creators (Наймодатель) to generate contracts and Signers (Наниматель) to verify identity and sign using MFA (SMS, Call, Telegram). Key features include rich text contract creation with unique codes, PDF generation with embedded metadata, and an admin panel for user/contract management and custom limits. Recent enhancements cover password confirmation, Forgot Password flow, Upload PDF, Templates Marketplace, and a Placeholder Constructor with calculator functionality. Further explicit user requests involved: resolving UI flickering of old contract content, ensuring all tenant placeholders display correctly in forms and contract previews, fixing issues with favorite templates disappearing after admin edits, implementing an admin-managed notification system (title, text, image, preview), developing a comprehensive user logging system (all actions, specific user logs in admin panel, verification methods), creating real-time system metrics (memory, CPU, uptime, online users) with improved UI, refining admin tab order, and displaying all placeholders dynamically in various contract views and downloaded PDFs.
 </product_requirements>
 
 <key_technical_concepts>
--   **Backend**: FastAPI, MongoDB (UUIDs, DateTime UTC), Pydantic, python-poppler, Twilio, python-telegram-bot, JWT.
+-   **Backend**: FastAPI, MongoDB (UUIDs, DateTime UTC), Pydantic, python-poppler, Twilio, python-telegram-bot, JWT,  (for system metrics).
 -   **Frontend**: React, Shadcn UI, Tailwind CSS, i18next, react-imask.
 -   **Deployment**: Kubernetes, Supervisor.
--   **Core Features**: MFA, dynamic forms, role-based access, contract limits (soft-delete), unique contract codes, password reset/forgot, template management, placeholder constructor, calculated fields, favorites, document upload.
+-   **Core Features**: MFA, dynamic forms, role-based access, contract limits, template management, placeholder constructor (calculated fields), favorites, document upload, audit logging, system monitoring, admin notifications.
 </key_technical_concepts>
 
 <code_architecture>
@@ -19,44 +19,66 @@ The application uses a FastAPI backend and a React frontend, deployed in Kuberne
 
 
 -   ****:
-    -   **Importance**: Central FastAPI backend, defines models and API endpoints.
-    -   **Changes**: Updated  model to include  and . Updated  model with . Updated  model to include , , and . Modified login logic to correctly set  and . Added new endpoints for managing user's favorite templates (, ). Updated  PUT endpoint to accept and process , dynamically updating . Fixed an issue with database selection during admin creation.
+    -   **Importance**: Central FastAPI backend defining models, API endpoints, and business logic.
+    -   **Changes**:
+        -   **Models**:  model updated with , , .  with .  with , , . New  model (, , , , ) and  model (, , , , , , , ).  model updated to include .  imported.
+        -   **Login/User Management**: Fixed  and  setting, database selection during admin creation. Added logging to login, password reset.
+        -   **Contract Management**: Modified  PUT endpoint to process  and dynamically update . Critical fix:  and  now only replace placeholders if a  is provided, otherwise  is retained.  endpoint was made public and enhanced to handle . Logic to prioritize placeholder values for PDF generation was added.
+        -   **Template Management**: Added endpoints for managing user's favorite templates (, ).  no longer filters by .  now excludes ID from update.
+        -   **Admin Features**: New endpoints for , , , , .  endpoint updated to include .
+        -   **Logging**:  function enhanced. Logging added to create contract, send contract, delete contract, favorite template, profile update, all OTP verification methods, admin password reset, and approve signature. Logic for calculating  based on recent activity was added.
+-   ****:
+    -   **Importance**: Lists Python dependencies for the backend.
+    -   **Changes**: Added .
+-   ****:
+    -   **Importance**: Admin interface for overall management.
+    -   **Changes**: Reordered tabs (Activity, Users, Contracts). Added registered users count next to Users tab and online users to a main dashboard card. Integrated  for real-time system metrics. Removed separate logs button and embedded user logs into the user details modal (eye icon) as a new section. Added routing for new admin pages.
+-   ****:
+    -   **Importance**: New admin page for creating and managing system-wide notifications.
+    -   **Changes**: Created this file from scratch to handle notification creation. Initially included image upload, later removed.
+-   ****:
+    -   **Importance**: New admin page (initially a standalone route, then integrated into ) for viewing specific user audit logs.
+    -   **Changes**: Created this file from scratch.
+-   ****:
+    -   **Importance**: New component for displaying real-time system metrics in a user-friendly way.
+    -   **Changes**: Created this file from scratch.
 -   ****:
     -   **Importance**: Admin interface for creating and managing contract templates and placeholders.
-    -   **Changes**: Implemented умная фильтрация плейсхолдеров по типу (intelligent filtering for Date/Number types) in the placeholder calculator. Updated calculator UI to a Первый операнд → Операция → Второй операнд order. Escaped  in JSX to prevent React errors. Added a Быстрая вставка (Quick Insert) button with a dialog for predefined common placeholders. Added a checkbox ☑️ Требуется загрузка удостоверения личности нанимателя to template creation form, tied to .
+    -   **Changes**: Implemented умная фильтрация (intelligent filtering for Date/Number types) in placeholder calculator. Updated calculator UI. Added Быстрая вставка (Quick Insert) button. Added Требуется загрузка удостоверения личности нанимателя checkbox tied to .
 -   ****:
     -   **Importance**: User-facing marketplace for contract templates.
-    -   **Changes**: Replaced Использовать button with ❤️ Добавить в избранное / ✓ В избранном functionality, integrating with new backend endpoints for favorites. Added state and functions (, , ) to manage user's favorite templates.
+    -   **Changes**: Implemented Favorite Templates functionality, integrating with new backend endpoints.
 -   ****:
     -   **Importance**: Creator's main dashboard.
-    -   **Changes**: Modified Create Contract button to open a modal for selecting from favorite templates. Added a ⭐ Мои избранные шаблоны section to display user's favorite templates. Integrated with backend to fetch .
+    -   **Changes**: Modified Create Contract button to open modal for selecting favorite templates. Added Мои избранные шаблоны section. Integrated notification banner, fetching unread notifications and allowing users to mark them as read.
 -   ****:
     -   **Importance**: Interface for creating a new contract from a template or uploaded PDF.
-    -   **Changes**: Updated to load selected template via  from URL, using  for persistence. Dynamically renders form fields based on , hiding old hardcoded fields (, , , ) when a template is selected. Implemented real-time preview of contract content with replaced placeholder values, including  date formatting. Separated placeholder fields into Поля Наймодателя (landlord's fields) and Поля Нанимателя (tenant's fields), with tenant fields initially collapsed. Updated  to send , , and . Fixed multiple JSX syntax errors. Refined UI/UX for client fields, removing yellow styling and improving aesthetics, relocating document upload.
+    -   **Changes**: Implemented  state and conditional rendering to prevent old content flicker. Updated to load selected template via  from URL. Dynamically renders form fields based on . Implemented real-time content preview. Separated landlord/tenant fields.  sends , , . Added  to prevent duplicate template loading. Ensures contract content is updated with placeholder values after creation.
+-   ****:
+    -   **Importance**: Displays details of a specific contract for the creator.
+    -   **Changes**: Updated to dynamically fetch template and render  (tenant) related placeholders from  in the Подпись Нанимателя section.
 -   ****:
     -   **Importance**: Interface for a tenant to sign a contract.
-    -   **Changes**: Added state for , , . Implemented logic to fetch template and contract placeholder values. Dynamically renders fields for  for the tenant to fill. Updated  to send filled placeholder values to the backend before signing. Relocated document upload section inside the client's form.
+    -   **Changes**: Updated  checks to handle 'Не указано'. Dynamically renders fields for  from the template for the tenant to fill. Consolidated placeholder input to Step 1.5. Switched from PATCH to PUT and then to  endpoint for saving tenant's . Enhanced content update logic after saving tenant data to ensure correct display.
+-   ****:
+    -   **Importance**: Defines frontend routing.
+    -   **Changes**: Added routes for  and .
 </code_architecture>
 
 <pending_tasks>
--   The ДОГОВОР КРОТКОСРОЧНОГО НАЙМА ЖИЛОГО ПОМЕЩЕНИЯ (old contract content) still appears on page refresh in  before the selected template loads.
--   Tenant's FIO (Full Name) is not being explicitly prompted for input in the tenant's form when it's an unfilled placeholder.
+-   Online users count in the admin panel is not real-time.
+-   Logging is missing for the action when an admin adds or changes the quantity of contracts for a user.
+-   If the landlord fills all tenant-related fields, the tenant should bypass the FIO/contact form and proceed directly to ID upload. There's also a discrepancy between FIO in the downloaded/emailed contract and what was entered.
+-   Replace long UUIDs for user IDs with 10-digit chaotic IDs.
+-   The Contract Details page needs to display *all* placeholders, not just specific ones.
 </pending_tasks>
 
 <current_work>
-Immediately prior to this summary, the AI engineer was working on resolving a persistent issue in  where old, hardcoded contract content (ДОГОВОР КРОТКОСРОЧНОГО НАЙМА ЖИЛОГО ПОМЕЩЕНИЯ) would briefly appear on the page during refresh, before the selected template's dynamic fields loaded. This was a critical UX bug.
+Immediately prior to this summary, the AI engineer received five new, high-priority tasks from the user. The engineer acknowledged all five and decided to prioritize the third task: Наймодатель заполнил все поля нанимателя, когда наниматель открывает ссылку, ознакомился с договором, нажимает продолжить, у него выходит форма для заполнения ФИО, хотя наниматель уже за него заполнил, если наймодатель заполнил все поля, то нанимателя должно перебросить на загрузку удостоверения личности.
 
-The engineer made the following adjustments:
-1.  ** (Chat Message 601):** The AI attempted to fix the old contract flicker by ensuring  is set to  early when  is present, to prevent the old form from rendering before the template data is fetched.
-2.  ** (Chat Message 605):** The document upload section, which was previously outside the client's main form, was moved to be embedded within it for better UX, as requested by the user.
-3.  ** (Chat Message 615, 617):** The backend's contract update endpoint () was updated to allow  to be modified and to dynamically update the  by replacing placeholders with their corresponding values when a contract is saved. This ensures that changes made by the tenant or landlord to placeholder fields are reflected in the contract's final content.
-
-The most recent user feedback (Chat Message 622) explicitly states:
-1.  1 пункт ДОГОВОР КРОТКОСРОЧНОГО НАЙМА ЖИЛОГО ПОМЕЩЕНИЯ остается так же при загрузке, пожалуйста убери ее (The old contract still appears on load, please remove it.)
-2.  2. Наймодатель не загружал фио клиента, но у нанимателя нет формы заполнения ФИО (The landlord did not upload the client's FIO, but the tenant does not have a form to fill in FIO.)
-The engineer acknowledged these issues and prioritized fixing the first point.
+This task involves modifying the logic in  to intelligently determine if the tenant needs to fill in their information, or if all necessary fields have already been provided by the landlord. The core of the problem lies in the conditional rendering of the tenant's input form based on the presence and completeness of . The engineer's last action was to state an understanding of this problem and indicate the intention to modify the  file to refine this conditional logic, specifically checking that  are truly empty before rendering the input form.
 </current_work>
 
 <optional_next_step>
-Prioritize fixing the issue where the old contract content (ДОГОВОР КРОТКОСРОЧНОГО НАЙМА ЖИЛОГО ПОМЕЩЕНИЯ) appears on  refresh.
+Modify  to ensure the tenant's input form is only rendered if  are actually empty.
 </optional_next_step>
