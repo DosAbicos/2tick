@@ -2202,36 +2202,47 @@ async def update_signer_info(contract_id: str, data: SignerInfoUpdate):
                     print(f"🔧 Values to replace: {placeholder_values}")
                     print(f"🔧 Original content preview: {updated_content[:200]}...")
                     
-                    # Replace ALL placeholders with current values (both old and new)
+                    # Get existing placeholder values to know what to replace
+                    existing_values = contract.get('placeholder_values', {})
+                    print(f"🔧 Existing values: {existing_values}")
+                    
+                    # Replace values in content by finding old values and replacing with new ones
                     for key, config in template['placeholders'].items():
                         if key in placeholder_values:
-                            value = placeholder_values[key]
-                            if value:  # Only replace if value is not empty
+                            new_value = placeholder_values[key]
+                            old_value = existing_values.get(key)
+                            
+                            if new_value and old_value != new_value:  # Only replace if value changed
                                 # Format dates to DD.MM.YYYY
                                 if config.get('type') == 'date':
                                     try:
                                         from datetime import datetime as dt
-                                        date_obj = dt.fromisoformat(value.replace('Z', '+00:00'))
-                                        value = date_obj.strftime('%d.%m.%Y')
+                                        date_obj = dt.fromisoformat(new_value.replace('Z', '+00:00'))
+                                        new_value = date_obj.strftime('%d.%m.%Y')
                                     except:
                                         pass
                                 
-                                # Replace placeholder (both {{key}} and [label] for backwards compatibility)
-                                import re
                                 old_content = updated_content
                                 
-                                # Replace {{key}}
+                                # Strategy 1: Replace {{key}} if still exists
+                                import re
                                 pattern = re.compile(f'{{{{\\s*{key}\\s*}}}}')
-                                updated_content = pattern.sub(str(value), updated_content)
+                                updated_content = pattern.sub(str(new_value), updated_content)
                                 
-                                # Replace [label] (for old contracts)
+                                # Strategy 2: Replace [label] if still exists
                                 label = config.get('label', key)
-                                updated_content = updated_content.replace(f'[{label}]', str(value))
+                                updated_content = updated_content.replace(f'[{label}]', str(new_value))
                                 
-                                if old_content != updated_content:
-                                    print(f"🔧 ✅ Replaced {key} ({label}) with value: {value}")
+                                # Strategy 3: Direct value replacement (НОВОЕ!)
+                                if old_value and str(old_value) in updated_content:
+                                    # Replace old value with new value in content
+                                    updated_content = updated_content.replace(str(old_value), str(new_value))
+                                    print(f"🔧 ✅ Replaced OLD VALUE '{old_value}' with NEW VALUE '{new_value}' for {key}")
+                                elif old_content != updated_content:
+                                    print(f"🔧 ✅ Replaced placeholder {key} ({label}) with value: {new_value}")
                                 else:
-                                    print(f"🔧 ❌ No replacement made for {key} ({label}) = {value}")
+                                    print(f"🔧 ❌ Could not replace {key} - old_value='{old_value}', new_value='{new_value}'")
+                    
                     
                     print(f"🔧 Final content preview: {updated_content[:200]}...")
                     print(f"🔧 ✅ Placeholders replacement completed")
