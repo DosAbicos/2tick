@@ -2193,7 +2193,8 @@ async def update_signer_info(contract_id: str, data: SignerInfoUpdate):
                 # Load template to get placeholder configs
                 template = await db.contract_templates.find_one({"id": contract['template_id']})
                 if template and template.get('placeholders'):
-                    placeholder_values = data.placeholder_values
+                    # ИСПРАВЛЕНО: Используем объединенные значения, а не только новые
+                    placeholder_values = update_data.get('placeholder_values', {})
                     
                     # Replace ONLY placeholders that have values
                     for key, value in placeholder_values.items():
