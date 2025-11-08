@@ -2190,38 +2190,55 @@ async def update_signer_info(contract_id: str, data: SignerInfoUpdate):
         # If placeholder_values are being updated and contract has a template, replace placeholders in content
         if data.placeholder_values and contract.get('template_id'):
             try:
+                logging.info(f"Updating placeholders for template contract {contract_id}")
+                
                 # Load template to get placeholder configs
                 template = await db.contract_templates.find_one({"id": contract['template_id']})
                 if template and template.get('placeholders'):
                     # ИСПРАВЛЕНО: Используем объединенные значения, а не только новые
                     placeholder_values = update_data.get('placeholder_values', {})
                     
-                    # Replace ONLY placeholders that have values
-                    for key, value in placeholder_values.items():
-                        if key in template['placeholders'] and value:  # Only replace if value is not empty
-                            config = template['placeholders'][key]
-                            
-                            # Format dates to DD.MM.YYYY
-                            if config.get('type') == 'date':
-                                try:
-                                    from datetime import datetime as dt
-                                    date_obj = dt.fromisoformat(value.replace('Z', '+00:00'))
-                                    value = date_obj.strftime('%d.%m.%Y')
-                                except:
-                                    pass
-                            
-                            # Replace placeholder (both {{key}} and [label] for backwards compatibility)
-                            import re
-                            # Replace {{key}}
-                            pattern = re.compile(f'{{{{\\s*{key}\\s*}}}}')
-                            updated_content = pattern.sub(str(value), updated_content)
-                            # Replace [label] (for old contracts)
-                            label = config.get('label', key)
-                            updated_content = updated_content.replace(f'[{label}]', str(value))
+                    logging.info(f"Template placeholders: {list(template['placeholders'].keys())}")
+                    logging.info(f"Values to replace: {placeholder_values}")
+                    logging.info(f"Original content length: {len(updated_content)}")
                     
+                    # Replace ALL placeholders with current values (both old and new)
+                    for key, config in template['placeholders'].items():
+                        if key in placeholder_values:
+                            value = placeholder_values[key]
+                            if value:  # Only replace if value is not empty
+                                # Format dates to DD.MM.YYYY
+                                if config.get('type') == 'date':
+                                    try:
+                                        from datetime import datetime as dt
+                                        date_obj = dt.fromisoformat(value.replace('Z', '+00:00'))
+                                        value = date_obj.strftime('%d.%m.%Y')
+                                    except:
+                                        pass
+                                
+                                # Replace placeholder (both {{key}} and [label] for backwards compatibility)
+                                import re
+                                old_content = updated_content
+                                
+                                # Replace {{key}}
+                                pattern = re.compile(f'{{{{\\s*{key}\\s*}}}}')
+                                updated_content = pattern.sub(str(value), updated_content)
+                                
+                                # Replace [label] (for old contracts)
+                                label = config.get('label', key)
+                                updated_content = updated_content.replace(f'[{label}]', str(value))
+                                
+                                if old_content != updated_content:
+                                    logging.info(f"Replaced {key} ({label}) with value: {value}")
+                    
+                    logging.info(f"Updated content length: {len(updated_content)}")
                     logging.info(f"Placeholders replaced in content")
+                    
             except Exception as e:
                 logging.error(f"Error replacing placeholders: {e}")
+                logging.error(f"Template: {template}")
+                logging.error(f"Placeholder values: {placeholder_values}")
+        
         else:
             # Old logic for contracts without template
             # Get current and new values
