@@ -182,7 +182,10 @@ class Contract(BaseModel):
     title: str
     content: str
     content_type: str = "plain"  # "plain" or "html"
-    creator_id: str
+    creator_id: Optional[str] = None  # ИСПРАВЛЕНО: сделано опциональным для совместимости
+    landlord_id: Optional[str] = None  # Добавлено для совместимости с existing data
+    landlord_email: Optional[str] = None
+    landlord_full_name: Optional[str] = None
     source_type: str = "manual"  # "manual", "template", "uploaded_pdf"
     template_id: Optional[str] = None  # ID шаблона, если создан из шаблона
     placeholder_values: Optional[dict] = None  # Значения placeholders {key: value}
