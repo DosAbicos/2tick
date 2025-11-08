@@ -2190,7 +2190,7 @@ async def update_signer_info(contract_id: str, data: SignerInfoUpdate):
         # If placeholder_values are being updated and contract has a template, replace placeholders in content
         if data.placeholder_values and contract.get('template_id'):
             try:
-                logging.info(f"Updating placeholders for template contract {contract_id}")
+                print(f"🔧 Updating placeholders for template contract {contract_id}")
                 
                 # Load template to get placeholder configs
                 template = await db.contract_templates.find_one({"id": contract['template_id']})
@@ -2198,9 +2198,9 @@ async def update_signer_info(contract_id: str, data: SignerInfoUpdate):
                     # ИСПРАВЛЕНО: Используем объединенные значения, а не только новые
                     placeholder_values = update_data.get('placeholder_values', {})
                     
-                    logging.info(f"Template placeholders: {list(template['placeholders'].keys())}")
-                    logging.info(f"Values to replace: {placeholder_values}")
-                    logging.info(f"Original content length: {len(updated_content)}")
+                    print(f"🔧 Template placeholders: {list(template['placeholders'].keys())}")
+                    print(f"🔧 Values to replace: {placeholder_values}")
+                    print(f"🔧 Original content preview: {updated_content[:200]}...")
                     
                     # Replace ALL placeholders with current values (both old and new)
                     for key, config in template['placeholders'].items():
@@ -2229,10 +2229,12 @@ async def update_signer_info(contract_id: str, data: SignerInfoUpdate):
                                 updated_content = updated_content.replace(f'[{label}]', str(value))
                                 
                                 if old_content != updated_content:
-                                    logging.info(f"Replaced {key} ({label}) with value: {value}")
+                                    print(f"🔧 ✅ Replaced {key} ({label}) with value: {value}")
+                                else:
+                                    print(f"🔧 ❌ No replacement made for {key} ({label}) = {value}")
                     
-                    logging.info(f"Updated content length: {len(updated_content)}")
-                    logging.info(f"Placeholders replaced in content")
+                    print(f"🔧 Final content preview: {updated_content[:200]}...")
+                    print(f"🔧 ✅ Placeholders replacement completed")
                     
             except Exception as e:
                 logging.error(f"Error replacing placeholders: {e}")
