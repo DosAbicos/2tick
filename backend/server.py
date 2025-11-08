@@ -2161,7 +2161,7 @@ class SignerInfoUpdate(BaseModel):
 
 @api_router.post("/sign/{contract_id}/update-signer-info")
 async def update_signer_info(contract_id: str, data: SignerInfoUpdate):
-    logging.info(f"Update signer info called: name={data.signer_name}, phone={data.signer_phone}, email={data.signer_email}, placeholder_values={data.placeholder_values}")
+    print(f"🔧 Update signer info called: name={data.signer_name}, phone={data.signer_phone}, email={data.signer_email}, placeholder_values={data.placeholder_values}")
     
     contract = await db.contracts.find_one({"id": contract_id})
     if not contract:
@@ -2180,7 +2180,7 @@ async def update_signer_info(contract_id: str, data: SignerInfoUpdate):
         existing_values = contract.get('placeholder_values', {})
         update_data['placeholder_values'] = {**existing_values, **data.placeholder_values}
     
-    logging.info(f"Update data: {update_data}")
+    print(f"🔧 Update data: {update_data}")
     
     if update_data:
         # Update the content with new signer information or placeholder values
