@@ -3159,7 +3159,8 @@ async def get_all_contracts(
     current_user: dict = Depends(get_current_user),
     limit: int = 20,
     skip: int = 0,
-    landlord_id: str = None,  # Фильтр по наймодателю
+    landlord_id: str = None,  # Фильтр по наймодателю  
+    creator_id: str = None,   # Фильтр по создателю (для совместимости)
     search: str = None  # Поиск по contract_code, title
 ):
     if current_user.get('role') != 'admin':
@@ -3173,9 +3174,17 @@ async def get_all_contracts(
         ]
     }
     
-    # Добавляем фильтр по landlord_id если указан
+    # Добавляем фильтр по landlord_id или creator_id
     if landlord_id:
-        query["landlord_id"] = landlord_id
+        query["$and"] = query.get("$and", [])
+        query["$and"].append({
+            "$or": [
+                {"landlord_id": landlord_id},
+                {"creator_id": landlord_id}  # Поиск и по creator_id тоже
+            ]
+        })
+    elif creator_id:
+        query["creator_id"] = creator_id
     
     # Добавляем поиск по contract_code, title, данным наймодателя
     if search:
