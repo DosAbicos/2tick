@@ -3144,7 +3144,8 @@ async def get_all_contracts(
     current_user: dict = Depends(get_current_user),
     limit: int = 20,
     skip: int = 0,
-    landlord_id: str = None  # Добавлен параметр для фильтрации по наймодателю
+    landlord_id: str = None,  # Фильтр по наймодателю
+    search: str = None  # Поиск по contract_code, title
 ):
     if current_user.get('role') != 'admin':
         raise HTTPException(status_code=403, detail="Admin access required")
@@ -3160,6 +3161,20 @@ async def get_all_contracts(
     # Добавляем фильтр по landlord_id если указан
     if landlord_id:
         query["landlord_id"] = landlord_id
+    
+    # Добавляем поиск по contract_code или title
+    if search:
+        search_pattern = {"$regex": search, "$options": "i"}
+        query["$and"] = [
+            query.get("$and", {}),
+            {
+                "$or": [
+                    {"contract_code": search_pattern},
+                    {"title": search_pattern},
+                    {"id": search}  # Точный поиск по ID
+                ]
+            }
+        ]
     
     # Получить договоры с пагинацией, отсортированные от новых к старым
     contracts = await db.contracts.find(query, {"_id": 0}).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
