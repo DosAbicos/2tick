@@ -361,21 +361,40 @@ const AdminPage = () => {
             <h1 className="text-3xl font-bold text-neutral-900">Панель администратора</h1>
             <p className="text-neutral-600 mt-1">Управление пользователями и договорами</p>
           </div>
-          <div className="flex gap-2">
-            <Button
-              onClick={() => navigate('/admin/notifications')}
-              variant="outline"
-            >
-              <Bell className="mr-2 h-4 w-4" />
-              Оповещения
-            </Button>
-            <Button
-              onClick={() => navigate('/admin/templates')}
-              variant="outline"
-            >
-              <FileText className="mr-2 h-4 w-4" />
-              Управление шаблонами
-            </Button>
+          
+          <div className="flex items-center gap-4">
+            {/* Contract Search */}
+            <div className="flex items-center gap-2">
+              <Input
+                type="text"
+                placeholder="Поиск договора (номер, название)"
+                value={contractSearch}
+                onChange={(e) => setContractSearch(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && searchContract()}
+                className="w-64"
+              />
+              <Button onClick={searchContract} variant="outline">
+                <Search className="h-4 w-4 mr-2" />
+                Найти
+              </Button>
+            </div>
+            
+            <div className="flex gap-2">
+              <Button
+                onClick={() => navigate('/admin/notifications')}
+                variant="outline"
+              >
+                <Bell className="mr-2 h-4 w-4" />
+                Оповещения
+              </Button>
+              <Button
+                onClick={() => navigate('/admin/templates')}
+                variant="outline"
+              >
+                <FileText className="mr-2 h-4 w-4" />
+                Управление шаблонами
+              </Button>
+            </div>
           </div>
         </div>
 
