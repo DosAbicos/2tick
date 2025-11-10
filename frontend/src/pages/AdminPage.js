@@ -295,6 +295,26 @@ const AdminPage = () => {
     return <Badge className={variant.color}>{variant.label}</Badge>;
   };
 
+  const searchContract = async () => {
+    if (!contractSearch.trim()) return;
+    
+    try {
+      const response = await axios.get(`${API}/admin/contracts?search=${contractSearch.trim()}&limit=10`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      const contracts = response.data.contracts || [];
+      if (contracts.length > 0) {
+        setSearchedContract(contracts[0]);  // Показать первый найденный договор
+        setContractSearchOpen(true);
+      } else {
+        toast.error(`Договор ${contractSearch} не найден`);
+      }
+    } catch (error) {
+      toast.error('Ошибка поиска договора');
+    }
+  };
+
   const filteredUsers = users.filter(user =>
     user.full_name?.toLowerCase().includes(userSearch.toLowerCase()) ||
     user.email?.toLowerCase().includes(userSearch.toLowerCase())
