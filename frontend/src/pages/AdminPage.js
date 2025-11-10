@@ -779,13 +779,22 @@ const AdminPage = () => {
                                   {new Date(contract.created_at).toLocaleDateString('ru-RU')}
                                 </TableCell>
                                 <TableCell>
-                                  <Button
-                                    size="sm"
-                                    variant="ghost"
-                                    onClick={() => window.open(`/contracts/${contract.id}?readonly=true`, '_blank')}
-                                  >
-                                    <Eye className="h-4 w-4" />
-                                  </Button>
+                                  <div className="flex gap-1">
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => window.open(`/contracts/${contract.id}?readonly=true`, '_blank')}
+                                    >
+                                      <Eye className="h-4 w-4" />
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => window.open(`/api/contracts/${contract.id}/download`, '_blank')}
+                                    >
+                                      <FileText className="h-4 w-4" />
+                                    </Button>
+                                  </div>
                                 </TableCell>
                               </TableRow>
                             ))}
