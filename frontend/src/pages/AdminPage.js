@@ -80,6 +80,9 @@ const AdminPage = () => {
   const [loadingUserContracts, setLoadingUserContracts] = useState(false);
   const [notification, setNotification] = useState(null);
   const [showNotification, setShowNotification] = useState(false);
+  const [contractSearch, setContractSearch] = useState('');
+  const [searchedContract, setSearchedContract] = useState(null);
+  const [contractSearchOpen, setContractSearchOpen] = useState(false);
 
   useEffect(() => {
     fetchAdminData();
