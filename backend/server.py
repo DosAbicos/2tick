@@ -3113,10 +3113,25 @@ async def download_pdf(contract_id: str, current_user: dict = Depends(get_curren
 
 # ===== ADMIN ROUTES =====
 @api_router.get("/admin/users")
-async def get_all_users(current_user: dict = Depends(get_current_user)):
+async def get_all_users(current_user: dict = Depends(get_current_user), search: str = None):
     if current_user.get('role') != 'admin':
         raise HTTPException(status_code=403, detail="Admin access required")
-    users = await db.users.find({}, {"_id": 0, "password": 0}).to_list(1000)
+    
+    query = {}
+    
+    # Добавляем поиск по ФИО, email, phone, ID  
+    if search:
+        search_pattern = {"$regex": search, "$options": "i"}
+        query["$or"] = [
+            {"full_name": search_pattern},
+            {"email": search_pattern}, 
+            {"phone": search_pattern},
+            {"id": search},  # Точный поиск по ID
+            {"company_name": search_pattern},
+            {"iin": search_pattern}
+        ]
+    
+    users = await db.users.find(query, {"_id": 0, "password": 0}).to_list(1000)
     return users
 
 @api_router.get("/debug/contracts-landlords")
