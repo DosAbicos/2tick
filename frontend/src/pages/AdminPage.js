@@ -121,6 +121,15 @@ const AdminPage = () => {
   useEffect(() => {
     localStorage.setItem('admin-contract-search', contractSearch);
   }, [contractSearch]);
+  
+  // Сохраняем активные вкладки
+  useEffect(() => {
+    localStorage.setItem('admin-active-tab', activeTab);
+  }, [activeTab]);
+  
+  useEffect(() => {
+    localStorage.setItem('admin-user-details-tab', userDetailsTab);
+  }, [userDetailsTab]);
 
   // Polling для ошибок когда модальное окно открыто
   useEffect(() => {
