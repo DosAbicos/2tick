@@ -107,15 +107,42 @@ user_problem_statement: "Выполнение 4 новых задач: 1) Кно
 backend:
   - task: "Оптимизация скорости отправки email"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "ОПТИМИЗИРОВАНО: Функция send_email оптимизирована для более быстрой доставки email. Изменения: 1) Уменьшен timeout с 10 до 5 секунд для SMTP подключений (строки 479, 482), 2) Удален порт 465 из списка проб (остались только 587 и SMTP_PORT) для сокращения времени при недоступности портов, 3) Теперь максимальное время попыток отправки: 2 порта × 5 секунд = 10 секунд вместо 3 порта × 10 секунд = 30 секунд. Это значительно ускорит отправку email после одобрения договора, особенно при недоступности некоторых портов SMTP."
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. Оптимизация функции send_email работает корректно: 1) SMTP подключения к mail.2tick.kz:587 и :25 выполняются быстро (1.55s и 1.22s соответственно), 2) Утверждение договора с отправкой email завершается за 0.04 секунды (значительно быстрее старых 30 секунд), 3) Порт 465 исключен из проверки согласно оптимизации, 4) Максимальное время попыток сокращено с 30 до 10 секунд. ✅ ОПТИМИЗАЦИЯ РАБОТАЕТ: Email отправка значительно ускорена, timeout уменьшен с 10 до 5 секунд, количество портов сокращено с 3 до 2."
+
+  - task: "Endpoint GET /api/contracts/{contract_id} для модального окна"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. Endpoint GET /api/contracts/{contract_id} работает корректно для модального окна просмотра: 1) Возвращает все необходимые поля (id, title, content, signer_name, signer_phone, status, created_at), 2) Статус ответа 200 OK, 3) Данные возвращаются в правильном формате для отображения в AdminPage.js модальном окне, 4) Поля содержат корректные значения (например: title='Тестовый договор для модального окна', signer_name='Тестовый Наниматель'). ✅ ГОТОВ ДЛЯ FRONTEND: Endpoint предоставляет все данные необходимые для кнопки скачивания в модальном окне просмотра договора."
+
+  - task: "Endpoint GET /api/contracts/{contract_id}/download-pdf для скачивания"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. Endpoint GET /api/contracts/{contract_id}/download-pdf работает корректно: 1) Возвращает правильный Content-Type: application/pdf, 2) Генерирует валидный PDF файл (начинается с %PDF header), 3) Размер PDF составляет 46591 bytes (содержательный документ), 4) PDF содержит замененные плейсхолдеры и данные договора, 5) Статус ответа 200 OK. ✅ ГОТОВ ДЛЯ СКАЧИВАНИЯ: PDF генерируется корректно и готов для скачивания через кнопку в модальном окне AdminPage.js."
 
   - task: "Замена UUID на 10-значные рандомные ID для пользователей"
     implemented: true
