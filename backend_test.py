@@ -114,6 +114,10 @@ class BackendTester:
         """Login as creator user"""
         self.log("🔐 Logging in as creator...")
         
+        # Use a different test user for creator tests
+        TEST_USER_EMAIL = "test.creator@example.com"
+        TEST_USER_PASSWORD = "testpassword123"
+        
         login_data = {
             "email": TEST_USER_EMAIL,
             "password": TEST_USER_PASSWORD
@@ -126,12 +130,12 @@ class BackendTester:
             self.token = data["token"]
             self.user_id = data["user"]["id"]
             self.session.headers.update({"Authorization": f"Bearer {self.token}"})
-            self.log(f"✅ Login successful. User ID: {self.user_id}")
+            self.log(f"✅ Creator login successful. User ID: {self.user_id}")
             return True
         else:
-            self.log(f"❌ Login failed: {response.status_code} - {response.text}")
+            self.log(f"❌ Creator login failed: {response.status_code} - {response.text}")
             # Try to register if login fails
-            self.log("🔄 Attempting to register new user...")
+            self.log("🔄 Attempting to register new creator user...")
             return self.register_test_user()
     
     def test_create_contract_with_empty_signer_fields(self):
