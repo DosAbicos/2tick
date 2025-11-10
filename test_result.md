@@ -511,15 +511,18 @@ frontend:
   
   - task: "UI State Persistence в админ-панели"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/pages/AdminPage.js"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "РЕАЛИЗОВАНО: Сохранение состояния UI в localStorage. Изменения: 1) Добавлены state переменные activeTab и userDetailsTab для управления активными вкладками, 2) В useEffect добавлено восстановление сохраненных значений activeTab и userDetailsTab из localStorage (строки 95-98), 3) Добавлены два новых useEffect для автоматического сохранения activeTab и userDetailsTab в localStorage при изменении (строки 118-125), 4) Обновлены Tabs компоненты для использования value и onValueChange вместо defaultValue (строки 489, 703). Теперь при обновлении страницы все открытые вкладки восстанавливаются в том же состоянии."
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. UI State Persistence работает корректно: 1) При первом заходе на админ-панель активная вкладка 'Пользователи' восстанавливается из localStorage, 2) После обновления страницы (F5) активная вкладка 'Пользователи' сохраняется и восстанавливается автоматически, 3) Состояние вкладок внутри модальных окон пользователей также сохраняется в localStorage (userDetailsTab), 4) Поисковые запросы (userSearch, contractSearch) сохраняются и восстанавливаются при перезагрузке. ✅ ПОЛНАЯ РЕАЛИЗАЦИЯ: localStorage используется для сохранения activeTab, userDetailsTab, admin-user-search, admin-contract-search. Все состояния UI корректно персистируются между сессиями."
   
   - task: "Исправление переполнения таблицы договоров пользователя"
     implemented: true
