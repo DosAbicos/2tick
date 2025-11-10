@@ -734,7 +734,7 @@ const AdminPage = () => {
               
               {/* User Details Tabs */}
               <div className="pt-4 border-t">
-                <Tabs defaultValue="activity" className="w-full">
+                <Tabs value={userDetailsTab} onValueChange={setUserDetailsTab} className="w-full">
                   <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="activity" className="flex items-center gap-2">
                       <Activity className="h-4 w-4" />
@@ -742,7 +742,7 @@ const AdminPage = () => {
                     </TabsTrigger>
                     <TabsTrigger value="contracts" className="flex items-center gap-2">
                       <FileText className="h-4 w-4" />
-                      Договоры
+                      Договоры ({userContracts.length})
                     </TabsTrigger>
                   </TabsList>
 
