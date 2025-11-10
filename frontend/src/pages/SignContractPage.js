@@ -808,10 +808,10 @@ const SignContractPage = () => {
                 <div className="flex gap-3 pt-4">
                   <Button
                     variant="outline"
-                    onClick={() => setStep(1.5)}
+                    onClick={() => setStep(needsInfo ? 1.5 : 1)}
                     className="flex-1"
                   >
-                    ← Изменить данные
+                    ← {needsInfo ? 'Изменить данные' : 'Назад к договору'}
                   </Button>
                   <Button
                     onClick={() => setStep(1)}
