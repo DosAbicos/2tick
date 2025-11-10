@@ -3071,6 +3071,56 @@ async def approve_signature(contract_id: str, current_user: dict = Depends(get_c
     return {"message": "Contract approved and signed", "landlord_signature_hash": landlord_signature_hash}
 
 # ===== PDF GENERATION =====
+@api_router.get("/contracts/{contract_id}/download")
+async def download_contract_pdf(contract_id: str, current_user: dict = Depends(get_current_user)):
+    """Download contract as PDF - for both landlords and admins"""
+    print(f"🔥 DEBUG: download_contract_pdf called for contract {contract_id}")
+    
+    contract = await db.contracts.find_one({"id": contract_id})
+    if not contract:
+        print(f"❌ Contract not found: {contract_id}")
+        raise HTTPException(status_code=404, detail="Contract not found")
+    
+    # Check permissions - landlord or admin can download
+    user_role = current_user.get('role')
+    is_owner = (contract.get('landlord_id') == current_user.get('user_id') or 
+                contract.get('creator_id') == current_user.get('user_id'))
+    
+    if user_role != 'admin' and not is_owner:
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    print(f"✅ Contract found: {contract['title']}")
+    
+    signature = await db.signatures.find_one({"contract_id": contract_id})
+    print(f"✅ Signature: {bool(signature)}")
+    
+    # Get landlord signature hash if contract is signed/approved
+    landlord_signature_hash = contract.get('landlord_signature_hash')
+    print(f"✅ Landlord hash: {bool(landlord_signature_hash)}")
+    
+    # Get landlord info - try both landlord_id and creator_id
+    landlord = None
+    if contract.get('landlord_id'):
+        landlord = await db.users.find_one({"id": contract.get('landlord_id')})
+    if not landlord and contract.get('creator_id'):
+        landlord = await db.users.find_one({"id": contract.get('creator_id')})
+    
+    # Generate PDF using centralized function
+    try:
+        print(f"🔥 Generating PDF...")
+        pdf_bytes = generate_contract_pdf(contract, signature, landlord_signature_hash, landlord)
+        print(f"✅ PDF generated: {len(pdf_bytes)} bytes")
+        
+        return Response(
+            content=pdf_bytes,
+            media_type="application/pdf",
+            headers={"Content-Disposition": f"attachment; filename=contract_{contract['contract_code']}.pdf"}
+        )
+        
+    except Exception as e:
+        print(f"❌ PDF generation error: {e}")
+        raise HTTPException(status_code=500, detail=f"PDF generation failed: {str(e)}")
+
 @api_router.get("/contracts/{contract_id}/download-pdf")
 async def download_pdf(contract_id: str, current_user: dict = Depends(get_current_user)):
     print(f"🔥 DEBUG: download_pdf called for contract {contract_id}")
