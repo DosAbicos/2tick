@@ -738,11 +738,7 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus:
-    - "Кнопка скачивания договора в модальном окне просмотра"
-    - "UI State Persistence в админ-панели"
-    - "Исправление переполнения таблицы договоров пользователя"
-    - "Оптимизация скорости отправки email"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
