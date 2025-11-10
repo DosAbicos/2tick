@@ -469,22 +469,9 @@ const AdminPage = () => {
           <TabsContent value="users" className="space-y-4">
             <Card>
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle>Список пользователей</CardTitle>
-                    <CardDescription>Все зарегистрированные наймодатели</CardDescription>
-                  </div>
-                  <div className="w-64">
-                    <div className="relative">
-                      <Search className="absolute left-2 top-2.5 h-4 w-4 text-neutral-500" />
-                      <Input
-                        placeholder="Поиск по email или имени"
-                        value={userSearch}
-                        onChange={(e) => setUserSearch(e.target.value)}
-                        className="pl-8"
-                      />
-                    </div>
-                  </div>
+                <div>
+                  <CardTitle>Список пользователей</CardTitle>
+                  <CardDescription>Все зарегистрированные наймодатели</CardDescription>
                 </div>
               </CardHeader>
               <CardContent>
