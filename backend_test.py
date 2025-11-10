@@ -27,12 +27,37 @@ class BackendTester:
         self.session = requests.Session()
         self.token = None
         self.user_id = None
+        self.test_contract_id = None
         
     def log(self, message):
         """Log message with timestamp"""
         timestamp = datetime.now().strftime("%H:%M:%S")
         print(f"[{timestamp}] {message}")
         
+    def login_as_admin(self):
+        """Login as admin user"""
+        self.log("🔐 Logging in as admin...")
+        
+        login_data = {
+            "email": ADMIN_EMAIL,
+            "password": ADMIN_PASSWORD
+        }
+        
+        response = self.session.post(f"{BASE_URL}/auth/login", json=login_data)
+        
+        if response.status_code == 200:
+            data = response.json()
+            self.token = data["token"]
+            self.user_id = data["user"]["id"]
+            user_role = data["user"].get("role", "unknown")
+            is_admin = data["user"].get("is_admin", False)
+            self.session.headers.update({"Authorization": f"Bearer {self.token}"})
+            self.log(f"✅ Admin login successful. User ID: {self.user_id}, Role: {user_role}, is_admin: {is_admin}")
+            return True
+        else:
+            self.log(f"❌ Admin login failed: {response.status_code} - {response.text}")
+            return False
+    
     def register_test_user(self):
         """Register a test user for testing"""
         self.log("📝 Registering test user...")
