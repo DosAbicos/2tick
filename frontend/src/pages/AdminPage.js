@@ -99,6 +99,12 @@ const AdminPage = () => {
     if (savedUserSearch) setUserSearch(savedUserSearch);
     if (savedContractSearch) setContractSearch(savedContractSearch);
     
+    // Восстанавливаем активные вкладки
+    const savedActiveTab = localStorage.getItem('admin-active-tab');
+    const savedUserDetailsTab = localStorage.getItem('admin-user-details-tab');
+    if (savedActiveTab) setActiveTab(savedActiveTab);
+    if (savedUserDetailsTab) setUserDetailsTab(savedUserDetailsTab);
+    
     // Set up polling for real-time stats updates (every 30 seconds)
     const statsInterval = setInterval(() => {
       fetchStatsOnly();
