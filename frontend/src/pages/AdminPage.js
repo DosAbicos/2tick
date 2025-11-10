@@ -299,19 +299,30 @@ const AdminPage = () => {
     if (!contractSearch.trim()) return;
     
     try {
-      const response = await axios.get(`${API}/admin/contracts?search=${contractSearch.trim()}&limit=10`, {
+      // Сначала ищем договоры
+      const contractsResponse = await axios.get(`${API}/admin/contracts?search=${contractSearch.trim()}&limit=10`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      const contracts = response.data.contracts || [];
+      // Потом ищем пользователей  
+      const usersResponse = await axios.get(`${API}/admin/users?search=${contractSearch.trim()}&limit=10`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      const contracts = contractsResponse.data.contracts || [];
+      const users = usersResponse.data || [];
+      
       if (contracts.length > 0) {
         setSearchedContract(contracts[0]);  // Показать первый найденный договор
         setContractSearchOpen(true);
+      } else if (users.length > 0) {
+        // Если договоров нет, но есть пользователь - открыть его профиль
+        fetchUserDetails(users[0].id);
       } else {
-        toast.error(`Договор ${contractSearch} не найден`);
+        toast.error(`По запросу "${contractSearch}" ничего не найдено`);
       }
     } catch (error) {
-      toast.error('Ошибка поиска договора');
+      toast.error('Ошибка поиска');
     }
   };
 
