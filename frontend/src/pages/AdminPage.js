@@ -391,19 +391,19 @@ const AdminPage = () => {
           </div>
           
           <div className="flex items-center gap-4">
-            {/* Universal Search */}
+            {/* Contract Search Only */}
             <div className="flex items-center gap-2">
               <Input
                 type="text"
-                placeholder="Поиск: договор, пользователь, телефон, email, ID"
+                placeholder="Поиск договора по ID"
                 value={contractSearch}
                 onChange={(e) => setContractSearch(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && searchContract()}
-                className="w-80"
+                className="w-64"
               />
               <Button onClick={searchContract} variant="outline">
                 <Search className="h-4 w-4 mr-2" />
-                Найти
+                Найти договор
               </Button>
             </div>
             
