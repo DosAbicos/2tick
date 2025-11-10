@@ -467,6 +467,42 @@ backend:
         comment: "✅ ПРОБЛЕМА ИСПРАВЛЕНА: Добавлен fallback механизм для Telegram API аналогично Twilio. При ошибках 'Chat not found', 'User not found', 'Forbidden', 'Unauthorized' система переключается в mock режим. Обновлен Telegram бот для сохранения chat_id пользователей в /tmp/telegram_chat_ids.json. Теперь POST /api/sign/{contract_id}/request-telegram-otp с телом {'telegram_username': 'ngzadl'} возвращает статус 200 с message 'Код отправлен в Telegram @ngzadl' и mock_otp для тестирования."
 
 frontend:
+  - task: "Кнопка скачивания договора в модальном окне просмотра"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/AdminPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "РЕАЛИЗОВАНО: Добавлена кнопка скачивания договора в модальное окно просмотра. Изменения: 1) Добавлен новый state contractViewOpen и selectedContract для управления модальным окном просмотра договора, 2) Создана функция viewContractDetails() для загрузки деталей договора через API, 3) Создана функция downloadContract() для скачивания PDF, 4) В таблице договоров в user details modal заменена кнопка прямого открытия в новой вкладке на кнопку просмотра в модальном окне, 5) Создано новое модальное окно Contract View Modal с деталями договора и двумя кнопками скачивания: в заголовке и в зеленом блоке внизу для акцента. Теперь при клике на Eye (Просмотр) открывается модальное окно с деталями и кнопкой скачивания, а не сразу новая вкладка."
+  
+  - task: "UI State Persistence в админ-панели"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/AdminPage.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "РЕАЛИЗОВАНО: Сохранение состояния UI в localStorage. Изменения: 1) Добавлены state переменные activeTab и userDetailsTab для управления активными вкладками, 2) В useEffect добавлено восстановление сохраненных значений activeTab и userDetailsTab из localStorage (строки 95-98), 3) Добавлены два новых useEffect для автоматического сохранения activeTab и userDetailsTab в localStorage при изменении (строки 118-125), 4) Обновлены Tabs компоненты для использования value и onValueChange вместо defaultValue (строки 489, 703). Теперь при обновлении страницы все открытые вкладки восстанавливаются в том же состоянии."
+  
+  - task: "Исправление переполнения таблицы договоров пользователя"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/AdminPage.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "ИСПРАВЛЕНО: Таблица договоров в user details modal теперь не переполняется. Изменения: 1) Изменен класс обертки с 'overflow-y-auto' на 'overflow-auto' для обработки как вертикального, так и горизонтального скролла (строка 750), 2) Добавлена внутренняя обертка с min-width: 600px для таблицы (строка 751), 3) Добавлены фиксированные ширины колонок: Код (120px), Название (min-150px), Статус (120px), Дата (100px), Действия (80px), 4) Добавлен truncate с max-width для длинных названий договоров с title для полного текста при наведении, 5) Добавлен whitespace-nowrap для всех ячеек чтобы контент не переносился. Теперь таблица корректно помещается на экране с горизонтальным скроллом при необходимости."
+  
   - task: "Модальное окно для просмотра системных ошибок"
     implemented: true
     working: "NA"
