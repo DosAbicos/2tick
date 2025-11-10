@@ -337,7 +337,11 @@ const AdminPage = () => {
     }
   };
 
-  const filteredUsers = users;
+  const filteredUsers = users.filter(user =>
+    user.full_name?.toLowerCase().includes(userSearch.toLowerCase()) ||
+    user.email?.toLowerCase().includes(userSearch.toLowerCase()) ||
+    user.id?.toLowerCase().includes(userSearch.toLowerCase())
+  );
 
   if (loading) {
     return (
