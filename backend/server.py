@@ -3186,21 +3186,14 @@ async def get_all_contracts(
     elif creator_id:
         query["creator_id"] = creator_id
     
-    # Добавляем поиск по contract_code, title, данным наймодателя
+    # Добавляем поиск только по contract_code и ID
     if search:
-        search_pattern = {"$regex": search, "$options": "i"}
         query["$and"] = [
             query.get("$and", {}),
             {
                 "$or": [
-                    {"contract_code": search_pattern},
-                    {"title": search_pattern},
-                    {"id": search},  # Точный поиск по ID
-                    {"landlord_full_name": search_pattern},  # ФИО наймодателя
-                    {"landlord_email": search_pattern},      # Email наймодателя
-                    {"signer_name": search_pattern},         # ФИО нанимателя
-                    {"signer_phone": search_pattern},        # Телефон нанимателя
-                    {"signer_email": search_pattern}         # Email нанимателя
+                    {"contract_code": {"$regex": search, "$options": "i"}},
+                    {"id": search}  # Точный поиск по ID
                 ]
             }
         ]
