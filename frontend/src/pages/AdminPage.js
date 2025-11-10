@@ -89,6 +89,12 @@ const AdminPage = () => {
     fetchAdminData();
     fetchActiveNotification();
     
+    // Восстанавливаем сохраненные данные поиска
+    const savedUserSearch = localStorage.getItem('admin-user-search');
+    const savedContractSearch = localStorage.getItem('admin-contract-search');
+    if (savedUserSearch) setUserSearch(savedUserSearch);
+    if (savedContractSearch) setContractSearch(savedContractSearch);
+    
     // Set up polling for real-time stats updates (every 30 seconds)
     const statsInterval = setInterval(() => {
       fetchStatsOnly();
@@ -96,6 +102,15 @@ const AdminPage = () => {
     
     return () => clearInterval(statsInterval);
   }, []);
+
+  // Сохраняем поисковые запросы в localStorage
+  useEffect(() => {
+    localStorage.setItem('admin-user-search', userSearch);
+  }, [userSearch]);
+
+  useEffect(() => {
+    localStorage.setItem('admin-contract-search', contractSearch);
+  }, [contractSearch]);
 
   // Polling для ошибок когда модальное окно открыто
   useEffect(() => {
