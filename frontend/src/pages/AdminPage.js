@@ -783,59 +783,58 @@ const AdminPage = () => {
                     ) : userContracts.length === 0 ? (
                       <div className="text-center py-4 text-neutral-500">У пользователя нет договоров</div>
                     ) : (
-                      <div className="border rounded-lg max-h-96 overflow-y-auto">
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead>Код</TableHead>
-                              <TableHead>Название</TableHead>
-                              <TableHead>Статус</TableHead>
-                              <TableHead>Дата</TableHead>
-                              <TableHead>Действия</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {userContracts.map((contract) => (
-                              <TableRow key={contract.id}>
-                                <TableCell>
-                                  <code className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded">
-                                    {contract.contract_code || 'N/A'}
-                                  </code>
-                                </TableCell>
-                                <TableCell className="font-medium">{contract.title}</TableCell>
-                                <TableCell>
-                                  <Badge 
-                                    variant={contract.status === 'signed' ? 'default' : contract.status === 'pending-signature' ? 'secondary' : 'outline'}
-                                  >
-                                    {contract.status === 'signed' ? 'Подписан' : 
-                                     contract.status === 'pending-signature' ? 'На подписи' : 'Черновик'}
-                                  </Badge>
-                                </TableCell>
-                                <TableCell className="text-xs">
-                                  {new Date(contract.created_at).toLocaleDateString('ru-RU')}
-                                </TableCell>
-                                <TableCell>
-                                  <div className="flex gap-1">
+                      <div className="border rounded-lg max-h-96 overflow-auto">
+                        <div className="min-w-[600px]">
+                          <Table>
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead className="w-[120px]">Код</TableHead>
+                                <TableHead className="min-w-[150px]">Название</TableHead>
+                                <TableHead className="w-[120px]">Статус</TableHead>
+                                <TableHead className="w-[100px]">Дата</TableHead>
+                                <TableHead className="w-[80px]">Действия</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {userContracts.map((contract) => (
+                                <TableRow key={contract.id}>
+                                  <TableCell>
+                                    <code className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded whitespace-nowrap">
+                                      {contract.contract_code || 'N/A'}
+                                    </code>
+                                  </TableCell>
+                                  <TableCell className="font-medium">
+                                    <div className="truncate max-w-[200px]" title={contract.title}>
+                                      {contract.title}
+                                    </div>
+                                  </TableCell>
+                                  <TableCell>
+                                    <Badge 
+                                      variant={contract.status === 'signed' ? 'default' : contract.status === 'pending-signature' ? 'secondary' : 'outline'}
+                                      className="whitespace-nowrap"
+                                    >
+                                      {contract.status === 'signed' ? 'Подписан' : 
+                                       contract.status === 'pending-signature' ? 'На подписи' : 'Черновик'}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell className="text-xs whitespace-nowrap">
+                                    {new Date(contract.created_at).toLocaleDateString('ru-RU')}
+                                  </TableCell>
+                                  <TableCell>
                                     <Button
                                       size="sm"
                                       variant="ghost"
-                                      onClick={() => window.open(`/contracts/${contract.id}?readonly=true`, '_blank')}
+                                      onClick={() => viewContractDetails(contract.id)}
+                                      title="Просмотреть договор"
                                     >
                                       <Eye className="h-4 w-4" />
                                     </Button>
-                                    <Button
-                                      size="sm"
-                                      variant="ghost"
-                                      onClick={() => window.open(`/api/contracts/${contract.id}/download`, '_blank')}
-                                    >
-                                      <FileText className="h-4 w-4" />
-                                    </Button>
-                                  </div>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </div>
                         {userContracts.length > 0 && (
                           <div className="p-2 text-xs text-center text-neutral-500 border-t">
                             Показано {userContracts.length} договоров
