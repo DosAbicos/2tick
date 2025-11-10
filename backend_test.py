@@ -1,23 +1,26 @@
 #!/usr/bin/env python3
 """
 Backend Testing Script for Contract Management System
-Tests the specific scenarios mentioned in the Russian review request:
+Tests the 4 new tasks from the Russian review request:
 
-Тест 1: Создание контракта из шаблона с tenant плейсхолдерами
-Тест 2: Обновление placeholder_values через PATCH
-Тест 3: Проверка фильтрации tenant плейсхолдеров
+1. Кнопка скачивания договора в модальном окне просмотра (backend endpoints)
+2. Оптимизация скорости отправки email (критично)
+3. GET /api/contracts/{contract_id} - детали договора для модального окна
+4. GET /api/contracts/{contract_id}/download-pdf - генерация и скачивание PDF
 """
 
 import requests
 import json
 import sys
 import time
+import smtplib
+import socket
 from datetime import datetime
 
 # Configuration
 BASE_URL = "https://contract-signify.preview.emergentagent.com/api"
-TEST_USER_EMAIL = "test.creator@example.com"
-TEST_USER_PASSWORD = "testpassword123"
+ADMIN_EMAIL = "asl@asl.kz"
+ADMIN_PASSWORD = "12345678"
 
 class BackendTester:
     def __init__(self):
