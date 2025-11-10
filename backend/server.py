@@ -463,23 +463,25 @@ def send_email(to_email: str, subject: str, body: str, attachment: bytes = None,
                 msg.attach(pdf_attachment)
                 print(f"📎 PDF attached: {filename} ({len(attachment)} bytes)")
             
-            # Try different ports and methods
+            # Try different ports and methods with reduced timeout for faster failure
             smtp_sent = False
             errors = []
             
-            # Try port 587 with STARTTLS first (most reliable)
-            for port, use_tls in [(587, True), (SMTP_PORT, False), (465, 'SSL')]:
+            # Try port 587 with STARTTLS first (most reliable), then configured SMTP_PORT
+            # Removed port 465 to reduce total timeout
+            for port, use_tls in [(587, True), (SMTP_PORT, False)]:
                 try:
                     print(f"🔥 Trying SMTP port {port}, TLS={use_tls}")
                     
+                    # Reduced timeout from 10 to 5 seconds for faster failure
                     if use_tls == 'SSL':
                         # SSL connection (port 465)
                         import ssl
                         context = ssl.create_default_context()
-                        server = smtplib.SMTP_SSL(SMTP_HOST, port, context=context, timeout=10)
+                        server = smtplib.SMTP_SSL(SMTP_HOST, port, context=context, timeout=5)
                     else:
                         # Regular connection
-                        server = smtplib.SMTP(SMTP_HOST, port, timeout=10)
+                        server = smtplib.SMTP(SMTP_HOST, port, timeout=5)
                         server.ehlo()
                         
                         if use_tls:
