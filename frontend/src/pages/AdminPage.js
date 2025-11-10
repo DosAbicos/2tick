@@ -363,15 +363,15 @@ const AdminPage = () => {
           </div>
           
           <div className="flex items-center gap-4">
-            {/* Contract Search */}
+            {/* Universal Search */}
             <div className="flex items-center gap-2">
               <Input
                 type="text"
-                placeholder="Поиск договора (номер, название)"
+                placeholder="Поиск: договор, пользователь, телефон, email, ID"
                 value={contractSearch}
                 onChange={(e) => setContractSearch(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && searchContract()}
-                className="w-64"
+                className="w-80"
               />
               <Button onClick={searchContract} variant="outline">
                 <Search className="h-4 w-4 mr-2" />
