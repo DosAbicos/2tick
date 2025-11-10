@@ -3177,7 +3177,7 @@ async def get_all_contracts(
     if landlord_id:
         query["landlord_id"] = landlord_id
     
-    # Добавляем поиск по contract_code или title
+    # Добавляем поиск по contract_code, title, данным наймодателя
     if search:
         search_pattern = {"$regex": search, "$options": "i"}
         query["$and"] = [
@@ -3186,7 +3186,12 @@ async def get_all_contracts(
                 "$or": [
                     {"contract_code": search_pattern},
                     {"title": search_pattern},
-                    {"id": search}  # Точный поиск по ID
+                    {"id": search},  # Точный поиск по ID
+                    {"landlord_full_name": search_pattern},  # ФИО наймодателя
+                    {"landlord_email": search_pattern},      # Email наймодателя
+                    {"signer_name": search_pattern},         # ФИО нанимателя
+                    {"signer_phone": search_pattern},        # Телефон нанимателя
+                    {"signer_email": search_pattern}         # Email нанимателя
                 ]
             }
         ]
