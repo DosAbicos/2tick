@@ -481,9 +481,23 @@ const AdminPage = () => {
           <TabsContent value="users" className="space-y-4">
             <Card>
               <CardHeader>
-                <div>
-                  <CardTitle>Список пользователей</CardTitle>
-                  <CardDescription>Все зарегистрированные наймодатели</CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Список пользователей</CardTitle>
+                    <CardDescription>Все зарегистрированные наймодатели</CardDescription>
+                  </div>
+                  
+                  {/* User Search */}
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="text"
+                      placeholder="Поиск по ФИО, ID, email"
+                      value={userSearch}
+                      onChange={(e) => setUserSearch(e.target.value)}
+                      className="w-64"
+                    />
+                    <Search className="h-4 w-4 text-neutral-400" />
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
