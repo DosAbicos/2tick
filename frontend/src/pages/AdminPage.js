@@ -228,13 +228,34 @@ const AdminPage = () => {
 
   const fetchUserContracts = async (userId) => {
     setLoadingUserContracts(true);
+    console.log('🔍 Fetching ALL contracts for user:', userId);
     try {
-      const response = await axios.get(`${API}/admin/contracts?landlord_id=${userId}&limit=50`, {
+      // Ищем договоры по landlord_id И creator_id для полной совместимости
+      const response1 = await axios.get(`${API}/admin/contracts?landlord_id=${userId}&limit=100`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setUserContracts(response.data.contracts || []);
+      
+      const response2 = await axios.get(`${API}/admin/contracts?creator_id=${userId}&limit=100`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      // Объединяем результаты и убираем дубликаты
+      const contracts1 = response1.data.contracts || [];
+      const contracts2 = response2.data.contracts || [];
+      
+      const allContracts = [...contracts1, ...contracts2];
+      const uniqueContracts = allContracts.filter((contract, index, self) => 
+        index === self.findIndex(c => c.id === contract.id)
+      );
+      
+      console.log('🔍 Found contracts by landlord_id:', contracts1.length);
+      console.log('🔍 Found contracts by creator_id:', contracts2.length); 
+      console.log('🔍 Total unique contracts:', uniqueContracts.length);
+      
+      setUserContracts(uniqueContracts);
     } catch (error) {
       toast.error('Ошибка загрузки договоров');
+      console.error('Error fetching user contracts:', error);
       setUserContracts([]);
     } finally {
       setLoadingUserContracts(false);
