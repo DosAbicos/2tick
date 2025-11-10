@@ -370,6 +370,23 @@ const AdminPage = () => {
       toast.error('Ошибка поиска договора');
     }
   };
+  
+  const viewContractDetails = async (contractId) => {
+    try {
+      const response = await axios.get(`${API}/contracts/${contractId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setSelectedContract(response.data);
+      setContractViewOpen(true);
+    } catch (error) {
+      toast.error('Ошибка загрузки договора');
+      console.error('Error fetching contract:', error);
+    }
+  };
+  
+  const downloadContract = (contractId) => {
+    window.open(`${API}/contracts/${contractId}/download-pdf`, '_blank');
+  };
 
   const filteredUsers = users.filter(user =>
     user.full_name?.toLowerCase().includes(userSearch.toLowerCase()) ||
