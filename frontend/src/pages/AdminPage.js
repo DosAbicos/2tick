@@ -959,11 +959,22 @@ const AdminPage = () => {
               
               <div className="flex gap-2 pt-4 border-t">
                 <Button
-                  onClick={() => window.open(`/contracts/${searchedContract.id}?readonly=true`, '_blank')}
-                  className="flex-1"
+                  onClick={() => {
+                    window.open(`/contracts/${searchedContract.id}?readonly=true`, '_blank');
+                  }}
                 >
                   <Eye className="mr-2 h-4 w-4" />
                   Просмотреть договор
+                </Button>
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    // Скачивание PDF договора
+                    window.open(`/api/contracts/${searchedContract.id}/download`, '_blank');
+                  }}
+                >
+                  <FileText className="mr-2 h-4 w-4" />
+                  Скачать договор
                 </Button>
                 <Button
                   variant="outline"
