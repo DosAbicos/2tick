@@ -727,21 +727,21 @@ const SignContractPage = () => {
                   {!documentUploaded ? (
                     <Button
                       variant="outline"
-                      onClick={() => setStep(1.5)}
+                      onClick={() => setStep(needsInfo ? 1.5 : 1)}
                       className="flex-1"
                       data-testid="back-to-info-button"
                     >
-                      ← Назад к данным
+                      ← {needsInfo ? 'Изменить данные' : 'Назад к договору'}
                     </Button>
                   ) : null}
                   {documentUploaded && (
                     <>
                       <Button
                         variant="outline"
-                        onClick={() => setStep(1.5)}
+                        onClick={() => setStep(needsInfo ? 1.5 : 1)}
                         className="flex-1"
                       >
-                        ← Изменить данные
+                        ← {needsInfo ? 'Изменить данные' : 'Назад к договору'}
                       </Button>
                       <Button
                         onClick={() => setStep(1)}
