@@ -860,6 +860,96 @@ const AdminPage = () => {
         </DialogContent>
       </Dialog>
 
+      {/* Contract Search Dialog */}
+      <Dialog open={contractSearchOpen} onOpenChange={setContractSearchOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Результат поиска договора</DialogTitle>
+            <DialogDescription>
+              Найденный договор по запросу: "{contractSearch}"
+            </DialogDescription>
+          </DialogHeader>
+          {searchedContract && (
+            <div className="space-y-4">
+              <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                <Label className="text-xs text-blue-600 font-semibold">ID договора</Label>
+                <div className="flex items-center justify-between mt-1">
+                  <code className="text-sm font-mono text-blue-900">{searchedContract.id}</code>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => {
+                      navigator.clipboard.writeText(searchedContract.id);
+                      toast.success('ID скопирован в буфер обмена');
+                    }}
+                    className="h-6 text-xs"
+                  >
+                    Копировать
+                  </Button>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">Код договора</Label>
+                  <p className="text-sm text-neutral-600 font-mono bg-neutral-50 px-2 py-1 rounded">
+                    {searchedContract.contract_code || 'Не указан'}
+                  </p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Статус</Label>
+                  <div className="mt-1">
+                    {getStatusBadge(searchedContract.status)}
+                  </div>
+                </div>
+                <div className="col-span-2">
+                  <Label className="text-sm font-medium">Название</Label>
+                  <p className="text-sm text-neutral-600">{searchedContract.title}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Дата создания</Label>
+                  <p className="text-sm text-neutral-600">
+                    {new Date(searchedContract.created_at).toLocaleDateString('ru-RU')}
+                  </p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">Наймодатель</Label>
+                  <p className="text-sm text-neutral-600">{searchedContract.landlord_name || 'Не указан'}</p>
+                </div>
+              </div>
+              
+              <div className="flex gap-2 pt-4 border-t">
+                <Button
+                  onClick={() => window.open(`/contracts/${searchedContract.id}?readonly=true`, '_blank')}
+                  className="flex-1"
+                >
+                  <Eye className="mr-2 h-4 w-4" />
+                  Просмотреть договор
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    if (searchedContract.landlord_id) {
+                      fetchUserDetails(searchedContract.landlord_id);
+                      setContractSearchOpen(false);
+                    }
+                  }}
+                  disabled={!searchedContract.landlord_id}
+                >
+                  <Users className="mr-2 h-4 w-4" />
+                  Профиль пользователя
+                </Button>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setContractSearchOpen(false)}>
+              Закрыть
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Errors Modal */}
       <Dialog open={errorsModalOpen} onOpenChange={setErrorsModalOpen}>
         <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
