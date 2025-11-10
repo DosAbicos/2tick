@@ -62,6 +62,9 @@ class BackendTester:
         """Register a test user for testing"""
         self.log("📝 Registering test user...")
         
+        TEST_USER_EMAIL = "test.creator@example.com"
+        TEST_USER_PASSWORD = "testpassword123"
+        
         user_data = {
             "email": TEST_USER_EMAIL,
             "password": TEST_USER_PASSWORD,
