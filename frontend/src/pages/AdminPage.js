@@ -94,11 +94,7 @@ const AdminPage = () => {
     fetchAdminData();
     fetchActiveNotification();
     
-    // Восстанавливаем сохраненные данные поиска
-    const savedUserSearch = localStorage.getItem('admin-user-search');
-    const savedContractSearch = localStorage.getItem('admin-contract-search');
-    if (savedUserSearch) setUserSearch(savedUserSearch);
-    if (savedContractSearch) setContractSearch(savedContractSearch);
+    // НЕ восстанавливаем поисковые запросы - пользователь хочет чистые поля
     
     // Восстанавливаем состояние вкладок
     const savedMainTab = localStorage.getItem('admin-main-tab');
@@ -106,9 +102,9 @@ const AdminPage = () => {
     if (savedMainTab) setActiveMainTab(savedMainTab);
     if (savedUserTab) setActiveUserTab(savedUserTab);
     
-    // Восстанавливаем открытое модальное окно пользователя
+    // Восстанавливаем открытое модальное окно пользователя ТОЛЬКО если была вкладка "users"
     const savedUserId = localStorage.getItem('admin-selected-user-id');
-    if (savedUserId) {
+    if (savedUserId && savedMainTab === 'users') {
       // Небольшая задержка чтобы данные успели загрузиться
       setTimeout(() => {
         fetchUserDetails(savedUserId);
