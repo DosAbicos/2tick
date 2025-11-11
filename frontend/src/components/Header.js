@@ -43,7 +43,7 @@ const Header = ({ showAuth = false }) => {
           <div className="relative">
             <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full"></div>
             <svg width="32" height="32" viewBox="0 0 32 32" className="relative">
-              <circle cx="16" cy="16" r="15" fill="#4F46E5" />
+              <circle cx="16" cy="16" r="15" fill="#3B82F6" />
               <path d="M10 16 L14 20 L22 12" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
               <path d="M14 16 L18 20 L26 12" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity="0.6" />
             </svg>
