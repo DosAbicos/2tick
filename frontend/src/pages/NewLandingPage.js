@@ -69,13 +69,13 @@ const NewLandingPage = () => {
               
               <div className="flex flex-wrap gap-4">
                 <Link to="/register">
-                  <button className="neuro-button-primary text-lg px-8 py-4 flex items-center gap-2">
+                  <button className="text-lg px-8 py-4 font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 flex items-center gap-2">
                     Начать бесплатно
                     <ArrowRight className="w-5 h-5" />
                   </button>
                 </Link>
                 <a href="#features">
-                  <button className="neuro-button text-lg px-8 py-4">
+                  <button className="text-lg px-8 py-4 font-medium text-blue-600 bg-white border-2 border-blue-100 rounded-xl hover:bg-blue-50 transition-all">
                     Узнать больше
                   </button>
                 </a>
