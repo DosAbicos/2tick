@@ -198,22 +198,22 @@ const VerifyRegistrationPage = () => {
 
   if (verified) {
     return (
-      <div className="min-h-screen bg-neutral-50">
+      <div className="min-h-screen gradient-bg">
         <Header showAuth={false} />
-        <div className="max-w-3xl mx-auto px-4 py-16">
-          <Card>
-            <CardContent className="pt-6">
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="text-center"
-              >
-                <CheckCircle className="w-20 h-20 text-green-500 mx-auto mb-4" />
-                <h2 className="text-2xl font-bold mb-2">Регистрация завершена!</h2>
-                <p className="text-neutral-600">Перенаправление на панель управления...</p>
-              </motion.div>
-            </CardContent>
-          </Card>
+        <div className="max-w-md mx-auto px-4 sm:px-6 py-16">
+          <div className="minimal-card p-8">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              className="text-center"
+            >
+              <div className="w-20 h-20 mx-auto bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-green-500/30">
+                <CheckCircle className="w-10 h-10 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Регистрация завершена!</h2>
+              <p className="text-gray-600">Перенаправление на панель управления...</p>
+            </motion.div>
+          </div>
         </div>
       </div>
     );
