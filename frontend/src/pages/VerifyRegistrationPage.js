@@ -405,13 +405,13 @@ const VerifyRegistrationPage = () => {
                   </InputOTP>
                 </div>
 
-                <Button
+                <button
                   onClick={handleVerifyTelegram}
                   disabled={verifying || telegramCode.length !== 6}
-                  className="w-full"
+                  className="w-full px-6 py-3 text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                 >
                   {verifying ? 'Проверка...' : 'Подтвердить'}
-                </Button>
+                </button>
 
                 {telegramDeepLink && (
                   <a
@@ -420,26 +420,24 @@ const VerifyRegistrationPage = () => {
                     rel="noopener noreferrer"
                     className="block"
                   >
-                    <Button
+                    <button
                       type="button"
-                      variant="outline"
-                      className="w-full"
+                      className="w-full px-6 py-3 text-gray-700 bg-white border-2 border-gray-200 rounded-xl hover:bg-gray-50 transition-all font-medium"
                     >
                       🔄 Открыть Telegram снова
-                    </Button>
+                    </button>
                   </a>
                 )}
 
-                <Button
+                <button
                   onClick={() => {
                     setVerificationMethod('');
                     setTelegramCode('');
                   }}
-                  variant="outline"
-                  className="w-full"
+                  className="w-full px-6 py-3 text-gray-700 bg-white border-2 border-gray-200 rounded-xl hover:bg-gray-50 transition-all font-medium"
                 >
                   Выбрать другой способ
-                </Button>
+                </button>
               </motion.div>
             )}
           </CardContent>
