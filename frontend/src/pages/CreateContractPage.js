@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Header from '@/components/Header';
 import { ArrowLeft, Eye, Edit3, Upload, Bold, Italic, Underline, Type, AlignLeft, AlignCenter, AlignRight, CheckCircle } from 'lucide-react';
 import { IMaskInput } from 'react-imask';
+import '../styles/neumorphism.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
