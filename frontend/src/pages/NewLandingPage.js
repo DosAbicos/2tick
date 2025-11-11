@@ -48,7 +48,7 @@ const NewLandingPage = () => {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             {/* Левая часть - текст */}
             <div className="space-y-8">
-              <div className="inline-block neuro-card px-4 py-2">
+              <div className="inline-block minimal-card px-4 py-2">
                 <span className="text-sm font-semibold text-blue-600 flex items-center gap-2">
                   <Zap className="w-4 h-4" />
                   Быстро как колибри
@@ -100,7 +100,7 @@ const NewLandingPage = () => {
             
             {/* Правая часть - изображение */}
             <div className="relative">
-              <div className="neuro-card p-8 animate-float">
+              <div className="minimal-card p-8 animate-float">
                 <img 
                   src="https://images.unsplash.com/photo-1580982330720-bd5e0fed108b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzB8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMHRlY2hub2xvZ3l8ZW58MHx8fGJsdWV8MTc2Mjg2NDQ3M3ww&ixlib=rb-4.1.0&q=85"
                   alt="Digital Contract"
@@ -129,7 +129,7 @@ const NewLandingPage = () => {
           
           <div className="grid md:grid-cols-3 gap-8">
             {/* Feature 1 */}
-            <div className="neuro-card p-8 space-y-4 group hover:scale-105 smooth-transition">
+            <div className="minimal-card p-8 space-y-4 group hover:scale-105 smooth-transition">
               <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center">
                 <Zap className="w-8 h-8 text-white" />
               </div>
@@ -140,7 +140,7 @@ const NewLandingPage = () => {
             </div>
             
             {/* Feature 2 */}
-            <div className="neuro-card p-8 space-y-4 group hover:scale-105 smooth-transition">
+            <div className="minimal-card p-8 space-y-4 group hover:scale-105 smooth-transition">
               <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center">
                 <Shield className="w-8 h-8 text-white" />
               </div>
@@ -151,7 +151,7 @@ const NewLandingPage = () => {
             </div>
             
             {/* Feature 3 */}
-            <div className="neuro-card p-8 space-y-4 group hover:scale-105 smooth-transition">
+            <div className="minimal-card p-8 space-y-4 group hover:scale-105 smooth-transition">
               <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center">
                 <CheckCircle2 className="w-8 h-8 text-white" />
               </div>
@@ -179,7 +179,7 @@ const NewLandingPage = () => {
           <div className="grid md:grid-cols-3 gap-8">
             {/* Step 1 */}
             <div className="relative">
-              <div className="neuro-card p-8 space-y-4">
+              <div className="minimal-card p-8 space-y-4">
                 <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
                   1
                 </div>
@@ -196,7 +196,7 @@ const NewLandingPage = () => {
             
             {/* Step 2 */}
             <div className="relative">
-              <div className="neuro-card p-8 space-y-4">
+              <div className="minimal-card p-8 space-y-4">
                 <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
                   2
                 </div>
@@ -212,7 +212,7 @@ const NewLandingPage = () => {
             </div>
             
             {/* Step 3 */}
-            <div className="neuro-card p-8 space-y-4">
+            <div className="minimal-card p-8 space-y-4">
               <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
                 <Check className="w-6 h-6" />
               </div>
@@ -239,7 +239,7 @@ const NewLandingPage = () => {
           
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {/* Free Plan */}
-            <div className="neuro-card p-8 space-y-6">
+            <div className="minimal-card p-8 space-y-6">
               <div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">Базовый</h3>
                 <div className="flex items-baseline gap-2">
@@ -262,12 +262,12 @@ const NewLandingPage = () => {
                 </li>
               </ul>
               <Link to="/register" className="block">
-                <button className="neuro-button w-full py-3">Начать бесплатно</button>
+                <button className="w-full py-3 font-medium text-blue-600 bg-white border-2 border-blue-100 rounded-lg hover:bg-blue-50 transition-all">Начать бесплатно</button>
               </Link>
             </div>
             
             {/* Pro Plan */}
-            <div className="neuro-card p-8 space-y-6 relative animate-pulse-glow">
+            <div className="minimal-card p-8 space-y-6 relative ring-2 ring-blue-500">
               <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                 <span className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
                   Популярный
@@ -299,12 +299,12 @@ const NewLandingPage = () => {
                 </li>
               </ul>
               <Link to="/register" className="block">
-                <button className="neuro-button-primary w-full py-3">Попробовать Pro</button>
+                <button className="w-full py-3 font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30">Попробовать Pro</button>
               </Link>
             </div>
             
             {/* Enterprise Plan */}
-            <div className="neuro-card p-8 space-y-6">
+            <div className="minimal-card p-8 space-y-6">
               <div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">Бизнес</h3>
                 <div className="flex items-baseline gap-2">
@@ -329,7 +329,7 @@ const NewLandingPage = () => {
                   Персональный менеджер
                 </li>
               </ul>
-              <button className="neuro-button w-full py-3">Связаться с нами</button>
+              <button className="w-full py-3 font-medium text-blue-600 bg-white border-2 border-blue-100 rounded-lg hover:bg-blue-50 transition-all">Связаться с нами</button>
             </div>
           </div>
         </div>
@@ -338,7 +338,7 @@ const NewLandingPage = () => {
       {/* CTA Section */}
       <section className="py-20 px-4">
         <div className="max-w-4xl mx-auto">
-          <div className="neuro-card p-12 text-center space-y-6">
+          <div className="minimal-card p-12 text-center space-y-6">
             <h2 className="text-4xl font-bold text-gray-900">
               Готовы начать?
             </h2>
@@ -347,7 +347,7 @@ const NewLandingPage = () => {
             </p>
             <div className="flex justify-center gap-4">
               <Link to="/register">
-                <button className="neuro-button-primary text-lg px-8 py-4 flex items-center gap-2">
+                <button className="text-lg px-8 py-4 font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 flex items-center gap-2">
                   Создать аккаунт бесплатно
                   <ArrowRight className="w-5 h-5" />
                 </button>
