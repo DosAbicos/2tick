@@ -364,7 +364,7 @@ const NewLandingPage = () => {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <svg width="32" height="32" viewBox="0 0 32 32">
-                  <circle cx="16" cy="16" r="15" fill="#4F46E5" />
+                  <circle cx="16" cy="16" r="15" fill="#3B82F6" />
                   <path d="M10 16 L14 20 L22 12" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
                   <path d="M14 16 L18 20 L26 12" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity="0.6" />
                 </svg>
