@@ -264,9 +264,30 @@ const ContractDetailsPage = () => {
               
               {isReadOnly ? (
                 <div className="flex gap-2">
-                  {/* Кнопка скачивания для админа - использует тот же endpoint что и email */}
+                  {/* Кнопка скачивания для админа - с токеном авторизации */}
                   <Button
-                    onClick={() => window.open(`${API}/contracts/${id}/download-pdf`, '_blank')}
+                    onClick={async () => {
+                      try {
+                        const token = localStorage.getItem('token');
+                        const response = await axios.get(`${API}/contracts/${id}/download-pdf`, {
+                          headers: { Authorization: `Bearer ${token}` },
+                          responseType: 'blob'
+                        });
+                        
+                        const url = window.URL.createObjectURL(new Blob([response.data]));
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.setAttribute('download', `contract_${contract.contract_code || id}.pdf`);
+                        document.body.appendChild(link);
+                        link.click();
+                        link.remove();
+                        window.URL.revokeObjectURL(url);
+                        toast.success('Договор успешно скачан');
+                      } catch (error) {
+                        console.error('Error downloading PDF:', error);
+                        toast.error('Ошибка скачивания договора');
+                      }
+                    }}
                     variant="outline"
                     className="bg-green-600 hover:bg-green-700 text-white"
                     data-testid="admin-download-pdf-button"
