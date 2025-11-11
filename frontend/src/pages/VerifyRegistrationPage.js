@@ -223,15 +223,15 @@ const VerifyRegistrationPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <div className="min-h-screen gradient-bg">
       <Header showAuth={false} />
       
-      <div className="max-w-3xl mx-auto px-4 py-8">
-        <Card data-testid="verify-registration-card">
-          <CardHeader>
-            <CardTitle className="text-2xl">Подтверждение телефона</CardTitle>
-            <p className="text-neutral-600">Выберите способ верификации</p>
-          </CardHeader>
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8 sm:py-16">
+        <div className="minimal-card p-6 sm:p-8 animate-fade-in" data-testid="verify-registration-card">
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Подтверждение телефона</h2>
+            <p className="text-gray-600">Выберите способ верификации</p>
+          </div>
           <CardContent className="space-y-6">
             {!verificationMethod && (
               <motion.div
