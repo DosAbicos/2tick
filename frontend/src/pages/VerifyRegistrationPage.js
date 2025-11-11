@@ -440,8 +440,8 @@ const VerifyRegistrationPage = () => {
                 </button>
               </motion.div>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
