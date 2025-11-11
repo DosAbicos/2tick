@@ -4,7 +4,7 @@ import { Toaster } from '@/components/ui/sonner';
 import { useTranslation } from 'react-i18next';
 import './i18n';
 import './styles/mobile.css';
-import LandingPage from './pages/LandingPage';
+import NewLandingPage from './pages/NewLandingPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import VerifyRegistrationPage from './pages/VerifyRegistrationPage';
