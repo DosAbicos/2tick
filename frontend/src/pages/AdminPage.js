@@ -747,60 +747,58 @@ const AdminPage = () => {
                     ) : userContracts.length === 0 ? (
                       <div className="text-center py-4 text-neutral-500">У пользователя нет договоров</div>
                     ) : (
-                      <div className="border rounded-lg max-h-96 overflow-auto">
-                        <div className="min-w-[600px]">
-                          <Table>
-                            <TableHeader>
-                              <TableRow>
-                                <TableHead className="w-[120px]">Код</TableHead>
-                                <TableHead className="min-w-[150px]">Название</TableHead>
-                                <TableHead className="w-[120px]">Статус</TableHead>
-                                <TableHead className="w-[100px]">Дата</TableHead>
-                                <TableHead className="w-[80px]">Действия</TableHead>
+                      <div className="max-h-96 overflow-auto">
+                        <Table className="w-full">
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead className="min-w-[100px] w-[100px]">Код</TableHead>
+                              <TableHead className="min-w-[200px]">Название</TableHead>
+                              <TableHead className="min-w-[100px] w-[100px]">Статус</TableHead>
+                              <TableHead className="min-w-[100px] w-[100px]">Дата</TableHead>
+                              <TableHead className="min-w-[80px] w-[80px]">Действия</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {userContracts.map((contract) => (
+                              <TableRow key={contract.id}>
+                                <TableCell>
+                                  <code className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded whitespace-nowrap block">
+                                    {contract.contract_code || 'N/A'}
+                                  </code>
+                                </TableCell>
+                                <TableCell className="font-medium">
+                                  <div className="break-words" title={contract.title}>
+                                    {contract.title}
+                                  </div>
+                                </TableCell>
+                                <TableCell>
+                                  <Badge 
+                                    variant={contract.status === 'signed' ? 'default' : contract.status === 'pending-signature' ? 'secondary' : 'outline'}
+                                    className="whitespace-nowrap text-xs"
+                                  >
+                                    {contract.status === 'signed' ? 'Подписан' : 
+                                     contract.status === 'pending-signature' ? 'На подписи' : 'Черновик'}
+                                  </Badge>
+                                </TableCell>
+                                <TableCell className="text-xs whitespace-nowrap">
+                                  {new Date(contract.created_at).toLocaleDateString('ru-RU')}
+                                </TableCell>
+                                <TableCell>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => navigate(`/contracts/${contract.id}?readonly=true`)}
+                                    title="Просмотреть договор"
+                                  >
+                                    <Eye className="h-4 w-4" />
+                                  </Button>
+                                </TableCell>
                               </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                              {userContracts.map((contract) => (
-                                <TableRow key={contract.id}>
-                                  <TableCell>
-                                    <code className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded whitespace-nowrap">
-                                      {contract.contract_code || 'N/A'}
-                                    </code>
-                                  </TableCell>
-                                  <TableCell className="font-medium">
-                                    <div className="truncate max-w-[200px]" title={contract.title}>
-                                      {contract.title}
-                                    </div>
-                                  </TableCell>
-                                  <TableCell>
-                                    <Badge 
-                                      variant={contract.status === 'signed' ? 'default' : contract.status === 'pending-signature' ? 'secondary' : 'outline'}
-                                      className="whitespace-nowrap"
-                                    >
-                                      {contract.status === 'signed' ? 'Подписан' : 
-                                       contract.status === 'pending-signature' ? 'На подписи' : 'Черновик'}
-                                    </Badge>
-                                  </TableCell>
-                                  <TableCell className="text-xs whitespace-nowrap">
-                                    {new Date(contract.created_at).toLocaleDateString('ru-RU')}
-                                  </TableCell>
-                                  <TableCell>
-                                    <Button
-                                      size="sm"
-                                      variant="ghost"
-                                      onClick={() => viewContractDetails(contract.id)}
-                                      title="Просмотреть договор"
-                                    >
-                                      <Eye className="h-4 w-4" />
-                                    </Button>
-                                  </TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </div>
+                            ))}
+                          </TableBody>
+                        </Table>
                         {userContracts.length > 0 && (
-                          <div className="p-2 text-xs text-center text-neutral-500 border-t">
+                          <div className="p-2 text-xs text-center text-neutral-500 border-t bg-neutral-50">
                             Показано {userContracts.length} договоров
                           </div>
                         )}
