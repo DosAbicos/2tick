@@ -29,12 +29,12 @@ const NewLandingPage = () => {
           
           <div className="flex items-center gap-4">
             <Link to="/login">
-              <button className="neuro-button">
+              <button className="px-6 py-2.5 text-sm font-medium text-blue-600 bg-white border-2 border-blue-100 rounded-lg hover:bg-blue-50 transition-all">
                 Вход
               </button>
             </Link>
             <Link to="/register">
-              <button className="neuro-button-primary">
+              <button className="px-6 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30">
                 Регистрация
               </button>
             </Link>
