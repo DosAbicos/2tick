@@ -119,14 +119,7 @@ const AdminPage = () => {
     return () => clearInterval(statsInterval);
   }, []);
 
-  // Сохраняем поисковые запросы в localStorage
-  useEffect(() => {
-    localStorage.setItem('admin-user-search', userSearch);
-  }, [userSearch]);
-
-  useEffect(() => {
-    localStorage.setItem('admin-contract-search', contractSearch);
-  }, [contractSearch]);
+  // НЕ сохраняем поисковые запросы - пользователь хочет чистые поля при перезагрузке
   
   // Сохраняем состояние вкладок
   useEffect(() => {
