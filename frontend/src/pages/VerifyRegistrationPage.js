@@ -232,7 +232,7 @@ const VerifyRegistrationPage = () => {
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Подтверждение телефона</h2>
             <p className="text-gray-600">Выберите способ верификации</p>
           </div>
-          <CardContent className="space-y-6">
+          <div className="space-y-6">
             {!verificationMethod && (
               <motion.div
                 initial={{ opacity: 0 }}
@@ -240,30 +240,31 @@ const VerifyRegistrationPage = () => {
                 className="space-y-4"
               >
                 <div className="text-center mb-6">
-                  <Phone className="w-16 h-16 text-primary mx-auto mb-4" />
-                  <p className="text-neutral-600">Для завершения регистрации подтвердите ваш номер телефона одним из способов:</p>
+                  <div className="w-16 h-16 mx-auto bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-blue-500/30">
+                    <Phone className="w-8 h-8 text-white" />
+                  </div>
+                  <p className="text-gray-600">Для завершения регистрации подтвердите ваш номер телефона одним из способов:</p>
                 </div>
 
                 {/* SMS Button */}
-                <Button
+                <button
                   onClick={handleRequestSMS}
                   disabled={smsCooldown > 0}
-                  className="w-full"
+                  className="w-full px-6 py-3 text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                   data-testid="sms-button"
                 >
                   {smsCooldown > 0 ? `SMS (${smsCooldown}с)` : '📱 SMS-сообщение'}
-                </Button>
+                </button>
 
                 {/* Call Button */}
-                <Button
+                <button
                   onClick={handleRequestCall}
                   disabled={callCooldown > 0 || requestingCall}
-                  className="w-full"
-                  variant="outline"
+                  className="w-full px-6 py-3 text-gray-700 bg-white border-2 border-gray-200 rounded-xl hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                   data-testid="call-button"
                 >
                   {requestingCall ? 'Звоним...' : callCooldown > 0 ? `Звонок (${callCooldown}с)` : '📞 Входящий звонок'}
-                </Button>
+                </button>
 
                 {/* Telegram Button */}
                 {telegramDeepLink && (
@@ -273,10 +274,9 @@ const VerifyRegistrationPage = () => {
                     rel="noopener noreferrer"
                     className="block w-full"
                   >
-                    <Button
+                    <button
                       type="button"
-                      className="w-full"
-                      variant="outline"
+                      className="w-full px-6 py-3 text-gray-700 bg-white border-2 border-gray-200 rounded-xl hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                       onClick={() => {
                         setVerificationMethod('telegram');
                         setTelegramCooldown(60);
@@ -285,7 +285,7 @@ const VerifyRegistrationPage = () => {
                       data-testid="telegram-button"
                     >
                       {telegramCooldown > 0 ? `Telegram (${telegramCooldown}с)` : '✈️ Telegram'}
-                    </Button>
+                    </button>
                   </a>
                 )}
               </motion.div>
