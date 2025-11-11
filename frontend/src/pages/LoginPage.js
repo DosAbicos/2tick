@@ -3,11 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import Header from '@/components/Header';
+import { Mail, Lock, ArrowRight } from 'lucide-react';
+import '../styles/neumorphism.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -33,7 +30,6 @@ const LoginPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validate email
     if (!validateEmail(formData.email)) {
       toast.error('Введите корректный email адрес');
       return;
@@ -48,81 +44,109 @@ const LoginPage = () => {
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
       
-      toast.success(t('common.success'));
+      toast.success(`Добро пожаловать, ${user.full_name}!`);
       navigate('/dashboard');
     } catch (error) {
-      toast.error(error.response?.data?.detail || t('common.error'));
+      console.error('Login error:', error);
+      if (error.response?.status === 401) {
+        toast.error('Неверный email или пароль');
+      } else {
+        toast.error('Ошибка входа. Попробуйте снова.');
+      }
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50">
-      <Header showAuth={false} />
-      
-      <div className="max-w-md mx-auto px-4 py-16">
-        <Card data-testid="login-card">
-          <CardHeader>
-            <CardTitle className="text-2xl" data-testid="login-title">{t('auth.login.title')}</CardTitle>
-            <CardDescription>Enter your credentials to access your account</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4" data-testid="login-form">
-              <div>
-                <Label htmlFor="email">{t('auth.login.email')}</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  data-testid="email-input"
-                  className={`mt-1 ${formData.email && !validateEmail(formData.email) ? 'border-red-500' : ''}`}
-                  placeholder="example@mail.com"
-                />
-                {formData.email && !validateEmail(formData.email) && (
-                  <p className="text-xs text-red-500 mt-1">Введите корректный email</p>
-                )}
-              </div>
-              
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <Label htmlFor="password">{t('auth.login.password')}</Label>
-                  <Link to="/forgot-password" className="text-xs text-primary hover:underline">
-                    Забыл пароль?
-                  </Link>
-                </div>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  data-testid="password-input"
-                  className="mt-1"
-                />
-              </div>
-              
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={loading}
-                data-testid="login-submit-button"
-              >
-                {loading ? t('common.loading') : t('auth.login.submit')}
-              </Button>
-            </form>
-            
-            <div className="mt-4 text-center text-sm">
-              <Link to="/register" className="text-primary hover:underline" data-testid="register-link">
-                {t('auth.register.title')}
-              </Link>
+    <div className="min-h-screen gradient-bg flex items-center justify-center px-4 py-12">
+      <div className="w-full max-w-md animate-fade-in">
+        {/* Логотип и заголовок */}
+        <div className="text-center mb-8">
+          <Link to="/" className="inline-flex items-center gap-2 mb-4">
+            <div className="relative">
+              <svg width="48" height="48" viewBox="0 0 32 32">
+                <circle cx="16" cy="16" r="15" fill="#3B82F6" />
+                <path d="M10 16 L14 20 L22 12" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M14 16 L18 20 L26 12" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity="0.6" />
+              </svg>
             </div>
-          </CardContent>
-        </Card>
+            <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
+              2tick.kz
+            </span>
+          </Link>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            Вход в аккаунт
+          </h1>
+          <p className="text-gray-600 text-sm">
+            Войдите чтобы продолжить работу
+          </p>
+        </div>
+
+        {/* Форма */}
+        <div className="minimal-card p-8">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Email */}
+            <div className="space-y-2">
+              <label htmlFor="email" className="text-gray-700 text-sm font-medium flex items-center gap-2">
+                <Mail className="w-4 h-4 text-blue-500" />
+                Email
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                value={formData.email}
+                onChange={handleChange}
+                className="minimal-input w-full"
+                placeholder="example@company.kz"
+              />
+            </div>
+
+            {/* Пароль */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label htmlFor="password" className="text-gray-700 text-sm font-medium flex items-center gap-2">
+                  <Lock className="w-4 h-4 text-blue-500" />
+                  Пароль
+                </label>
+                <Link to="/forgot-password" className="text-xs text-blue-600 hover:text-blue-700">
+                  Забыли пароль?
+                </Link>
+              </div>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                required
+                value={formData.password}
+                onChange={handleChange}
+                className="minimal-input w-full"
+                placeholder="Введите пароль"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-4 text-base font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2"
+            >
+              {loading ? 'Вход...' : 'Войти'}
+              {!loading && <ArrowRight className="w-5 h-5" />}
+            </button>
+          </form>
+        </div>
+
+        {/* Ссылка на регистрацию */}
+        <div className="text-center mt-6">
+          <p className="text-sm text-gray-600">
+            Нет аккаунта?{' '}
+            <Link to="/register" className="text-blue-600 hover:text-blue-700 font-semibold">
+              Зарегистрироваться
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
