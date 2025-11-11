@@ -262,7 +262,20 @@ const ContractDetailsPage = () => {
                 </div>
               </div>
               
-              {!isReadOnly && (
+              {isReadOnly ? (
+                <div className="flex gap-2">
+                  {/* Кнопка скачивания для админа */}
+                  <Button
+                    onClick={handleDownloadPDF}
+                    variant="outline"
+                    className="bg-green-600 hover:bg-green-700 text-white"
+                    data-testid="admin-download-pdf-button"
+                  >
+                    <Download className="mr-2 h-4 w-4" />
+                    Скачать договор
+                  </Button>
+                </div>
+              ) : (
                 <div className="flex gap-2">
                   {/* Редактировать - только для draft и sent */}
                   {(contract.status === 'draft' || contract.status === 'sent') && (
