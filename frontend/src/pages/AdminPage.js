@@ -1005,8 +1005,26 @@ const AdminPage = () => {
                 </Button>
                 <Button
                   variant="secondary"
-                  onClick={() => {
-                    window.open(`${API}/contracts/${searchedContract.id}/download-pdf`, '_blank');
+                  onClick={async () => {
+                    try {
+                      const response = await axios.get(`${API}/contracts/${searchedContract.id}/download-pdf`, {
+                        headers: { Authorization: `Bearer ${token}` },
+                        responseType: 'blob'
+                      });
+                      
+                      const url = window.URL.createObjectURL(new Blob([response.data]));
+                      const link = document.createElement('a');
+                      link.href = url;
+                      link.setAttribute('download', `contract_${searchedContract.contract_code || searchedContract.id}.pdf`);
+                      document.body.appendChild(link);
+                      link.click();
+                      link.remove();
+                      window.URL.revokeObjectURL(url);
+                      toast.success('Договор успешно скачан');
+                    } catch (error) {
+                      console.error('Error downloading PDF:', error);
+                      toast.error('Ошибка скачивания договора');
+                    }
                   }}
                 >
                   <FileText className="mr-2 h-4 w-4" />
@@ -1015,12 +1033,14 @@ const AdminPage = () => {
                 <Button
                   variant="outline"
                   onClick={() => {
-                    if (searchedContract.landlord_id) {
-                      fetchUserDetails(searchedContract.landlord_id);
+                    const userId = searchedContract.landlord_id || searchedContract.creator_id;
+                    if (userId) {
+                      fetchUserDetails(userId);
                       setContractSearchOpen(false);
+                    } else {
+                      toast.error('Не удалось найти автора договора');
                     }
                   }}
-                  disabled={!searchedContract.landlord_id}
                 >
                   <Users className="mr-2 h-4 w-4" />
                   Профиль пользователя
