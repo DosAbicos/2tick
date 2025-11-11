@@ -1,99 +1,128 @@
-/* Neumorphism стили для 2tick.kz */
+/* Neumorphism стили для 2tick.kz - Обновленная яркая версия */
 
 :root {
-  --primary-blue: #4F46E5;
-  --primary-blue-dark: #4338CA;
-  --primary-blue-light: #6366F1;
-  --secondary-blue: #3B82F6;
+  --primary-blue: #3B82F6;
+  --primary-blue-dark: #2563EB;
+  --primary-blue-light: #60A5FA;
+  --secondary-blue: #0EA5E9;
   --accent-green: #10B981;
-  --bg-light: #E8ECF4;
-  --bg-white: #F8FAFC;
+  --bg-light: #F0F4F8;
+  --bg-white: #FFFFFF;
   --text-dark: #1E293B;
   --text-gray: #64748B;
-  --shadow-light: rgba(255, 255, 255, 0.7);
-  --shadow-dark: rgba(79, 70, 229, 0.15);
+  --shadow-light: rgba(255, 255, 255, 0.9);
+  --shadow-dark: rgba(59, 130, 246, 0.1);
+}
+
+/* Минималистичный стиль */
+.minimal-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid rgba(59, 130, 246, 0.1);
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.minimal-card:hover {
+  box-shadow: 0 8px 30px rgba(59, 130, 246, 0.12);
+  transform: translateY(-2px);
 }
 
 /* Neumorphic карточки */
 .neuro-card {
-  background: var(--bg-light);
+  background: var(--bg-white);
   border-radius: 20px;
+  border: 1px solid rgba(59, 130, 246, 0.1);
   box-shadow: 
-    8px 8px 16px var(--shadow-dark),
-    -8px -8px 16px var(--shadow-light);
+    0 8px 32px rgba(59, 130, 246, 0.1),
+    0 2px 8px rgba(59, 130, 246, 0.05);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .neuro-card:hover {
   box-shadow: 
-    12px 12px 24px var(--shadow-dark),
-    -12px -12px 24px var(--shadow-light);
+    0 12px 40px rgba(59, 130, 246, 0.15),
+    0 4px 12px rgba(59, 130, 246, 0.08);
   transform: translateY(-2px);
 }
 
 /* Neumorphic кнопки */
 .neuro-button {
-  background: var(--bg-light);
-  border: none;
-  border-radius: 15px;
+  background: white;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 12px;
   padding: 12px 24px;
   color: var(--primary-blue);
   font-weight: 600;
-  box-shadow: 
-    6px 6px 12px var(--shadow-dark),
-    -6px -6px 12px var(--shadow-light);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
   transition: all 0.2s ease;
   cursor: pointer;
 }
 
 .neuro-button:hover {
-  box-shadow: 
-    4px 4px 8px var(--shadow-dark),
-    -4px -4px 8px var(--shadow-light);
-  transform: scale(0.98);
+  background: rgba(59, 130, 246, 0.05);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+  transform: scale(1.02);
 }
 
 .neuro-button:active {
-  box-shadow: 
-    inset 4px 4px 8px var(--shadow-dark),
-    inset -4px -4px 8px var(--shadow-light);
+  transform: scale(0.98);
 }
 
 /* Neumorphic кнопка Primary */
 .neuro-button-primary {
-  background: linear-gradient(145deg, var(--primary-blue-light), var(--primary-blue));
+  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
   color: white;
-  box-shadow: 
-    6px 6px 12px rgba(79, 70, 229, 0.3),
-    -6px -6px 12px rgba(255, 255, 255, 0.1);
+  border: none;
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
 }
 
 .neuro-button-primary:hover {
-  background: linear-gradient(145deg, var(--primary-blue), var(--primary-blue-dark));
-  box-shadow: 
-    8px 8px 16px rgba(79, 70, 229, 0.4),
-    -4px -4px 8px rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+  box-shadow: 0 6px 24px rgba(59, 130, 246, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Минималистичный input */
+.minimal-input {
+  background: white;
+  border: 2px solid rgba(59, 130, 246, 0.15);
+  border-radius: 12px;
+  padding: 14px 18px;
+  color: var(--text-dark);
+  transition: all 0.3s ease;
+  font-size: 15px;
+}
+
+.minimal-input:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.minimal-input::placeholder {
+  color: var(--text-gray);
+  opacity: 0.6;
 }
 
 /* Neumorphic input */
 .neuro-input {
-  background: var(--bg-light);
-  border: none;
+  background: var(--bg-white);
+  border: 2px solid rgba(59, 130, 246, 0.1);
   border-radius: 12px;
   padding: 14px 18px;
   color: var(--text-dark);
   box-shadow: 
-    inset 4px 4px 8px var(--shadow-dark),
-    inset -4px -4px 8px var(--shadow-light);
+    inset 0 2px 4px rgba(59, 130, 246, 0.05);
   transition: all 0.3s ease;
 }
 
 .neuro-input:focus {
   outline: none;
+  border-color: var(--primary-blue);
   box-shadow: 
-    inset 6px 6px 12px var(--shadow-dark),
-    inset -6px -6px 12px var(--shadow-light),
-    0 0 0 2px var(--primary-blue-light);
+    inset 0 2px 4px rgba(59, 130, 246, 0.05),
+    0 0 0 4px rgba(59, 130, 246, 0.1);
 }
 
 /* Плавные анимации */
@@ -103,13 +132,13 @@
 
 /* Градиентный фон */
 .gradient-bg {
-  background: linear-gradient(135deg, #E8ECF4 0%, #F8FAFC 100%);
+  background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 50%, #FFFFFF 100%);
 }
 
 /* Floating анимация */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
+  50% { transform: translateY(-15px); }
 }
 
 .animate-float {
@@ -118,10 +147,27 @@
 
 /* Pulse анимация для акцентов */
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(79, 70, 229, 0.3); }
-  50% { box-shadow: 0 0 40px rgba(79, 70, 229, 0.6); }
+  0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.5); }
 }
 
 .animate-pulse-glow {
   animation: pulse-glow 3s ease-in-out infinite;
+}
+
+/* Fade in анимация */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Стеклянный эффект */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
