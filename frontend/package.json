@@ -1,7 +1,8 @@
 {
-  "name": "frontend",
-  "version": "0.1.0",
+  "name": "2tick-frontend",
+  "version": "1.0.0",
   "private": true,
+  "description": "2tick.kz - Электронное подписание договоров за 2 клика",
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
