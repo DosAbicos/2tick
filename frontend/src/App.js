@@ -40,7 +40,7 @@ function App() {
     <div className="App min-h-screen bg-white">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<LandingPage />} />
+          <Route path="/" element={<NewLandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/verify-registration/:registration_id" element={<VerifyRegistrationPage />} />
