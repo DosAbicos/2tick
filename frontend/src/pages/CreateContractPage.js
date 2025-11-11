@@ -597,7 +597,7 @@ Email: ${templateData.tenant_email || '[Email]'}
         isContentSaved: isContentSaved,
         savedAt: new Date().toISOString()
       };
-      localStorage.setItem('signify_last_template', JSON.stringify(templateToSave));
+      localStorage.setItem('2tick_last_template', JSON.stringify(templateToSave));
       
       // Upload tenant document if selected (optional)
       if (tenantDocument) {
