@@ -113,18 +113,38 @@ const DashboardPage = () => {
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Заголовок */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-8">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Мои договоры</h1>
-            <p className="text-sm sm:text-base text-gray-600">Управляйте своими договорами</p>
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Мои договоры</h1>
+              <p className="text-sm sm:text-base text-gray-600">Управляйте своими договорами</p>
+            </div>
           </div>
-          <button
-            onClick={() => navigate('/contracts/create')}
-            className="w-full sm:w-auto px-6 py-3 text-base font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2"
-          >
-            <Plus className="w-5 h-5" />
-            Создать договор
-          </button>
+          
+          {/* Кнопки действий */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <button
+              onClick={() => navigate('/templates')}
+              className="px-6 py-3 text-base font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2"
+            >
+              <FileText className="w-5 h-5" />
+              Маркет шаблонов
+            </button>
+            <button
+              onClick={() => navigate('/contracts/create')}
+              className="px-6 py-3 text-base font-medium text-gray-700 bg-white border-2 border-gray-200 rounded-xl hover:bg-gray-50 transition-all flex items-center justify-center gap-2"
+            >
+              <Plus className="w-5 h-5" />
+              Создать договор
+            </button>
+            <button
+              onClick={() => navigate('/contracts/upload-pdf')}
+              className="px-6 py-3 text-base font-medium text-gray-700 bg-white border-2 border-gray-200 rounded-xl hover:bg-gray-50 transition-all flex items-center justify-center gap-2"
+            >
+              <Upload className="w-5 h-5" />
+              Загрузить PDF
+            </button>
+          </div>
         </div>
 
         {/* Статистика */}
