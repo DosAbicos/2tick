@@ -79,11 +79,16 @@ const AdminPage = () => {
   const [loadingUserContracts, setLoadingUserContracts] = useState(false);
   const [notification, setNotification] = useState(null);
   const [showNotification, setShowNotification] = useState(false);
+  
   // Search states
   const [userSearch, setUserSearch] = useState('');
   const [contractSearch, setContractSearch] = useState('');
   const [searchedContract, setSearchedContract] = useState(null);
   const [contractSearchOpen, setContractSearchOpen] = useState(false);
+  
+  // UI State Persistence
+  const [activeMainTab, setActiveMainTab] = useState('activity');
+  const [activeUserTab, setActiveUserTab] = useState('activity');
 
   useEffect(() => {
     fetchAdminData();
@@ -94,6 +99,21 @@ const AdminPage = () => {
     const savedContractSearch = localStorage.getItem('admin-contract-search');
     if (savedUserSearch) setUserSearch(savedUserSearch);
     if (savedContractSearch) setContractSearch(savedContractSearch);
+    
+    // Восстанавливаем состояние вкладок
+    const savedMainTab = localStorage.getItem('admin-main-tab');
+    const savedUserTab = localStorage.getItem('admin-user-tab');
+    if (savedMainTab) setActiveMainTab(savedMainTab);
+    if (savedUserTab) setActiveUserTab(savedUserTab);
+    
+    // Восстанавливаем открытое модальное окно пользователя
+    const savedUserId = localStorage.getItem('admin-selected-user-id');
+    if (savedUserId) {
+      // Небольшая задержка чтобы данные успели загрузиться
+      setTimeout(() => {
+        fetchUserDetails(savedUserId);
+      }, 500);
+    }
     
     // Set up polling for real-time stats updates (every 30 seconds)
     const statsInterval = setInterval(() => {
@@ -111,6 +131,24 @@ const AdminPage = () => {
   useEffect(() => {
     localStorage.setItem('admin-contract-search', contractSearch);
   }, [contractSearch]);
+  
+  // Сохраняем состояние вкладок
+  useEffect(() => {
+    localStorage.setItem('admin-main-tab', activeMainTab);
+  }, [activeMainTab]);
+  
+  useEffect(() => {
+    localStorage.setItem('admin-user-tab', activeUserTab);
+  }, [activeUserTab]);
+  
+  // Сохраняем ID выбранного пользователя
+  useEffect(() => {
+    if (userDetailsOpen && selectedUser) {
+      localStorage.setItem('admin-selected-user-id', selectedUser.id);
+    } else {
+      localStorage.removeItem('admin-selected-user-id');
+    }
+  }, [userDetailsOpen, selectedUser]);
 
   // Polling для ошибок когда модальное окно открыто
   useEffect(() => {
@@ -234,10 +272,10 @@ const AdminPage = () => {
       const response = await axios.get(`${API}/admin/users/${userId}/logs`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setUserLogs(response.data.logs || []); // Исправлено: берём logs из response.data
+      setUserLogs(response.data.logs || []);
     } catch (error) {
       toast.error('Ошибка загрузки логов');
-      setUserLogs([]); // Устанавливаем пустой массив при ошибке
+      setUserLogs([]);
     } finally {
       setLoadingLogs(false);
     }
@@ -247,7 +285,6 @@ const AdminPage = () => {
     setLoadingUserContracts(true);
     console.log('🔍 Fetching ALL contracts for user:', userId);
     try {
-      // Ищем договоры по landlord_id И creator_id для полной совместимости
       const response1 = await axios.get(`${API}/admin/contracts?landlord_id=${userId}&limit=100`, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -256,7 +293,6 @@ const AdminPage = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      // Объединяем результаты и убираем дубликаты
       const contracts1 = response1.data.contracts || [];
       const contracts2 = response2.data.contracts || [];
       
@@ -314,8 +350,8 @@ const AdminPage = () => {
       );
       toast.success(`Добавлено ${contractsToAdd} договоров. Новый лимит: ${response.data.new_limit}`);
       setAddContractsOpen(false);
-      fetchUserDetails(selectedUser.id); // Refresh user details
-      fetchAdminData(); // Refresh users list
+      fetchUserDetails(selectedUser.id);
+      fetchAdminData();
     } catch (error) {
       toast.error('Ошибка добавления договоров');
     }
@@ -373,7 +409,6 @@ const AdminPage = () => {
     <div className="min-h-screen bg-neutral-50">
       <Header />
       
-      {/* Notification Banner */}
       {showNotification && notification && (
         <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mx-4 mt-4 rounded-lg">
           <div className="flex items-start justify-between">
@@ -401,7 +436,6 @@ const AdminPage = () => {
           </div>
           
           <div className="flex items-center gap-4">
-            {/* Contract Search Only */}
             <div className="flex items-center gap-2">
               <Input
                 type="text"
@@ -436,7 +470,6 @@ const AdminPage = () => {
           </div>
         </div>
 
-        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -483,8 +516,7 @@ const AdminPage = () => {
           </Card>
         </div>
 
-        {/* Tabs */}
-        <Tabs defaultValue="activity" className="space-y-4">
+        <Tabs value={activeMainTab} onValueChange={setActiveMainTab} className="space-y-4">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="activity">
               <Activity className="h-4 w-4 mr-2" />
@@ -496,7 +528,6 @@ const AdminPage = () => {
             </TabsTrigger>
           </TabsList>
 
-          {/* Users Tab */}
           <TabsContent value="users" className="space-y-4">
             <Card>
               <CardHeader>
@@ -506,7 +537,6 @@ const AdminPage = () => {
                     <CardDescription>Все зарегистрированные наймодатели</CardDescription>
                   </div>
                   
-                  {/* User Search */}
                   <div className="flex items-center gap-2">
                     <Input
                       type="text"
@@ -590,7 +620,6 @@ const AdminPage = () => {
             </Card>
           </TabsContent>
 
-          {/* Activity Tab */}
           <TabsContent value="activity" className="space-y-4">
             <div className="mb-4">
               <h3 className="text-lg font-semibold mb-1">Системные метрики</h3>
@@ -608,7 +637,7 @@ const AdminPage = () => {
 
       {/* User Details Dialog */}
       <Dialog open={userDetailsOpen} onOpenChange={setUserDetailsOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Профиль пользователя</DialogTitle>
             <DialogDescription>Подробная информация о пользователе</DialogDescription>
@@ -698,7 +727,7 @@ const AdminPage = () => {
               
               {/* User Details Tabs */}
               <div className="pt-4 border-t">
-                <Tabs defaultValue="activity" className="w-full">
+                <Tabs value={activeUserTab} onValueChange={setActiveUserTab} className="w-full">
                   <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="activity" className="flex items-center gap-2">
                       <Activity className="h-4 w-4" />
@@ -747,56 +776,58 @@ const AdminPage = () => {
                     ) : userContracts.length === 0 ? (
                       <div className="text-center py-4 text-neutral-500">У пользователя нет договоров</div>
                     ) : (
-                      <div className="max-h-96 overflow-auto">
-                        <Table className="w-full">
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead className="min-w-[100px] w-[100px]">Код</TableHead>
-                              <TableHead className="min-w-[200px]">Название</TableHead>
-                              <TableHead className="min-w-[100px] w-[100px]">Статус</TableHead>
-                              <TableHead className="min-w-[100px] w-[100px]">Дата</TableHead>
-                              <TableHead className="min-w-[80px] w-[80px]">Действия</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {userContracts.map((contract) => (
-                              <TableRow key={contract.id}>
-                                <TableCell>
-                                  <code className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded whitespace-nowrap block">
-                                    {contract.contract_code || 'N/A'}
-                                  </code>
-                                </TableCell>
-                                <TableCell className="font-medium">
-                                  <div className="break-words" title={contract.title}>
-                                    {contract.title}
-                                  </div>
-                                </TableCell>
-                                <TableCell>
-                                  <Badge 
-                                    variant={contract.status === 'signed' ? 'default' : contract.status === 'pending-signature' ? 'secondary' : 'outline'}
-                                    className="whitespace-nowrap text-xs"
-                                  >
-                                    {contract.status === 'signed' ? 'Подписан' : 
-                                     contract.status === 'pending-signature' ? 'На подписи' : 'Черновик'}
-                                  </Badge>
-                                </TableCell>
-                                <TableCell className="text-xs whitespace-nowrap">
-                                  {new Date(contract.created_at).toLocaleDateString('ru-RU')}
-                                </TableCell>
-                                <TableCell>
-                                  <Button
-                                    size="sm"
-                                    variant="ghost"
-                                    onClick={() => navigate(`/contracts/${contract.id}?readonly=true`)}
-                                    title="Просмотреть договор"
-                                  >
-                                    <Eye className="h-4 w-4" />
-                                  </Button>
-                                </TableCell>
+                      <div className="border rounded-lg">
+                        <div className="overflow-x-auto">
+                          <Table>
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead style={{minWidth: '100px'}}>Код</TableHead>
+                                <TableHead style={{minWidth: '200px'}}>Название</TableHead>
+                                <TableHead style={{minWidth: '120px'}}>Статус</TableHead>
+                                <TableHead style={{minWidth: '100px'}}>Дата</TableHead>
+                                <TableHead style={{minWidth: '80px'}}>Действия</TableHead>
                               </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
+                            </TableHeader>
+                            <TableBody>
+                              {userContracts.map((contract) => (
+                                <TableRow key={contract.id}>
+                                  <TableCell>
+                                    <code className="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded whitespace-nowrap">
+                                      {contract.contract_code || 'N/A'}
+                                    </code>
+                                  </TableCell>
+                                  <TableCell className="font-medium">
+                                    <div style={{maxWidth: '300px', wordWrap: 'break-word'}}>
+                                      {contract.title}
+                                    </div>
+                                  </TableCell>
+                                  <TableCell>
+                                    <Badge 
+                                      variant={contract.status === 'signed' ? 'default' : contract.status === 'pending-signature' ? 'secondary' : 'outline'}
+                                      className="whitespace-nowrap text-xs"
+                                    >
+                                      {contract.status === 'signed' ? 'Подписан' : 
+                                       contract.status === 'pending-signature' ? 'На подписи' : 'Черновик'}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell className="text-xs whitespace-nowrap">
+                                    {new Date(contract.created_at).toLocaleDateString('ru-RU')}
+                                  </TableCell>
+                                  <TableCell>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => navigate(`/contracts/${contract.id}?readonly=true`)}
+                                      title="Просмотреть договор"
+                                    >
+                                      <Eye className="h-4 w-4" />
+                                    </Button>
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </div>
                         {userContracts.length > 0 && (
                           <div className="p-2 text-xs text-center text-neutral-500 border-t bg-neutral-50">
                             Показано {userContracts.length} договоров
@@ -975,8 +1006,7 @@ const AdminPage = () => {
                 <Button
                   variant="secondary"
                   onClick={() => {
-                    // Скачивание PDF договора
-                    window.open(`/api/contracts/${searchedContract.id}/download`, '_blank');
+                    window.open(`${API}/contracts/${searchedContract.id}/download-pdf`, '_blank');
                   }}
                 >
                   <FileText className="mr-2 h-4 w-4" />
@@ -1049,7 +1079,6 @@ const AdminPage = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
     </div>
   );
 };
