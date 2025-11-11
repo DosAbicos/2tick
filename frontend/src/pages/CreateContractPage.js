@@ -189,7 +189,7 @@ const CreateContractPage = () => {
 
   const loadLastTemplate = () => {
     try {
-      const savedTemplate = localStorage.getItem('signify_last_template');
+      const savedTemplate = localStorage.getItem('2tick_last_template');
       if (!savedTemplate) {
         toast.info('Нет сохраненного шаблона');
         return;
