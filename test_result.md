@@ -742,6 +742,42 @@ frontend:
         agent: "main"
         comment: "Telegram верификация полностью реализована: ввод username без @, кнопка отправки, ввод 6-значного кода, кулдаун 60 сек. Использует /api/sign/{contract_id}/request-telegram-otp и verify-telegram-otp."
 
+  - task: "Скачивание договора через админ с авторизацией токеном"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/ContractDetailsPage.js"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. Скачивание договора с авторизацией работает корректно: 1) На ContractDetailsPage в readonly режиме присутствует ЗЕЛЕНАЯ кнопка 'Скачать договор' с правильными стилями (bg-green-600 hover:bg-green-700 text-white), 2) При клике отправляется запрос с заголовком Authorization: Bearer token, 3) PDF успешно скачивается (статус 200, Content-Type: application/pdf), 4) НЕТ ошибки 'Not authenticated', 5) Файл скачивается с именем contract_XXX.pdf. ✅ ИСПРАВЛЕНА ПРОБЛЕМА: Добавлена авторизация с токеном в запрос скачивания PDF для админов."
+
+  - task: "Кнопка 'Админка' в Header для админов"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/Header.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. Кнопка 'Админка' в Header работает корректно: 1) Для админов отображается красная кнопка с текстом 'Админка' и иконкой шестеренки, 2) Правильные стили: bg-red-50 border-red-200 text-red-700 hover:bg-red-100, 3) При клике выполняется переход на /admin, 4) Кнопка НЕ отображается для обычных пользователей (проверяется user.role === 'admin'), 5) data-testid='admin-panel-button' для тестирования. ✅ ФУНКЦИОНАЛЬНОСТЬ РЕАЛИЗОВАНА: Админы видят красную кнопку доступа к панели администратора."
+
+  - task: "Кнопка 'Профиль пользователя' в поиске договора активна"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/AdminPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ ТЕСТ ПРОЙДЕН. Кнопка 'Профиль пользователя' в поиске договора работает корректно: 1) В модальном окне поиска договора кнопка НЕ disabled (активна), 2) При клике модальное окно поиска закрывается, 3) Открывается модальное окно профиля правильного пользователя (landlord_id или creator_id), 4) Отображается корректная информация о пользователе-авторе договора, 5) Также работает кнопка 'Скачать договор' в модальном окне поиска с авторизацией. ✅ ИСПРАВЛЕНА ПРОБЛЕМА: Кнопка 'Профиль пользователя' теперь активна и функциональна в поиске договоров."
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
