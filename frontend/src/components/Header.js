@@ -38,8 +38,19 @@ const Header = ({ showAuth = false }) => {
   return (
     <header className="border-b bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <Link to={token ? "/dashboard" : "/"} className="font-bold text-xl tracking-tight text-neutral-900" data-testid="header-logo-link">
-          Signify KZ
+        <Link to={token ? "/dashboard" : "/"} className="flex items-center gap-2" data-testid="header-logo-link">
+          {/* Логотип 2tick */}
+          <div className="relative">
+            <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full"></div>
+            <svg width="32" height="32" viewBox="0 0 32 32" className="relative">
+              <circle cx="16" cy="16" r="15" fill="#4F46E5" />
+              <path d="M10 16 L14 20 L22 12" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M14 16 L18 20 L26 12" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity="0.6" />
+            </svg>
+          </div>
+          <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
+            2tick.kz
+          </span>
         </Link>
         
         {!token && (
@@ -84,7 +95,7 @@ const Header = ({ showAuth = false }) => {
                 {t('landing.nav.login')}
               </Link>
               <Link to="/register">
-                <Button size="sm" className="h-9 px-4" data-testid="register-primary-button">
+                <Button size="sm" className="h-9 px-4 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600" data-testid="register-primary-button">
                   {t('landing.nav.register')}
                 </Button>
               </Link>
@@ -101,7 +112,6 @@ const Header = ({ showAuth = false }) => {
                   
                   if (user.role === 'admin') {
                     if (isAdminPage) {
-                      // На странице админки показываем кнопку "Назад"
                       return (
                         <Link to="/dashboard">
                           <Button variant="outline" size="sm" className="h-9 px-3 bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100" data-testid="back-to-dashboard-button">
@@ -113,7 +123,6 @@ const Header = ({ showAuth = false }) => {
                         </Link>
                       );
                     } else {
-                      // На обычной странице показываем кнопку "Админка"
                       return (
                         <Link to="/admin">
                           <Button variant="outline" size="sm" className="h-9 px-3 bg-red-50 border-red-200 text-red-700 hover:bg-red-100" data-testid="admin-panel-button">
