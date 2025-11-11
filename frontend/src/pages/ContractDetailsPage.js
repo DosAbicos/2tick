@@ -264,9 +264,9 @@ const ContractDetailsPage = () => {
               
               {isReadOnly ? (
                 <div className="flex gap-2">
-                  {/* Кнопка скачивания для админа */}
+                  {/* Кнопка скачивания для админа - использует тот же endpoint что и email */}
                   <Button
-                    onClick={handleDownloadPDF}
+                    onClick={() => window.open(`${API}/contracts/${id}/download-pdf`, '_blank')}
                     variant="outline"
                     className="bg-green-600 hover:bg-green-700 text-white"
                     data-testid="admin-download-pdf-button"
