@@ -789,6 +789,10 @@ test_plan:
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
+  completed_tests:
+    - "Скачивание договора через админ с авторизацией токеном"
+    - "Кнопка 'Админка' в Header для админов"
+    - "Кнопка 'Профиль пользователя' в поиске договора активна"
 
   - task: "Тестирование исправлений frontend (пустые поля нанимателя)"
     implemented: true
