@@ -68,10 +68,6 @@ const AdminPage = () => {
   const [resetPasswordOpen, setResetPasswordOpen] = useState(false);
   const [addContractsOpen, setAddContractsOpen] = useState(false);
   const [errorsModalOpen, setErrorsModalOpen] = useState(false);
-  const [contractViewOpen, setContractViewOpen] = useState(false);
-  const [selectedContract, setSelectedContract] = useState(null);
-  const [activeTab, setActiveTab] = useState('activity');
-  const [userDetailsTab, setUserDetailsTab] = useState('activity');
   
   // Form states
   const [newPassword, setNewPassword] = useState('');
