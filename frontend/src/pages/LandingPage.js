@@ -138,7 +138,7 @@ const LandingPage = () => {
       {/* Footer */}
       <footer className="border-t py-12" data-testid="footer">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-neutral-600 text-sm">
-          <p>© 2025 Signify KZ. All rights reserved.</p>
+          <p>© 2025 2tick.kz. All rights reserved.</p>
         </div>
       </footer>
     </div>
