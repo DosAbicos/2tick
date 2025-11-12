@@ -108,25 +108,49 @@ const ContractDetailsPage = () => {
     
     let result = content;
     
-    // Helper function to wrap values with highlighting
-    const highlightValue = (value, label) => {
-      const isFilled = value && value !== `[${label}]`;
+    // Universal placeholder regex to match ALL placeholders [...]
+    const placeholderRegex = /\[([^\]]+)\]/g;
+    
+    result = result.replace(placeholderRegex, (match, label) => {
+      let value = match;
+      let isFilled = false;
+      
+      // Map placeholder labels to contract fields
+      if (label.includes('ФИО') && label.includes('Нанимателя')) {
+        value = contract.signer_name || match;
+        isFilled = !!contract.signer_name;
+      } else if (label === 'ФИО') {
+        value = contract.signer_name || match;
+        isFilled = !!contract.signer_name;
+      } else if (label.includes('Телефон')) {
+        value = contract.signer_phone || match;
+        isFilled = !!contract.signer_phone;
+      } else if (label.includes('Email') || label.includes('Почта')) {
+        value = contract.signer_email || match;
+        isFilled = !!contract.signer_email;
+      } else if (label.includes('Дата заселения')) {
+        value = contract.move_in_date || match;
+        isFilled = !!contract.move_in_date;
+      } else if (label.includes('Дата выселения')) {
+        value = contract.move_out_date || match;
+        isFilled = !!contract.move_out_date;
+      } else if (label.includes('Адрес')) {
+        value = contract.property_address || match;
+        isFilled = !!contract.property_address;
+      } else if (label.includes('Цена') || label.includes('сутки')) {
+        value = contract.rent_amount || match;
+        isFilled = !!contract.rent_amount;
+      } else if (label.includes('суток') || label.includes('Количество')) {
+        value = contract.days_count || match;
+        isFilled = !!contract.days_count;
+      }
+      
       const highlightClass = isFilled 
         ? 'bg-emerald-50 border-emerald-200 text-emerald-700' 
         : 'bg-amber-50 border-amber-200 text-amber-700';
-      return `<span class="inline-block px-2 py-0.5 rounded-md border ${highlightClass} font-medium transition-all duration-300 shadow-sm">${value || `[${label}]`}</span>`;
-    };
-    
-    // Replace placeholders with highlighted values
-    result = result.replace(/\[ФИО Нанимателя\]/g, highlightValue(contract.signer_name, 'ФИО Нанимателя'));
-    result = result.replace(/\[ФИО\]/g, highlightValue(contract.signer_name, 'ФИО'));
-    result = result.replace(/\[Телефон\]/g, highlightValue(contract.signer_phone, 'Телефон'));
-    result = result.replace(/\[Email\]/g, highlightValue(contract.signer_email, 'Email'));
-    result = result.replace(/\[Дата заселения\]/g, highlightValue(contract.move_in_date, 'Дата заселения'));
-    result = result.replace(/\[Дата выселения\]/g, highlightValue(contract.move_out_date, 'Дата выселения'));
-    result = result.replace(/\[Адрес квартиры\]/g, highlightValue(contract.property_address, 'Адрес квартиры'));
-    result = result.replace(/\[Цена в сутки\]/g, highlightValue(contract.rent_amount, 'Цена в сутки'));
-    result = result.replace(/\[Количество суток\]/g, highlightValue(contract.days_count, 'Количество суток'));
+      
+      return `<span class="inline-block px-2 py-0.5 rounded-md border ${highlightClass} font-medium transition-all duration-300 shadow-sm">${value}</span>`;
+    });
     
     return result;
   };
