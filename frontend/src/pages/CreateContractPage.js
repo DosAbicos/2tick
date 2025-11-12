@@ -221,11 +221,36 @@ const CreateContractPage = () => {
     if (editorRef.current) {
       let savedContent = editorRef.current.innerHTML;
       
-      // Keep HTML for preview but clean it for submission
+      // Convert filled values back to placeholders for continued editing
+      if (selectedTemplate?.placeholders) {
+        Object.entries(selectedTemplate.placeholders).forEach(([key, config]) => {
+          let currentValue = placeholderValues[key];
+          
+          if (currentValue) {
+            // Format dates
+            if (config.type === 'date' && currentValue) {
+              currentValue = formatDateToDDMMYYYY(currentValue);
+            }
+            
+            // Escape special regex characters in the value
+            const escapedValue = currentValue.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const valueRegex = new RegExp(escapedValue, 'g');
+            
+            // Replace the actual values back with placeholder syntax
+            savedContent = savedContent.replace(valueRegex, `{{${key}}}`);
+          }
+          
+          // Also handle cases where placeholder label is shown
+          const labelRegex = new RegExp(`\\[${config.label}\\]`, 'g');
+          savedContent = savedContent.replace(labelRegex, `{{${key}}}`);
+        });
+      }
+      
+      // Save the template with placeholders
       setManualContent(savedContent);
       setIsContentSaved(true);
       setManualEditMode(false);
-      toast.success('Изменения сохранены!');
+      toast.success('Изменения сохранены! Плейсхолдеры продолжают работать.');
     }
   };
 
