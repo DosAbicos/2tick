@@ -999,21 +999,20 @@ const SignContractPage = () => {
                     />
                     
                     <div className="flex gap-3">
-                      <Button
-                        variant="outline"
+                      <button
                         onClick={() => setVerificationMethod('')}
-                        className="flex-1"
+                        className="flex-1 py-3 px-4 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all"
                       >
                         ← Назад
-                      </Button>
-                      <Button
+                      </button>
+                      <button
                         onClick={handleVerifyTelegramOTP}
                         disabled={verifying || telegramCode.length !== 6}
-                        className="flex-1"
+                        className="flex-1 py-3 px-4 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
                         data-testid="telegram-verify-button"
                       >
                         {verifying ? 'Проверяем...' : 'Подтвердить'}
-                      </Button>
+                      </button>
                     </div>
                     
                     <a
