@@ -295,61 +295,63 @@ const ContractDetailsPage = () => {
                   </button>
                 </div>
               ) : (
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
                   {/* Редактировать - только для draft и sent */}
                   {(contract.status === 'draft' || contract.status === 'sent') && (
-                    <Button
+                    <button
                       onClick={() => navigate(`/contracts/edit/${id}`)}
-                      variant="outline"
+                      className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border-2 border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all flex items-center gap-2"
                       data-testid="edit-contract-button"
                     >
-                      <Edit3 className="mr-2 h-4 w-4" />
+                      <Edit3 className="h-4 w-4" />
                       Редактировать
-                    </Button>
+                    </button>
                   )}
                   
                   {/* Отправить ссылку - только для draft и sent */}
                   {(contract.status === 'draft' || contract.status === 'sent') && (
-                    <Button
+                    <button
                       onClick={handleSendContract}
                       disabled={sendingContract}
+                      className="px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                       data-testid="send-contract-button"
                     >
-                      <Send className="mr-2 h-4 w-4" />
+                      <Send className="h-4 w-4" />
                       {sendingContract ? t('common.loading') : 'Отправить ссылку'}
-                    </Button>
+                    </button>
                   )}
                   
                   {/* Утвердить - только для pending-signature */}
                   {contract.status === 'pending-signature' && (
-                    <Button
+                    <button
                       onClick={handleApprove}
                       disabled={approving}
+                      className="px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-green-600 to-green-500 rounded-lg hover:from-green-700 hover:to-green-600 transition-all shadow-lg shadow-green-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                       data-testid="approve-contract-button"
                     >
-                      <CheckCircle className="mr-2 h-4 w-4" />
+                      <CheckCircle className="h-4 w-4" />
                       {approving ? t('common.loading') : 'Утвердить'}
-                    </Button>
+                    </button>
                   )}
                   
                   {/* Скачать PDF - доступно для signed */}
                   {contract.status === 'signed' && (
-                    <Button
+                    <button
                       onClick={handleDownloadPDF}
-                      variant="outline"
+                      className="px-4 py-2 text-sm font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 hover:border-blue-300 transition-all flex items-center gap-2"
                       data-testid="download-pdf-button"
                     >
-                      <Download className="mr-2 h-4 w-4" />
+                      <Download className="h-4 w-4" />
                       {t('contract.download')}
-                    </Button>
+                    </button>
                   )}
                   
                   {/* Удалить - всегда доступно */}
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button variant="destructive" data-testid="delete-contract-button">
+                      <button className="px-3 py-2 text-sm font-medium text-white bg-gradient-to-r from-red-600 to-red-500 rounded-lg hover:from-red-700 hover:to-red-600 transition-all shadow-lg shadow-red-500/20" data-testid="delete-contract-button">
                         <Trash2 className="h-4 w-4" />
-                      </Button>
+                      </button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
