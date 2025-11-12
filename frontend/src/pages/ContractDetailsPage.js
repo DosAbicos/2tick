@@ -261,11 +261,11 @@ const ContractDetailsPage = () => {
             <div className="flex justify-between items-start flex-wrap gap-4">
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3" data-testid="contract-title">{contract.title}</h1>
-                <div className="flex gap-2 items-center flex-wrap">
+                <div className="flex gap-3 items-center flex-wrap">
                   {contract.contract_code && (
-                    <code className="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-lg border border-blue-200">
+                    <div className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-sm font-bold rounded-xl shadow-lg shadow-blue-500/20">
                       {contract.contract_code}
-                    </code>
+                    </div>
                   )}
                   {getStatusBadge(contract.status)}
                   <span className="text-sm text-gray-500">
