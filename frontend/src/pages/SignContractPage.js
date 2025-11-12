@@ -1040,8 +1040,8 @@ const SignContractPage = () => {
                 <p className="text-neutral-600">Создатель договора получит уведомление и проверит вашу подпись.</p>
               </motion.div>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
