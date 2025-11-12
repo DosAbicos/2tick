@@ -496,17 +496,16 @@ const SignContractPage = () => {
                 
                 {(documentUploaded || contract.signature?.document_upload) && !needsInfo ? (
                   // Document uploaded (by user or landlord) AND data filled - ready to sign
-                  <Button
+                  <button
                     onClick={() => setStep(3)}
-                    className="w-full bg-green-600 hover:bg-green-700"
-                    size="lg"
+                    className="w-full py-4 text-base font-semibold text-white bg-gradient-to-r from-green-600 to-green-500 rounded-xl hover:from-green-700 hover:to-green-600 transition-all shadow-lg shadow-green-500/30"
                     data-testid="sign-button"
                   >
                     Всё верно, подписать договор →
-                  </Button>
+                  </button>
                 ) : (
                   // Need to fill data or upload document
-                  <Button
+                  <button
                     onClick={() => {
                       if (needsInfo) {
                         setStep(1.5); // Go to info filling step
@@ -514,11 +513,11 @@ const SignContractPage = () => {
                         setStep(2); // Go directly to upload
                       }
                     }}
-                    className="w-full"
+                    className="w-full py-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30"
                     data-testid="proceed-button"
                   >
                     Продолжить →
-                  </Button>
+                  </button>
                 )}
               </motion.div>
             )}
