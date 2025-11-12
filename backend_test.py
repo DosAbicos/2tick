@@ -789,7 +789,7 @@ class BackendTester:
         # Test 1.2: POST /api/auth/login
         self.log("\n🔑 Test 1.2: POST /api/auth/login")
         login_data = {
-            "email": "test.user.2tick@example.com",
+            "email": unique_email,
             "password": "testpassword123"
         }
         
