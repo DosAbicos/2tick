@@ -417,7 +417,7 @@ const SignContractPage = () => {
       
       if (response.data.verified) {
         toast.success('Верификация успешна!');
-        setStep(4);
+        setStep(6);
       }
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Неверный код');
