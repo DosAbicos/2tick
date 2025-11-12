@@ -661,21 +661,20 @@ const SignContractPage = () => {
                 
  
                 <div className="flex gap-3">
-                  <Button
-                    variant="outline"
+                  <button
                     onClick={() => setStep(1)}
-                    className="flex-1"
+                    className="flex-1 py-3 px-4 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all"
                     data-testid="back-to-view-button"
                   >
                     ← Назад к договору
-                  </Button>
-                  <Button
+                  </button>
+                  <button
                     onClick={handleSaveSignerInfo}
-                    className="flex-1"
+                    className="flex-1 py-3 px-4 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/20"
                     data-testid="save-signer-info-button"
                   >
                     Сохранить и продолжить →
-                  </Button>
+                  </button>
                 </div>
               </motion.div>
             )}
