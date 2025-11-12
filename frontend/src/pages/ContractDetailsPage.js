@@ -223,22 +223,21 @@ const ContractDetailsPage = () => {
   if (!contract) return null;
 
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <div className="min-h-screen gradient-bg">
       <Header />
       
       <div className="max-w-5xl mx-auto px-4 py-8">
-        <Button
-          variant="ghost"
+        <button
           onClick={() => navigate('/dashboard')}
-          className="mb-6"
+          className="mb-6 px-4 py-2 text-sm font-medium text-gray-600 bg-white rounded-lg hover:bg-gray-50 transition-all border border-gray-200 flex items-center gap-2"
           data-testid="back-button"
         >
-          <ArrowLeft className="mr-2 h-4 w-4" />
+          <ArrowLeft className="h-4 w-4" />
           Back to Dashboard
-        </Button>
+        </button>
         
-        <Card data-testid="contract-details-card">
-          <CardHeader>
+        <div className="minimal-card p-6 sm:p-8 animate-fade-in" data-testid="contract-details-card">
+          <div className="mb-6">
             {isReadOnly && (
               <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
                 <p className="text-sm text-amber-800 font-medium">
