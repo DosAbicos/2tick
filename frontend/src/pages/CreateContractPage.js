@@ -231,15 +231,7 @@ const CreateContractPage = () => {
     if (editorRef.current) {
       let savedContent = editorRef.current.innerHTML;
       
-      // Preserve line breaks: convert <div> and <br> to actual newlines for storage
-      // This ensures proper display in SignContractPage
-      savedContent = savedContent
-        .replace(/<div>/gi, '\n')
-        .replace(/<\/div>/gi, '')
-        .replace(/<br\s*\/?>/gi, '\n')
-        .replace(/<p>/gi, '')
-        .replace(/<\/p>/gi, '\n');
-      
+      // Keep HTML for preview but clean it for submission
       setManualContent(savedContent);
       setIsContentSaved(true);
       setManualEditMode(false);
