@@ -1166,14 +1166,14 @@ Email: ${templateData.tenant_email || '[Email]'}
                 <div className="space-y-4">
                   <h3 className="font-semibold text-neutral-900 border-b pb-2">Описание и адрес квартиры</h3>
                   <div>
-                    <Label htmlFor="property_address">Адрес квартиры *</Label>
-                    <Input
+                    <label htmlFor="property_address" className="block text-sm font-medium text-gray-700 mb-2">Адрес квартиры *</label>
+                    <input
                       id="property_address"
                       value={templateData.property_address}
                       onChange={(e) => handleFieldChange('property_address', e.target.value)}
                       required
                       data-testid="property-address-input"
-                      className="mt-1"
+                      className="minimal-input w-full"
                       placeholder="г. Алматы, ул. ..."
                     />
                   </div>
