@@ -698,7 +698,7 @@ const SignContractPage = () => {
                     className="flex-1 py-3 px-4 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all"
                     data-testid="back-to-view-button"
                   >
-                    ← Назад к договору
+                    ← Назад
                   </button>
                   <button
                     onClick={handleSaveSignerInfo}
