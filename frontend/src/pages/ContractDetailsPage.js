@@ -690,8 +690,8 @@ const ContractDetailsPage = () => {
                 </div>
               </div>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
