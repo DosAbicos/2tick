@@ -545,35 +545,35 @@ const SignContractPage = () => {
                         </Label>
                         
                         {config.type === 'text' && (
-                          <Input
+                          <input
                             id={`placeholder_${key}`}
                             value={placeholderValues[key] || ''}
                             onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
-                            className="mt-1"
+                            className="minimal-input w-full mt-1"
                             placeholder={`Введите ${config.label.toLowerCase()}`}
                             required={config.required}
                           />
                         )}
                         
                         {config.type === 'number' && (
-                          <Input
+                          <input
                             id={`placeholder_${key}`}
                             type="number"
                             value={placeholderValues[key] || ''}
                             onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
-                            className="mt-1"
+                            className="minimal-input w-full mt-1"
                             placeholder={`Введите ${config.label.toLowerCase()}`}
                             required={config.required}
                           />
                         )}
                         
                         {config.type === 'date' && (
-                          <Input
+                          <input
                             id={`placeholder_${key}`}
                             type="date"
                             value={placeholderValues[key] || ''}
                             onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
-                            className="mt-1"
+                            className="minimal-input w-full mt-1"
                             required={config.required}
                           />
                         )}
