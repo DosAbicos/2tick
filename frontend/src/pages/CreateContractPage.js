@@ -1130,9 +1130,6 @@ Email: ${templateData.tenant_email || '[Email]'}
                   </button>
                 </div>
               </form>
-            </div>
-          </div>
-        </div>
         ) : (
           <div className="text-center py-16">
             <p className="text-gray-600 mb-4">Выберите шаблон из модального окна</p>
