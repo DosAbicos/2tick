@@ -1131,7 +1131,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                           </div>
                         )}
                         
-                        <Label htmlFor="tenant_doc" className="cursor-pointer">
+                        <label htmlFor="tenant_doc" className="cursor-pointer block">
                           <Button type="button" variant="outline" className="w-full" asChild>
                             <span>
                               <Upload className="mr-2 h-4 w-4" />
