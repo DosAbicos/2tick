@@ -623,7 +623,22 @@ Email: ${templateData.tenant_email || '[Email]'}
                 </div>
               </div>
               <div className="p-6 bg-white max-h-[800px] overflow-y-auto">
-                {loadingTemplate ? (
+                {manualEditMode ? (
+                  <div
+                    ref={editorRef}
+                    contentEditable
+                    dangerouslySetInnerHTML={{ __html: manualContent }}
+                    suppressContentEditableWarning
+                    key={manualContent}
+                    onBlur={(e) => setManualContent(e.currentTarget.innerHTML)}
+                    className="min-h-[600px] p-4 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{
+                      fontFamily: 'IBM Plex Sans, sans-serif',
+                      fontSize: '14px',
+                      lineHeight: '1.6'
+                    }}
+                  />
+                ) : loadingTemplate ? (
                   <div className="text-center py-12">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
                     <p className="text-gray-600">Загрузка шаблона...</p>
