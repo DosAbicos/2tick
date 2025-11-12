@@ -453,23 +453,23 @@ const SignContractPage = () => {
   if (!contract) return null;
 
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <div className="min-h-screen gradient-bg">
       <Header />
       
       <div className="max-w-3xl mx-auto px-4 py-8">
-        <Card data-testid="sign-contract-card">
-          <CardHeader>
-            <CardTitle className="text-2xl" data-testid="signing-title">{t('signing.title')}</CardTitle>
-            <div className="flex items-center gap-2 mt-2">
+        <div className="minimal-card p-6 sm:p-8 animate-fade-in" data-testid="sign-contract-card">
+          <div className="mb-6">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3" data-testid="signing-title">{t('signing.title')}</h1>
+            <div className="flex items-center gap-2 flex-wrap">
               {contract.contract_code && (
-                <code className="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded border border-blue-200">
+                <code className="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-lg border border-blue-200">
                   {contract.contract_code}
                 </code>
               )}
-              <p className="text-neutral-600">{contract.title}</p>
+              <p className="text-gray-600">{contract.title}</p>
             </div>
-          </CardHeader>
-          <CardContent className="space-y-6">
+          </div>
+          <div className="space-y-6">
             {/* Step 1: View Contract */}
             {step === 1 && (
               <motion.div
