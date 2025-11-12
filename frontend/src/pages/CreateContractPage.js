@@ -208,7 +208,9 @@ const CreateContractPage = () => {
           });
         }
         
-        setManualContent(content);
+        // Convert newlines to <br> for contentEditable
+        const editableContent = content.replace(/\n/g, '<br>');
+        setManualContent(editableContent);
       }
     }
     setManualEditMode(!manualEditMode);
