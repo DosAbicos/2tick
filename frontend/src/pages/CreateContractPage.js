@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import Header from '@/components/Header';
 import { ArrowLeft, Eye, Edit3, Upload, Bold, Italic, Underline, Type, AlignLeft, AlignCenter, AlignRight, CheckCircle } from 'lucide-react';
 import { IMaskInput } from 'react-imask';
