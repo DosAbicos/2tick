@@ -18,7 +18,7 @@ import socket
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://signify-rebrand.preview.emergentagent.com/api"
+BASE_URL = "https://contract-hub-31.preview.emergentagent.com/api"
 ADMIN_EMAIL = "asl@asl.kz"
 ADMIN_PASSWORD = "12345678"
 
