@@ -619,25 +619,23 @@ Email: ${templateData.tenant_email || '[Email]'}
               </h3>
               <div className="flex gap-2">
                 {!manualEditMode && (
-                  <Button
+                  <button
                     type="button"
-                    variant="outline"
-                    size="sm"
                     onClick={toggleEditMode}
+                    className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-blue-400 transition-all flex items-center gap-1"
                   >
-                    <Edit3 className="h-4 w-4 mr-2" />
-                    Редактировать вручную
-                  </Button>
+                    <Edit3 className="h-4 w-4" />
+                    Редактировать
+                  </button>
                 )}
                 {manualEditMode && (
-                  <Button
+                  <button
                     type="button"
-                    variant="default"
-                    size="sm"
                     onClick={handleSaveContent}
+                    className="px-3 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-green-600 to-green-500 rounded-lg hover:from-green-700 hover:to-green-600 transition-all shadow-md"
                   >
                     Сохранить
-                  </Button>
+                  </button>
                 )}
               </div>
             </div>
