@@ -1110,7 +1110,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                       </div>
                       
                       <div>
-                        <Label>Удостоверение личности клиента (опционально)</Label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Удостоверение личности клиента (опционально)</label>
                         <p className="text-xs text-neutral-500 mb-3">Если есть документ клиента, можете загрузить. Иначе клиент загрузит сам.</p>
                         
                         {tenantDocPreview && (
