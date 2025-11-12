@@ -1089,9 +1089,9 @@ Email: ${templateData.tenant_email || '[Email]'}
                           placeholder="Опционально"
                         />
                       </div>
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                          <Label htmlFor="tenant_phone">Телефон</Label>
+                          <label htmlFor="tenant_phone" className="block text-sm font-medium text-gray-700 mb-2">Телефон</label>
                           <IMaskInput
                             mask="+7 (000) 000-00-00"
                             value={templateData.tenant_phone}
@@ -1104,7 +1104,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                           />
                         </div>
                         <div>
-                          <Label htmlFor="tenant_email">Email</Label>
+                          <label htmlFor="tenant_email" className="block text-sm font-medium text-gray-700 mb-2">Email</label>
                           <input
                             id="tenant_email"
                             type="email"
