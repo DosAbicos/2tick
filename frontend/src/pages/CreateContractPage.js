@@ -1344,8 +1344,8 @@ Email: ${templateData.tenant_email || '[Email]'}
                   </Button>
                 </div>
               </form>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
         ) : (
           <div className="text-center py-16">
