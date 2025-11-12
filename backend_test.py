@@ -1,12 +1,30 @@
 #!/usr/bin/env python3
 """
-Backend Testing Script for Contract Management System
-Tests the 4 new tasks from the Russian review request:
+Backend Testing Script for 2tick.kz Contract Management System
+Тестирование backend приложения 2tick.kz после редизайна frontend.
 
-1. Кнопка скачивания договора в модальном окне просмотра (backend endpoints)
-2. Оптимизация скорости отправки email (критично)
-3. GET /api/contracts/{contract_id} - детали договора для модального окна
-4. GET /api/contracts/{contract_id}/download-pdf - генерация и скачивание PDF
+ТЕСТИРУЕМЫЕ ENDPOINTS:
+1. Authentication endpoints:
+   - POST /api/auth/login
+   - POST /api/auth/register
+   - GET /api/auth/me
+
+2. Contracts endpoints:
+   - POST /api/contracts - создание договора
+   - GET /api/contracts/{id} - получение договора
+   - GET /api/contracts/{id}/download-pdf - скачивание PDF
+   - POST /api/contracts/{id}/send - отправка ссылки на подписание
+
+3. Signing flow endpoints:
+   - GET /api/sign/{id} - получение информации для подписания
+   - POST /api/sign/{id}/update-signer-info - обновление данных нанимателя
+   - POST /api/sign/{id}/upload-document - загрузка документа
+   - POST /api/sign/{id}/request-otp - запрос SMS кода
+   - POST /api/sign/{id}/verify-otp - верификация кода
+
+4. Templates endpoints:
+   - GET /api/templates - список шаблонов
+   - GET /api/users/favorites/templates - избранные шаблоны
 """
 
 import requests
