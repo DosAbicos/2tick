@@ -159,13 +159,57 @@ const CreateContractPage = () => {
 
   const toggleEditMode = () => {
     if (!manualEditMode) {
-      // If content was already saved, use it; otherwise generate new
+      // If content was already saved, use it; otherwise generate new WITHOUT highlighting
       if (!isContentSaved) {
-        const content = generatePreviewContent();
-        // Просто конвертируем переносы строк в <br>, БЕЗ подсветки
+        // Generate content without HTML highlighting for editing
+        let content = selectedTemplate.content;
+        
+        if (selectedTemplate.placeholders) {
+          Object.entries(selectedTemplate.placeholders).forEach(([key, config]) => {
+            let value = placeholderValues[key] || `[${config.label}]`;
+            
+            // Format dates
+            if (config.type === 'date' && placeholderValues[key]) {
+              value = formatDateToDDMMYYYY(placeholderValues[key]);
+            }
+            
+            const regex = new RegExp(`{{${key}}}`, 'g');
+            
+            // For calculated fields
+            if (config.type === 'calculated' && config.formula) {
+              const { operand1, operation, operand2 } = config.formula;
+              let result = 0;
+              
+              if (operation === 'days_between') {
+                if (placeholderValues[operand1] && placeholderValues[operand2]) {
+                  const date1 = new Date(placeholderValues[operand1]);
+                  const date2 = new Date(placeholderValues[operand2]);
+                  const diffTime = Math.abs(date2 - date1);
+                  result = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                }
+              } else {
+                const val1 = parseFloat(placeholderValues[operand1]) || 0;
+                const val2 = parseFloat(placeholderValues[operand2]) || 0;
+                
+                switch(operation) {
+                  case 'add': result = val1 + val2; break;
+                  case 'subtract': result = val1 - val2; break;
+                  case 'multiply': result = val1 * val2; break;
+                  case 'divide': result = val2 !== 0 ? val1 / val2 : 0; break;
+                  case 'modulo': result = val2 !== 0 ? val1 % val2 : 0; break;
+                  default: result = 0;
+                }
+              }
+              
+              content = content.replace(regex, result.toString() || `[${config.label}]`);
+            } else {
+              content = content.replace(regex, value);
+            }
+          });
+        }
+        
         setManualContent(content.replace(/\n/g, '<br>'));
       }
-      // Если isContentSaved = true, manualContent уже содержит сохраненный контент
     }
     setManualEditMode(!manualEditMode);
   };
