@@ -103,24 +103,30 @@ const TemplatesPage = () => {
         </div>
 
         {/* Filters */}
-        <div className="mb-6 flex gap-3 overflow-x-auto pb-2">
-          <Button
-            variant={selectedCategory === null ? 'default' : 'outline'}
+        <div className="mb-6 flex gap-2 overflow-x-auto pb-2">
+          <button
+            className={`px-4 py-2 text-sm font-medium rounded-lg transition-all whitespace-nowrap flex items-center gap-2 ${
+              selectedCategory === null
+                ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-md'
+                : 'bg-white border border-gray-300 text-gray-700 hover:border-blue-400'
+            }`}
             onClick={() => setSelectedCategory(null)}
-            size="sm"
           >
-            <Filter className="mr-2 h-4 w-4" />
+            <Filter className="w-4 h-4" />
             Все категории
-          </Button>
+          </button>
           {Object.entries(CATEGORIES).map(([key, { label }]) => (
-            <Button
+            <button
               key={key}
-              variant={selectedCategory === key ? 'default' : 'outline'}
+              className={`px-4 py-2 text-sm font-medium rounded-lg transition-all whitespace-nowrap ${
+                selectedCategory === key
+                  ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-md'
+                  : 'bg-white border border-gray-300 text-gray-700 hover:border-blue-400'
+              }`}
               onClick={() => setSelectedCategory(key)}
-              size="sm"
             >
               {label}
-            </Button>
+            </button>
           ))}
         </div>
 
