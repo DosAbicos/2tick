@@ -130,6 +130,23 @@ const CreateContractPage = () => {
 
   const editorRef = useRef(null);
 
+  // Load favorite templates
+  const loadFavoriteTemplates = async () => {
+    setLoadingFavorites(true);
+    try {
+      const response = await axios.get(`${API}/templates`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const favorites = response.data.filter(t => t.is_favorited);
+      setFavoriteTemplates(favorites);
+    } catch (error) {
+      console.error('Error loading favorites:', error);
+      toast.error('Ошибка загрузки избранных шаблонов');
+    } finally {
+      setLoadingFavorites(false);
+    }
+  };
+
   // Load next contract number on mount
   useEffect(() => {
     const fetchNextContractNumber = async () => {
@@ -157,6 +174,10 @@ const CreateContractPage = () => {
       if (templateId) {
         sessionStorage.setItem('selectedTemplateId', templateId);
       }
+    } else {
+      // No template selected - show modal with favorite templates
+      loadFavoriteTemplates();
+      setShowTemplateModal(true);
     }
   }, [templateId]);
 
