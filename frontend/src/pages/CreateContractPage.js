@@ -1241,7 +1241,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                       />
                     </div>
                     <div>
-                      <Label htmlFor="move_out_date">Дата выселения *</Label>
+                      <label htmlFor="move_out_date" className="block text-sm font-medium text-gray-700 mb-2">Дата выселения *</label>
                       <input
                         id="move_out_date"
                         type="date"
