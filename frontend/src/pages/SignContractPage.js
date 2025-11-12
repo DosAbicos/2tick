@@ -723,31 +723,28 @@ const SignContractPage = () => {
                 
                 <div className="flex gap-3">
                   {!documentUploaded ? (
-                    <Button
-                      variant="outline"
+                    <button
                       onClick={() => setStep(needsInfo ? 1.5 : 1)}
-                      className="flex-1"
+                      className="flex-1 py-3 px-4 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all"
                       data-testid="back-to-info-button"
                     >
                       ← {needsInfo ? 'Изменить данные' : 'Назад к договору'}
-                    </Button>
+                    </button>
                   ) : null}
                   {documentUploaded && (
                     <>
-                      <Button
-                        variant="outline"
+                      <button
                         onClick={() => setStep(needsInfo ? 1.5 : 1)}
-                        className="flex-1"
+                        className="flex-1 py-3 px-4 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all"
                       >
                         ← {needsInfo ? 'Изменить данные' : 'Назад к договору'}
-                      </Button>
-                      <Button
+                      </button>
+                      <button
                         onClick={() => setStep(1)}
-                        className="flex-1 bg-primary"
-                        size="lg"
+                        className="flex-1 py-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/20"
                       >
                         Ознакомиться с договором →
-                      </Button>
+                      </button>
                     </>
                   )}
                 </div>
