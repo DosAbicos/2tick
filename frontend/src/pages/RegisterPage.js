@@ -230,18 +230,18 @@ const RegisterPage = () => {
               <>
                 {/* Пароль */}
                 <div className="space-y-2">
-                  <Label htmlFor="password" className="text-gray-700 text-sm font-medium flex items-center gap-2">
+                  <label htmlFor="password" className="text-gray-700 text-sm font-medium flex items-center gap-2">
                     <Lock className="w-4 h-4 text-blue-500" />
                     Пароль *
-                  </Label>
-                  <Input
+                  </label>
+                  <input
                     id="password"
                     name="password"
                     type="password"
                     required
                     value={formData.password}
                     onChange={handleChange}
-                    className="minimal-input"
+                    className="minimal-input w-full"
                     placeholder="Минимум 6 символов"
                   />
                 </div>
