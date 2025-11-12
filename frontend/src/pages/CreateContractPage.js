@@ -1132,12 +1132,10 @@ Email: ${templateData.tenant_email || '[Email]'}
                         )}
                         
                         <label htmlFor="tenant_doc" className="cursor-pointer block">
-                          <Button type="button" variant="outline" className="w-full" asChild>
-                            <span>
-                              <Upload className="mr-2 h-4 w-4" />
-                              {tenantDocument ? 'Изменить документ клиента' : 'Загрузить документ клиента'}
-                            </span>
-                          </Button>
+                          <div className="w-full px-4 py-3 text-sm font-medium text-gray-700 bg-white border-2 border-gray-200 rounded-lg hover:bg-gray-50 hover:border-blue-300 transition-all flex items-center justify-center gap-2">
+                            <Upload className="h-4 w-4" />
+                            {tenantDocument ? 'Изменить документ клиента' : 'Загрузить документ клиента'}
+                          </div>
                           <input
                             id="tenant_doc"
                             type="file"
