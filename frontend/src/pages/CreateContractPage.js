@@ -690,8 +690,8 @@ Email: ${templateData.tenant_email || '[Email]'}
                   </Button>
                 )}
               </div>
-            </CardHeader>
-            <CardContent>
+            </div>
+            <div className="p-6">
               {manualEditMode ? (
                 <div className="editor-container">
                   {/* Toolbar */}
