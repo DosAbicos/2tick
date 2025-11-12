@@ -1433,6 +1433,11 @@ Email: ${templateData.tenant_email || '[Email]'}
             </CardContent>
           </Card>
         </div>
+        ) : (
+          <div className="text-center py-16">
+            <p className="text-gray-600 mb-4">Выберите шаблон из модального окна</p>
+          </div>
+        )}
       </div>
     </div>
   );
