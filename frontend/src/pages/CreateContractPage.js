@@ -111,7 +111,15 @@ const CreateContractPage = () => {
       const response = await axios.get(`${API}/templates`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      const favorites = response.data.filter(t => t.is_favorited);
+      // Try different fields for favorited status
+      const favorites = response.data.filter(t => 
+        t.is_favorited === true || 
+        t.favorited === true || 
+        t.is_favorite === true ||
+        (t.favorites && t.favorites.length > 0)
+      );
+      console.log('All templates:', response.data);
+      console.log('Favorites found:', favorites);
       setFavoriteTemplates(favorites);
     } catch (error) {
       console.error('Error loading favorites:', error);
