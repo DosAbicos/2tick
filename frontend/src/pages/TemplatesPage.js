@@ -166,23 +166,23 @@ const TemplatesPage = () => {
                 <div className="flex gap-2">
                   <button
                     onClick={() => setPreviewTemplate(template)}
-                    className="flex-1 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-blue-400 transition-all flex items-center justify-center gap-2"
+                    className="flex-1 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-blue-400 transition-all flex items-center justify-center gap-1"
                   >
-                    <Eye className="w-4 h-4" />
-                    Просмотр
+                    <Eye className="w-4 h-4 flex-shrink-0" />
+                    <span>Просмотр</span>
                   </button>
                   <button
                     onClick={() => handleToggleFavorite(template.id)}
-                    className={`flex-1 px-3 py-2 text-sm font-medium rounded-lg transition-all flex items-center justify-center gap-2 ${
+                    className={`flex-1 px-3 py-2 text-sm font-medium rounded-lg transition-all flex items-center justify-center gap-1 ${
                       favoriteTemplates.includes(template.id)
                         ? 'bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-md'
                         : 'text-gray-700 bg-white border border-gray-300 hover:border-pink-400'
                     }`}
                   >
                     <Heart 
-                      className={`w-4 h-4 ${favoriteTemplates.includes(template.id) ? 'fill-current' : ''}`} 
+                      className={`w-4 h-4 flex-shrink-0 ${favoriteTemplates.includes(template.id) ? 'fill-current' : ''}`} 
                     />
-                    {favoriteTemplates.includes(template.id) ? '❤️' : 'Избр.'}
+                    <span className="truncate">{favoriteTemplates.includes(template.id) ? 'В избр.' : 'Избр.'}</span>
                   </button>
                 </div>
               </div>
