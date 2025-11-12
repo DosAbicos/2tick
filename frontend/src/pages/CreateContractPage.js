@@ -588,14 +588,39 @@ Email: ${templateData.tenant_email || '[Email]'}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Left: Preview */}
             <div className="minimal-card lg:sticky lg:top-4 h-fit">
-              <div className="p-4 border-b border-gray-200">
+              <div className="p-4 border-b border-gray-200 flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                   <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                   </svg>
-                  Предпросмотр
+                  {manualEditMode ? 'Редактирование' : 'Предпросмотр'}
+                  {isContentSaved && !manualEditMode && (
+                    <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-lg font-medium">✓ Изменено</span>
+                  )}
                 </h3>
+                <div className="flex gap-2">
+                  {!manualEditMode ? (
+                    <button
+                      type="button"
+                      onClick={toggleEditMode}
+                      className="px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-all flex items-center gap-1"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                      Редактировать
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleSaveContent}
+                      className="px-3 py-1.5 text-sm font-semibold text-white bg-gradient-to-r from-green-600 to-green-500 rounded-lg hover:from-green-700 hover:to-green-600 transition-all shadow-md"
+                    >
+                      Сохранить
+                    </button>
+                  )}
+                </div>
               </div>
               <div className="p-6 bg-white max-h-[800px] overflow-y-auto">
                 {loadingTemplate ? (
