@@ -3,15 +3,12 @@ import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
 import Header from '@/components/Header';
 import { CheckCircle, CheckCircle2, FileUp, Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { IMaskInput } from 'react-imask';
+import '../styles/neumorphism.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
