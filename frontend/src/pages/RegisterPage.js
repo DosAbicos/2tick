@@ -248,18 +248,18 @@ const RegisterPage = () => {
 
                 {/* Подтверждение пароля */}
                 <div className="space-y-2">
-                  <Label htmlFor="confirmPassword" className="text-gray-700 text-sm font-medium flex items-center gap-2">
+                  <label htmlFor="confirmPassword" className="text-gray-700 text-sm font-medium flex items-center gap-2">
                     <Lock className="w-4 h-4 text-blue-500" />
                     Подтвердите пароль *
-                  </Label>
-                  <Input
+                  </label>
+                  <input
                     id="confirmPassword"
                     name="confirmPassword"
                     type="password"
                     required
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    className="minimal-input"
+                    className="minimal-input w-full"
                     placeholder="Повторите пароль"
                   />
                   {!passwordMatch && formData.confirmPassword && (
@@ -276,71 +276,70 @@ const RegisterPage = () => {
 
                 {/* Название компании */}
                 <div className="space-y-2">
-                  <Label htmlFor="company_name" className="text-gray-700 text-sm font-medium flex items-center gap-2">
+                  <label htmlFor="company_name" className="text-gray-700 text-sm font-medium flex items-center gap-2">
                     <Building className="w-4 h-4 text-gray-400" />
                     Название компании
-                  </Label>
-                  <Input
+                  </label>
+                  <input
                     id="company_name"
                     name="company_name"
                     type="text"
                     value={formData.company_name}
                     onChange={handleChange}
-                    className="minimal-input"
+                    className="minimal-input w-full"
                     placeholder="ТОО 'Компания' (опционально)"
                   />
                 </div>
 
                 {/* ИИН/БИН */}
                 <div className="space-y-2">
-                  <Label htmlFor="iin" className="text-gray-700 text-sm font-medium flex items-center gap-2">
+                  <label htmlFor="iin" className="text-gray-700 text-sm font-medium flex items-center gap-2">
                     <CreditCard className="w-4 h-4 text-gray-400" />
                     ИИН/БИН
-                  </Label>
-                  <Input
+                  </label>
+                  <input
                     id="iin"
                     name="iin"
                     type="text"
                     value={formData.iin}
                     onChange={handleChange}
-                    className="minimal-input"
+                    className="minimal-input w-full"
                     placeholder="123456789012 (опционально)"
                   />
                 </div>
 
                 {/* Юридический адрес */}
                 <div className="space-y-2">
-                  <Label htmlFor="legal_address" className="text-gray-700 text-sm font-medium flex items-center gap-2">
+                  <label htmlFor="legal_address" className="text-gray-700 text-sm font-medium flex items-center gap-2">
                     <MapPin className="w-4 h-4 text-gray-400" />
                     Юридический адрес
-                  </Label>
-                  <Input
+                  </label>
+                  <input
                     id="legal_address"
                     name="legal_address"
                     type="text"
                     value={formData.legal_address}
                     onChange={handleChange}
-                    className="minimal-input"
+                    className="minimal-input w-full"
                     placeholder="г. Алматы, ул. Абая, 1 (опционально)"
                   />
                 </div>
 
                 <div className="flex gap-3 pt-2">
-                  <Button
+                  <button
                     type="button"
                     onClick={() => setStep(1)}
-                    variant="outline"
-                    className="flex-1 py-6"
+                    className="flex-1 py-4 px-4 text-base font-medium text-gray-600 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all"
                   >
                     Назад
-                  </Button>
-                  <Button
+                  </button>
+                  <button
                     type="submit"
                     disabled={loading || !passwordMatch}
-                    className="neuro-button-primary flex-1 py-6 text-base"
+                    className="flex-1 py-4 px-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {loading ? 'Регистрация...' : 'Зарегистрироваться'}
-                  </Button>
+                  </button>
                 </div>
               </>
             )}
