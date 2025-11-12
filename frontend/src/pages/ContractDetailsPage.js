@@ -245,17 +245,17 @@ const ContractDetailsPage = () => {
                 </p>
               </div>
             )}
-            <div className="flex justify-between items-start">
+            <div className="flex justify-between items-start flex-wrap gap-4">
               <div>
-                <CardTitle className="text-2xl mb-2" data-testid="contract-title">{contract.title}</CardTitle>
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3" data-testid="contract-title">{contract.title}</h1>
                 <div className="flex gap-2 items-center flex-wrap">
                   {contract.contract_code && (
-                    <code className="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded border border-blue-200">
+                    <code className="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-lg border border-blue-200">
                       {contract.contract_code}
                     </code>
                   )}
                   {getStatusBadge(contract.status)}
-                  <span className="text-sm text-neutral-500">
+                  <span className="text-sm text-gray-500">
                     Updated {format(new Date(contract.updated_at), 'dd MMM yyyy HH:mm')}
                   </span>
                 </div>
