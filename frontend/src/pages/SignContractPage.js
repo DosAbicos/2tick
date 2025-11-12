@@ -57,6 +57,57 @@ const SignContractPage = () => {
   const [placeholderValues, setPlaceholderValues] = useState({});
   const [unfilledPlaceholders, setUnfilledPlaceholders] = useState([]);
 
+  // Function to highlight placeholders in content
+  const highlightPlaceholders = (content) => {
+    if (!content) return '';
+    
+    let result = content;
+    
+    // Regular expression to match placeholders like [Label]
+    const placeholderRegex = /\[([^\]]+)\]/g;
+    
+    result = result.replace(placeholderRegex, (match, label) => {
+      // Check if this placeholder has a value
+      let isFilled = false;
+      let value = match;
+      
+      // Map common placeholder labels to contract fields
+      if (label.includes('ФИО') || label.includes('Нанимателя')) {
+        isFilled = !!contract?.signer_name;
+        value = contract?.signer_name || match;
+      } else if (label.includes('Телефон')) {
+        isFilled = !!contract?.signer_phone;
+        value = contract?.signer_phone || match;
+      } else if (label.includes('Email') || label.includes('Почта')) {
+        isFilled = !!contract?.signer_email;
+        value = contract?.signer_email || match;
+      } else if (label.includes('Дата заселения')) {
+        isFilled = !!contract?.move_in_date;
+        value = contract?.move_in_date || match;
+      } else if (label.includes('Дата выселения')) {
+        isFilled = !!contract?.move_out_date;
+        value = contract?.move_out_date || match;
+      } else if (label.includes('Адрес')) {
+        isFilled = !!contract?.property_address;
+        value = contract?.property_address || match;
+      } else if (label.includes('Цена') || label.includes('сутки')) {
+        isFilled = !!contract?.rent_amount;
+        value = contract?.rent_amount || match;
+      } else if (label.includes('суток') || label.includes('Количество')) {
+        isFilled = !!contract?.days_count;
+        value = contract?.days_count || match;
+      }
+      
+      const highlightClass = isFilled 
+        ? 'bg-emerald-50 border-emerald-200 text-emerald-700' 
+        : 'bg-amber-50 border-amber-200 text-amber-700';
+      
+      return `<span class="inline-block px-2 py-0.5 rounded-md border ${highlightClass} font-medium transition-all duration-300 shadow-sm">${value}</span>`;
+    });
+    
+    return result;
+  };
+
   // Cooldown timer
   useEffect(() => {
     if (smsCooldown > 0) {
