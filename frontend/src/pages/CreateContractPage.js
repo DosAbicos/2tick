@@ -1241,26 +1241,26 @@ Email: ${templateData.tenant_email || '[Email]'}
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label htmlFor="move_in_date">Дата заселения *</Label>
-                      <Input
+                      <input
                         id="move_in_date"
                         type="date"
                         value={templateData.move_in_date}
                         onChange={(e) => handleFieldChange('move_in_date', e.target.value)}
                         required
                         data-testid="move-in-date-input"
-                        className="mt-1"
+                        className="minimal-input w-full"
                       />
                     </div>
                     <div>
                       <Label htmlFor="move_out_date">Дата выселения *</Label>
-                      <Input
+                      <input
                         id="move_out_date"
                         type="date"
                         value={templateData.move_out_date}
                         onChange={(e) => handleFieldChange('move_out_date', e.target.value)}
                         required
                         data-testid="move-out-date-input"
-                        className="mt-1"
+                        className="minimal-input w-full"
                       />
                     </div>
                   </div>
