@@ -702,35 +702,35 @@ Email: ${templateData.tenant_email || '[Email]'}
           Back to Dashboard
         </Button>
         
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-neutral-900">{t('contract.create.title')}</h1>
-          {loadingTemplate && (
-            <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-sm text-blue-800">⏳ Загрузка шаблона...</p>
-            </div>
-          )}
-          {selectedTemplate && (
+        {selectedTemplate && (
+          <div className="mb-6">
+            <h1 className="text-3xl font-bold text-neutral-900">{t('contract.create.title')}</h1>
+            {loadingTemplate && (
+              <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-sm text-blue-800">⏳ Загрузка шаблона...</p>
+              </div>
+            )}
             <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
               <p className="text-sm text-green-800">✓ Шаблон загружен: <strong>{selectedTemplate.title}</strong></p>
             </div>
-          )}
-          {nextContractNumber && (
-            <p className="text-xl font-bold text-neutral-900 mt-3">
-              Номер договора: {nextContractNumber}
-            </p>
-          )}
-          <p className="text-neutral-600 mt-2">Заполните поля справа, договор автоматически обновится слева</p>
-          <div className="mt-3">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={loadLastTemplate}
-              className="text-sm"
-            >
-              📋 Загрузить последний шаблон
-            </Button>
+            {nextContractNumber && (
+              <p className="text-xl font-bold text-neutral-900 mt-3">
+                Номер договора: {nextContractNumber}
+              </p>
+            )}
+            <p className="text-neutral-600 mt-2">Заполните поля справа, договор автоматически обновится слева</p>
+            <div className="mt-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={loadLastTemplate}
+                className="text-sm"
+              >
+                📋 Загрузить последний шаблон
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Only show form if template is selected */}
         {selectedTemplate ? (
