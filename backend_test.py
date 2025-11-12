@@ -983,7 +983,11 @@ class BackendTester:
                 
                 # Test 3.5: POST /api/sign/{id}/verify-otp - верификация кода
                 self.log(f"\n🔐 Test 3.5: POST /api/sign/{contract_id}/verify-otp")
-                verify_data = {"otp_code": mock_otp}
+                verify_data = {
+                    "contract_id": contract_id,
+                    "phone": "+77071234568",  # Use the updated phone from signer info
+                    "otp_code": mock_otp
+                }
                 
                 verify_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/verify-otp", json=verify_data)
                 if verify_response.status_code == 200:
