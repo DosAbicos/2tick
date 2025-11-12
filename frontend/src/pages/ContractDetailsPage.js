@@ -33,6 +33,7 @@ const ContractDetailsPage = () => {
   const [loading, setLoading] = useState(true);
   const [sendingContract, setSendingContract] = useState(false);
   const [approving, setApproving] = useState(false);
+  const [justCopied, setJustCopied] = useState(false);
   const token = localStorage.getItem('token');
   
   // Check if readonly mode (for admin)
