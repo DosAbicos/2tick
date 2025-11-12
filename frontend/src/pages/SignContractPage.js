@@ -457,13 +457,13 @@ const SignContractPage = () => {
         <div className="minimal-card p-6 sm:p-8 animate-fade-in" data-testid="sign-contract-card">
           <div className="mb-6">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3" data-testid="signing-title">{t('signing.title')}</h1>
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-3 flex-wrap">
               {contract.contract_code && (
-                <code className="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-lg border border-blue-200">
+                <div className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-sm font-bold rounded-xl shadow-lg shadow-blue-500/20">
                   {contract.contract_code}
-                </code>
+                </div>
               )}
-              <p className="text-gray-600">{contract.title}</p>
+              <p className="text-gray-600 font-medium">{contract.title}</p>
             </div>
           </div>
           <div className="space-y-6">
