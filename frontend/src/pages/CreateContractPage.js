@@ -655,14 +655,19 @@ Email: ${templateData.tenant_email || '[Email]'}
                     <div className="space-y-4">
                       {/* Landlord Fields - Always visible */}
                       {Object.entries(selectedTemplate.placeholders).some(([_, config]) => config.owner === 'landlord' && config.type !== 'calculated') && (
-                        <div className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl">
-                          <div className="border-b-2 border-blue-200 pb-3 mb-5">
-                            <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                              📋 Обязательные поля
-                            </h3>
-                            <p className="text-xs text-gray-600 mt-1">
-                              Эти поля вы должны заполнить как наймодатель
-                            </p>
+                        <div className="space-y-4">
+                          <div className="flex items-center gap-3 pb-3 border-b border-gray-200">
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-blue-500 flex items-center justify-center text-white font-bold shadow-lg">
+                              1
+                            </div>
+                            <div>
+                              <h3 className="text-lg font-semibold text-gray-900">
+                                Ваши данные
+                              </h3>
+                              <p className="text-sm text-gray-500">
+                                Информация о наймодателе
+                              </p>
+                            </div>
                           </div>
                           
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
