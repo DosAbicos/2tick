@@ -196,16 +196,30 @@ const ContractDetailsPage = () => {
   };
 
   const getStatusBadge = (status) => {
-    const statusMap = {
-      draft: { variant: 'secondary', text: t('status.draft') },
-      sent: { variant: 'default', text: t('status.sent') },
-      'pending-signature': { variant: 'outline', text: t('status.pending-signature') },
-      signed: { variant: 'success', text: t('status.signed') },
-      declined: { variant: 'destructive', text: t('status.declined') }
+    const statusStyles = {
+      draft: 'bg-gray-100 text-gray-700 border-gray-200',
+      sent: 'bg-blue-50 text-blue-700 border-blue-200',
+      'pending-signature': 'bg-amber-50 text-amber-700 border-amber-200',
+      signed: 'bg-green-50 text-green-700 border-green-200',
+      declined: 'bg-red-50 text-red-700 border-red-200'
     };
     
-    const config = statusMap[status] || statusMap.draft;
-    return <Badge variant={config.variant}>{config.text}</Badge>;
+    const statusText = {
+      draft: t('status.draft'),
+      sent: 'Отправлена',
+      'pending-signature': t('status.pending-signature'),
+      signed: t('status.signed'),
+      declined: t('status.declined')
+    };
+    
+    const style = statusStyles[status] || statusStyles.draft;
+    const text = statusText[status] || status;
+    
+    return (
+      <span className={`px-3 py-1 text-sm font-semibold rounded-lg border ${style}`}>
+        {text}
+      </span>
+    );
   };
 
   if (loading) {
