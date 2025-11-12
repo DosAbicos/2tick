@@ -158,36 +158,36 @@ const RegisterPage = () => {
               <>
                 {/* ФИО */}
                 <div className="space-y-2">
-                  <Label htmlFor="full_name" className="text-gray-700 text-sm font-medium flex items-center gap-2">
+                  <label htmlFor="full_name" className="text-gray-700 text-sm font-medium flex items-center gap-2">
                     <User className="w-4 h-4 text-blue-500" />
                     ФИО *
-                  </Label>
-                  <Input
+                  </label>
+                  <input
                     id="full_name"
                     name="full_name"
                     type="text"
                     required
                     value={formData.full_name}
                     onChange={handleChange}
-                    className="minimal-input"
+                    className="minimal-input w-full"
                     placeholder="Иванов Иван Иванович"
                   />
                 </div>
 
                 {/* Email */}
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-gray-700 text-sm font-medium flex items-center gap-2">
+                  <label htmlFor="email" className="text-gray-700 text-sm font-medium flex items-center gap-2">
                     <Mail className="w-4 h-4 text-blue-500" />
                     Email *
-                  </Label>
-                  <Input
+                  </label>
+                  <input
                     id="email"
                     name="email"
                     type="email"
                     required
                     value={formData.email}
                     onChange={handleChange}
-                    className="minimal-input"
+                    className="minimal-input w-full"
                     placeholder="example@company.kz"
                   />
                   {userExists && (
@@ -199,10 +199,10 @@ const RegisterPage = () => {
 
                 {/* Телефон */}
                 <div className="space-y-2">
-                  <Label htmlFor="phone" className="text-gray-700 text-sm font-medium flex items-center gap-2">
+                  <label htmlFor="phone" className="text-gray-700 text-sm font-medium flex items-center gap-2">
                     <Phone className="w-4 h-4 text-blue-500" />
                     Телефон *
-                  </Label>
+                  </label>
                   <IMaskInput
                     mask="+7 (000) 000-00-00"
                     id="phone"
