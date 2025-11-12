@@ -773,18 +773,18 @@ Email: ${templateData.tenant_email || '[Email]'}
                   )}
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Right: Form Fields */}
-          <Card data-testid="contract-form-card">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Edit3 className="h-5 w-5" />
+          <div className="minimal-card" data-testid="contract-form-card">
+            <div className="p-6 border-b border-gray-100">
+              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <Edit3 className="h-5 w-5 text-blue-500" />
                 Заполните данные
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+              </h3>
+            </div>
+            <div className="p-6">
               <form onSubmit={handleSubmit} className="space-y-6" data-testid="create-contract-form">
                 {/* Show loading indicator while template is loading */}
                 {loadingTemplate ? (
