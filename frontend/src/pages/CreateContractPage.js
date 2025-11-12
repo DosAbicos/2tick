@@ -601,39 +601,7 @@ Email: ${templateData.tenant_email || '[Email]'}
 
         {/* Only show form if template is selected */}
         {selectedTemplate ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Left: Contract Preview */}
-            <div className="minimal-card lg:sticky lg:top-4 h-fit" data-testid="contract-preview-card">
-            <div className="p-6 border-b border-gray-100 flex flex-row items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <Eye className="h-5 w-5 text-blue-500" />
-                {manualEditMode ? 'Редактировать договор' : 'Предпросмотр договора'}
-                {isContentSaved && !manualEditMode && (
-                  <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">✓ Отредактировано</span>
-                )}
-              </h3>
-              <div className="flex gap-2">
-                {!manualEditMode && (
-                  <button
-                    type="button"
-                    onClick={toggleEditMode}
-                    className="px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-blue-400 transition-all flex items-center gap-1"
-                  >
-                    <Edit3 className="h-4 w-4" />
-                    Редактировать
-                  </button>
-                )}
-                {manualEditMode && (
-                  <button
-                    type="button"
-                    onClick={handleSaveContent}
-                    className="px-3 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-green-600 to-green-500 rounded-lg hover:from-green-700 hover:to-green-600 transition-all shadow-md"
-                  >
-                    Сохранить
-                  </button>
-                )}
-              </div>
-            </div>
+          <div className="minimal-card" data-testid="contract-form-card">
             <div className="p-6">
               {manualEditMode ? (
                 <div className="editor-container">
