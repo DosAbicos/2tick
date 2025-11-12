@@ -651,11 +651,11 @@ Email: ${templateData.tenant_email || '[Email]'}
                     <p className="text-gray-600">Загрузка шаблона...</p>
                   </div>
                 ) : (
-                  <div className="prose prose-sm max-w-none">
-                    <pre className="whitespace-pre-wrap text-sm font-['IBM_Plex_Sans'] leading-relaxed text-gray-800">
-                      {generatePreviewContent()}
-                    </pre>
-                  </div>
+                  <div 
+                    className="whitespace-pre-wrap text-sm leading-relaxed text-gray-800"
+                    style={{ fontFamily: 'IBM Plex Sans, sans-serif' }}
+                    dangerouslySetInnerHTML={{ __html: generatePreviewContent() }}
+                  />
                 )}
               </div>
             </div>
