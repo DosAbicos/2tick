@@ -641,14 +641,14 @@ const SignContractPage = () => {
                     
                     {(!contract.signer_email) && (
                       <div>
-                        <Label htmlFor="signer_email">Email</Label>
-                        <Input
+                        <label htmlFor="signer_email" className="text-sm font-medium text-gray-700 block mb-2">Email</label>
+                        <input
                           id="signer_email"
                           type="email"
                           value={signerInfo.email}
                           onChange={(e) => setSignerInfo({...signerInfo, email: e.target.value})}
                           data-testid="signer-email-input"
-                          className={`mt-1 ${signerInfo.email && !validateEmail(signerInfo.email) ? 'border-red-500' : ''}`}
+                          className={`minimal-input w-full ${signerInfo.email && !validateEmail(signerInfo.email) ? 'border-red-500' : ''}`}
                           placeholder="example@mail.com"
                         />
                         {signerInfo.email && !validateEmail(signerInfo.email) && (
