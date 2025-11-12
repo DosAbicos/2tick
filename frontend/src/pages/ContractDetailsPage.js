@@ -320,16 +320,40 @@ const ContractDetailsPage = () => {
                     </button>
                   )}
                   
-                  {/* Отправить ссылку - только для draft и sent */}
+                  {/* Генерировать/Копировать ссылку */}
                   {(contract.status === 'draft' || contract.status === 'sent') && (
                     <button
-                      onClick={handleSendContract}
+                      onClick={async () => {
+                        if (!contract.signature_link) {
+                          // Generate link first
+                          await handleSendContract();
+                        } else {
+                          // Copy existing link
+                          const fullLink = `${window.location.origin}${contract.signature_link}`;
+                          const textArea = document.createElement('textarea');
+                          textArea.value = fullLink;
+                          textArea.style.position = 'fixed';
+                          textArea.style.left = '-999999px';
+                          document.body.appendChild(textArea);
+                          textArea.focus();
+                          textArea.select();
+                          try {
+                            document.execCommand('copy');
+                            toast.success('Ссылка скопирована!');
+                          } catch (err) {
+                            toast.error('Не удалось скопировать');
+                          }
+                          document.body.removeChild(textArea);
+                        }
+                      }}
                       disabled={sendingContract}
                       className="px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                       data-testid="send-contract-button"
                     >
-                      <Send className="h-4 w-4" />
-                      {sendingContract ? t('common.loading') : 'Отправить ссылку'}
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                      {sendingContract ? 'Генерация...' : (contract.signature_link ? 'Копировать ссылку' : 'Сгенерировать ссылку')}
                     </button>
                   )}
                   
