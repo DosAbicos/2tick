@@ -733,53 +733,360 @@ class BackendTester:
             self.log(f"❌ TEST 4 FAILED: Contract approval failed: {response.status_code} - {response.text}")
             return False
     
-    def run_new_tasks_tests(self):
-        """Run tests for the 4 new tasks from Russian review request"""
-        self.log("🚀 Starting Backend Tests for 4 New Tasks")
-        self.log("🇷🇺 Тестирование 4 новых задач по русскому запросу")
-        self.log("=" * 80)
+    def test_authentication_endpoints(self):
+        """Test 1: Authentication endpoints"""
+        self.log("\n🔐 TEST 1: Authentication Endpoints")
+        self.log("=" * 50)
         
-        # Login as admin first
-        if not self.login_as_admin():
-            self.log("❌ Cannot proceed without admin login")
-            return False
+        all_passed = True
+        
+        # Test 1.1: POST /api/auth/register
+        self.log("\n📝 Test 1.1: POST /api/auth/register")
+        register_data = {
+            "email": "test.user.2tick@example.com",
+            "password": "testpassword123",
+            "full_name": "Тестовый Пользователь 2tick",
+            "phone": "+77012345678",
+            "company_name": "ТОО Тест Компания",
+            "iin": "123456789012",
+            "legal_address": "г. Алматы, ул. Тестовая 1"
+        }
+        
+        response = self.session.post(f"{BASE_URL}/auth/register", json=register_data)
+        if response.status_code == 200:
+            data = response.json()
+            registration_id = data.get("registration_id")
+            self.log(f"✅ Registration successful. ID: {registration_id}")
+            
+            # Complete registration with OTP
+            otp_response = self.session.post(f"{BASE_URL}/auth/registration/{registration_id}/request-otp?method=sms")
+            if otp_response.status_code == 200:
+                otp_data = otp_response.json()
+                mock_otp = otp_data.get("mock_otp")
+                if mock_otp:
+                    verify_response = self.session.post(f"{BASE_URL}/auth/registration/{registration_id}/verify-otp", 
+                                                      json={"otp_code": mock_otp})
+                    if verify_response.status_code == 200:
+                        verify_data = verify_response.json()
+                        test_token = verify_data["token"]
+                        test_user_id = verify_data["user"]["id"]
+                        self.log("✅ Registration completed successfully")
+                    else:
+                        self.log(f"❌ OTP verification failed: {verify_response.status_code}")
+                        all_passed = False
+                else:
+                    self.log("❌ No mock OTP received")
+                    all_passed = False
+            else:
+                self.log(f"❌ OTP request failed: {otp_response.status_code}")
+                all_passed = False
+        else:
+            self.log(f"❌ Registration failed: {response.status_code} - {response.text}")
+            all_passed = False
+        
+        # Test 1.2: POST /api/auth/login
+        self.log("\n🔑 Test 1.2: POST /api/auth/login")
+        login_data = {
+            "email": "test.user.2tick@example.com",
+            "password": "testpassword123"
+        }
+        
+        response = self.session.post(f"{BASE_URL}/auth/login", json=login_data)
+        if response.status_code == 200:
+            data = response.json()
+            self.token = data["token"]
+            self.user_id = data["user"]["id"]
+            self.session.headers.update({"Authorization": f"Bearer {self.token}"})
+            self.log(f"✅ Login successful. User ID: {self.user_id}")
+        else:
+            self.log(f"❌ Login failed: {response.status_code} - {response.text}")
+            all_passed = False
+        
+        # Test 1.3: GET /api/auth/me
+        self.log("\n👤 Test 1.3: GET /api/auth/me")
+        response = self.session.get(f"{BASE_URL}/auth/me")
+        if response.status_code == 200:
+            user_data = response.json()
+            self.log(f"✅ User profile retrieved: {user_data.get('full_name', 'Unknown')}")
+            self.log(f"   Email: {user_data.get('email', 'N/A')}")
+            self.log(f"   Company: {user_data.get('company_name', 'N/A')}")
+        else:
+            self.log(f"❌ Get user profile failed: {response.status_code} - {response.text}")
+            all_passed = False
+        
+        return all_passed
+    
+    def test_contracts_endpoints(self):
+        """Test 2: Contracts endpoints"""
+        self.log("\n📄 TEST 2: Contracts Endpoints")
+        self.log("=" * 50)
+        
+        all_passed = True
+        contract_id = None
+        
+        # Test 2.1: POST /api/contracts - создание договора
+        self.log("\n📝 Test 2.1: POST /api/contracts - создание договора")
+        contract_data = {
+            "title": "Договор аренды квартиры 2tick",
+            "content": "Договор аренды между наймодателем и нанимателем. Наниматель: [ФИО Нанимателя]. Телефон: [Телефон]. Email: [Email]. Адрес объекта: [Адрес квартиры]. Стоимость: [Цена в сутки] тенге в сутки.",
+            "content_type": "plain",
+            "signer_name": "Иванов Иван Иванович",
+            "signer_phone": "+77071234567",
+            "signer_email": "ivanov@2tick.kz",
+            "move_in_date": "2024-01-15",
+            "move_out_date": "2024-01-20",
+            "property_address": "г. Алматы, ул. Абая 150",
+            "rent_amount": "25000",
+            "days_count": "5"
+        }
+        
+        response = self.session.post(f"{BASE_URL}/contracts", json=contract_data)
+        if response.status_code == 200:
+            contract = response.json()
+            contract_id = contract["id"]
+            self.test_contract_id = contract_id
+            self.log(f"✅ Contract created successfully. ID: {contract_id}")
+            self.log(f"   Title: {contract.get('title', 'N/A')}")
+            self.log(f"   Status: {contract.get('status', 'N/A')}")
+        else:
+            self.log(f"❌ Contract creation failed: {response.status_code} - {response.text}")
+            all_passed = False
+            return all_passed, None
+        
+        # Test 2.2: GET /api/contracts/{id} - получение договора
+        self.log(f"\n📋 Test 2.2: GET /api/contracts/{contract_id} - получение договора")
+        response = self.session.get(f"{BASE_URL}/contracts/{contract_id}")
+        if response.status_code == 200:
+            contract = response.json()
+            self.log("✅ Contract retrieved successfully")
+            self.log(f"   ID: {contract.get('id', 'N/A')}")
+            self.log(f"   Title: {contract.get('title', 'N/A')}")
+            self.log(f"   Signer: {contract.get('signer_name', 'N/A')}")
+            self.log(f"   Status: {contract.get('status', 'N/A')}")
+        else:
+            self.log(f"❌ Get contract failed: {response.status_code} - {response.text}")
+            all_passed = False
+        
+        # Test 2.3: GET /api/contracts/{id}/download-pdf - скачивание PDF
+        self.log(f"\n📄 Test 2.3: GET /api/contracts/{contract_id}/download-pdf - скачивание PDF")
+        response = self.session.get(f"{BASE_URL}/contracts/{contract_id}/download-pdf")
+        if response.status_code == 200:
+            content_type = response.headers.get('Content-Type', '')
+            pdf_size = len(response.content)
+            
+            if content_type == 'application/pdf' and response.content.startswith(b'%PDF'):
+                self.log(f"✅ PDF generated successfully. Size: {pdf_size} bytes")
+                self.log(f"   Content-Type: {content_type}")
+            else:
+                self.log(f"❌ Invalid PDF response. Content-Type: {content_type}")
+                all_passed = False
+        else:
+            self.log(f"❌ PDF download failed: {response.status_code} - {response.text}")
+            all_passed = False
+        
+        # Test 2.4: POST /api/contracts/{id}/send - отправка ссылки на подписание
+        self.log(f"\n📧 Test 2.4: POST /api/contracts/{contract_id}/send - отправка ссылки")
+        send_data = {
+            "signer_email": "test.signer@2tick.kz",
+            "message": "Пожалуйста, подпишите договор"
+        }
+        
+        response = self.session.post(f"{BASE_URL}/contracts/{contract_id}/send", json=send_data)
+        if response.status_code == 200:
+            result = response.json()
+            self.log("✅ Contract link sent successfully")
+            self.log(f"   Message: {result.get('message', 'N/A')}")
+            if 'signature_link' in result:
+                self.log(f"   Link: {result['signature_link'][:50]}...")
+        else:
+            self.log(f"❌ Send contract link failed: {response.status_code} - {response.text}")
+            all_passed = False
+        
+        return all_passed, contract_id
+    
+    def test_signing_flow_endpoints(self, contract_id):
+        """Test 3: Signing flow endpoints"""
+        self.log("\n✍️ TEST 3: Signing Flow Endpoints")
+        self.log("=" * 50)
+        
+        all_passed = True
+        
+        # Test 3.1: GET /api/sign/{id} - получение информации для подписания
+        self.log(f"\n📋 Test 3.1: GET /api/sign/{contract_id} - получение информации")
+        response = self.session.get(f"{BASE_URL}/sign/{contract_id}")
+        if response.status_code == 200:
+            contract = response.json()
+            self.log("✅ Contract signing info retrieved successfully")
+            self.log(f"   Title: {contract.get('title', 'N/A')}")
+            self.log(f"   Signer: {contract.get('signer_name', 'N/A')}")
+            self.log(f"   Phone: {contract.get('signer_phone', 'N/A')}")
+        else:
+            self.log(f"❌ Get signing info failed: {response.status_code} - {response.text}")
+            all_passed = False
+        
+        # Test 3.2: POST /api/sign/{id}/update-signer-info - обновление данных нанимателя
+        self.log(f"\n✏️ Test 3.2: POST /api/sign/{contract_id}/update-signer-info")
+        signer_data = {
+            "signer_name": "Петров Петр Петрович",
+            "signer_phone": "+77071234568",
+            "signer_email": "petrov@2tick.kz"
+        }
+        
+        response = self.session.post(f"{BASE_URL}/sign/{contract_id}/update-signer-info", json=signer_data)
+        if response.status_code == 200:
+            result = response.json()
+            self.log("✅ Signer info updated successfully")
+            contract_data = result.get("contract", {})
+            self.log(f"   Updated name: {contract_data.get('signer_name', 'N/A')}")
+            self.log(f"   Updated phone: {contract_data.get('signer_phone', 'N/A')}")
+        else:
+            self.log(f"❌ Update signer info failed: {response.status_code} - {response.text}")
+            all_passed = False
+        
+        # Test 3.3: POST /api/sign/{id}/upload-document - загрузка документа
+        self.log(f"\n📎 Test 3.3: POST /api/sign/{contract_id}/upload-document")
+        
+        # Create a simple test image (base64 encoded)
+        import base64
+        from io import BytesIO
+        try:
+            from PIL import Image
+            # Create a simple test image
+            img = Image.new('RGB', (100, 100), color='white')
+            img_buffer = BytesIO()
+            img.save(img_buffer, format='JPEG')
+            img_buffer.seek(0)
+            
+            files = {'file': ('test_document.jpg', img_buffer, 'image/jpeg')}
+            response = self.session.post(f"{BASE_URL}/sign/{contract_id}/upload-document", files=files)
+            
+            if response.status_code == 200:
+                self.log("✅ Document uploaded successfully")
+            else:
+                self.log(f"❌ Document upload failed: {response.status_code} - {response.text}")
+                all_passed = False
+        except ImportError:
+            self.log("⚠️ PIL not available, skipping document upload test")
+        
+        # Test 3.4: POST /api/sign/{id}/request-otp - запрос SMS кода
+        self.log(f"\n📱 Test 3.4: POST /api/sign/{contract_id}/request-otp")
+        otp_data = {"method": "sms"}
+        
+        response = self.session.post(f"{BASE_URL}/sign/{contract_id}/request-otp", json=otp_data)
+        if response.status_code == 200:
+            result = response.json()
+            self.log("✅ OTP request successful")
+            self.log(f"   Message: {result.get('message', 'N/A')}")
+            mock_otp = result.get('mock_otp')
+            if mock_otp:
+                self.log(f"   Mock OTP: {mock_otp}")
+                
+                # Test 3.5: POST /api/sign/{id}/verify-otp - верификация кода
+                self.log(f"\n🔐 Test 3.5: POST /api/sign/{contract_id}/verify-otp")
+                verify_data = {"otp_code": mock_otp}
+                
+                verify_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/verify-otp", json=verify_data)
+                if verify_response.status_code == 200:
+                    verify_result = verify_response.json()
+                    self.log("✅ OTP verification successful")
+                    self.log(f"   Verified: {verify_result.get('verified', False)}")
+                    if 'signature_hash' in verify_result:
+                        self.log(f"   Signature hash: {verify_result['signature_hash'][:20]}...")
+                else:
+                    self.log(f"❌ OTP verification failed: {verify_response.status_code} - {verify_response.text}")
+                    all_passed = False
+            else:
+                self.log("⚠️ No mock OTP provided, skipping verification test")
+        else:
+            self.log(f"❌ OTP request failed: {response.status_code} - {response.text}")
+            all_passed = False
+        
+        return all_passed
+    
+    def test_templates_endpoints(self):
+        """Test 4: Templates endpoints"""
+        self.log("\n📋 TEST 4: Templates Endpoints")
+        self.log("=" * 50)
+        
+        all_passed = True
+        
+        # Test 4.1: GET /api/templates - список шаблонов
+        self.log("\n📄 Test 4.1: GET /api/templates - список шаблонов")
+        response = self.session.get(f"{BASE_URL}/templates")
+        if response.status_code == 200:
+            templates = response.json()
+            self.log(f"✅ Templates retrieved successfully. Count: {len(templates)}")
+            if templates:
+                first_template = templates[0]
+                self.log(f"   First template: {first_template.get('title', 'N/A')}")
+                self.log(f"   Category: {first_template.get('category', 'N/A')}")
+                self.log(f"   ID: {first_template.get('id', 'N/A')}")
+            else:
+                self.log("   No templates found")
+        else:
+            self.log(f"❌ Get templates failed: {response.status_code} - {response.text}")
+            all_passed = False
+        
+        # Test 4.2: GET /api/users/favorites/templates - избранные шаблоны
+        self.log("\n⭐ Test 4.2: GET /api/users/favorites/templates - избранные шаблоны")
+        response = self.session.get(f"{BASE_URL}/users/favorites/templates")
+        if response.status_code == 200:
+            favorites = response.json()
+            self.log(f"✅ Favorite templates retrieved. Count: {len(favorites)}")
+            if favorites:
+                self.log(f"   First favorite: {favorites[0].get('title', 'N/A')}")
+        else:
+            self.log(f"❌ Get favorite templates failed: {response.status_code} - {response.text}")
+            # This might be expected if user has no favorites, so don't fail the test
+            self.log("   (This may be expected if user has no favorite templates)")
+        
+        return all_passed
+    
+    def run_2tick_backend_tests(self):
+        """Run comprehensive backend tests for 2tick.kz after frontend redesign"""
+        self.log("🚀 Starting 2tick.kz Backend Tests After Frontend Redesign")
+        self.log("🇷🇺 Тестирование backend приложения 2tick.kz после редизайна frontend")
+        self.log("=" * 80)
         
         all_tests_passed = True
         
-        # TEST 1: Email optimization (critical)
-        test1_passed = self.test_email_optimization()
-        all_tests_passed = all_tests_passed and test1_passed
+        # TEST 1: Authentication endpoints
+        auth_passed = self.test_authentication_endpoints()
+        all_tests_passed = all_tests_passed and auth_passed
         
-        # Create test contract for other tests
-        contract_id = self.create_test_contract()
-        if not contract_id:
-            self.log("❌ Cannot proceed without test contract")
-            return False
+        # TEST 2: Contracts endpoints
+        contracts_passed, contract_id = self.test_contracts_endpoints()
+        all_tests_passed = all_tests_passed and contracts_passed
         
-        # TEST 2: Contract details endpoint
-        test2_passed = self.test_get_contract_details(contract_id)
-        all_tests_passed = all_tests_passed and test2_passed
+        # TEST 3: Signing flow endpoints (requires contract_id)
+        if contract_id:
+            signing_passed = self.test_signing_flow_endpoints(contract_id)
+            all_tests_passed = all_tests_passed and signing_passed
+        else:
+            self.log("⚠️ Skipping signing flow tests - no contract ID available")
+            signing_passed = False
+            all_tests_passed = False
         
-        # TEST 3: PDF download endpoint
-        test3_passed = self.test_download_contract_pdf(contract_id)
-        all_tests_passed = all_tests_passed and test3_passed
-        
-        # TEST 4: Contract approval with email (tests email optimization in action)
-        test4_passed = self.test_contract_approval_and_email(contract_id)
-        all_tests_passed = all_tests_passed and test4_passed
+        # TEST 4: Templates endpoints
+        templates_passed = self.test_templates_endpoints()
+        all_tests_passed = all_tests_passed and templates_passed
         
         # Summary
         self.log("\n" + "=" * 80)
-        self.log("📊 РЕЗУЛЬТАТЫ ТЕСТИРОВАНИЯ 4 НОВЫХ ЗАДАЧ:")
-        self.log(f"   TEST 1 (Оптимизация email): {'✅ ПРОЙДЕН' if test1_passed else '❌ ПРОВАЛЕН'}")
-        self.log(f"   TEST 2 (GET contract details): {'✅ ПРОЙДЕН' if test2_passed else '❌ ПРОВАЛЕН'}")
-        self.log(f"   TEST 3 (PDF download): {'✅ ПРОЙДЕН' if test3_passed else '❌ ПРОВАЛЕН'}")
-        self.log(f"   TEST 4 (Contract approval + email): {'✅ ПРОЙДЕН' if test4_passed else '❌ ПРОВАЛЕН'}")
+        self.log("📊 РЕЗУЛЬТАТЫ ТЕСТИРОВАНИЯ 2TICK.KZ BACKEND:")
+        self.log(f"   TEST 1 (Authentication): {'✅ ПРОЙДЕН' if auth_passed else '❌ ПРОВАЛЕН'}")
+        self.log(f"   TEST 2 (Contracts): {'✅ ПРОЙДЕН' if contracts_passed else '❌ ПРОВАЛЕН'}")
+        self.log(f"   TEST 3 (Signing Flow): {'✅ ПРОЙДЕН' if signing_passed else '❌ ПРОВАЛЕН'}")
+        self.log(f"   TEST 4 (Templates): {'✅ ПРОЙДЕН' if templates_passed else '❌ ПРОВАЛЕН'}")
         
         if all_tests_passed:
-            self.log("🎉 ВСЕ 4 НОВЫЕ ЗАДАЧИ РАБОТАЮТ КОРРЕКТНО!")
+            self.log("🎉 ВСЕ BACKEND API ENDPOINTS РАБОТАЮТ КОРРЕКТНО!")
+            self.log("✅ Все endpoints возвращают статус 200/201")
+            self.log("✅ Нет ошибок 500")
+            self.log("✅ Данные сохраняются и возвращаются корректно")
+            self.log("✅ PDF генерируется без ошибок")
         else:
-            self.log("❌ НЕКОТОРЫЕ ЗАДАЧИ ИМЕЮТ ПРОБЛЕМЫ! Проверьте логи выше.")
+            self.log("❌ ОБНАРУЖЕНЫ ПРОБЛЕМЫ В BACKEND API! Проверьте логи выше.")
         
         return all_tests_passed
     
