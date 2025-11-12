@@ -122,17 +122,7 @@ const CreateContractPage = () => {
       }
     }
   }, [templateId]);
-  // Reset isContentSaved when placeholder values change (so preview updates)
-  useEffect(() => {
-    if (isContentSaved && Object.keys(placeholderValues).length > 0) {
-      // Check if any placeholder value has changed
-      const hasValues = Object.values(placeholderValues).some(val => val && val.trim() !== '');
-      if (hasValues) {
-        // User is filling fields after editing - show live preview again
-        setIsContentSaved(false);
-      }
-    }
-  }, [placeholderValues, isContentSaved]);
+ 
 
   const loadTemplateFromMarket = async (id) => {
     // Prevent double loading using ref
