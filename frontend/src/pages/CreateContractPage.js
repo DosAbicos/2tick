@@ -228,6 +228,7 @@ const CreateContractPage = () => {
       if (selectedTemplate.placeholders) {
         Object.entries(selectedTemplate.placeholders).forEach(([key, config]) => {
           let value = placeholderValues[key] || `[${config.label}]`;
+          let isFilled = !!placeholderValues[key];
           
           // Format dates to DD.MM.YYYY
           if (config.type === 'date' && placeholderValues[key]) {
@@ -249,6 +250,7 @@ const CreateContractPage = () => {
                 const date2 = new Date(placeholderValues[operand2]);
                 const diffTime = Math.abs(date2 - date1);
                 result = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                isFilled = true;
               }
             } else {
               // Numerical calculation
@@ -263,11 +265,16 @@ const CreateContractPage = () => {
                 case 'modulo': result = val2 !== 0 ? val1 % val2 : 0; break;
                 default: result = 0;
               }
+              isFilled = val1 > 0 || val2 > 0;
             }
             
-            content = content.replace(regex, result.toString() || `[${config.label}]`);
+            const displayValue = result.toString() || `[${config.label}]`;
+            const highlightClass = isFilled ? 'bg-green-100 border-green-300 text-green-900' : 'bg-yellow-100 border-yellow-400 text-yellow-900';
+            content = content.replace(regex, `<span class="px-2 py-0.5 rounded border ${highlightClass} font-semibold">${displayValue}</span>`);
           } else {
-            content = content.replace(regex, value);
+            // Highlight filled vs unfilled placeholders
+            const highlightClass = isFilled ? 'bg-green-100 border-green-300 text-green-900' : 'bg-yellow-100 border-yellow-400 text-yellow-900';
+            content = content.replace(regex, `<span class="px-2 py-0.5 rounded border ${highlightClass} font-semibold">${value}</span>`);
           }
         });
       }
