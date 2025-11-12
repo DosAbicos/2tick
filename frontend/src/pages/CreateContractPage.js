@@ -544,8 +544,37 @@ Email: ${templateData.tenant_email || '[Email]'}
         }
       }
       
-      // Store metadata about whether content is HTML or plain text
-      const isHtmlContent = isContentSaved && manualContent.includes('<');
+      // Clean HTML tags from content for plain text storage
+      // Convert <br> to newlines and remove other HTML tags
+      contentToSave = contentToSave
+        .replace(/<br\s*\/?>/gi, '\n')
+        .replace(/<div>/gi, '\n')
+        .replace(/<\/div>/gi, '')
+        .replace(/<p>/gi, '')
+        .replace(/<\/p>/gi, '\n')
+        .replace(/<h2>/gi, '\n')
+        .replace(/<\/h2>/gi, '\n')
+        .replace(/<h3>/gi, '\n')
+        .replace(/<\/h3>/gi, '\n')
+        .replace(/<b>/gi, '')
+        .replace(/<\/b>/gi, '')
+        .replace(/<strong>/gi, '')
+        .replace(/<\/strong>/gi, '')
+        .replace(/<i>/gi, '')
+        .replace(/<\/i>/gi, '')
+        .replace(/<em>/gi, '')
+        .replace(/<\/em>/gi, '')
+        .replace(/<u>/gi, '')
+        .replace(/<\/u>/gi, '')
+        .replace(/<ul>/gi, '\n')
+        .replace(/<\/ul>/gi, '\n')
+        .replace(/<li>/gi, '• ')
+        .replace(/<\/li>/gi, '\n')
+        .replace(/<span[^>]*>/gi, '')
+        .replace(/<\/span>/gi, '');
+      
+      // Store as plain text
+      const isHtmlContent = false;
       
       // Extract tenant info from placeholders or templateData
       let signerName = templateData.tenant_name;
