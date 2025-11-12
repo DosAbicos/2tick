@@ -963,12 +963,12 @@ Email: ${templateData.tenant_email || '[Email]'}
                                     )}
                                     
                                     {config.type === 'date' && (
-                                      <Input
+                                      <input
                                         id={`placeholder_${key}`}
                                         type="date"
                                         value={placeholderValues[key] || ''}
                                         onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
-                                        className="mt-1"
+                                        className="minimal-input w-full"
                                       />
                                     )}
                                     
@@ -978,19 +978,19 @@ Email: ${templateData.tenant_email || '[Email]'}
                                         value={placeholderValues[key] || ''}
                                         onAccept={(value) => setPlaceholderValues({...placeholderValues, [key]: value})}
                                         placeholder="+7 (___) ___-__-__"
-                                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1"
+                                        className="minimal-input w-full"
                                         id={`placeholder_${key}`}
                                         type="tel"
                                       />
                                     )}
                                     
                                     {config.type === 'email' && (
-                                      <Input
+                                      <input
                                         id={`placeholder_${key}`}
                                         type="email"
                                         value={placeholderValues[key] || ''}
                                         onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
-                                        className="mt-1"
+                                        className="minimal-input w-full"
                                         placeholder={`Клиент заполнит`}
                                       />
                                     )}
