@@ -108,19 +108,11 @@ const CreateContractPage = () => {
   const loadFavoriteTemplates = async () => {
     setLoadingFavorites(true);
     try {
-      const response = await axios.get(`${API}/templates`, {
+      const response = await axios.get(`${API}/users/favorites/templates`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      // Try different fields for favorited status
-      const favorites = response.data.filter(t => 
-        t.is_favorited === true || 
-        t.favorited === true || 
-        t.is_favorite === true ||
-        (t.favorites && t.favorites.length > 0)
-      );
-      console.log('All templates:', response.data);
-      console.log('Favorites found:', favorites);
-      setFavoriteTemplates(favorites);
+      console.log('Favorite templates loaded:', response.data);
+      setFavoriteTemplates(response.data);
     } catch (error) {
       console.error('Error loading favorites:', error);
       toast.error('Ошибка загрузки избранных шаблонов');
