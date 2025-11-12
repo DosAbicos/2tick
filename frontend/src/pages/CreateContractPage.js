@@ -5,7 +5,7 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Header from '@/components/Header';
-import { ArrowLeft, Eye, Edit3, Upload, Bold, Italic, Underline, Type, AlignLeft, AlignCenter, AlignRight, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Upload, CheckCircle } from 'lucide-react';
 import { IMaskInput } from 'react-imask';
 import '../styles/neumorphism.css';
 
