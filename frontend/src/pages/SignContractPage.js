@@ -609,14 +609,14 @@ const SignContractPage = () => {
                   <>
                     {(!contract.signer_name || contract.signer_name === 'Не указано') && (
                       <div>
-                        <Label htmlFor="signer_name">ФИО *</Label>
-                        <Input
+                        <label htmlFor="signer_name" className="text-sm font-medium text-gray-700 block mb-2">ФИО *</label>
+                        <input
                           id="signer_name"
                           value={signerInfo.name}
                           onChange={(e) => setSignerInfo({...signerInfo, name: e.target.value})}
                           required
                           data-testid="signer-name-input"
-                          className="mt-1"
+                          className="minimal-input w-full"
                           placeholder="Иванов Иван Иванович"
                         />
                       </div>
