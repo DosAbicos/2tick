@@ -364,7 +364,7 @@ const ContractDetailsPage = () => {
                           // Generate link first
                           await handleSendContract();
                         } else {
-                          // Copy existing link
+                          // Copy existing link with animation
                           const fullLink = `${window.location.origin}${contract.signature_link}`;
                           const textArea = document.createElement('textarea');
                           textArea.value = fullLink;
@@ -375,7 +375,9 @@ const ContractDetailsPage = () => {
                           textArea.select();
                           try {
                             document.execCommand('copy');
+                            setJustCopied(true);
                             toast.success('Ссылка скопирована!');
+                            setTimeout(() => setJustCopied(false), 2000);
                           } catch (err) {
                             toast.error('Не удалось скопировать');
                           }
@@ -383,13 +385,28 @@ const ContractDetailsPage = () => {
                         }
                       }}
                       disabled={sendingContract}
-                      className="px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                      className={`px-4 py-2 text-sm font-semibold text-white rounded-lg transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 ${
+                        justCopied 
+                          ? 'bg-gradient-to-r from-green-600 to-green-500 shadow-green-500/30 scale-105' 
+                          : 'bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 shadow-blue-500/20'
+                      }`}
                       data-testid="send-contract-button"
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                      </svg>
-                      {sendingContract ? 'Генерация...' : (contract.signature_link ? 'Копировать ссылку' : 'Сгенерировать ссылку')}
+                      {justCopied ? (
+                        <>
+                          <svg className="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          Скопировано!
+                        </>
+                      ) : (
+                        <>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                          </svg>
+                          {sendingContract ? 'Генерация...' : (contract.signature_link ? 'Копировать ссылку' : 'Сгенерировать ссылку')}
+                        </>
+                      )}
                     </button>
                   )}
                   
