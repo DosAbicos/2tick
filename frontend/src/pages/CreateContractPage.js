@@ -621,32 +621,36 @@ Email: ${templateData.tenant_email || '[Email]'}
         </button>
         
         {selectedTemplate && (
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold text-neutral-900">{t('contract.create.title')}</h1>
-            {loadingTemplate && (
-              <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                <p className="text-sm text-blue-800">⏳ Загрузка шаблона...</p>
+          <div className="minimal-card p-6 mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{t('contract.create.title')}</h1>
+                {loadingTemplate && (
+                  <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg inline-block">
+                    <p className="text-sm text-blue-800">⏳ Загрузка шаблона...</p>
+                  </div>
+                )}
+                {!loadingTemplate && (
+                  <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded-lg inline-block">
+                    <p className="text-sm text-green-800">✓ <strong>{selectedTemplate.title}</strong></p>
+                  </div>
+                )}
               </div>
-            )}
-            <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
-              <p className="text-sm text-green-800">✓ Шаблон загружен: <strong>{selectedTemplate.title}</strong></p>
+              {nextContractNumber && (
+                <div className="text-right">
+                  <p className="text-sm text-gray-500">Номер договора</p>
+                  <p className="text-2xl font-bold text-gray-900">{nextContractNumber}</p>
+                </div>
+              )}
             </div>
-            {nextContractNumber && (
-              <p className="text-xl font-bold text-neutral-900 mt-3">
-                Номер договора: {nextContractNumber}
-              </p>
-            )}
-            <p className="text-neutral-600 mt-2">Заполните поля справа, договор автоматически обновится слева</p>
-            <div className="mt-3">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={loadLastTemplate}
-                className="text-sm"
-              >
-                📋 Загрузить последний шаблон
-              </Button>
-            </div>
+            <p className="text-sm text-gray-600 mb-3">Заполните поля справа, договор автоматически обновится слева</p>
+            <button
+              type="button"
+              onClick={loadLastTemplate}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-blue-400 transition-all"
+            >
+              📋 Загрузить последний шаблон
+            </button>
           </div>
         )}
 
