@@ -1229,7 +1229,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                   <h3 className="font-semibold text-neutral-900 border-b pb-2">Даты заселения и выселения</h3>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="move_in_date">Дата заселения *</Label>
+                      <label htmlFor="move_in_date" className="block text-sm font-medium text-gray-700 mb-2">Дата заселения *</label>
                       <input
                         id="move_in_date"
                         type="date"
