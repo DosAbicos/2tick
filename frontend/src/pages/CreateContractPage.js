@@ -1270,26 +1270,26 @@ Email: ${templateData.tenant_email || '[Email]'}
                 )}
 
                 {/* Submit Buttons */}
-                <div className="flex gap-3 pt-4 border-t">
-                  <Button
+                <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-100">
+                  <button
                     type="submit"
                     disabled={loading}
                     data-testid="save-contract-button"
-                    className="flex-1"
+                    className="flex-1 px-6 py-3 text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                   >
-                    {loading ? t('common.loading') : 'Сохранить договор'}
-                  </Button>
-                  <Button
+                    {loading ? 'Загрузка...' : 'Отправить на подпись'}
+                  </button>
+                  <button
                     type="button"
-                    variant="outline"
                     onClick={() => {
                       sessionStorage.removeItem('selectedTemplateId');
                       navigate('/dashboard');
                     }}
                     data-testid="cancel-button"
+                    className="px-6 py-3 text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 hover:border-red-400 transition-all font-medium"
                   >
-                    {t('common.cancel')}
-                  </Button>
+                    Отмена
+                  </button>
                 </div>
               </form>
             </div>
