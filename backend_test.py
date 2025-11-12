@@ -1091,46 +1091,8 @@ class BackendTester:
         return all_tests_passed
     
     def run_all_tests(self):
-        """Run all backend tests - both new tasks and legacy tests"""
-        # First run the new tasks tests
-        new_tasks_success = self.run_new_tasks_tests()
-        
-        # Then run legacy tests for completeness (if needed)
-        self.log("\n" + "=" * 80)
-        self.log("📝 ДОПОЛНИТЕЛЬНЫЕ LEGACY ТЕСТЫ (для полноты)...")
-        
-        # Login as regular user for legacy tests
-        if not self.login_as_creator():
-            self.log("⚠️ Skipping legacy tests - cannot login as creator")
-            return new_tasks_success
-        
-        legacy_success = True
-        
-        # Legacy Test 1: Create contract with empty signer fields
-        legacy_contract_id, legacy_test1_passed = self.test_create_contract_with_empty_signer_fields()
-        legacy_success = legacy_success and legacy_test1_passed
-        
-        if legacy_contract_id:
-            # Legacy Test 2: Update signer info
-            legacy_test2_passed = self.test_update_signer_info(legacy_contract_id)
-            legacy_success = legacy_success and legacy_test2_passed
-            
-            # Legacy Test 3: Verify data persistence
-            legacy_test3_passed = self.test_verify_data_persistence(legacy_contract_id)
-            legacy_success = legacy_success and legacy_test3_passed
-        
-        self.log(f"\n📊 LEGACY TESTS: {'✅ ПРОЙДЕНЫ' if legacy_success else '❌ ПРОВАЛЕНЫ'}")
-        
-        # Overall result prioritizes new tasks
-        overall_success = new_tasks_success and legacy_success
-        
-        self.log("\n" + "=" * 80)
-        self.log("🏁 ИТОГОВЫЙ РЕЗУЛЬТАТ:")
-        self.log(f"   Новые задачи (приоритет): {'✅ ПРОЙДЕНЫ' if new_tasks_success else '❌ ПРОВАЛЕНЫ'}")
-        self.log(f"   Legacy тесты: {'✅ ПРОЙДЕНЫ' if legacy_success else '❌ ПРОВАЛЕНЫ'}")
-        self.log(f"   ОБЩИЙ РЕЗУЛЬТАТ: {'🎉 УСПЕХ' if overall_success else '❌ ЕСТЬ ПРОБЛЕМЫ'}")
-        
-        return overall_success
+        """Run all backend tests for 2tick.kz"""
+        return self.run_2tick_backend_tests()
 
 if __name__ == "__main__":
     tester = BackendTester()
