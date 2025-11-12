@@ -294,9 +294,9 @@ const CreateContractPage = () => {
   };
 
   const generatePreviewContent = () => {
-    // If template is selected, use template content with replaced placeholders
-    if (selectedTemplate && selectedTemplate.content) {
-      let content = selectedTemplate.content;
+    // Use edited content if available, otherwise use template content
+    if (selectedTemplate) {
+      let content = isContentSaved ? manualContent : selectedTemplate.content;
       
       // Replace placeholders with actual values
       if (selectedTemplate.placeholders) {
