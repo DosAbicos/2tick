@@ -126,6 +126,16 @@ const CreateContractPage = () => {
 
   // Load next contract number on mount
   useEffect(() => {
+    // Load template if template_id is provided (from URL or sessionStorage)
+    const storedTemplateId = sessionStorage.getItem('selectedTemplateId');
+    const templateIdToLoad = templateId || storedTemplateId;
+    
+    // If no template selected, redirect to templates marketplace
+    if (!templateIdToLoad) {
+      navigate('/templates');
+      return;
+    }
+    
     const fetchNextContractNumber = async () => {
       try {
         const response = await axios.get(`${API}/contracts`, {
@@ -141,10 +151,6 @@ const CreateContractPage = () => {
     
     fetchNextContractNumber();
 
-    // Load template if template_id is provided (from URL or sessionStorage)
-    const storedTemplateId = sessionStorage.getItem('selectedTemplateId');
-    const templateIdToLoad = templateId || storedTemplateId;
-    
     if (templateIdToLoad) {
       loadTemplateFromMarket(templateIdToLoad);
       // Save to sessionStorage for page refresh
@@ -152,7 +158,7 @@ const CreateContractPage = () => {
         sessionStorage.setItem('selectedTemplateId', templateId);
       }
     }
-  }, [templateId]);
+  }, [templateId, navigate]);
 
   const loadTemplateFromMarket = async (id) => {
     // Prevent double loading using ref
