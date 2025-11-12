@@ -273,7 +273,7 @@ const DashboardPage = () => {
               <h3 className="text-lg font-medium text-gray-900 mb-2">Нет договоров</h3>
               <p className="text-sm text-gray-600 mb-6">Создайте свой первый договор</p>
               <button
-                onClick={() => navigate('/contracts/create')}
+                onClick={handleCreateContract}
                 className="px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all inline-flex items-center gap-2"
               >
                 <Plus className="w-4 h-4" />
