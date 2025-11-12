@@ -760,7 +760,7 @@ const SignContractPage = () => {
                       className="flex-1 py-3 px-4 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all"
                       data-testid="back-to-info-button"
                     >
-                      ← {needsInfo ? 'Изменить данные' : 'Назад к договору'}
+                      ← Назад
                     </button>
                   ) : null}
                   {documentUploaded && (
@@ -769,10 +769,10 @@ const SignContractPage = () => {
                         onClick={() => setStep(needsInfo ? 1.5 : 1)}
                         className="flex-1 py-3 px-4 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all"
                       >
-                        ← {needsInfo ? 'Изменить данные' : 'Назад к договору'}
+                        ← Назад
                       </button>
                       <button
-                        onClick={() => setStep(1)}
+                        onClick={() => setStep(4)}
                         className="flex-1 py-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/20"
                       >
                         Ознакомиться с договором →
