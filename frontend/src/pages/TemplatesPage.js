@@ -151,45 +151,41 @@ const TemplatesPage = () => {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {templates.map((template) => (
-              <Card key={template.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex items-start justify-between mb-2">
-                    <CardTitle className="text-lg">{template.title}</CardTitle>
-                    <Badge className={CATEGORIES[template.category]?.color || CATEGORIES.other.color}>
-                      {CATEGORIES[template.category]?.label.split(' ')[0] || '📄'}
-                    </Badge>
-                  </div>
-                  <CardDescription className="line-clamp-3">
-                    {template.description}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setPreviewTemplate(template)}
-                      className="flex-1"
-                    >
-                      <Eye className="mr-2 h-4 w-4" />
-                      Просмотр
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={() => handleToggleFavorite(template.id)}
-                      variant={favoriteTemplates.includes(template.id) ? "default" : "outline"}
-                      className="flex-1"
-                    >
-                      <Heart 
-                        className={`mr-2 h-4 w-4 ${favoriteTemplates.includes(template.id) ? 'fill-current' : ''}`} 
-                      />
-                      {favoriteTemplates.includes(template.id) ? 'В избранном' : 'В избранное'}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+              <div key={template.id} className="minimal-card p-5 hover:shadow-xl transition-all animate-fade-in group">
+                <div className="flex items-start justify-between mb-3">
+                  <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">{template.title}</h3>
+                  <span className={`text-xs px-2 py-1 rounded-lg ${CATEGORIES[template.category]?.color || CATEGORIES.other.color}`}>
+                    {CATEGORIES[template.category]?.label.split(' ')[0] || '📄'}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-600 mb-4 line-clamp-3">
+                  {template.description}
+                </p>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setPreviewTemplate(template)}
+                    className="flex-1 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-blue-400 transition-all flex items-center justify-center gap-2"
+                  >
+                    <Eye className="w-4 h-4" />
+                    Просмотр
+                  </button>
+                  <button
+                    onClick={() => handleToggleFavorite(template.id)}
+                    className={`flex-1 px-3 py-2 text-sm font-medium rounded-lg transition-all flex items-center justify-center gap-2 ${
+                      favoriteTemplates.includes(template.id)
+                        ? 'bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-md'
+                        : 'text-gray-700 bg-white border border-gray-300 hover:border-pink-400'
+                    }`}
+                  >
+                    <Heart 
+                      className={`w-4 h-4 ${favoriteTemplates.includes(template.id) ? 'fill-current' : ''}`} 
+                    />
+                    {favoriteTemplates.includes(template.id) ? '❤️' : 'Избр.'}
+                  </button>
+                </div>
+              </div>
             ))}
           </div>
         )}
