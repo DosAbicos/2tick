@@ -660,6 +660,60 @@ Email: ${templateData.tenant_email || '[Email]'}
     <div className="min-h-screen gradient-bg">
       <Header />
       
+      {/* Modal for selecting favorite template */}
+      <Dialog open={showTemplateModal} onOpenChange={setShowTemplateModal}>
+        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold">Выберите шаблон договора</DialogTitle>
+            <DialogDescription>
+              Выберите один из избранных шаблонов для создания договора
+            </DialogDescription>
+          </DialogHeader>
+          
+          {loadingFavorites ? (
+            <div className="py-8 text-center text-gray-600">Загрузка шаблонов...</div>
+          ) : favoriteTemplates.length === 0 ? (
+            <div className="py-8 text-center">
+              <p className="text-gray-600 mb-4">У вас нет избранных шаблонов</p>
+              <p className="text-sm text-gray-500 mb-6">
+                Перейдите в маркет шаблонов и добавьте шаблоны в избранное
+              </p>
+              <Button 
+                onClick={() => {
+                  setShowTemplateModal(false);
+                  navigate('/templates');
+                }}
+                className="bg-gradient-to-r from-blue-600 to-blue-500"
+              >
+                Перейти в маркет шаблонов
+              </Button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+              {favoriteTemplates.map((template) => (
+                <Card 
+                  key={template.id}
+                  className="cursor-pointer hover:shadow-lg transition-all border-2 hover:border-blue-500"
+                  onClick={() => {
+                    setShowTemplateModal(false);
+                    navigate(`/contracts/create?template_id=${template.id}`);
+                  }}
+                >
+                  <CardHeader>
+                    <CardTitle className="text-lg">{template.name}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-gray-600 line-clamp-3">
+                      {template.description || 'Нет описания'}
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+      
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <Button
           variant="ghost"
