@@ -95,10 +95,10 @@ const TemplatesPage = () => {
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">📚 Библиотека Шаблонов</h1>
-          <p className="text-neutral-600">
-            Выберите готовый шаблон договора и начните работу
+        <div className="minimal-card p-6 mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">📚 Маркет шаблонов</h1>
+          <p className="text-sm text-gray-500">
+            Выберите готовый шаблон договора и добавьте в избранное
           </p>
         </div>
 
