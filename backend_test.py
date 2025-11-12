@@ -742,8 +742,10 @@ class BackendTester:
         
         # Test 1.1: POST /api/auth/register
         self.log("\n📝 Test 1.1: POST /api/auth/register")
+        import time
+        unique_email = f"test.user.2tick.{int(time.time())}@example.com"
         register_data = {
-            "email": "test.user.2tick@example.com",
+            "email": unique_email,
             "password": "testpassword123",
             "full_name": "Тестовый Пользователь 2tick",
             "phone": "+77012345678",
