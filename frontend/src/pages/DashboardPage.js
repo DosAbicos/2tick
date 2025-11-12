@@ -31,6 +31,29 @@ const DashboardPage = () => {
     fetchLimitInfo();
   }, []);
 
+  // Load favorite templates for modal
+  const loadFavoriteTemplates = async () => {
+    setLoadingFavorites(true);
+    try {
+      const response = await axios.get(`${API}/users/favorites/templates`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      console.log('Favorite templates loaded:', response.data);
+      setFavoriteTemplates(response.data);
+    } catch (error) {
+      console.error('Error loading favorites:', error);
+      toast.error('Ошибка загрузки избранных шаблонов');
+    } finally {
+      setLoadingFavorites(false);
+    }
+  };
+
+  // Open modal and load favorites
+  const handleCreateContract = () => {
+    setShowTemplateModal(true);
+    loadFavoriteTemplates();
+  };
+
   const fetchContracts = async () => {
     try {
       const response = await axios.get(`${API}/contracts`, {
