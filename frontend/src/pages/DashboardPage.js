@@ -204,7 +204,7 @@ const DashboardPage = () => {
                           }}
                         >
                           <div className="flex items-start justify-between mb-3">
-                            <h4 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">{template.name}</h4>
+                            <h4 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">{template.title || template.name}</h4>
                             <span className="text-xs px-2 py-1 rounded-lg bg-blue-100 text-blue-800">
                               🏠
                             </span>
