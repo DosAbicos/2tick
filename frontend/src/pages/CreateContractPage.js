@@ -1184,45 +1184,42 @@ Email: ${templateData.tenant_email || '[Email]'}
                 {!selectedTemplate && (
                 <div className="space-y-4">
                   <h3 className="font-semibold text-neutral-900 border-b pb-2">Финансовые условия</h3>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="rent_amount">Цена в сутки *</Label>
-                      <Input
+                      <label htmlFor="rent_amount" className="block text-sm font-medium text-gray-700 mb-2">Цена в сутки *</label>
+                      <input
                         id="rent_amount"
                         type="number"
                         value={templateData.rent_amount}
                         onChange={(e) => handleFieldChange('rent_amount', e.target.value)}
                         required
                         data-testid="rent-amount-input"
-                        className="mt-1"
-                        placeholder="10000"
+                        className="minimal-input w-full"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="security_deposit">Обеспечительный депозит</Label>
-                      <Input
+                      <label htmlFor="security_deposit" className="block text-sm font-medium text-gray-700 mb-2">Обеспечительный депозит</label>
+                      <input
                         id="security_deposit"
                         type="number"
                         value={templateData.security_deposit}
                         onChange={(e) => handleFieldChange('security_deposit', e.target.value)}
                         data-testid="security-deposit-input"
-                        className="mt-1"
-                        placeholder="5000"
+                        className="minimal-input w-full"
                       />
                     </div>
                   </div>
+
                   <div>
-                    <Label htmlFor="days_count">Количество суток (рассчитывается автоматически)</Label>
-                    <Input
+                    <label htmlFor="days_count" className="block text-sm font-medium text-gray-700 mb-2">Количество суток (рассчитывается автоматически)</label>
+                    <input
                       id="days_count"
                       type="number"
                       value={templateData.days_count}
                       readOnly
-                      disabled
+                      className="minimal-input w-full bg-gray-100"
                       data-testid="days-count-input"
-                      className="mt-1 bg-neutral-100 cursor-not-allowed"
                     />
-                    <p className="text-xs text-neutral-500 mt-1">С 14:00 даты заселения до 12:00 даты выселения</p>
                   </div>
                   {templateData.rent_amount && templateData.days_count && (
                     <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
