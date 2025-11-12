@@ -1059,15 +1059,13 @@ Email: ${templateData.tenant_email || '[Email]'}
                         <h3 className="font-semibold text-neutral-900">Наниматель (Клиент)</h3>
                         <p className="text-xs text-neutral-500">Необязательные поля - клиент заполнит при подписании</p>
                       </div>
-                      <Button
+                      <button
                         type="button"
-                        variant="ghost"
-                        size="sm"
                         onClick={() => setShowOptionalFields(!showOptionalFields)}
-                        className="text-sm"
+                        className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors"
                       >
                         {showOptionalFields ? '▼ Скрыть' : '▶ Показать опциональные поля'}
-                      </Button>
+                      </button>
                     </div>
                   
                   {showOptionalFields && (
