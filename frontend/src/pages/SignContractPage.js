@@ -691,9 +691,9 @@ const SignContractPage = () => {
                 </div>
                 
                 <div>
-                  <Label htmlFor="document" className="cursor-pointer">
-                    <div className="border-2 border-dashed border-neutral-300 rounded-lg p-8 text-center hover:border-primary transition-colors">
-                      <Input
+                  <label htmlFor="document" className="cursor-pointer">
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-500 transition-colors">
+                      <input
                         id="document"
                         type="file"
                         accept="image/*,.pdf"
@@ -702,11 +702,11 @@ const SignContractPage = () => {
                         className="hidden"
                         data-testid="document-upload-input"
                       />
-                      <p className="text-sm text-neutral-600">
+                      <p className="text-sm text-gray-600">
                         {uploading ? t('common.loading') : 'Click to upload or drag and drop'}
                       </p>
                     </div>
-                  </Label>
+                  </label>
                 </div>
                 
                 {documentUploaded && (
