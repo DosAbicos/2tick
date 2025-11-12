@@ -216,13 +216,13 @@ const RegisterPage = () => {
                   />
                 </div>
 
-                <Button
+                <button
                   type="button"
                   onClick={handleNextStep}
-                  className="neuro-button-primary w-full py-6 text-base"
+                  className="w-full py-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30"
                 >
                   Продолжить
-                </Button>
+                </button>
               </>
             )}
 
