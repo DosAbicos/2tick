@@ -837,13 +837,13 @@ const SignContractPage = () => {
                     onClick={() => setStep(needsInfo ? 1.5 : 1)}
                     className="flex-1 py-3 px-4 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all"
                   >
-                    ← {needsInfo ? 'Изменить данные' : 'Назад к договору'}
+                    ← Назад
                   </button>
                   <button
-                    onClick={() => setStep(3)}
-                    className="flex-1 py-4 text-base font-semibold text-white bg-gradient-to-r from-green-600 to-green-500 rounded-lg hover:from-green-700 hover:to-green-600 transition-all shadow-lg shadow-green-500/20"
+                    onClick={() => setStep(4)}
+                    className="flex-1 py-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/20"
                   >
-                    Продолжить к подписанию →
+                    Ознакомиться с договором →
                   </button>
                 </div>
               </motion.div>
