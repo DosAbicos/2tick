@@ -932,27 +932,27 @@ Email: ${templateData.tenant_email || '[Email]'}
                                 
                                 return (
                                   <div key={key} className={config.type === 'text' ? 'md:col-span-2' : ''}>
-                                    <Label htmlFor={`placeholder_${key}`}>
+                                    <label htmlFor={`placeholder_${key}`} className="text-sm font-medium text-gray-700 block mb-2">
                                       {config.label} {config.required && <span className="text-amber-500">*</span>}
-                                    </Label>
+                                    </label>
                                     
                                     {config.type === 'text' && (
-                                      <Input
+                                      <input
                                         id={`placeholder_${key}`}
                                         value={placeholderValues[key] || ''}
                                         onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
-                                        className="mt-1"
+                                        className="minimal-input w-full"
                                         placeholder={`Клиент заполнит: ${config.label.toLowerCase()}`}
                                       />
                                     )}
                                     
                                     {config.type === 'number' && (
-                                      <Input
+                                      <input
                                         id={`placeholder_${key}`}
                                         type="number"
                                         value={placeholderValues[key] || ''}
                                         onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
-                                        className="mt-1"
+                                        className="minimal-input w-full"
                                         placeholder={`Клиент заполнит`}
                                       />
                                     )}
