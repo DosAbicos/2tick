@@ -608,18 +608,17 @@ Email: ${templateData.tenant_email || '[Email]'}
       <Header />
       
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        <Button
-          variant="ghost"
+        <button
           onClick={() => {
             sessionStorage.removeItem('selectedTemplateId');
             navigate('/dashboard');
           }}
-          className="mb-6"
+          className="mb-6 px-4 py-2 text-gray-600 hover:text-blue-600 flex items-center gap-2 transition-colors"
           data-testid="back-button"
         >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Dashboard
-        </Button>
+          <ArrowLeft className="w-4 h-4" />
+          Назад
+        </button>
         
         {selectedTemplate && (
           <div className="mb-6">
