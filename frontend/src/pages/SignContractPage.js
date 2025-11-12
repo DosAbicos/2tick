@@ -852,10 +852,10 @@ const SignContractPage = () => {
                     ← {needsInfo ? 'Изменить данные' : 'Назад к договору'}
                   </button>
                   <button
-                    onClick={() => setStep(1)}
+                    onClick={() => setStep(3)}
                     className="flex-1 py-4 text-base font-semibold text-white bg-gradient-to-r from-green-600 to-green-500 rounded-lg hover:from-green-700 hover:to-green-600 transition-all shadow-lg shadow-green-500/20"
                   >
-                    Продолжить к просмотру договора →
+                    Продолжить к подписанию →
                   </button>
                 </div>
               </motion.div>
