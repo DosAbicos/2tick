@@ -20,6 +20,11 @@ const DashboardPage = () => {
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ total: 0, signed: 0, pending: 0, draft: 0 });
   const [limitInfo, setLimitInfo] = useState(null);
+  
+  // Modal for selecting favorite template
+  const [showTemplateModal, setShowTemplateModal] = useState(false);
+  const [favoriteTemplates, setFavoriteTemplates] = useState([]);
+  const [loadingFavorites, setLoadingFavorites] = useState(false);
 
   useEffect(() => {
     fetchContracts();
