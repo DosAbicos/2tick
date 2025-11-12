@@ -308,15 +308,15 @@ const ContractDetailsPage = () => {
                 </div>
               ) : (
                 <div className="flex gap-2 flex-wrap">
-                  {/* Редактировать - только для draft и sent */}
+                  {/* Назад к редактированию - только для draft и sent */}
                   {(contract.status === 'draft' || contract.status === 'sent') && (
                     <button
                       onClick={() => navigate(`/contracts/edit/${id}`)}
                       className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border-2 border-gray-200 rounded-lg hover:bg-gray-50 hover:border-gray-300 transition-all flex items-center gap-2"
                       data-testid="edit-contract-button"
                     >
-                      <Edit3 className="h-4 w-4" />
-                      Редактировать
+                      <ArrowLeft className="h-4 w-4" />
+                      Назад
                     </button>
                   )}
                   
