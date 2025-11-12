@@ -107,15 +107,26 @@ const ContractDetailsPage = () => {
     if (!contract) return content;
     
     let result = content;
-    result = result.replace(/\[ФИО Нанимателя\]/g, contract.signer_name || '[ФИО Нанимателя]');
-    result = result.replace(/\[ФИО\]/g, contract.signer_name || '[ФИО]');
-    result = result.replace(/\[Телефон\]/g, contract.signer_phone || '[Телефон]');
-    result = result.replace(/\[Email\]/g, contract.signer_email || '[Email]');
-    result = result.replace(/\[Дата заселения\]/g, contract.move_in_date || '[Дата заселения]');
-    result = result.replace(/\[Дата выселения\]/g, contract.move_out_date || '[Дата выселения]');
-    result = result.replace(/\[Адрес квартиры\]/g, contract.property_address || '[Адрес квартиры]');
-    result = result.replace(/\[Цена в сутки\]/g, contract.rent_amount || '[Цена в сутки]');
-    result = result.replace(/\[Количество суток\]/g, contract.days_count || '[Количество суток]');
+    
+    // Helper function to wrap values with highlighting
+    const highlightValue = (value, label) => {
+      const isFilled = value && value !== `[${label}]`;
+      const highlightClass = isFilled 
+        ? 'bg-emerald-50 border-emerald-200 text-emerald-700' 
+        : 'bg-amber-50 border-amber-200 text-amber-700';
+      return `<span class="inline-block px-2 py-0.5 rounded-md border ${highlightClass} font-medium transition-all duration-300 shadow-sm">${value || `[${label}]`}</span>`;
+    };
+    
+    // Replace placeholders with highlighted values
+    result = result.replace(/\[ФИО Нанимателя\]/g, highlightValue(contract.signer_name, 'ФИО Нанимателя'));
+    result = result.replace(/\[ФИО\]/g, highlightValue(contract.signer_name, 'ФИО'));
+    result = result.replace(/\[Телефон\]/g, highlightValue(contract.signer_phone, 'Телефон'));
+    result = result.replace(/\[Email\]/g, highlightValue(contract.signer_email, 'Email'));
+    result = result.replace(/\[Дата заселения\]/g, highlightValue(contract.move_in_date, 'Дата заселения'));
+    result = result.replace(/\[Дата выселения\]/g, highlightValue(contract.move_out_date, 'Дата выселения'));
+    result = result.replace(/\[Адрес квартиры\]/g, highlightValue(contract.property_address, 'Адрес квартиры'));
+    result = result.replace(/\[Цена в сутки\]/g, highlightValue(contract.rent_amount, 'Цена в сутки'));
+    result = result.replace(/\[Количество суток\]/g, highlightValue(contract.days_count, 'Количество суток'));
     
     return result;
   };
