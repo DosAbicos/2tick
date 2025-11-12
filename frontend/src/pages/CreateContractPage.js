@@ -37,11 +37,6 @@ const CreateContractPage = () => {
   // Ref to track if template is being loaded to prevent duplicate loads
   const loadingTemplateRef = useRef(false);
   
-  // Modal for selecting favorite templates
-  const [showTemplateModal, setShowTemplateModal] = useState(false);
-  const [favoriteTemplates, setFavoriteTemplates] = useState([]);
-  const [loadingFavorites, setLoadingFavorites] = useState(false);
-  
   // Next contract number (for display)
   const [nextContractNumber, setNextContractNumber] = useState(null);
   
