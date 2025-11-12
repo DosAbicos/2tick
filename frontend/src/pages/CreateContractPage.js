@@ -804,12 +804,12 @@ Email: ${templateData.tenant_email || '[Email]'}
                     <div className="space-y-4">
                       {/* Landlord Fields - Always visible */}
                       {Object.entries(selectedTemplate.placeholders).some(([_, config]) => config.owner === 'landlord' && config.type !== 'calculated') && (
-                        <div className="p-6 bg-gradient-to-br from-blue-50/50 to-purple-50/50 border-2 border-dashed border-blue-200 rounded-xl">
-                          <div className="border-b pb-2 mb-4">
-                            <h3 className="font-semibold text-neutral-900 flex items-center gap-2">
-                              📋 Обязательные поля для заполнения
+                        <div className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl">
+                          <div className="border-b-2 border-blue-200 pb-3 mb-5">
+                            <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                              📋 Обязательные поля
                             </h3>
-                            <p className="text-xs text-neutral-600 mt-1">
+                            <p className="text-xs text-gray-600 mt-1">
                               Эти поля вы должны заполнить как наймодатель
                             </p>
                           </div>
@@ -821,29 +821,29 @@ Email: ${templateData.tenant_email || '[Email]'}
                         
                         return (
                           <div key={key} className={config.type === 'text' ? 'md:col-span-2' : ''}>
-                            <Label htmlFor={`placeholder_${key}`}>
+                            <label htmlFor={`placeholder_${key}`} className="block text-sm font-medium text-gray-700 mb-2">
                               {config.label} {config.required && <span className="text-red-500">*</span>}
-                            </Label>
+                            </label>
                             
                             {config.type === 'text' && (
-                              <Input
+                              <input
                                 id={`placeholder_${key}`}
                                 value={placeholderValues[key] || ''}
                                 onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
                                 required={config.required}
-                                className="mt-1"
+                                className="minimal-input w-full"
                                 placeholder={`Введите ${config.label.toLowerCase()}`}
                               />
                             )}
                             
                             {config.type === 'number' && (
-                              <Input
+                              <input
                                 id={`placeholder_${key}`}
                                 type="number"
                                 value={placeholderValues[key] || ''}
                                 onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
                                 required={config.required}
-                                className="mt-1"
+                                className="minimal-input w-full"
                                 placeholder={`Введите ${config.label.toLowerCase()}`}
                               />
                             )}
