@@ -835,27 +835,25 @@ const SignContractPage = () => {
                     </p>
                     
                     <div className="space-y-3">
-                      <Button
+                      <button
                         onClick={() => {
                           setVerificationMethod('sms');
                           handleRequestOTP('sms');
                         }}
                         disabled={smsCooldown > 0}
-                        className="w-full"
-                        variant="outline"
+                        className="w-full py-4 px-4 text-base font-medium text-gray-700 bg-white border-2 border-blue-200 rounded-xl hover:bg-blue-50 hover:border-blue-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         📱 {smsCooldown > 0 ? `SMS через ${smsCooldown}с` : 'SMS код (6 цифр)'}
-                      </Button>
+                      </button>
                       
-                      <Button
+                      <button
                         onClick={handleRequestCallOTP}
                         disabled={requestingCall || callCooldown > 0}
-                        className="w-full"
-                        variant="outline"
+                        className="w-full py-4 px-4 text-base font-medium text-gray-700 bg-white border-2 border-blue-200 rounded-xl hover:bg-blue-50 hover:border-blue-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                       >
-                        <Phone className="h-4 w-4 mr-2" />
+                        <Phone className="h-4 w-4" />
                         {requestingCall ? 'Звоним...' : callCooldown > 0 ? `Звонок через ${callCooldown}с` : 'Входящий звонок (4 цифры)'}
-                      </Button>
+                      </button>
                       
                       {telegramDeepLink ? (
                         <a
@@ -866,18 +864,17 @@ const SignContractPage = () => {
                             setVerificationMethod('telegram');
                             toast.success('Откройте Telegram и скопируйте код');
                           }}
-                          className="block w-full bg-[#0088cc] hover:bg-[#0077b3] text-white text-center py-3 px-4 rounded-lg font-medium transition-colors no-underline"
+                          className="block w-full bg-gradient-to-r from-[#0088cc] to-[#0077b3] hover:from-[#0077b3] hover:to-[#006699] text-white text-center py-4 px-4 rounded-xl font-semibold transition-all shadow-lg shadow-blue-500/20 no-underline"
                         >
                           💬 Получить код в Telegram
                         </a>
                       ) : (
-                        <Button
+                        <button
                           disabled={true}
-                          className="w-full bg-[#0088cc] opacity-50"
-                          variant="default"
+                          className="w-full py-4 px-4 text-base font-semibold text-white bg-[#0088cc] opacity-50 rounded-xl cursor-not-allowed"
                         >
                           💬 {loadingTelegramLink ? 'Загрузка...' : 'Получить код в Telegram'}
-                        </Button>
+                        </button>
                       )}
                     </div>
                   </div>
