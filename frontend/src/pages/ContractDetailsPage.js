@@ -409,55 +409,7 @@ const ContractDetailsPage = () => {
             </div>
           </div>
           <div className="space-y-6">
-            {/* Signature Link - Moved to top for better UX */}
-            {contract.signature_link && contract.status !== 'signed' && (
-              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                <h3 className="text-lg font-semibold mb-3">Ссылка для подписания</h3>
-                <div className="flex gap-3">
-                  <button
-                    className="flex-1 px-4 py-3 text-sm font-medium text-gray-700 bg-white border-2 border-blue-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-all flex items-center justify-center gap-2"
-                    onClick={() => {
-                      const fullLink = `${window.location.origin}${contract.signature_link}`;
-                      
-                      // Fallback method for clipboard
-                      const textArea = document.createElement('textarea');
-                      textArea.value = fullLink;
-                      textArea.style.position = 'fixed';
-                      textArea.style.left = '-999999px';
-                      document.body.appendChild(textArea);
-                      textArea.focus();
-                      textArea.select();
-                      
-                      try {
-                        document.execCommand('copy');
-                        toast.success('Ссылка скопирована в буфер обмена!');
-                      } catch (err) {
-                        toast.error('Не удалось скопировать. Попробуйте вручную.');
-                      }
-                      
-                      document.body.removeChild(textArea);
-                    }}
-                    data-testid="copy-signature-link-button"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                    </svg>
-                    Копировать ссылку на подписание
-                  </button>
-                  
-                  <button
-                    onClick={() => window.open(contract.signature_link, '_blank')}
-                    className="px-4 py-3 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2"
-                    data-testid="open-signature-link-button"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
-                    Открыть
-                  </button>
-                </div>
-              </div>
-            )}
+            {/* Link section removed - button is in header now */}
             
             {/* Contract Details */}
             <div>
