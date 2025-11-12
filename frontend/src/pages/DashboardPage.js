@@ -225,29 +225,31 @@ const DashboardPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {/* Заголовок */}
         <div className="mb-6 sm:mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Мои договоры</h1>
-              <p className="text-sm sm:text-base text-gray-600">Управляйте своими договорами</p>
+          <div className="minimal-card p-6 mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">Мои договоры</h1>
+                <p className="text-sm text-gray-500">Управляйте своими договорами</p>
+              </div>
+              
+              {/* Кнопки действий справа */}
+              <div className="flex flex-wrap gap-2 sm:gap-3">
+                <button
+                  onClick={() => navigate('/templates')}
+                  className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-md shadow-blue-500/20 flex items-center gap-2"
+                >
+                  <FileText className="w-4 h-4" />
+                  Маркет шаблонов
+                </button>
+                <button
+                  onClick={handleCreateContract}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-blue-400 transition-all shadow-sm flex items-center gap-2"
+                >
+                  <Plus className="w-4 h-4" />
+                  Создать договор
+                </button>
+              </div>
             </div>
-          </div>
-          
-          {/* Кнопки действий */}
-          <div className="flex flex-wrap gap-3">
-            <button
-              onClick={() => navigate('/templates')}
-              className="px-5 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-md shadow-blue-500/20 flex items-center gap-2"
-            >
-              <FileText className="w-4 h-4" />
-              Маркет шаблонов
-            </button>
-            <button
-              onClick={handleCreateContract}
-              className="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-blue-400 transition-all shadow-sm flex items-center gap-2"
-            >
-              <Plus className="w-4 h-4" />
-              Создать договор
-            </button>
           </div>
         </div>
 
