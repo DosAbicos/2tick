@@ -1138,14 +1138,14 @@ Email: ${templateData.tenant_email || '[Email]'}
                               {tenantDocument ? 'Изменить документ клиента' : 'Загрузить документ клиента'}
                             </span>
                           </Button>
-                          <Input
+                          <input
                             id="tenant_doc"
                             type="file"
                             accept="image/*,.pdf"
                             onChange={handleTenantDocUpload}
                             className="hidden"
                           />
-                        </Label>
+                        </label>
                         <p className="text-xs text-neutral-500 mt-1">Поддерживаются: JPEG, PNG, PDF</p>
                       </div>
                     </div>
