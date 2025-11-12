@@ -735,8 +735,15 @@ Email: ${templateData.tenant_email || '[Email]'}
                   <div 
                     className="whitespace-pre-wrap text-sm leading-relaxed text-gray-800"
                     style={{ fontFamily: 'IBM Plex Sans, sans-serif' }}
-                    dangerouslySetInnerHTML={{ __html: isContentSaved ? manualContent : generatePreviewContent() }}
-                  />
+                  >
+                    {isContentSaved ? (
+                      // Show saved content as plain text with preserved line breaks
+                      manualContent
+                    ) : (
+                      // Show generated content with highlighted placeholders
+                      <div dangerouslySetInnerHTML={{ __html: generatePreviewContent() }} />
+                    )}
+                  </div>
                 )}
               </div>
             </div>
