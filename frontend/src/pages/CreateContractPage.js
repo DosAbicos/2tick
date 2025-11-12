@@ -643,16 +643,16 @@ Email: ${templateData.tenant_email || '[Email]'}
               {manualEditMode ? (
                 <div className="editor-container">
                   {/* Toolbar */}
-                  <div className="bg-gray-50 border border-gray-300 rounded-t-lg p-2 flex flex-wrap gap-1 items-center">
-                    <Button type="button" variant="ghost" size="sm" onMouseDown={(e) => { e.preventDefault(); executeCommand('bold'); }} className="h-8 w-8 p-0" title="Жирный"><Bold className="h-4 w-4" /></Button>
-                    <Button type="button" variant="ghost" size="sm" onMouseDown={(e) => { e.preventDefault(); executeCommand('italic'); }} className="h-8 w-8 p-0" title="Курсив"><Italic className="h-4 w-4" /></Button>
-                    <Button type="button" variant="ghost" size="sm" onMouseDown={(e) => { e.preventDefault(); executeCommand('underline'); }} className="h-8 w-8 p-0" title="Подчеркнутый"><Underline className="h-4 w-4" /></Button>
+                  <div className="bg-gray-50 border border-gray-200 rounded-t-lg p-2 flex flex-wrap gap-1 items-center">
+                    <button type="button" onMouseDown={(e) => { e.preventDefault(); executeCommand('bold'); }} className="h-8 w-8 p-0 text-gray-700 hover:bg-gray-200 rounded transition-all" title="Жирный"><Bold className="h-4 w-4" /></button>
+                    <button type="button" onMouseDown={(e) => { e.preventDefault(); executeCommand('italic'); }} className="h-8 w-8 p-0 text-gray-700 hover:bg-gray-200 rounded transition-all" title="Курсив"><Italic className="h-4 w-4" /></button>
+                    <button type="button" onMouseDown={(e) => { e.preventDefault(); executeCommand('underline'); }} className="h-8 w-8 p-0 text-gray-700 hover:bg-gray-200 rounded transition-all" title="Подчеркнутый"><Underline className="h-4 w-4" /></button>
                     
                     <div className="w-px bg-gray-300 mx-1" />
                     
-                    <Button type="button" variant="ghost" size="sm" onMouseDown={(e) => { e.preventDefault(); executeCommand('formatBlock', '<h1>'); }} className="h-8 px-2" title="Заголовок 1">H1</Button>
-                    <Button type="button" variant="ghost" size="sm" onMouseDown={(e) => { e.preventDefault(); executeCommand('formatBlock', '<h2>'); }} className="h-8 px-2" title="Заголовок 2">H2</Button>
-                    <Button type="button" variant="ghost" size="sm" onMouseDown={(e) => { e.preventDefault(); executeCommand('formatBlock', '<h3>'); }} className="h-8 px-2" title="Заголовок 3">H3</Button>
+                    <button type="button" onMouseDown={(e) => { e.preventDefault(); executeCommand('formatBlock', '<h1>'); }} className="h-8 px-2 text-sm font-medium text-gray-700 hover:bg-gray-200 rounded transition-all" title="Заголовок 1">H1</button>
+                    <button type="button" onMouseDown={(e) => { e.preventDefault(); executeCommand('formatBlock', '<h2>'); }} className="h-8 px-2 text-sm font-medium text-gray-700 hover:bg-gray-200 rounded transition-all" title="Заголовок 2">H2</button>
+                    <button type="button" onMouseDown={(e) => { e.preventDefault(); executeCommand('formatBlock', '<h3>'); }} className="h-8 px-2 text-sm font-medium text-gray-700 hover:bg-gray-200 rounded transition-all" title="Заголовок 3">H3</button>
                     
                     <div className="w-px bg-gray-300 mx-1" />
                     
