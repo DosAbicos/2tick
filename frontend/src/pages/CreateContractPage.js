@@ -745,44 +745,34 @@ Email: ${templateData.tenant_email || '[Email]'}
                         </div>
                       )}
 
-                      {/* Tenant/Signer Fields - Beautiful design */}
+                      {/* Tenant/Signer Fields */}
                       {Object.entries(selectedTemplate.placeholders).some(([_, config]) => 
                         (config.owner === 'tenant' || config.owner === 'signer') && config.type !== 'calculated'
                       ) && (
                         <details className="group" open={false}>
                           <summary className="cursor-pointer list-none">
-                            <div className="p-6 bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30 border-2 border-slate-200 rounded-xl hover:border-blue-300 transition-all duration-200 shadow-sm hover:shadow-md">
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-lg">
-                                    👤
-                                  </div>
-                                  <div>
-                                    <h3 className="font-semibold text-slate-900 text-base">
-                                      Данные клиента (нанимателя)
-                                    </h3>
-                                    <p className="text-xs text-slate-600 mt-0.5">
-                                      Опционально • Клиент заполнит при подписании
-                                    </p>
-                                  </div>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <span className="text-xs px-3 py-1.5 bg-white border border-slate-200 rounded-full text-slate-600 font-medium">
-                                    <span className="group-open:hidden">Развернуть</span>
-                                    <span className="hidden group-open:inline">Свернуть</span>
-                                  </span>
-                                  <svg className="w-5 h-5 text-slate-400 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                  </svg>
-                                </div>
+                            <div className="flex items-center gap-3 pb-3 border-b border-gray-200 hover:border-blue-400 transition-colors">
+                              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-600 to-purple-500 flex items-center justify-center text-white font-bold shadow-lg">
+                                2
                               </div>
+                              <div className="flex-1">
+                                <h3 className="text-lg font-semibold text-gray-900">
+                                  Данные клиента
+                                </h3>
+                                <p className="text-sm text-gray-500">
+                                  Опционально — клиент заполнит при подписании
+                                </p>
+                              </div>
+                              <svg className="w-5 h-5 text-gray-400 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                              </svg>
                             </div>
                           </summary>
                           
-                          <div className="mt-4 p-6 bg-white border-2 border-slate-200 rounded-xl">
-                            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                          <div className="mt-6 space-y-4">
+                            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                               <p className="text-sm text-blue-800">
-                                💡 <strong>Совет:</strong> Вы можете заполнить эти поля сейчас, если у вас есть данные клиента, или оставить пустыми — клиент заполнит их при подписании договора.
+                                💡 Можете оставить эти поля пустыми — клиент заполнит их при подписании договора.
                               </p>
                             </div>
                             
