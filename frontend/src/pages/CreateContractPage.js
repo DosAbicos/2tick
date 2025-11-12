@@ -819,22 +819,40 @@ Email: ${templateData.tenant_email || '[Email]'}
                 {!selectedTemplate && (
                   <>
                     {/* Contract Info */}
-                    <div className="space-y-4">
-                      <h3 className="text-lg font-semibold text-gray-900 border-b-2 border-gray-100 pb-3">Информация о договоре</h3>
-                      <div className="grid grid-cols-1 gap-4">
+                    <div className="p-6 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 border-2 border-blue-200 rounded-xl shadow-sm">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg">
+                          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                        </div>
                         <div>
-                          <label htmlFor="contract_date" className="block text-sm font-medium text-gray-700 mb-2">Дата договора *</label>
-                          <input
-                            id="contract_date"
-                            type="date"
-                            value={templateData.contract_date}
-                            onChange={(e) => handleFieldChange('contract_date', e.target.value)}
-                            required
-                            data-testid="contract-date-input"
-                            className="minimal-input w-full"
-                          />
-                          <p className="text-xs text-gray-500 mt-1.5">
-                            💡 Номер договора будет сгенерирован автоматически
+                          <h3 className="text-lg font-bold text-gray-900">Информация о договоре</h3>
+                          <p className="text-sm text-gray-600">Выберите дату составления</p>
+                        </div>
+                      </div>
+                      <div className="bg-white rounded-lg p-4 border border-blue-100">
+                        <label htmlFor="contract_date" className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                          <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                          Дата договора *
+                        </label>
+                        <input
+                          id="contract_date"
+                          type="date"
+                          value={templateData.contract_date}
+                          onChange={(e) => handleFieldChange('contract_date', e.target.value)}
+                          required
+                          data-testid="contract-date-input"
+                          className="w-full px-4 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-base font-medium text-gray-900"
+                        />
+                        <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                          <p className="text-sm text-green-800 flex items-center gap-2">
+                            <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Номер договора будет сгенерирован автоматически
                           </p>
                         </div>
                       </div>
