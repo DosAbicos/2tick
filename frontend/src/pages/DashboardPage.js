@@ -197,18 +197,18 @@ const DashboardPage = () => {
                       {favoriteTemplates.map((template) => (
                         <div 
                           key={template.id}
-                          className="p-4 bg-gradient-to-br from-white to-blue-50/50 border-2 border-gray-200 rounded-xl cursor-pointer hover:shadow-lg hover:border-blue-400 transition-all group"
+                          className="minimal-card p-4 hover:shadow-xl transition-all group cursor-pointer"
                           onClick={() => {
                             setShowTemplateModal(false);
                             navigate(`/contracts/create?template_id=${template.id}`);
                           }}
                         >
-                          <h4 className="text-base font-semibold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">{template.name}</h4>
-                          <p className="text-xs text-gray-600 line-clamp-2">
+                          <h4 className="text-base font-semibold text-gray-900 group-hover:text-blue-600 transition-colors mb-2">{template.name}</h4>
+                          <p className="text-sm text-gray-600 mb-4 line-clamp-2">
                             {template.description || 'Нет описания'}
                           </p>
-                          <div className="mt-3 flex items-center text-xs text-blue-600 font-medium">
-                            <span>Выбрать</span>
+                          <div className="flex items-center text-xs text-blue-600 font-medium">
+                            <span>Выбрать шаблон</span>
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                             </svg>
