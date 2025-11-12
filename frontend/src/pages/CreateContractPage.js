@@ -582,9 +582,8 @@ Email: ${templateData.tenant_email || '[Email]'}
             </p>
           </div>
 
-        {/* Only show form if template is selected */}
+        {/* Form */}
         {selectedTemplate ? (
-          <div className="minimal-card" data-testid="contract-form-card">
             <div className="p-6">
               {manualEditMode ? (
                 <div className="editor-container">
