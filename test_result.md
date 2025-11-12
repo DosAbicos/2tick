@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "ИСПРАВЛЕНИЕ 4 задач: 1) Кнопка скачивания договора должна быть на странице ContractDetailsPage в readonly режиме и скачивать через /download-pdf (тот же файл что отправляется на email), 2) UI State Persistence ДОЛЖНА РАБОТАТЬ - сохранение состояния модальных окон и вкладок после F5, 3) Overflow таблицы договоров в профиле пользователя все еще выходит за пределы экрана, 4) Email optimization уже сделана."
+user_problem_statement: "ПОЛНЫЙ РЕДИЗАЙН ПРИЛОЖЕНИЯ: Применить современный минималистичный дизайн в стиле Neumorphism ко всем страницам приложения 2tick.kz. Заменить все компоненты Shadcn UI (Card, Button, Input, Label) на кастомные стилизованные элементы с использованием классов: minimal-card, minimal-input, neuro-button-primary, gradient-bg. Обеспечить мобильную адаптивность и единый визуальный стиль по всему приложению."
 
 backend:
   - task: "Оптимизация скорости отправки email"
