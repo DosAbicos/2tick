@@ -538,31 +538,19 @@ const SignContractPage = () => {
                   />
                 </div>
                 
-                {(documentUploaded || contract.signature?.document_upload) && !needsInfo ? (
-                  // Document uploaded (by user or landlord) AND data filled - ready to sign
-                  <button
-                    onClick={() => setStep(3)}
-                    className="w-full py-4 text-base font-semibold text-white bg-gradient-to-r from-green-600 to-green-500 rounded-xl hover:from-green-700 hover:to-green-600 transition-all shadow-lg shadow-green-500/30"
-                    data-testid="sign-button"
-                  >
-                    Всё верно, подписать договор →
-                  </button>
-                ) : (
-                  // Need to fill data or upload document
-                  <button
-                    onClick={() => {
-                      if (needsInfo) {
-                        setStep(1.5); // Go to info filling step
-                      } else {
-                        setStep(2); // Go directly to upload
-                      }
-                    }}
-                    className="w-full py-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30"
-                    data-testid="proceed-button"
-                  >
-                    Продолжить →
-                  </button>
-                )}
+                <button
+                  onClick={() => {
+                    if (needsInfo) {
+                      setStep(1.5); // Go to info filling step
+                    } else {
+                      setStep(2); // Go directly to upload
+                    }
+                  }}
+                  className="w-full py-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30"
+                  data-testid="proceed-button"
+                >
+                  Продолжить →
+                </button>
               </motion.div>
             )}
 
