@@ -591,12 +591,12 @@ const SignContractPage = () => {
                         )}
                         
                         {config.type === 'email' && (
-                          <Input
+                          <input
                             id={`placeholder_${key}`}
                             type="email"
                             value={placeholderValues[key] || ''}
                             onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
-                            className="mt-1"
+                            className="minimal-input w-full mt-1"
                             placeholder="example@email.com"
                             required={config.required}
                           />
