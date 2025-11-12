@@ -849,8 +849,53 @@ const SignContractPage = () => {
               </motion.div>
             )}
 
-            {/* Step 3: Verify OTP */}
-            {step === 3 && (
+            {/* Step 4: Final Review */}
+            {step === 4 && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="space-y-6"
+                data-testid="step-final-review"
+              >
+                <div className="text-center mb-4">
+                  <h3 className="text-xl font-bold text-gray-900">Финальная проверка договора</h3>
+                  <p className="text-sm text-gray-600 mt-2">
+                    Внимательно проверьте все данные перед подписанием
+                  </p>
+                </div>
+
+                <div className="bg-white p-6 rounded-lg border border-gray-200 max-h-[500px] overflow-y-auto">
+                  <div 
+                    className="whitespace-pre-wrap text-sm leading-relaxed text-gray-800"
+                    style={{
+                      fontFamily: 'IBM Plex Sans, sans-serif',
+                      fontSize: '14px',
+                      lineHeight: '1.6'
+                    }}
+                    dangerouslySetInnerHTML={{ __html: highlightPlaceholders(contract.content) }}
+                  />
+                </div>
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setStep(2)}
+                    className="flex-1 py-3 px-4 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all"
+                  >
+                    ← Назад
+                  </button>
+                  <button
+                    onClick={() => setStep(5)}
+                    className="flex-1 py-4 text-base font-semibold text-white bg-gradient-to-r from-green-600 to-green-500 rounded-xl hover:from-green-700 hover:to-green-600 transition-all shadow-lg shadow-green-500/30"
+                    data-testid="sign-button"
+                  >
+                    Всё верно, подписать договор →
+                  </button>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Step 5: Verify OTP */}
+            {step === 5 && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
