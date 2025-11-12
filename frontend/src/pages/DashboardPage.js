@@ -162,7 +162,7 @@ const DashboardPage = () => {
               Маркет шаблонов
             </button>
             <button
-              onClick={() => navigate('/contracts/create')}
+              onClick={handleCreateContract}
               className="px-6 py-3 text-base font-medium text-gray-700 bg-white border-2 border-gray-200 rounded-xl hover:bg-gray-50 transition-all flex items-center justify-center gap-2"
             >
               <Plus className="w-5 h-5" />
