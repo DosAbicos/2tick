@@ -740,9 +740,11 @@ Email: ${templateData.tenant_email || '[Email]'}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Left: Contract Preview */}
-          <Card className="lg:sticky lg:top-4 h-fit" data-testid="contract-preview-card">
+        {/* Only show form if template is selected */}
+        {selectedTemplate ? (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Left: Contract Preview */}
+            <Card className="lg:sticky lg:top-4 h-fit" data-testid="contract-preview-card">
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="flex items-center gap-2">
                 <Eye className="h-5 w-5" />
