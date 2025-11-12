@@ -370,8 +370,8 @@ const ContractDetailsPage = () => {
                 </div>
               )}
             </div>
-          </CardHeader>
-          <CardContent className="space-y-6">
+          </div>
+          <div className="space-y-6">
             {/* Signature Link - Moved to top for better UX */}
             {contract.signature_link && contract.status !== 'signed' && (
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
