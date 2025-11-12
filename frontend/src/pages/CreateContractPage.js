@@ -1079,14 +1079,14 @@ Email: ${templateData.tenant_email || '[Email]'}
                   {showOptionalFields && (
                     <div className="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
                       <div>
-                        <Label htmlFor="tenant_name">ФИО нанимателя</Label>
-                        <Input
+                        <label htmlFor="tenant_name" className="block text-sm font-medium text-gray-700 mb-2">ФИО нанимателя</label>
+                        <input
                           id="tenant_name"
                           value={templateData.tenant_name}
                           onChange={(e) => handleFieldChange('tenant_name', e.target.value)}
                           data-testid="tenant-name-input"
-                          className="mt-1"
-                          placeholder="Оставьте пустым, если клиент заполнит сам"
+                          className="minimal-input w-full"
+                          placeholder="Опционально"
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-4">
