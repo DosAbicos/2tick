@@ -600,14 +600,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                 </div>
               )}
             </div>
-            <p className="text-sm text-gray-600 mb-3">Заполните поля справа, договор автоматически обновится слева</p>
-            <button
-              type="button"
-              onClick={loadLastTemplate}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-blue-400 transition-all"
-            >
-              📋 Загрузить последний шаблон
-            </button>
+            <p className="text-sm text-gray-600">Заполните поля справа, договор автоматически обновится слева</p>
           </div>
         )}
 
