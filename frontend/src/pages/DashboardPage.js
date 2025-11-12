@@ -192,26 +192,28 @@ const DashboardPage = () => {
               ) : (
                 <>
                   <div className="border-t border-gray-200 pt-4">
-                    <h3 className="text-sm font-semibold text-gray-700 mb-3">Избранные шаблоны</h3>
+                    <h3 className="text-sm font-semibold text-gray-700 mb-3">❤️ Избранные шаблоны</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {favoriteTemplates.map((template) => (
-                        <Card 
+                        <div 
                           key={template.id}
-                          className="cursor-pointer hover:shadow-lg transition-all border hover:border-blue-500"
+                          className="p-4 bg-gradient-to-br from-white to-blue-50/50 border-2 border-gray-200 rounded-xl cursor-pointer hover:shadow-lg hover:border-blue-400 transition-all group"
                           onClick={() => {
                             setShowTemplateModal(false);
                             navigate(`/contracts/create?template_id=${template.id}`);
                           }}
                         >
-                          <CardHeader className="pb-3">
-                            <CardTitle className="text-base">{template.name}</CardTitle>
-                          </CardHeader>
-                          <CardContent className="pt-0">
-                            <p className="text-xs text-gray-600 line-clamp-2">
-                              {template.description || 'Нет описания'}
-                            </p>
-                          </CardContent>
-                        </Card>
+                          <h4 className="text-base font-semibold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">{template.name}</h4>
+                          <p className="text-xs text-gray-600 line-clamp-2">
+                            {template.description || 'Нет описания'}
+                          </p>
+                          <div className="mt-3 flex items-center text-xs text-blue-600 font-medium">
+                            <span>Выбрать</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </div>
+                        </div>
                       ))}
                     </div>
                   </div>
