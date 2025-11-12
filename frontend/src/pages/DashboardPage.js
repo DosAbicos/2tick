@@ -146,52 +146,78 @@ const DashboardPage = () => {
       <Dialog open={showTemplateModal} onOpenChange={setShowTemplateModal}>
         <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold">Выберите шаблон договора</DialogTitle>
+            <DialogTitle className="text-2xl font-bold">Создать договор</DialogTitle>
             <DialogDescription>
-              Выберите один из избранных шаблонов для создания договора
+              Выберите шаблон из избранных или загрузите готовый PDF
             </DialogDescription>
           </DialogHeader>
           
           {loadingFavorites ? (
             <div className="py-8 text-center text-gray-600">Загрузка шаблонов...</div>
-          ) : favoriteTemplates.length === 0 ? (
-            <div className="py-8 text-center">
-              <p className="text-gray-600 mb-4">У вас нет избранных шаблонов</p>
-              <p className="text-sm text-gray-500 mb-6">
-                Перейдите в маркет шаблонов и добавьте шаблоны в избранное
-              </p>
-              <Button 
-                onClick={() => {
-                  setShowTemplateModal(false);
-                  navigate('/templates');
-                }}
-                className="bg-gradient-to-r from-blue-600 to-blue-500"
-              >
-                Перейти в маркет шаблонов
-              </Button>
-            </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
-              {favoriteTemplates.map((template) => (
-                <Card 
-                  key={template.id}
-                  className="cursor-pointer hover:shadow-lg transition-all border-2 hover:border-blue-500"
+            <>
+              {/* Кнопка загрузить PDF вверху */}
+              <div className="mb-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+                <button
                   onClick={() => {
                     setShowTemplateModal(false);
-                    navigate(`/contracts/create?template_id=${template.id}`);
+                    navigate('/contracts/upload-pdf');
                   }}
+                  className="w-full px-4 py-3 text-sm font-medium text-blue-700 bg-white rounded-lg hover:bg-blue-50 transition-all shadow-sm border border-blue-300 flex items-center justify-center gap-2"
                 >
-                  <CardHeader>
-                    <CardTitle className="text-lg">{template.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-gray-600 line-clamp-3">
-                      {template.description || 'Нет описания'}
-                    </p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                  <Upload className="w-4 h-4" />
+                  Загрузить готовый PDF договор
+                </button>
+                <p className="text-xs text-gray-600 mt-2 text-center">
+                  Или выберите шаблон ниже
+                </p>
+              </div>
+
+              {favoriteTemplates.length === 0 ? (
+                <div className="py-8 text-center">
+                  <p className="text-gray-600 mb-4">У вас нет избранных шаблонов</p>
+                  <p className="text-sm text-gray-500 mb-6">
+                    Перейдите в маркет шаблонов и добавьте шаблоны в избранное
+                  </p>
+                  <Button 
+                    onClick={() => {
+                      setShowTemplateModal(false);
+                      navigate('/templates');
+                    }}
+                    className="bg-gradient-to-r from-blue-600 to-blue-500"
+                  >
+                    Перейти в маркет шаблонов
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <div className="border-t border-gray-200 pt-4">
+                    <h3 className="text-sm font-semibold text-gray-700 mb-3">Избранные шаблоны</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      {favoriteTemplates.map((template) => (
+                        <Card 
+                          key={template.id}
+                          className="cursor-pointer hover:shadow-lg transition-all border hover:border-blue-500"
+                          onClick={() => {
+                            setShowTemplateModal(false);
+                            navigate(`/contracts/create?template_id=${template.id}`);
+                          }}
+                        >
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-base">{template.name}</CardTitle>
+                          </CardHeader>
+                          <CardContent className="pt-0">
+                            <p className="text-xs text-gray-600 line-clamp-2">
+                              {template.description || 'Нет описания'}
+                            </p>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+            </>
           )}
         </DialogContent>
       </Dialog>
