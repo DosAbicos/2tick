@@ -496,6 +496,42 @@ backend:
         comment: "✅ ПРОБЛЕМА ИСПРАВЛЕНА: Добавлен fallback механизм для Telegram API аналогично Twilio. При ошибках 'Chat not found', 'User not found', 'Forbidden', 'Unauthorized' система переключается в mock режим. Обновлен Telegram бот для сохранения chat_id пользователей в /tmp/telegram_chat_ids.json. Теперь POST /api/sign/{contract_id}/request-telegram-otp с телом {'telegram_username': 'ngzadl'} возвращает статус 200 с message 'Код отправлен в Telegram @ngzadl' и mock_otp для тестирования."
 
 frontend:
+  - task: "Редизайн SignContractPage - Neumorphism стиль"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/SignContractPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "РЕДИЗАЙН ВЫПОЛНЕН: Заменены все Shadcn UI компоненты на кастомные стилизованные элементы. Card заменена на minimal-card, все Button заменены на gradient buttons с shadow эффектами, Input/Label заменены на minimal-input. Импортирован neumorphism.css. Все 4 шага (просмотр, заполнение данных, загрузка документа, верификация) стилизованы в едином минималистичном стиле. Кнопки методов верификации (SMS, Call, Telegram) получили новый дизайн с gradient эффектами."
+  
+  - task: "Редизайн ContractDetailsPage - Neumorphism стиль"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/ContractDetailsPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "РЕДИЗАЙН ВЫПОЛНЕН: Заменены Card/CardHeader/CardContent на minimal-card структуру. Все кнопки действий стилизованы с gradient эффектами: кнопка 'Скачать договор' (зеленый gradient), 'Отправить ссылку' (синий gradient), 'Утвердить' (зеленый gradient), 'Редактировать' (белый с border). Кнопка 'Назад' стилизована. Кнопки копирования и открытия ссылки обновлены. Удалены импорты Button, Card компонентов, добавлен neumorphism.css."
+  
+  - task: "Редизайн RegisterPage - Neumorphism стиль"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/RegisterPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "РЕДИЗАЙН ВЫПОЛНЕН: Все Input и Label компоненты заменены на нативные input и label с классами minimal-input. Кнопки 'Продолжить', 'Назад', 'Зарегистрироваться' стилизованы с gradient эффектами и правильными размерами (py-4). Удалены импорты Button, Input, Label из Shadcn UI. Форма двухшаговая с прогресс-баром сохранена, все поля получили единый минималистичный дизайн."
+
   - task: "Кнопка скачивания договора в модальном окне просмотра"
     implemented: true
     working: true
