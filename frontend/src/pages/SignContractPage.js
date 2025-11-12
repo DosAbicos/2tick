@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Header from '@/components/Header';
 import { CheckCircle, CheckCircle2, FileUp, Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
