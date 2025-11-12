@@ -70,17 +70,17 @@ const Header = ({ showAuth = false }) => {
         <div className="flex items-center gap-3">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="h-9 px-3" data-testid="language-switcher">
+              <button className="h-9 px-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-blue-400 transition-all flex items-center gap-1" data-testid="language-switcher">
                 {currentLang.toUpperCase()}
-                <ChevronDown className="ml-1 h-4 w-4" />
-              </Button>
+                <ChevronDown className="w-4 h-4" />
+              </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="bg-white border border-gray-200 rounded-lg shadow-lg">
               {langOptions.map((lang) => (
                 <DropdownMenuItem
                   key={lang.code}
                   onClick={() => changeLanguage(lang.code)}
-                  className={currentLang === lang.code ? 'bg-muted' : ''}
+                  className={`px-3 py-2 text-sm hover:bg-gray-50 cursor-pointer ${currentLang === lang.code ? 'bg-blue-50 text-blue-700' : ''}`}
                   data-testid={`lang-option-${lang.code}`}
                 >
                   {lang.label}
