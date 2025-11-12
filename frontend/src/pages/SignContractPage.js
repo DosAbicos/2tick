@@ -801,20 +801,18 @@ const SignContractPage = () => {
                 </div>
                 
                 <div className="flex gap-3 pt-4">
-                  <Button
-                    variant="outline"
+                  <button
                     onClick={() => setStep(needsInfo ? 1.5 : 1)}
-                    className="flex-1"
+                    className="flex-1 py-3 px-4 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all"
                   >
                     ← {needsInfo ? 'Изменить данные' : 'Назад к договору'}
-                  </Button>
-                  <Button
+                  </button>
+                  <button
                     onClick={() => setStep(1)}
-                    className="flex-1 bg-green-600 hover:bg-green-700"
-                    size="lg"
+                    className="flex-1 py-4 text-base font-semibold text-white bg-gradient-to-r from-green-600 to-green-500 rounded-lg hover:from-green-700 hover:to-green-600 transition-all shadow-lg shadow-green-500/20"
                   >
                     Продолжить к просмотру договора →
-                  </Button>
+                  </button>
                 </div>
               </motion.div>
             )}
