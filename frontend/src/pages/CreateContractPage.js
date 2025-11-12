@@ -633,22 +633,45 @@ Email: ${templateData.tenant_email || '[Email]'}
                   )}
                 </div>
               </div>
-              <div className="p-6 bg-white max-h-[800px] overflow-y-auto">
+              <div className="p-6 bg-white max-h-[800px] overflow-y-auto rounded-b-xl">
                 {manualEditMode ? (
-                  <div
-                    ref={editorRef}
-                    contentEditable
-                    dangerouslySetInnerHTML={{ __html: manualContent }}
-                    suppressContentEditableWarning
-                    key={manualContent}
-                    onBlur={(e) => setManualContent(e.currentTarget.innerHTML)}
-                    className="min-h-[600px] p-4 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    style={{
-                      fontFamily: 'IBM Plex Sans, sans-serif',
-                      fontSize: '14px',
-                      lineHeight: '1.6'
-                    }}
-                  />
+                  <div className="editor-container">
+                    {/* Toolbar */}
+                    <div className="bg-gray-50 border border-gray-200 rounded-t-lg p-2 mb-2 flex flex-wrap gap-1 items-center">
+                      <button type="button" onMouseDown={(e) => { e.preventDefault(); document.execCommand('bold'); }} className="h-8 w-8 p-0 text-gray-700 hover:bg-gray-200 rounded transition-all" title="Жирный">
+                        <svg className="w-4 h-4 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 4h8a4 4 0 0 1 0 8H6zM6 12h9a4 4 0 0 1 0 8H6z"/>
+                        </svg>
+                      </button>
+                      <button type="button" onMouseDown={(e) => { e.preventDefault(); document.execCommand('italic'); }} className="h-8 w-8 p-0 text-gray-700 hover:bg-gray-200 rounded transition-all italic" title="Курсив">I</button>
+                      <button type="button" onMouseDown={(e) => { e.preventDefault(); document.execCommand('underline'); }} className="h-8 w-8 p-0 text-gray-700 hover:bg-gray-200 rounded transition-all underline" title="Подчеркнутый">U</button>
+                      
+                      <div className="w-px bg-gray-300 h-6 mx-1" />
+                      
+                      <button type="button" onMouseDown={(e) => { e.preventDefault(); document.execCommand('formatBlock', false, '<h2>'); }} className="h-8 px-2 text-sm font-bold text-gray-700 hover:bg-gray-200 rounded transition-all" title="Заголовок">H2</button>
+                      <button type="button" onMouseDown={(e) => { e.preventDefault(); document.execCommand('formatBlock', false, '<h3>'); }} className="h-8 px-2 text-sm font-semibold text-gray-700 hover:bg-gray-200 rounded transition-all" title="Подзаголовок">H3</button>
+                      
+                      <div className="w-px bg-gray-300 h-6 mx-1" />
+                      
+                      <button type="button" onMouseDown={(e) => { e.preventDefault(); document.execCommand('insertUnorderedList'); }} className="h-8 px-2 text-xs font-medium text-gray-700 hover:bg-gray-200 rounded transition-all" title="Список">• Список</button>
+                    </div>
+                    
+                    {/* Editor */}
+                    <div
+                      ref={editorRef}
+                      contentEditable
+                      dangerouslySetInnerHTML={{ __html: manualContent }}
+                      suppressContentEditableWarning
+                      key={manualContent}
+                      onBlur={(e) => setManualContent(e.currentTarget.innerHTML)}
+                      className="min-h-[600px] p-4 border border-gray-200 rounded-b-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      style={{
+                        fontFamily: 'IBM Plex Sans, sans-serif',
+                        fontSize: '14px',
+                        lineHeight: '1.6'
+                      }}
+                    />
+                  </div>
                 ) : loadingTemplate ? (
                   <div className="text-center py-12">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
