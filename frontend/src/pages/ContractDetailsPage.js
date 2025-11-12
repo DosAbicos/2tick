@@ -264,7 +264,7 @@ const ContractDetailsPage = () => {
               {isReadOnly ? (
                 <div className="flex gap-2">
                   {/* Кнопка скачивания для админа - с токеном авторизации */}
-                  <Button
+                  <button
                     onClick={async () => {
                       try {
                         const token = localStorage.getItem('token');
@@ -287,13 +287,12 @@ const ContractDetailsPage = () => {
                         toast.error('Ошибка скачивания договора');
                       }
                     }}
-                    variant="outline"
-                    className="bg-green-600 hover:bg-green-700 text-white"
+                    className="px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-green-600 to-green-500 rounded-lg hover:from-green-700 hover:to-green-600 transition-all shadow-lg shadow-green-500/20 flex items-center gap-2"
                     data-testid="admin-download-pdf-button"
                   >
-                    <Download className="mr-2 h-4 w-4" />
+                    <Download className="h-4 w-4" />
                     Скачать договор
-                  </Button>
+                  </button>
                 </div>
               ) : (
                 <div className="flex gap-2">
