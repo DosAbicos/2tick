@@ -216,10 +216,20 @@ const CreateContractPage = () => {
 
   const handleSaveContent = () => {
     if (editorRef.current) {
-      const savedContent = editorRef.current.innerHTML;
+      let savedContent = editorRef.current.innerHTML;
+      
+      // Preserve line breaks: convert <div> and <br> to actual newlines for storage
+      // This ensures proper display in SignContractPage
+      savedContent = savedContent
+        .replace(/<div>/gi, '\n')
+        .replace(/<\/div>/gi, '')
+        .replace(/<br\s*\/?>/gi, '\n')
+        .replace(/<p>/gi, '')
+        .replace(/<\/p>/gi, '\n');
+      
       setManualContent(savedContent);
       setIsContentSaved(true);
-      setManualEditMode(false); // Return to form after saving
+      setManualEditMode(false);
       toast.success('Изменения сохранены!');
     }
   };
