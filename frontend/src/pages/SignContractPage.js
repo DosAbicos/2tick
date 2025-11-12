@@ -217,7 +217,7 @@ const SignContractPage = () => {
       
       // Check if already signed
       if (contractData.status === 'signed') {
-        setStep(4); // Go directly to success
+        setStep(6); // Go directly to success
       } else {
         // Always start with step 1 - contract review
         setStep(1);
