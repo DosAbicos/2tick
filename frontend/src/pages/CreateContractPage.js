@@ -208,7 +208,7 @@ const CreateContractPage = () => {
           });
         }
         
-        setManualContent(content.replace(/\n/g, '<br>'));
+        setManualContent(content);
       }
     }
     setManualEditMode(!manualEditMode);
