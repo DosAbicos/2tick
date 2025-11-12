@@ -1135,6 +1135,7 @@ Email: ${templateData.tenant_email || '[Email]'}
             <p className="text-gray-600 mb-4">Выберите шаблон из модального окна</p>
           </div>
         )}
+        </div>
       </div>
     </div>
   );
