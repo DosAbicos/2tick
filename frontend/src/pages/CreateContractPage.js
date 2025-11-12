@@ -1105,13 +1105,13 @@ Email: ${templateData.tenant_email || '[Email]'}
                         </div>
                         <div>
                           <Label htmlFor="tenant_email">Email</Label>
-                          <Input
+                          <input
                             id="tenant_email"
                             type="email"
                             value={templateData.tenant_email}
                             onChange={(e) => handleFieldChange('tenant_email', e.target.value)}
                             data-testid="tenant-email-input"
-                            className="mt-1"
+                            className="minimal-input w-full"
                             placeholder="Опционально"
                           />
                         </div>
