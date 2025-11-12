@@ -656,18 +656,18 @@ Email: ${templateData.tenant_email || '[Email]'}
                     
                     <div className="w-px bg-gray-300 mx-1" />
                     
-                    <Button type="button" variant="ghost" size="sm" onMouseDown={(e) => { e.preventDefault(); executeCommand('justifyLeft'); }} className="h-8 w-8 p-0" title="По левому краю"><AlignLeft className="h-4 w-4" /></Button>
-                    <Button type="button" variant="ghost" size="sm" onMouseDown={(e) => { e.preventDefault(); executeCommand('justifyCenter'); }} className="h-8 w-8 p-0" title="По центру"><AlignCenter className="h-4 w-4" /></Button>
-                    <Button type="button" variant="ghost" size="sm" onMouseDown={(e) => { e.preventDefault(); executeCommand('justifyRight'); }} className="h-8 w-8 p-0" title="По правому краю"><AlignRight className="h-4 w-4" /></Button>
+                    <button type="button" onMouseDown={(e) => { e.preventDefault(); executeCommand('justifyLeft'); }} className="h-8 w-8 p-0 text-gray-700 hover:bg-gray-200 rounded transition-all" title="По левому краю"><AlignLeft className="h-4 w-4" /></button>
+                    <button type="button" onMouseDown={(e) => { e.preventDefault(); executeCommand('justifyCenter'); }} className="h-8 w-8 p-0 text-gray-700 hover:bg-gray-200 rounded transition-all" title="По центру"><AlignCenter className="h-4 w-4" /></button>
+                    <button type="button" onMouseDown={(e) => { e.preventDefault(); executeCommand('justifyRight'); }} className="h-8 w-8 p-0 text-gray-700 hover:bg-gray-200 rounded transition-all" title="По правому краю"><AlignRight className="h-4 w-4" /></button>
                     
                     <div className="w-px bg-gray-300 mx-1" />
                     
-                    <Button type="button" variant="ghost" size="sm" onMouseDown={(e) => { e.preventDefault(); executeCommand('insertUnorderedList'); }} className="h-8 px-2" title="Маркированный список">• Список</Button>
-                    <Button type="button" variant="ghost" size="sm" onMouseDown={(e) => { e.preventDefault(); executeCommand('insertOrderedList'); }} className="h-8 px-2" title="Нумерованный список">1. Список</Button>
+                    <button type="button" onMouseDown={(e) => { e.preventDefault(); executeCommand('insertUnorderedList'); }} className="h-8 px-2 text-xs font-medium text-gray-700 hover:bg-gray-200 rounded transition-all" title="Маркированный список">• Список</button>
+                    <button type="button" onMouseDown={(e) => { e.preventDefault(); executeCommand('insertOrderedList'); }} className="h-8 px-2 text-xs font-medium text-gray-700 hover:bg-gray-200 rounded transition-all" title="Нумерованный список">1. Список</button>
                     
                     <div className="w-px bg-gray-300 mx-1" />
                     
-                    <select onChange={(e) => changeFontSize(e.target.value)} className="h-8 px-2 border rounded text-sm" defaultValue="14px">
+                    <select onChange={(e) => changeFontSize(e.target.value)} className="h-8 px-2 border border-gray-300 rounded-lg text-sm bg-white hover:border-blue-400 transition-all" defaultValue="14px">
                       <option value="12px">Маленький</option>
                       <option value="14px">Обычный</option>
                       <option value="16px">Большой</option>
