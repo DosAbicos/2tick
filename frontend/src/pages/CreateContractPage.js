@@ -298,6 +298,11 @@ const CreateContractPage = () => {
     if (selectedTemplate) {
       let content = isContentSaved ? manualContent : selectedTemplate.content;
       
+      // IMPORTANT: Convert newlines to <br> for HTML display to preserve formatting
+      if (!isContentSaved) {
+        content = content.replace(/\n/g, '<br>');
+      }
+      
       // Replace placeholders with actual values
       if (selectedTemplate.placeholders) {
         Object.entries(selectedTemplate.placeholders).forEach(([key, config]) => {
