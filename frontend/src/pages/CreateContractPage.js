@@ -659,14 +659,14 @@ Email: ${templateData.tenant_email || '[Email]'}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Left: Contract Preview */}
             <div className="minimal-card lg:sticky lg:top-4 h-fit" data-testid="contract-preview-card">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="flex items-center gap-2">
-                <Eye className="h-5 w-5" />
+            <div className="p-6 border-b border-gray-100 flex flex-row items-center justify-between">
+              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                <Eye className="h-5 w-5 text-blue-500" />
                 {manualEditMode ? 'Редактировать договор' : 'Предпросмотр договора'}
                 {isContentSaved && !manualEditMode && (
                   <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">✓ Отредактировано</span>
                 )}
-              </CardTitle>
+              </h3>
               <div className="flex gap-2">
                 {!manualEditMode && (
                   <Button
