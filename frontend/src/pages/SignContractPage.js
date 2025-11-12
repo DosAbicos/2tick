@@ -1105,8 +1105,8 @@ const SignContractPage = () => {
               </motion.div>
             )}
 
-            {/* Step 4: Success */}
-            {step === 4 && (
+            {/* Step 6: Success */}
+            {step === 6 && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
