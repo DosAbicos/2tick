@@ -572,32 +572,15 @@ Email: ${templateData.tenant_email || '[Email]'}
           Назад
         </button>
         
-        {selectedTemplate && (
-          <div className="minimal-card p-6 mb-6">
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">{t('contract.create.title')}</h1>
-                {loadingTemplate && (
-                  <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg inline-block">
-                    <p className="text-sm text-blue-800">⏳ Загрузка шаблона...</p>
-                  </div>
-                )}
-                {!loadingTemplate && (
-                  <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded-lg inline-block">
-                    <p className="text-sm text-green-800">✓ <strong>{selectedTemplate.title}</strong></p>
-                  </div>
-                )}
-              </div>
-              {nextContractNumber && (
-                <div className="text-right">
-                  <p className="text-sm text-gray-500">Номер договора</p>
-                  <p className="text-2xl font-bold text-gray-900">{nextContractNumber}</p>
-                </div>
-              )}
-            </div>
-            <p className="text-sm text-gray-600">Заполните поля справа, договор автоматически обновится слева</p>
+        <div className="minimal-card p-6 sm:p-8">
+          <div className="mb-6">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+              {selectedTemplate ? selectedTemplate.title : 'Создать договор'}
+            </h1>
+            <p className="text-sm text-gray-500">
+              {loadingTemplate ? 'Загрузка шаблона...' : 'Заполните данные для создания договора'}
+            </p>
           </div>
-        )}
 
         {/* Only show form if template is selected */}
         {selectedTemplate ? (
