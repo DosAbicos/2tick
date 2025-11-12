@@ -269,12 +269,16 @@ const CreateContractPage = () => {
             }
             
             const displayValue = result.toString() || `[${config.label}]`;
-            const highlightClass = isFilled ? 'bg-green-100 border-green-300 text-green-900' : 'bg-yellow-100 border-yellow-400 text-yellow-900';
-            content = content.replace(regex, `<span class="px-2 py-0.5 rounded border ${highlightClass} font-semibold">${displayValue}</span>`);
+            const highlightClass = isFilled 
+              ? 'bg-emerald-50 border-emerald-200 text-emerald-700' 
+              : 'bg-amber-50 border-amber-200 text-amber-700';
+            content = content.replace(regex, `<span class="inline-block px-2 py-0.5 rounded-md border ${highlightClass} font-medium transition-all duration-300 shadow-sm">${displayValue}</span>`);
           } else {
             // Highlight filled vs unfilled placeholders
-            const highlightClass = isFilled ? 'bg-green-100 border-green-300 text-green-900' : 'bg-yellow-100 border-yellow-400 text-yellow-900';
-            content = content.replace(regex, `<span class="px-2 py-0.5 rounded border ${highlightClass} font-semibold">${value}</span>`);
+            const highlightClass = isFilled 
+              ? 'bg-emerald-50 border-emerald-200 text-emerald-700' 
+              : 'bg-amber-50 border-amber-200 text-amber-700';
+            content = content.replace(regex, `<span class="inline-block px-2 py-0.5 rounded-md border ${highlightClass} font-medium transition-all duration-300 shadow-sm">${value}</span>`);
           }
         });
       }
