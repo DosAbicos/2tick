@@ -474,21 +474,17 @@ const SignContractPage = () => {
                 animate={{ opacity: 1 }}
                 data-testid="step-view-contract"
               >
-                <div className="bg-neutral-50 p-4 rounded-lg border mb-6">
-                  {contract.content_type === 'html' ? (
-                    <div 
-                      className="prose prose-sm max-w-none"
-                      style={{
-                        fontFamily: 'IBM Plex Sans, sans-serif',
-                        fontSize: '14px',
-                        lineHeight: '1.6'
-                      }}
-                      dangerouslySetInnerHTML={{ __html: contract.content }}
-                      data-testid="contract-preview"
-                    />
-                  ) : (
-                    <pre className="whitespace-pre-wrap text-sm" data-testid="contract-preview">{contract.content}</pre>
-                  )}
+                <div className="bg-white p-6 rounded-lg border border-gray-200 mb-6">
+                  <div 
+                    className="whitespace-pre-wrap text-sm leading-relaxed text-gray-800"
+                    style={{
+                      fontFamily: 'IBM Plex Sans, sans-serif',
+                      fontSize: '14px',
+                      lineHeight: '1.6'
+                    }}
+                    dangerouslySetInnerHTML={{ __html: highlightPlaceholders(contract.content) }}
+                    data-testid="contract-preview"
+                  />
                 </div>
                 
                 {(documentUploaded || contract.signature?.document_upload) && !needsInfo ? (
