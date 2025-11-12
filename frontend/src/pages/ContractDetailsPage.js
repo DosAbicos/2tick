@@ -378,9 +378,8 @@ const ContractDetailsPage = () => {
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                 <h3 className="text-lg font-semibold mb-3">Ссылка для подписания</h3>
                 <div className="flex gap-3">
-                  <Button
-                    variant="outline"
-                    className="flex-1"
+                  <button
+                    className="flex-1 px-4 py-3 text-sm font-medium text-gray-700 bg-white border-2 border-blue-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-all flex items-center justify-center gap-2"
                     onClick={() => {
                       const fullLink = `${window.location.origin}${contract.signature_link}`;
                       
