@@ -1040,34 +1040,24 @@ const SignContractPage = () => {
                     </div>
                   </div>
                 ) : verificationMethod === 'sms' ? (
-                  // SMS verification - redesigned
+                  // SMS verification - Neumorphism style
                   <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.3 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
                     className="space-y-6"
                   >
                     <div className="text-center">
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ type: "spring", stiffness: 200 }}
-                        className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg shadow-blue-500/30"
-                      >
-                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="w-16 h-16 mx-auto mb-4 neuro-card flex items-center justify-center">
+                        <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                         </svg>
-                      </motion.div>
+                      </div>
                       <h3 className="text-xl font-bold text-gray-900 mb-2">SMS верификация</h3>
                       <p className="text-sm text-gray-600 mb-4">Введите 6-значный код из SMS</p>
                       {mockOtp && (
-                        <motion.div
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className="bg-gradient-to-r from-amber-50 to-yellow-50 p-4 rounded-xl border-2 border-amber-200 mb-4 shadow-md"
-                        >
-                          <p className="text-sm text-amber-900 font-medium">🔐 Тестовый код: <strong className="text-xl">{mockOtp}</strong></p>
-                        </motion.div>
+                        <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-200 mb-4">
+                          <p className="text-sm text-blue-900 font-medium">🔐 Тестовый код: <strong className="text-lg">{mockOtp}</strong></p>
+                        </div>
                       )}
                     </div>
                     
@@ -1087,24 +1077,20 @@ const SignContractPage = () => {
                     </div>
                     
                     <div className="flex gap-3">
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
+                      <button
                         onClick={() => setVerificationMethod('')}
-                        className="flex-1 py-4 px-4 text-base font-medium text-gray-700 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl hover:from-gray-200 hover:to-gray-300 transition-all shadow-md"
+                        className="neuro-button flex-1 py-3"
                       >
                         ← Назад
-                      </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
+                      </button>
+                      <button
                         onClick={handleVerifyOTP}
                         disabled={verifying || otpValue.length !== 6}
-                        className="flex-1 py-4 px-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="neuro-button-primary flex-1 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
                         data-testid="otp-verify-button"
                       >
                         {verifying ? 'Проверяем...' : '✓ Подтвердить'}
-                      </motion.button>
+                      </button>
                     </div>
                     
                     <button
@@ -1112,7 +1098,7 @@ const SignContractPage = () => {
                       disabled={smsCooldown > 0}
                       className="w-full text-sm text-blue-600 font-medium hover:text-blue-700 hover:underline disabled:opacity-50 disabled:cursor-not-allowed py-2"
                     >
-                      {smsCooldown > 0 ? `⏱ Повторить через ${smsCooldown}с` : '↻ Отправить код повторно'}
+                      {smsCooldown > 0 ? `Повторить через ${smsCooldown}с` : '↻ Отправить код повторно'}
                     </button>
                   </motion.div>
                 ) : verificationMethod === 'call' ? (
