@@ -540,13 +540,7 @@ const SignContractPage = () => {
                 </div>
                 
                 <button
-                  onClick={() => {
-                    if (needsInfo) {
-                      setStep(1.5); // Go to info filling step
-                    } else {
-                      setStep(2); // Go directly to upload
-                    }
-                  }}
+                  onClick={() => setStep(1.5)}
                   className="w-full py-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30"
                   data-testid="proceed-button"
                 >
