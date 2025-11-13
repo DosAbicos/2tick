@@ -673,11 +673,10 @@ const SignContractPage = () => {
                           className={`minimal-input w-full ${signerInfo.email && !validateEmail(signerInfo.email) ? 'border-red-500' : ''}`}
                           placeholder="example@mail.com"
                         />
-                        {signerInfo.email && !validateEmail(signerInfo.email) && (
-                          <p className="text-xs text-red-500 mt-1">Введите корректный email</p>
-                        )}
-                      </div>
-                    )}
+                      {signerInfo.email && !validateEmail(signerInfo.email) && (
+                        <p className="text-xs text-red-500 mt-1">Введите корректный email</p>
+                      )}
+                    </div>
                   </>
                 )}
                 
