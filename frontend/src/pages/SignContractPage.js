@@ -1145,58 +1145,84 @@ const SignContractPage = () => {
                     </div>
                   </motion.div>
                 ) : verificationMethod === 'telegram' ? (
-                  // Telegram verification
-                  <div className="space-y-4">
+                  // Telegram verification - redesigned
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-6"
+                  >
                     <div className="text-center">
-                      <div className="text-4xl mb-4">💬</div>
-                      <h3 className="text-lg font-semibold mb-2">Введите код из Telegram</h3>
-                      <p className="text-sm text-neutral-600 mb-4">
-                        Скопируйте код из чата с ботом @twotick_bot
+                      <motion.div
+                        initial={{ scale: 0, rotate: 360 }}
+                        animate={{ scale: 1, rotate: 0 }}
+                        transition={{ type: "spring", stiffness: 200 }}
+                        className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-[#0088cc] to-[#0077b3] rounded-full flex items-center justify-center shadow-lg shadow-[#0088cc]/40"
+                      >
+                        <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+                        </svg>
+                      </motion.div>
+                      <h3 className="text-xl font-bold text-gray-900 mb-2">Telegram верификация</h3>
+                      <p className="text-sm text-gray-600 mb-4">
+                        Скопируйте код из чата с ботом <span className="font-semibold text-[#0088cc]">@twotick_bot</span>
                       </p>
-                      <div className="bg-blue-50 p-3 rounded-lg border border-blue-200 mb-4">
-                        <p className="text-xs text-blue-900">
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="bg-gradient-to-r from-[#e3f2fd] to-[#bbdefb] p-4 rounded-xl border-2 border-[#0088cc]/30 mb-4 shadow-md"
+                      >
+                        <p className="text-sm text-[#01579b] font-medium">
                           💡 Код отправлен в Telegram. Если не получили - нажмите кнопку ниже
                         </p>
-                      </div>
+                      </motion.div>
                     </div>
                     
-                    <input
+                    <motion.input
+                      initial={{ scale: 0.9 }}
+                      animate={{ scale: 1 }}
                       type="text"
                       maxLength={6}
                       value={telegramCode}
                       onChange={(e) => setTelegramCode(e.target.value.replace(/\D/g, ''))}
-                      className="w-full px-4 py-3 text-center text-2xl tracking-widest border rounded-lg"
-                      placeholder="_ _ _ _ _ _"
+                      className="w-full px-4 py-5 text-center text-3xl font-bold tracking-[0.5em] border-2 border-[#0088cc]/30 bg-gradient-to-br from-[#e3f2fd] to-[#bbdefb] rounded-xl focus:outline-none focus:border-[#0088cc] focus:ring-4 focus:ring-[#0088cc]/20 transition-all shadow-md"
+                      placeholder="______"
                       data-testid="telegram-code-input"
                       autoFocus
                     />
                     
                     <div className="flex gap-3">
-                      <button
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
                         onClick={() => setVerificationMethod('')}
-                        className="flex-1 py-3 px-4 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all"
+                        className="flex-1 py-4 px-4 text-base font-medium text-gray-700 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl hover:from-gray-200 hover:to-gray-300 transition-all shadow-md"
                       >
                         ← Назад
-                      </button>
-                      <button
+                      </motion.button>
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
                         onClick={handleVerifyTelegramOTP}
                         disabled={verifying || telegramCode.length !== 6}
-                        className="flex-1 py-3 px-4 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex-1 py-4 px-4 text-base font-semibold text-white bg-gradient-to-r from-[#0088cc] to-[#0077b3] rounded-xl hover:from-[#0077b3] hover:to-[#006699] transition-all shadow-lg shadow-[#0088cc]/30 disabled:opacity-50 disabled:cursor-not-allowed"
                         data-testid="telegram-verify-button"
                       >
-                        {verifying ? 'Проверяем...' : 'Подтвердить'}
-                      </button>
+                        {verifying ? 'Проверяем...' : '✓ Подтвердить'}
+                      </motion.button>
                     </div>
                     
-                    <a
+                    <motion.a
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                       href={telegramDeepLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block w-full text-sm text-center text-primary hover:underline"
+                      className="block w-full text-center py-3 px-4 text-sm font-medium text-[#0088cc] hover:text-[#0077b3] hover:underline bg-[#e3f2fd] hover:bg-[#bbdefb] rounded-xl transition-all"
                     >
-                      🔄 Отправить код повторно (открыть Telegram)
-                    </a>
-                  </div>
+                      ↻ Отправить код повторно (открыть Telegram)
+                    </motion.a>
+                  </motion.div>
                 ) : null}
               </motion.div>
             )}
