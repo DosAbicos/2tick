@@ -1108,6 +1108,11 @@ class BackendTester:
         self.log("\n🔍 ТЕСТИРОВАНИЕ ИСПРАВЛЕНИЯ: 'Signer phone not found' при верификации")
         self.log("=" * 80)
         
+        # First authenticate as admin
+        if not self.login_as_admin():
+            self.log("❌ Не удалось войти как админ. Пропускаем тесты.")
+            return False
+        
         all_tests_passed = True
         
         # ТЕСТ 1: Проверка SMS верификации с плейсхолдерами
