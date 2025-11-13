@@ -135,24 +135,32 @@ const SignContractPage = () => {
     fetchContract();
   }, [id]);
   
-  // Restore state from localStorage AFTER contract is loaded
+  // Restore state from localStorage ONLY on initial mount
+  const [hasRestoredState, setHasRestoredState] = useState(false);
+  
   useEffect(() => {
-    if (contract && !loading) {
+    if (contract && !loading && !hasRestoredState) {
       const savedState = localStorage.getItem(`contract_${id}_state`);
       if (savedState) {
         try {
           const parsed = JSON.parse(savedState);
           console.log('Restoring saved state:', parsed);
-          if (parsed.step !== undefined && parsed.step !== 1) setStep(parsed.step);
+          if (parsed.step !== undefined && parsed.step !== 1) {
+            setStep(parsed.step);
+          }
           if (parsed.signerInfo) setSignerInfo(parsed.signerInfo);
           if (parsed.placeholderValues) setPlaceholderValues(parsed.placeholderValues);
           if (parsed.documentUploaded) setDocumentUploaded(parsed.documentUploaded);
+          setHasRestoredState(true);
         } catch (e) {
           console.error('Failed to restore state:', e);
+          setHasRestoredState(true);
         }
+      } else {
+        setHasRestoredState(true);
       }
     }
-  }, [contract, loading, id]);
+  }, [contract, loading, id, hasRestoredState]);
   
   // Save state to localStorage whenever it changes
   useEffect(() => {
