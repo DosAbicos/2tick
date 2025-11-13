@@ -2381,8 +2381,17 @@ async def request_otp(contract_id: str, method: str = "sms"):
     if not contract:
         raise HTTPException(status_code=404, detail="Contract not found")
     
-    # Get the phone number (contract might have been updated by signer)
+    # Try to get phone from signer_phone field first
     phone_to_use = contract.get('signer_phone')
+    
+    # If not found and contract has placeholder_values, search there
+    if not phone_to_use and contract.get('placeholder_values'):
+        placeholder_values = contract.get('placeholder_values', {})
+        # Try common phone field keys
+        for key in ['tenant_phone', 'signer_phone', 'client_phone', 'phone']:
+            if key in placeholder_values and placeholder_values[key]:
+                phone_to_use = placeholder_values[key]
+                break
     
     if not phone_to_use:
         raise HTTPException(status_code=400, detail="Signer phone number is required")
