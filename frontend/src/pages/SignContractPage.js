@@ -211,10 +211,9 @@ const SignContractPage = () => {
         }
       }
       
-      // Check if document already uploaded by landlord
-      if (contractData.signature?.document_upload) {
-        setDocumentUploaded(true);
-      }
+      // NOTE: Do NOT set documentUploaded here - it should only track CLIENT uploads
+      // contractData.signature?.document_upload indicates landlord uploaded the document
+      // documentUploaded state tracks if CLIENT uploaded in current session
       
       // Check if already signed
       if (contractData.status === 'signed') {
