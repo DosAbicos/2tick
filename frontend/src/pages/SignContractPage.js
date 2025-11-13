@@ -264,6 +264,10 @@ const SignContractPage = () => {
       await axios.post(`${API}/sign/${id}/upload-document`, formData);
       toast.success('Документ загружен успешно!');
       setDocumentUploaded(true); // Mark as uploaded
+      
+      // Reload contract to get updated signature with document_upload
+      const updatedContractResponse = await axios.get(`${API}/sign/${id}`);
+      setContract(updatedContractResponse.data);
     } catch (error) {
       toast.error(error.response?.data?.detail || t('common.error'));
     } finally {
