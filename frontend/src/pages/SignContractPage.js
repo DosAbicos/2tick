@@ -355,6 +355,44 @@ const SignContractPage = () => {
     }
   };
 
+  const handleDownloadContract = async () => {
+    try {
+      const response = await axios.get(`${API}/contracts/${id}/download-pdf`, {
+        responseType: 'blob'
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `contract_${contract.contract_code || id}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast.success('Договор скачан');
+    } catch (error) {
+      toast.error('Ошибка скачивания договора');
+    }
+  };
+
+  const handleDownloadDocument = () => {
+    try {
+      if (!contract.signature?.document_upload) {
+        toast.error('Документ не загружен');
+        return;
+      }
+      
+      // Create download link for base64 image
+      const link = document.createElement('a');
+      link.href = `data:image/jpeg;base64,${contract.signature.document_upload}`;
+      link.download = `document_${contract.contract_code || id}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast.success('Документ скачан');
+    } catch (error) {
+      toast.error('Ошибка скачивания документа');
+    }
+  };
+
   const handleRequestOTP = async (method = 'sms') => {
     if (smsCooldown > 0) return;
     
