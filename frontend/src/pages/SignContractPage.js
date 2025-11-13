@@ -137,30 +137,52 @@ const SignContractPage = () => {
   
   // Restore state from localStorage ONLY on initial mount
   const [hasRestoredState, setHasRestoredState] = useState(false);
+  const [shouldRestoreState, setShouldRestoreState] = useState(true);
   
   useEffect(() => {
-    if (contract && !loading && !hasRestoredState) {
+    if (contract && !loading && !hasRestoredState && shouldRestoreState) {
       const savedState = localStorage.getItem(`contract_${id}_state`);
       if (savedState) {
         try {
           const parsed = JSON.parse(savedState);
-          console.log('Restoring saved state:', parsed);
-          if (parsed.step !== undefined && parsed.step !== 1) {
-            setStep(parsed.step);
+          console.log('🔄 Restoring saved state:', parsed);
+          
+          // Restore all state
+          if (parsed.signerInfo) {
+            console.log('Restoring signerInfo:', parsed.signerInfo);
+            setSignerInfo(parsed.signerInfo);
           }
-          if (parsed.signerInfo) setSignerInfo(parsed.signerInfo);
-          if (parsed.placeholderValues) setPlaceholderValues(parsed.placeholderValues);
-          if (parsed.documentUploaded) setDocumentUploaded(parsed.documentUploaded);
+          if (parsed.placeholderValues) {
+            console.log('Restoring placeholderValues:', parsed.placeholderValues);
+            setPlaceholderValues(parsed.placeholderValues);
+          }
+          if (parsed.documentUploaded) {
+            console.log('Restoring documentUploaded:', parsed.documentUploaded);
+            setDocumentUploaded(parsed.documentUploaded);
+          }
+          
+          // Restore step LAST after a small delay to ensure other state is set
+          if (parsed.step !== undefined && parsed.step !== 1) {
+            console.log('Restoring step:', parsed.step);
+            setTimeout(() => {
+              setStep(parsed.step);
+            }, 100);
+          }
+          
           setHasRestoredState(true);
+          setShouldRestoreState(false);
         } catch (e) {
           console.error('Failed to restore state:', e);
           setHasRestoredState(true);
+          setShouldRestoreState(false);
         }
       } else {
+        console.log('No saved state found');
         setHasRestoredState(true);
+        setShouldRestoreState(false);
       }
     }
-  }, [contract, loading, id, hasRestoredState]);
+  }, [contract, loading, id, hasRestoredState, shouldRestoreState]);
   
   // Save state to localStorage whenever it changes
   useEffect(() => {
