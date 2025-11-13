@@ -715,8 +715,8 @@ const SignContractPage = () => {
                   <p className="text-gray-600 text-sm">Удостоверение личности или паспорт для верификации</p>
                 </div>
                 
-                {/* Show uploaded document if exists (either from landlord or client) */}
-                {(contract.signature?.document_upload || documentUploaded) && (
+                {/* Show uploaded document status */}
+                {documentUploaded && (
                   <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-4 mb-4">
                     <div className="flex items-start gap-3">
                       <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
@@ -724,12 +724,10 @@ const SignContractPage = () => {
                       </div>
                       <div className="flex-1">
                         <p className="font-semibold text-green-900">
-                          {contract.signature?.document_upload ? 'Документ загружен наймодателем' : 'Документ успешно загружен!'}
+                          Документ успешно загружен!
                         </p>
                         <p className="text-sm text-green-700">
-                          {contract.signature?.document_upload 
-                            ? 'Наймодатель загрузил ваше удостоверение личности' 
-                            : 'Вы можете загрузить другой файл при необходимости'}
+                          Вы можете загрузить другой файл при необходимости
                         </p>
                       </div>
                     </div>
