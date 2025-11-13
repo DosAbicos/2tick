@@ -625,7 +625,7 @@ const SignContractPage = () => {
                 </div>
                 
                 <button
-                  onClick={() => setStep(1.5)}
+                  onClick={() => setStep(needsInfo ? 1.5 : 2)}
                   className="w-full py-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30"
                   data-testid="proceed-button"
                 >
