@@ -133,7 +133,32 @@ const SignContractPage = () => {
 
   useEffect(() => {
     fetchContract();
+    
+    // Restore state from localStorage on mount
+    const savedState = localStorage.getItem(`contract_${id}_state`);
+    if (savedState) {
+      try {
+        const parsed = JSON.parse(savedState);
+        if (parsed.step) setStep(parsed.step);
+        if (parsed.signerInfo) setSignerInfo(parsed.signerInfo);
+        if (parsed.placeholderValues) setPlaceholderValues(parsed.placeholderValues);
+        if (parsed.documentUploaded) setDocumentUploaded(parsed.documentUploaded);
+      } catch (e) {
+        console.error('Failed to restore state:', e);
+      }
+    }
   }, [id]);
+  
+  // Save state to localStorage whenever it changes
+  useEffect(() => {
+    const stateToSave = {
+      step,
+      signerInfo,
+      placeholderValues,
+      documentUploaded
+    };
+    localStorage.setItem(`contract_${id}_state`, JSON.stringify(stateToSave));
+  }, [step, signerInfo, placeholderValues, documentUploaded, id]);
 
   // Pre-fetch Telegram deep link when step 5 is reached (verification step)
   useEffect(() => {
