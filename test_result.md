@@ -833,6 +833,21 @@ frontend:
     stuck_count: 0
     priority: "critical"
     needs_retesting: false
+
+  - task: "Исправление ошибки 'Signer phone not found' при верификации"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "user"
+        comment: "ПРОБЛЕМА: При попытке подписать договор через Call верификацию (входящий звонок) выходит ошибка 'Signer phone not found'. Проблема возникает когда клиент заполнил данные через новую систему с плейсхолдерами."
+      - working: "NA"
+        agent: "main"
+        comment: "ИСПРАВЛЕНО: В endpoints /api/sign/{contract_id}/request-otp и /api/sign/{contract_id}/request-call-otp добавлена логика поиска телефона в двух местах: 1) Сначала проверяется contract.signer_phone (старое поле), 2) Если не найдено и есть placeholder_values, ищет в ключах: tenant_phone, signer_phone, client_phone, phone. Теперь верификация работает для обеих систем - старой (прямые поля) и новой (плейсхолдеры). Backend перезапущен."
     status_history:
       - working: true
         agent: "testing"
