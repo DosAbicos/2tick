@@ -133,32 +133,40 @@ const SignContractPage = () => {
 
   useEffect(() => {
     fetchContract();
-    
-    // Restore state from localStorage on mount
-    const savedState = localStorage.getItem(`contract_${id}_state`);
-    if (savedState) {
-      try {
-        const parsed = JSON.parse(savedState);
-        if (parsed.step) setStep(parsed.step);
-        if (parsed.signerInfo) setSignerInfo(parsed.signerInfo);
-        if (parsed.placeholderValues) setPlaceholderValues(parsed.placeholderValues);
-        if (parsed.documentUploaded) setDocumentUploaded(parsed.documentUploaded);
-      } catch (e) {
-        console.error('Failed to restore state:', e);
+  }, [id]);
+  
+  // Restore state from localStorage AFTER contract is loaded
+  useEffect(() => {
+    if (contract && !loading) {
+      const savedState = localStorage.getItem(`contract_${id}_state`);
+      if (savedState) {
+        try {
+          const parsed = JSON.parse(savedState);
+          console.log('Restoring saved state:', parsed);
+          if (parsed.step !== undefined && parsed.step !== 1) setStep(parsed.step);
+          if (parsed.signerInfo) setSignerInfo(parsed.signerInfo);
+          if (parsed.placeholderValues) setPlaceholderValues(parsed.placeholderValues);
+          if (parsed.documentUploaded) setDocumentUploaded(parsed.documentUploaded);
+        } catch (e) {
+          console.error('Failed to restore state:', e);
+        }
       }
     }
-  }, [id]);
+  }, [contract, loading, id]);
   
   // Save state to localStorage whenever it changes
   useEffect(() => {
-    const stateToSave = {
-      step,
-      signerInfo,
-      placeholderValues,
-      documentUploaded
-    };
-    localStorage.setItem(`contract_${id}_state`, JSON.stringify(stateToSave));
-  }, [step, signerInfo, placeholderValues, documentUploaded, id]);
+    if (contract) {
+      const stateToSave = {
+        step,
+        signerInfo,
+        placeholderValues,
+        documentUploaded
+      };
+      console.log('Saving state to localStorage:', stateToSave);
+      localStorage.setItem(`contract_${id}_state`, JSON.stringify(stateToSave));
+    }
+  }, [step, signerInfo, placeholderValues, documentUploaded, id, contract]);
 
   // Pre-fetch Telegram deep link when step 5 is reached (verification step)
   useEffect(() => {
