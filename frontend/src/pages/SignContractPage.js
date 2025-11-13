@@ -101,6 +101,19 @@ const SignContractPage = () => {
     return {};
   };
   
+  const getInitialUnfilledPlaceholders = () => {
+    const savedState = localStorage.getItem(`contract_${id}_state`);
+    if (savedState) {
+      try {
+        const parsed = JSON.parse(savedState);
+        return parsed.unfilledPlaceholders || [];
+      } catch (e) {
+        return [];
+      }
+    }
+    return [];
+  };
+  
   // Signer info form
   const [signerInfo, setSignerInfo] = useState(getInitialSignerInfo);
   const [needsInfo, setNeedsInfo] = useState(false);
