@@ -60,17 +60,53 @@ const SignContractPage = () => {
   const [callCooldown, setCallCooldown] = useState(0);
   const [telegramCooldown, setTelegramCooldown] = useState(0);
   
+  // Initialize from localStorage if available
+  const getInitialSignerInfo = () => {
+    const savedState = localStorage.getItem(`contract_${id}_state`);
+    if (savedState) {
+      try {
+        const parsed = JSON.parse(savedState);
+        return parsed.signerInfo || { name: '', phone: '', email: '' };
+      } catch (e) {
+        return { name: '', phone: '', email: '' };
+      }
+    }
+    return { name: '', phone: '', email: '' };
+  };
+  
+  const getInitialPlaceholderValues = () => {
+    const savedState = localStorage.getItem(`contract_${id}_state`);
+    if (savedState) {
+      try {
+        const parsed = JSON.parse(savedState);
+        return parsed.placeholderValues || {};
+      } catch (e) {
+        return {};
+      }
+    }
+    return {};
+  };
+  
+  const getInitialDocumentUploaded = () => {
+    const savedState = localStorage.getItem(`contract_${id}_state`);
+    if (savedState) {
+      try {
+        const parsed = JSON.parse(savedState);
+        return parsed.documentUploaded || false;
+      } catch (e) {
+        return false;
+      }
+    }
+    return false;
+  };
+  
   // Signer info form
-  const [signerInfo, setSignerInfo] = useState({
-    name: '',
-    phone: '',
-    email: ''
-  });
+  const [signerInfo, setSignerInfo] = useState(getInitialSignerInfo);
   const [needsInfo, setNeedsInfo] = useState(false);
   
   // Template and placeholder states
   const [template, setTemplate] = useState(null);
-  const [placeholderValues, setPlaceholderValues] = useState({});
+  const [placeholderValues, setPlaceholderValues] = useState(getInitialPlaceholderValues);
   const [unfilledPlaceholders, setUnfilledPlaceholders] = useState([]);
 
   // Function to highlight placeholders in content
