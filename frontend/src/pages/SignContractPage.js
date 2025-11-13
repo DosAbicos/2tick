@@ -287,13 +287,8 @@ const SignContractPage = () => {
       if (contractData.status === 'signed') {
         setStep(6); // Go directly to success
       } else {
-        // Check if there's saved state - if not, start with step 1
-        const savedState = localStorage.getItem(`contract_${id}_state`);
-        if (!savedState) {
-          setStep(1); // Only set to 1 if no saved state
-        }
-        
-        // Check if we need additional info
+        // Don't modify step here - it's already initialized from localStorage
+        // Only check if we need additional info for needsInfo flag
         let needsInfoFlag = false;
         
         // If contract has template, check unfilled tenant placeholders
