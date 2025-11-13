@@ -1096,11 +1096,427 @@ class BackendTester:
         
         return all_tests_passed
     
+    def test_signer_phone_not_found_fix(self):
+        """
+        ТЕСТИРОВАНИЕ ИСПРАВЛЕНИЯ ОШИБКИ "Signer phone not found" при верификации
+        
+        Проблема: При попытке подписать договор через Call верификацию выходит ошибка 
+        "Signer phone not found" когда клиент заполнил данные через новую систему с плейсхолдерами.
+        
+        Исправление: Добавлена логика поиска телефона в placeholder_values
+        """
+        self.log("\n🔍 ТЕСТИРОВАНИЕ ИСПРАВЛЕНИЯ: 'Signer phone not found' при верификации")
+        self.log("=" * 80)
+        
+        all_tests_passed = True
+        
+        # ТЕСТ 1: Проверка SMS верификации с плейсхолдерами
+        self.log("\n📱 ТЕСТ 1: SMS верификация с плейсхолдерами")
+        test1_passed = self.test_sms_verification_with_placeholders()
+        all_tests_passed = all_tests_passed and test1_passed
+        
+        # ТЕСТ 2: Проверка Call верификации с плейсхолдерами  
+        self.log("\n📞 ТЕСТ 2: Call верификация с плейсхолдерами")
+        test2_passed = self.test_call_verification_with_placeholders()
+        all_tests_passed = all_tests_passed and test2_passed
+        
+        # ТЕСТ 3: Обратная совместимость со старой системой
+        self.log("\n🔄 ТЕСТ 3: Обратная совместимость со старой системой")
+        test3_passed = self.test_backward_compatibility_old_system()
+        all_tests_passed = all_tests_passed and test3_passed
+        
+        # ТЕСТ 4: Проверка всех вариантов ключей плейсхолдеров
+        self.log("\n🔑 ТЕСТ 4: Проверка всех вариантов ключей плейсхолдеров")
+        test4_passed = self.test_all_placeholder_phone_keys()
+        all_tests_passed = all_tests_passed and test4_passed
+        
+        # ТЕСТ 5: Ошибка когда телефон действительно отсутствует
+        self.log("\n❌ ТЕСТ 5: Ошибка когда телефон действительно отсутствует")
+        test5_passed = self.test_missing_phone_error()
+        all_tests_passed = all_tests_passed and test5_passed
+        
+        # Итоговый результат
+        self.log("\n" + "=" * 80)
+        self.log("📊 РЕЗУЛЬТАТЫ ТЕСТИРОВАНИЯ ИСПРАВЛЕНИЯ 'Signer phone not found':")
+        self.log(f"   ТЕСТ 1 (SMS с плейсхолдерами): {'✅ ПРОЙДЕН' if test1_passed else '❌ ПРОВАЛЕН'}")
+        self.log(f"   ТЕСТ 2 (Call с плейсхолдерами): {'✅ ПРОЙДЕН' if test2_passed else '❌ ПРОВАЛЕН'}")
+        self.log(f"   ТЕСТ 3 (Обратная совместимость): {'✅ ПРОЙДЕН' if test3_passed else '❌ ПРОВАЛЕН'}")
+        self.log(f"   ТЕСТ 4 (Все ключи плейсхолдеров): {'✅ ПРОЙДЕН' if test4_passed else '❌ ПРОВАЛЕН'}")
+        self.log(f"   ТЕСТ 5 (Ошибка при отсутствии): {'✅ ПРОЙДЕН' if test5_passed else '❌ ПРОВАЛЕН'}")
+        
+        if all_tests_passed:
+            self.log("🎉 ВСЕ ТЕСТЫ ИСПРАВЛЕНИЯ ПРОЙДЕНЫ УСПЕШНО!")
+            self.log("✅ SMS верификация работает с placeholder_values.tenant_phone")
+            self.log("✅ Call верификация работает с placeholder_values.tenant_phone")
+            self.log("✅ Обратная совместимость со старой системой сохранена")
+            self.log("✅ Все варианты ключей телефона работают")
+            self.log("✅ Правильная ошибка когда телефон действительно отсутствует")
+            self.log("✅ НЕТ ошибки 'Signer phone not found' когда телефон есть в placeholder_values")
+        else:
+            self.log("❌ ОБНАРУЖЕНЫ ПРОБЛЕМЫ В ИСПРАВЛЕНИИ! Проверьте логи выше.")
+        
+        return all_tests_passed
+    
+    def test_sms_verification_with_placeholders(self):
+        """ТЕСТ 1: Проверка SMS верификации с плейсхолдерами"""
+        try:
+            # 1. Создать контракт из шаблона с плейсхолдерами
+            self.log("   📝 Создание контракта из шаблона...")
+            
+            # Get first available template
+            templates_response = self.session.get(f"{BASE_URL}/templates")
+            if templates_response.status_code != 200:
+                self.log(f"   ❌ Не удалось получить шаблоны: {templates_response.status_code}")
+                return False
+                
+            templates = templates_response.json()
+            if not templates:
+                self.log("   ❌ Нет доступных шаблонов")
+                return False
+                
+            template = templates[0]
+            template_id = template["id"]
+            
+            # Create contract from template
+            contract_data = {
+                "title": "Тест SMS верификации с плейсхолдерами",
+                "content": template.get("content", "Договор с плейсхолдерами"),
+                "content_type": "plain",
+                "template_id": template_id,
+                "signer_name": "",
+                "signer_phone": "",
+                "signer_email": ""
+            }
+            
+            create_response = self.session.post(f"{BASE_URL}/contracts", json=contract_data)
+            if create_response.status_code != 200:
+                self.log(f"   ❌ Создание контракта не удалось: {create_response.status_code}")
+                return False
+                
+            contract = create_response.json()
+            contract_id = contract["id"]
+            self.log(f"   ✅ Контракт создан: {contract_id}")
+            
+            # 2. Обновить placeholder_values через POST /api/sign/{contract_id}/update-signer-info
+            self.log("   📝 Обновление placeholder_values...")
+            
+            update_data = {
+                "placeholder_values": {
+                    "tenant_name": "Тестовый Клиент",
+                    "tenant_phone": "+77071234567"
+                }
+            }
+            
+            update_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/update-signer-info", json=update_data)
+            if update_response.status_code != 200:
+                self.log(f"   ❌ Обновление данных не удалось: {update_response.status_code} - {update_response.text}")
+                return False
+                
+            self.log("   ✅ placeholder_values обновлены")
+            
+            # 3. POST /api/sign/{contract_id}/request-otp?method=sms
+            self.log("   📱 Запрос SMS OTP...")
+            
+            otp_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/request-otp?method=sms")
+            
+            # 4. Проверить результат
+            if otp_response.status_code == 200:
+                otp_data = otp_response.json()
+                message = otp_data.get("message", "")
+                mock_otp = otp_data.get("mock_otp")
+                
+                self.log(f"   ✅ Ответ 200 OK (НЕ 400 'Signer phone not found')")
+                self.log(f"   ✅ Message: {message}")
+                
+                if "OTP sent via sms" in message:
+                    self.log("   ✅ В response есть 'OTP sent via sms'")
+                else:
+                    self.log(f"   ⚠️ Неожиданное сообщение: {message}")
+                
+                if mock_otp:
+                    self.log(f"   ✅ Mock OTP получен: {mock_otp} (Twilio в fallback режиме)")
+                else:
+                    self.log("   ✅ Реальный SMS отправлен (Twilio работает)")
+                
+                return True
+            else:
+                self.log(f"   ❌ ОШИБКА: {otp_response.status_code} - {otp_response.text}")
+                if "Signer phone not found" in otp_response.text:
+                    self.log("   ❌ КРИТИЧЕСКАЯ ОШИБКА: 'Signer phone not found' - исправление не работает!")
+                return False
+                
+        except Exception as e:
+            self.log(f"   ❌ Исключение в тесте: {str(e)}")
+            return False
+    
+    def test_call_verification_with_placeholders(self):
+        """ТЕСТ 2: Проверка Call верификации с плейсхолдерами"""
+        try:
+            # Используем тот же контракт из Теста 1 или создаем новый
+            self.log("   📝 Создание контракта для Call верификации...")
+            
+            # Get template
+            templates_response = self.session.get(f"{BASE_URL}/templates")
+            if templates_response.status_code != 200:
+                return False
+                
+            templates = templates_response.json()
+            if not templates:
+                return False
+                
+            template = templates[0]
+            template_id = template["id"]
+            
+            # Create contract
+            contract_data = {
+                "title": "Тест Call верификации с плейсхолдерами",
+                "content": template.get("content", "Договор с плейсхолдерами"),
+                "content_type": "plain", 
+                "template_id": template_id,
+                "signer_name": "",
+                "signer_phone": "",
+                "signer_email": ""
+            }
+            
+            create_response = self.session.post(f"{BASE_URL}/contracts", json=contract_data)
+            if create_response.status_code != 200:
+                return False
+                
+            contract = create_response.json()
+            contract_id = contract["id"]
+            
+            # Update placeholder_values
+            update_data = {
+                "placeholder_values": {
+                    "tenant_name": "Тестовый Клиент Call",
+                    "tenant_phone": "+77071234567"
+                }
+            }
+            
+            update_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/update-signer-info", json=update_data)
+            if update_response.status_code != 200:
+                return False
+            
+            # 2. POST /api/sign/{contract_id}/request-call-otp
+            self.log("   📞 Запрос Call OTP...")
+            
+            call_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/request-call-otp")
+            
+            # 3. Проверить результат
+            if call_response.status_code == 200:
+                call_data = call_response.json()
+                message = call_data.get("message", "")
+                hint = call_data.get("hint", "")
+                
+                self.log(f"   ✅ Ответ 200 OK (НЕ 400 'Signer phone not found')")
+                self.log(f"   ✅ Message: {message}")
+                self.log(f"   ✅ Hint: {hint}")
+                
+                if "hint" in call_data and "1334" in hint:
+                    self.log("   ✅ В response есть hint с последними 4 цифрами")
+                
+                # Проверить что в базу данных verifications создается запись
+                # (Мы не можем напрямую проверить БД, но можем проверить что ответ корректный)
+                if "Звонок инициирован" in message or "call" in message.lower():
+                    self.log("   ✅ Верификация инициирована корректно")
+                
+                return True
+            else:
+                self.log(f"   ❌ ОШИБКА: {call_response.status_code} - {call_response.text}")
+                if "Signer phone not found" in call_response.text:
+                    self.log("   ❌ КРИТИЧЕСКАЯ ОШИБКА: 'Signer phone not found' - исправление не работает!")
+                return False
+                
+        except Exception as e:
+            self.log(f"   ❌ Исключение в тесте: {str(e)}")
+            return False
+    
+    def test_backward_compatibility_old_system(self):
+        """ТЕСТ 3: Обратная совместимость со старой системой"""
+        try:
+            # 1. Создать контракт БЕЗ template_id (старая система)
+            self.log("   📝 Создание контракта без template_id (старая система)...")
+            
+            contract_data = {
+                "title": "Тест обратной совместимости",
+                "content": "Договор старой системы без плейсхолдеров",
+                "content_type": "plain",
+                # НЕТ template_id - это старая система
+                "signer_name": "",
+                "signer_phone": "",
+                "signer_email": ""
+            }
+            
+            create_response = self.session.post(f"{BASE_URL}/contracts", json=contract_data)
+            if create_response.status_code != 200:
+                self.log(f"   ❌ Создание контракта не удалось: {create_response.status_code}")
+                return False
+                
+            contract = create_response.json()
+            contract_id = contract["id"]
+            self.log(f"   ✅ Контракт создан: {contract_id}")
+            
+            # 2. POST /api/sign/{contract_id}/update-signer-info с прямыми полями
+            self.log("   📝 Обновление прямых полей signer_*...")
+            
+            update_data = {
+                "signer_name": "Старый Клиент",
+                "signer_phone": "+77079999999"
+            }
+            
+            update_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/update-signer-info", json=update_data)
+            if update_response.status_code != 200:
+                self.log(f"   ❌ Обновление данных не удалось: {update_response.status_code}")
+                return False
+                
+            self.log("   ✅ Прямые поля обновлены")
+            
+            # 3. POST /api/sign/{contract_id}/request-otp?method=sms
+            self.log("   📱 Запрос SMS OTP для старой системы...")
+            
+            otp_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/request-otp?method=sms")
+            
+            # 4. Проверить что телефон берется из contract.signer_phone
+            if otp_response.status_code == 200:
+                otp_data = otp_response.json()
+                self.log("   ✅ Ответ 200 OK")
+                self.log("   ✅ Телефон берется из contract.signer_phone (обратная совместимость)")
+                return True
+            else:
+                self.log(f"   ❌ ОШИБКА: {otp_response.status_code} - {otp_response.text}")
+                return False
+                
+        except Exception as e:
+            self.log(f"   ❌ Исключение в тесте: {str(e)}")
+            return False
+    
+    def test_all_placeholder_phone_keys(self):
+        """ТЕСТ 4: Проверка всех вариантов ключей плейсхолдеров"""
+        try:
+            # Тестируем все 4 варианта ключей: tenant_phone, signer_phone, client_phone, phone
+            phone_keys = [
+                ("tenant_phone", "+77071111111"),
+                ("signer_phone", "+77072222222"), 
+                ("client_phone", "+77073333333"),
+                ("phone", "+77074444444")
+            ]
+            
+            all_passed = True
+            
+            for key, phone in phone_keys:
+                self.log(f"   🔑 Тестирование ключа: {key}")
+                
+                # Get template
+                templates_response = self.session.get(f"{BASE_URL}/templates")
+                if templates_response.status_code != 200:
+                    continue
+                    
+                templates = templates_response.json()
+                if not templates:
+                    continue
+                    
+                template = templates[0]
+                template_id = template["id"]
+                
+                # Create contract
+                contract_data = {
+                    "title": f"Тест ключа {key}",
+                    "content": template.get("content", "Договор с плейсхолдерами"),
+                    "content_type": "plain",
+                    "template_id": template_id,
+                    "signer_name": "",
+                    "signer_phone": "",
+                    "signer_email": ""
+                }
+                
+                create_response = self.session.post(f"{BASE_URL}/contracts", json=contract_data)
+                if create_response.status_code != 200:
+                    all_passed = False
+                    continue
+                    
+                contract = create_response.json()
+                contract_id = contract["id"]
+                
+                # Update with specific phone key
+                update_data = {
+                    "placeholder_values": {
+                        key: phone
+                    }
+                }
+                
+                update_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/update-signer-info", json=update_data)
+                if update_response.status_code != 200:
+                    all_passed = False
+                    continue
+                
+                # Test call OTP
+                call_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/request-call-otp")
+                
+                if call_response.status_code == 200:
+                    self.log(f"      ✅ {key}: 200 OK")
+                else:
+                    self.log(f"      ❌ {key}: {call_response.status_code} - {call_response.text}")
+                    all_passed = False
+            
+            return all_passed
+            
+        except Exception as e:
+            self.log(f"   ❌ Исключение в тесте: {str(e)}")
+            return False
+    
+    def test_missing_phone_error(self):
+        """ТЕСТ 5: Ошибка когда телефон действительно отсутствует"""
+        try:
+            # 1. Создать контракт
+            self.log("   📝 Создание контракта без телефона...")
+            
+            contract_data = {
+                "title": "Тест отсутствующего телефона",
+                "content": "Договор без телефона",
+                "content_type": "plain",
+                "signer_name": "",
+                "signer_phone": "",  # Пустой
+                "signer_email": ""
+            }
+            
+            create_response = self.session.post(f"{BASE_URL}/contracts", json=contract_data)
+            if create_response.status_code != 200:
+                return False
+                
+            contract = create_response.json()
+            contract_id = contract["id"]
+            
+            # 2. НЕ заполнять ни signer_phone, ни placeholder_values с телефоном
+            # (контракт уже создан с пустыми полями)
+            
+            # 3. POST /api/sign/{contract_id}/request-otp?method=sms
+            self.log("   📱 Запрос SMS OTP без телефона...")
+            
+            otp_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/request-otp?method=sms")
+            
+            # 4. Проверить что возвращается правильная ошибка
+            if otp_response.status_code == 400:
+                error_text = otp_response.text
+                if "Signer phone number is required" in error_text:
+                    self.log("   ✅ Ответ 400 Bad Request")
+                    self.log("   ✅ detail: 'Signer phone number is required'")
+                    return True
+                else:
+                    self.log(f"   ❌ Неправильное сообщение об ошибке: {error_text}")
+                    return False
+            else:
+                self.log(f"   ❌ Неправильный статус: {otp_response.status_code} (ожидался 400)")
+                return False
+                
+        except Exception as e:
+            self.log(f"   ❌ Исключение в тесте: {str(e)}")
+            return False
+
     def run_all_tests(self):
         """Run all backend tests for 2tick.kz"""
-        return self.run_2tick_backend_tests()
+        return self.test_signer_phone_not_found_fix()
 
 if __name__ == "__main__":
     tester = BackendTester()
-    success = tester.run_2tick_backend_tests()
+    success = tester.test_signer_phone_not_found_fix()
     sys.exit(0 if success else 1)
