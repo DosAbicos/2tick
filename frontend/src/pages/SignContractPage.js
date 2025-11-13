@@ -662,10 +662,9 @@ const SignContractPage = () => {
                         />
                     </div>
                     
-                    {(!contract.signer_email) && (
-                      <div>
-                        <label htmlFor="signer_email" className="text-sm font-medium text-gray-700 block mb-2">Email</label>
-                        <input
+                    <div>
+                      <label htmlFor="signer_email" className="text-sm font-medium text-gray-700 block mb-2">Email</label>
+                      <input
                           id="signer_email"
                           type="email"
                           value={signerInfo.email}
