@@ -135,9 +135,9 @@ const SignContractPage = () => {
     fetchContract();
   }, [id]);
 
-  // Pre-fetch Telegram deep link when step 3 is reached (for iOS compatibility)
+  // Pre-fetch Telegram deep link when step 5 is reached (verification step)
   useEffect(() => {
-    if (step === 3 && !telegramDeepLink && !loadingTelegramLink) {
+    if (step === 5 && !telegramDeepLink && !loadingTelegramLink) {
       setLoadingTelegramLink(true);
       axios.get(`${API}/sign/${id}/telegram-deep-link`)
         .then(response => {
