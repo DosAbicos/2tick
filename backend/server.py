@@ -2427,7 +2427,18 @@ async def request_call_otp(contract_id: str):
     if not contract:
         raise HTTPException(status_code=404, detail="Contract not found")
     
+    # Try to get phone from signer_phone field first
     phone = contract.get('signer_phone')
+    
+    # If not found and contract has placeholder_values, search there
+    if not phone and contract.get('placeholder_values'):
+        placeholder_values = contract.get('placeholder_values', {})
+        # Try common phone field keys
+        for key in ['tenant_phone', 'signer_phone', 'client_phone', 'phone']:
+            if key in placeholder_values and placeholder_values[key]:
+                phone = placeholder_values[key]
+                break
+    
     if not phone:
         raise HTTPException(status_code=400, detail="Signer phone not found")
     
