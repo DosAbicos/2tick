@@ -660,8 +660,7 @@ const SignContractPage = () => {
                           required
                           data-testid="signer-phone-input"
                         />
-                      </div>
-                    )}
+                    </div>
                     
                     {(!contract.signer_email) && (
                       <div>
