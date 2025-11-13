@@ -121,7 +121,7 @@ const SignContractPage = () => {
   // Template and placeholder states
   const [template, setTemplate] = useState(null);
   const [placeholderValues, setPlaceholderValues] = useState(getInitialPlaceholderValues);
-  const [unfilledPlaceholders, setUnfilledPlaceholders] = useState([]);
+  const [unfilledPlaceholders, setUnfilledPlaceholders] = useState(getInitialUnfilledPlaceholders);
 
   // Function to highlight placeholders in content
   const highlightPlaceholders = (content) => {
