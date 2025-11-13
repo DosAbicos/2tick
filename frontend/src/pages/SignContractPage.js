@@ -734,7 +734,7 @@ const SignContractPage = () => {
                   </div>
                 )}
                 
-                <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-cyan-50 border-2 border-blue-200 rounded-xl p-6">
+                <div className="bg-gradient-to-br from-blue-50 via-sky-50 to-cyan-50 border-2 border-blue-200 rounded-xl p-6">
                   <label htmlFor="document" className="cursor-pointer block">
                     <div className="border-2 border-dashed border-blue-300 rounded-xl p-8 text-center hover:border-blue-500 hover:bg-white/50 transition-all bg-white/30">
                       <input
@@ -742,7 +742,7 @@ const SignContractPage = () => {
                         type="file"
                         accept="image/*,.pdf"
                         onChange={handleFileUpload}
-                        disabled={uploading || !!contract.signature?.document_upload}
+                        disabled={uploading}
                         className="hidden"
                         data-testid="document-upload-input"
                       />
@@ -750,10 +750,10 @@ const SignContractPage = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                       </svg>
                       <p className="text-base font-medium text-gray-900 mb-1">
-                        {uploading ? 'Загрузка...' : (contract.signature?.document_upload ? 'Документ загружен наймодателем' : (documentUploaded ? 'Нажмите для замены документа' : 'Нажмите для загрузки'))}
+                        {uploading ? 'Загрузка...' : (documentUploaded ? 'Нажмите для замены документа' : 'Нажмите для загрузки')}
                       </p>
                       <p className="text-sm text-gray-500">
-                        {contract.signature?.document_upload ? 'Изменение невозможно' : 'JPEG, PNG, PDF до 10MB'}
+                        JPEG, PNG, PDF до 10MB
                       </p>
                     </div>
                   </label>
