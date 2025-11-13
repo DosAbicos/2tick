@@ -835,7 +835,7 @@ const SignContractPage = () => {
                 
                 <div className="flex gap-3 pt-4">
                   <button
-                    onClick={() => setStep(needsInfo ? 1.5 : 1)}
+                    onClick={() => setStep(1.5)}
                     className="flex-1 py-3 px-4 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all"
                   >
                     ← Назад
