@@ -252,8 +252,11 @@ const SignContractPage = () => {
       if (contractData.status === 'signed') {
         setStep(6); // Go directly to success
       } else {
-        // Always start with step 1 - contract review
-        setStep(1);
+        // Check if there's saved state - if not, start with step 1
+        const savedState = localStorage.getItem(`contract_${id}_state`);
+        if (!savedState) {
+          setStep(1); // Only set to 1 if no saved state
+        }
         
         // Check if we need additional info
         let needsInfoFlag = false;
