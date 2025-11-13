@@ -1108,9 +1108,9 @@ class BackendTester:
         self.log("\n🔍 ТЕСТИРОВАНИЕ ИСПРАВЛЕНИЯ: 'Signer phone not found' при верификации")
         self.log("=" * 80)
         
-        # First authenticate as admin
-        if not self.login_as_admin():
-            self.log("❌ Не удалось войти как админ. Пропускаем тесты.")
+        # First authenticate as creator (register if needed)
+        if not self.login_as_creator():
+            self.log("❌ Не удалось войти как пользователь. Пропускаем тесты.")
             return False
         
         all_tests_passed = True
