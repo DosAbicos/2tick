@@ -37,7 +37,7 @@ const SignContractPage = () => {
   const [loading, setLoading] = useState(true);
   const [otpValue, setOtpValue] = useState('');
   const [uploading, setUploading] = useState(false);
-  const [documentUploaded, setDocumentUploaded] = useState(false); // Track if document is uploaded
+  const [documentUploaded, setDocumentUploaded] = useState(getInitialDocumentUploaded); // Track if document is uploaded
   const [verifying, setVerifying] = useState(false);
   const [mockOtp, setMockOtp] = useState('');
   const [signatureHash, setSignatureHash] = useState('');
