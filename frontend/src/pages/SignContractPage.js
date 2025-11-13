@@ -33,6 +33,20 @@ const SignContractPage = () => {
     return 1;
   };
   
+  // Initialize from localStorage functions
+  const getInitialDocumentUploaded = () => {
+    const savedState = localStorage.getItem(`contract_${id}_state`);
+    if (savedState) {
+      try {
+        const parsed = JSON.parse(savedState);
+        return parsed.documentUploaded || false;
+      } catch (e) {
+        return false;
+      }
+    }
+    return false;
+  };
+
   const [step, setStep] = useState(getInitialStep); // 1: View, 1.5: Fill Info, 2: Upload, 4: Final Review, 5: Verify, 6: Success
   const [loading, setLoading] = useState(true);
   const [otpValue, setOtpValue] = useState('');
