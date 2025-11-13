@@ -700,23 +700,25 @@ const SignContractPage = () => {
               </motion.div>
             )}
 
-            {/* Step 2: Upload Document - only show if document not already uploaded */}
+            {/* Step 2: Upload Document */}
             {step === 2 && !contract.signature?.document_upload && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="space-y-4"
+                className="space-y-6"
                 data-testid="step-upload-document"
               >
-                <div className="text-center">
-                  <FileUp className="h-12 w-12 text-neutral-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">{t('signing.upload_document')}</h3>
-                  <p className="text-neutral-600 text-sm mb-4">Upload your ID or passport for verification</p>
+                <div className="text-center mb-4">
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-r from-purple-600 to-purple-500 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-purple-500/30">
+                    <FileUp className="h-8 w-8 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Загрузите документ</h3>
+                  <p className="text-gray-600 text-sm">Удостоверение личности или паспорт для верификации</p>
                 </div>
                 
-                <div>
-                  <label htmlFor="document" className="cursor-pointer">
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-500 transition-colors">
+                <div className="bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 border-2 border-purple-200 rounded-xl p-6">
+                  <label htmlFor="document" className="cursor-pointer block">
+                    <div className="border-2 border-dashed border-purple-300 rounded-xl p-8 text-center hover:border-purple-500 hover:bg-white/50 transition-all bg-white/30">
                       <input
                         id="document"
                         type="file"
@@ -726,47 +728,48 @@ const SignContractPage = () => {
                         className="hidden"
                         data-testid="document-upload-input"
                       />
-                      <p className="text-sm text-gray-600">
-                        {uploading ? t('common.loading') : 'Click to upload or drag and drop'}
+                      <svg className="w-12 h-12 text-purple-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                      </svg>
+                      <p className="text-base font-medium text-gray-900 mb-1">
+                        {uploading ? 'Загрузка...' : 'Нажмите для загрузки'}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        JPEG, PNG, PDF до 10MB
                       </p>
                     </div>
                   </label>
+                  
+                  {documentUploaded && (
+                    <div className="mt-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-lg p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
+                          <CheckCircle2 className="h-6 w-6 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-semibold text-green-900">Документ успешно загружен!</p>
+                          <p className="text-sm text-green-700">Вы можете загрузить другой файл при необходимости</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
                 
-                {documentUploaded && (
-                  <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded-r">
-                    <div className="flex items-center gap-2 text-green-800">
-                      <CheckCircle2 className="h-5 w-5" />
-                      <span className="font-semibold">Документ успешно загружен!</span>
-                    </div>
-                  </div>
-                )}
-                
                 <div className="flex gap-3">
-                  {!documentUploaded ? (
-                    <button
-                      onClick={() => setStep(1.5)}
-                      className="flex-1 py-3 px-4 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all"
-                      data-testid="back-to-info-button"
-                    >
-                      ← Назад
-                    </button>
-                  ) : null}
+                  <button
+                    onClick={() => setStep(1.5)}
+                    className="flex-1 py-3 px-4 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all"
+                    data-testid="back-to-info-button"
+                  >
+                    ← Назад
+                  </button>
                   {documentUploaded && (
-                    <>
-                      <button
-                        onClick={() => setStep(1.5)}
-                        className="flex-1 py-3 px-4 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all"
-                      >
-                        ← Назад
-                      </button>
-                      <button
-                        onClick={() => setStep(4)}
-                        className="flex-1 py-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/20"
-                      >
-                        Ознакомиться с договором →
-                      </button>
-                    </>
+                    <button
+                      onClick={() => setStep(4)}
+                      className="flex-1 py-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/20"
+                    >
+                      Ознакомиться с договором →
+                    </button>
                   )}
                 </div>
               </motion.div>
