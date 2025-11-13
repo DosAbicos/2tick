@@ -832,30 +832,7 @@ const SignContractPage = () => {
                   </p>
                 </div>
 
-                {/* Download buttons */}
-                <div className="flex gap-3 mb-4">
-                  <button
-                    onClick={handleDownloadContract}
-                    className="flex-1 py-3 px-4 text-sm font-medium text-blue-700 bg-blue-50 border-2 border-blue-200 rounded-lg hover:bg-blue-100 hover:border-blue-300 transition-all flex items-center justify-center gap-2"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    Скачать договор (PDF)
-                  </button>
-                  {documentUploaded && (
-                    <button
-                      onClick={handleDownloadDocument}
-                      className="flex-1 py-3 px-4 text-sm font-medium text-green-700 bg-green-50 border-2 border-green-200 rounded-lg hover:bg-green-100 hover:border-green-300 transition-all flex items-center justify-center gap-2"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      Скачать документ
-                    </button>
-                  )}
-                </div>
-
+                {/* Contract content */}
                 <div className="bg-white p-6 rounded-lg border border-gray-200 max-h-[500px] overflow-y-auto">
                   <div 
                     className="whitespace-pre-wrap text-sm leading-relaxed text-gray-800"
@@ -867,6 +844,20 @@ const SignContractPage = () => {
                     dangerouslySetInnerHTML={{ __html: highlightPlaceholders(contract.content) }}
                   />
                 </div>
+
+                {/* Display uploaded document (ID/passport) if exists */}
+                {contract.signature?.document_upload && (
+                  <div className="bg-white p-6 rounded-lg border border-gray-200">
+                    <h4 className="text-base font-semibold text-gray-900 mb-4">Удостоверение личности клиента</h4>
+                    <div className="relative">
+                      <img 
+                        src={`data:image/jpeg;base64,${contract.signature.document_upload}`} 
+                        alt="Удостоверение личности" 
+                        className="w-full max-w-2xl mx-auto rounded-lg shadow-lg border-2 border-gray-200"
+                      />
+                    </div>
+                  </div>
+                )}
 
                 <div className="flex gap-3">
                   <button
