@@ -101,19 +101,6 @@ const SignContractPage = () => {
     return {};
   };
   
-  const getInitialDocumentUploaded = () => {
-    const savedState = localStorage.getItem(`contract_${id}_state`);
-    if (savedState) {
-      try {
-        const parsed = JSON.parse(savedState);
-        return parsed.documentUploaded || false;
-      } catch (e) {
-        return false;
-      }
-    }
-    return false;
-  };
-  
   // Signer info form
   const [signerInfo, setSignerInfo] = useState(getInitialSignerInfo);
   const [needsInfo, setNeedsInfo] = useState(false);
