@@ -1102,68 +1102,52 @@ const SignContractPage = () => {
                     </button>
                   </motion.div>
                 ) : verificationMethod === 'call' ? (
-                  // Call verification - redesigned
+                  // Call verification - Neumorphism style
                   <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.3 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
                     className="space-y-6"
                   >
                     <div className="text-center">
-                      <motion.div
-                        initial={{ scale: 0, rotate: -180 }}
-                        animate={{ scale: 1, rotate: 0 }}
-                        transition={{ type: "spring", stiffness: 200 }}
-                        className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-lg shadow-green-500/30"
-                      >
-                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="w-16 h-16 mx-auto mb-4 neuro-card flex items-center justify-center">
+                        <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                         </svg>
-                      </motion.div>
+                      </div>
                       <h3 className="text-xl font-bold text-gray-900 mb-2">Звонок верификация</h3>
                       <p className="text-sm text-gray-600 mb-4">Введите последние 4 цифры номера</p>
                       {callHint && (
-                        <motion.div
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl border-2 border-blue-200 mb-4 shadow-md"
-                        >
+                        <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-200 mb-4">
                           <p className="text-sm text-blue-900 font-medium">📞 {callHint}</p>
-                        </motion.div>
+                        </div>
                       )}
                     </div>
                     
-                    <motion.input
-                      initial={{ scale: 0.9 }}
-                      animate={{ scale: 1 }}
+                    <input
                       type="text"
                       maxLength={4}
                       value={callCode}
                       onChange={(e) => setCallCode(e.target.value.replace(/\D/g, ''))}
-                      className="w-full px-4 py-5 text-center text-3xl font-bold tracking-[0.5em] border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-sky-50 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-200 transition-all shadow-md"
+                      className="neuro-input w-full text-center text-3xl font-bold tracking-[0.5em]"
                       placeholder="____"
                       data-testid="call-code-input"
                     />
                     
                     <div className="flex gap-3">
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
+                      <button
                         onClick={() => setVerificationMethod('')}
-                        className="flex-1 py-4 px-4 text-base font-medium text-gray-700 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl hover:from-gray-200 hover:to-gray-300 transition-all shadow-md"
+                        className="neuro-button flex-1 py-3"
                       >
                         ← Назад
-                      </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
+                      </button>
+                      <button
                         onClick={handleVerifyCallOTP}
                         disabled={verifying || callCode.length !== 4}
-                        className="flex-1 py-4 px-4 text-base font-semibold text-white bg-gradient-to-r from-green-600 to-green-500 rounded-xl hover:from-green-700 hover:to-green-600 transition-all shadow-lg shadow-green-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="neuro-button-primary flex-1 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
                         data-testid="call-verify-button"
                       >
                         {verifying ? 'Проверяем...' : '✓ Подтвердить'}
-                      </motion.button>
+                      </button>
                     </div>
                   </motion.div>
                 ) : verificationMethod === 'telegram' ? (
