@@ -248,46 +248,71 @@ const SignContractPage = () => {
           const templateResponse = await axios.get(`${API}/templates/${contractData.template_id}`);
           setTemplate(templateResponse.data);
           
-          // Initialize placeholder values with existing values
-          const existingValues = contractData.placeholder_values || {};
-          setPlaceholderValues(existingValues);
+          // Check if we have saved state - if yes, use it instead of recalculating
+          const savedState = localStorage.getItem(`contract_${id}_state`);
+          let shouldRecalculate = true;
           
-          console.log('Debug SignContractPage:');
-          console.log('contractData.placeholder_values:', contractData.placeholder_values);
-          console.log('existingValues:', existingValues);
-          
-          // Find unfilled REQUIRED placeholders for tenant/signer
-          const unfilled = [];
-          if (templateResponse.data.placeholders) {
-            Object.entries(templateResponse.data.placeholders).forEach(([key, config]) => {
-              // Skip calculated fields
-              if (config.type === 'calculated') return;
-              
-              // Check if this is a tenant/signer placeholder
-              const isTenantField = config.owner === 'tenant' || config.owner === 'signer';
-              
-              // Check if placeholder value is not filled in placeholder_values
-              const value = existingValues[key];
-              const isNotFilled = !value || (typeof value === 'string' && value.trim() === '');
-              
-              console.log(`Placeholder ${key}:`, {
-                owner: config.owner,
-                isTenantField,
-                required: config.required,
-                value: value,
-                isNotFilled,
-                willAddToUnfilled: isTenantField && config.required && isNotFilled
-              });
-              
-              // КРИТИЧНО: Только обязательные незаполненные tenant поля
-              if (isTenantField && config.required && isNotFilled) {
-                unfilled.push({ key, config });
+          if (savedState) {
+            try {
+              const parsed = JSON.parse(savedState);
+              if (parsed.placeholderValues && Object.keys(parsed.placeholderValues).length > 0) {
+                console.log('📦 Using saved placeholderValues from localStorage');
+                shouldRecalculate = false;
+                // Don't overwrite - it's already set in useState initialization
               }
-            });
+              if (parsed.unfilledPlaceholders && parsed.unfilledPlaceholders.length >= 0) {
+                console.log('📦 Using saved unfilledPlaceholders from localStorage');
+                // Don't overwrite - it's already set in useState initialization
+              }
+            } catch (e) {
+              console.error('Error parsing saved state:', e);
+            }
           }
           
-          console.log('Final unfilled REQUIRED placeholders:', unfilled);
-          setUnfilledPlaceholders(unfilled);
+          // Only recalculate if no saved state
+          if (shouldRecalculate) {
+            console.log('🔄 Recalculating placeholders from backend');
+            // Initialize placeholder values with existing values
+            const existingValues = contractData.placeholder_values || {};
+            setPlaceholderValues(existingValues);
+            
+            console.log('Debug SignContractPage:');
+            console.log('contractData.placeholder_values:', contractData.placeholder_values);
+            console.log('existingValues:', existingValues);
+            
+            // Find unfilled REQUIRED placeholders for tenant/signer
+            const unfilled = [];
+            if (templateResponse.data.placeholders) {
+              Object.entries(templateResponse.data.placeholders).forEach(([key, config]) => {
+                // Skip calculated fields
+                if (config.type === 'calculated') return;
+                
+                // Check if this is a tenant/signer placeholder
+                const isTenantField = config.owner === 'tenant' || config.owner === 'signer';
+                
+                // Check if placeholder value is not filled in placeholder_values
+                const value = existingValues[key];
+                const isNotFilled = !value || (typeof value === 'string' && value.trim() === '');
+                
+                console.log(`Placeholder ${key}:`, {
+                  owner: config.owner,
+                  isTenantField,
+                  required: config.required,
+                  value: value,
+                  isNotFilled,
+                  willAddToUnfilled: isTenantField && config.required && isNotFilled
+                });
+                
+                // КРИТИЧНО: Только обязательные незаполненные tenant поля
+                if (isTenantField && config.required && isNotFilled) {
+                  unfilled.push({ key, config });
+                }
+              });
+            }
+            
+            console.log('Final unfilled REQUIRED placeholders:', unfilled);
+            setUnfilledPlaceholders(unfilled);
+          }
           unfilledTenantPlaceholders = unfilled;
         } catch (err) {
           console.error('Error loading template:', err);
