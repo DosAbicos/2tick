@@ -647,10 +647,9 @@ const SignContractPage = () => {
                       />
                     </div>
                     
-                    {!contract.signer_phone && (
-                      <div>
-                        <label htmlFor="signer_phone" className="text-sm font-medium text-gray-700 block mb-2">Номер телефона *</label>
-                        <IMaskInput
+                    <div>
+                      <label htmlFor="signer_phone" className="text-sm font-medium text-gray-700 block mb-2">Номер телефона *</label>
+                      <IMaskInput
                           mask="+7 (000) 000-00-00"
                           value={signerInfo.phone}
                           onAccept={(value) => setSignerInfo({...signerInfo, phone: value})}
