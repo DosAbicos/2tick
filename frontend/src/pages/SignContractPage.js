@@ -72,16 +72,16 @@ const SignContractPage = () => {
       let isFilled = false;
       let value = match;
       
-      // Map common placeholder labels to contract fields
+      // Use signerInfo state if available, otherwise use contract data
       if (label.includes('ФИО') || label.includes('Нанимателя')) {
-        isFilled = !!contract?.signer_name;
-        value = contract?.signer_name || match;
+        value = signerInfo.name || contract?.signer_name || match;
+        isFilled = !!(signerInfo.name || contract?.signer_name);
       } else if (label.includes('Телефон')) {
-        isFilled = !!contract?.signer_phone;
-        value = contract?.signer_phone || match;
+        value = signerInfo.phone || contract?.signer_phone || match;
+        isFilled = !!(signerInfo.phone || contract?.signer_phone);
       } else if (label.includes('Email') || label.includes('Почта')) {
-        isFilled = !!contract?.signer_email;
-        value = contract?.signer_email || match;
+        value = signerInfo.email || contract?.signer_email || match;
+        isFilled = !!(signerInfo.email || contract?.signer_email);
       } else if (label.includes('Дата заселения')) {
         isFilled = !!contract?.move_in_date;
         value = contract?.move_in_date || match;
