@@ -155,11 +155,11 @@ const Header = ({ showAuth = false }) => {
               })()}
               <Link to="/profile">
                 <button className="h-8 w-8 md:h-9 md:w-9 flex items-center justify-center text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-blue-400 transition-all" data-testid="profile-button">
-                  <User className="h-4 w-4 md:h-5 md:w-5" />
+                  <User className="w-5 h-5" strokeWidth={2} />
                 </button>
               </Link>
               <button onClick={handleLogout} className="h-8 w-8 md:h-9 md:w-9 flex items-center justify-center text-red-600 bg-white border border-gray-300 rounded-lg hover:bg-red-50 hover:border-red-400 transition-all" data-testid="logout-button">
-                <LogOut className="h-4 w-4 md:h-5 md:w-5" />
+                <LogOut className="w-5 h-5" strokeWidth={2} />
               </button>
             </>
           )}
