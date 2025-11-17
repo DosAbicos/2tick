@@ -2,45 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { CheckCircle2, Zap, Shield, Users, ArrowRight, Check } from 'lucide-react';
+import Header from '../components/Header';
 import '../styles/neumorphism.css';
 
 const NewLandingPage = () => {
   return (
     <div className="min-h-screen gradient-bg">
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-blue-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            {/* Логотип 2tick */}
-            <div className="flex items-center gap-2">
-              <div className="relative">
-                <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full"></div>
-                <svg width="32" height="32" viewBox="0 0 32 32" className="relative">
-                  <circle cx="16" cy="16" r="15" fill="#3B82F6" />
-                  <path d="M10 16 L14 20 L22 12" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M14 16 L18 20 L26 12" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity="0.6" />
-                </svg>
-              </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
-                2tick.kz
-              </span>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-4">
-            <Link to="/login">
-              <button className="px-6 py-2.5 text-sm font-medium text-blue-600 bg-white border-2 border-blue-100 rounded-lg hover:bg-blue-50 transition-all">
-                Вход
-              </button>
-            </Link>
-            <Link to="/register">
-              <button className="px-6 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30">
-                Регистрация
-              </button>
-            </Link>
-          </div>
-        </div>
-      </header>
+      {/* Header с адаптацией */}
+      <Header showAuth={true} />
 
       {/* Hero Section */}
       <section className="relative overflow-hidden py-20 px-4">
