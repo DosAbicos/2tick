@@ -91,16 +91,17 @@ const Header = ({ showAuth = false }) => {
           
           {showAuth && !token && (
             <>
-              <style>{`
+              <style dangerouslySetInnerHTML={{__html: `
+                .auth-desktop { display: none; }
+                .auth-mobile { display: none; }
+                
                 @media (max-width: 639px) {
-                  .auth-desktop { display: none !important; }
                   .auth-mobile { display: inline-block !important; }
                 }
                 @media (min-width: 640px) {
                   .auth-desktop { display: inline-block !important; }
-                  .auth-mobile { display: none !important; }
                 }
-              `}</style>
+              `}} />
               
               {/* Desktop - две кнопки */}
               <Link to="/login" className="auth-desktop text-sm text-neutral-700 hover:text-neutral-900" data-testid="login-link">
