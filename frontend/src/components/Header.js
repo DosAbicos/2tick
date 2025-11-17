@@ -93,7 +93,7 @@ const Header = ({ showAuth = false }) => {
           {showAuth && !token && (
             <>
               {/* Desktop - две кнопки */}
-              <div className="hidden sm:flex items-center gap-2">
+              <div className={`${styles.authDesktop} items-center gap-2`}>
                 <Link to="/login" className="text-sm text-neutral-700 hover:text-neutral-900" data-testid="login-link">
                   {t('landing.nav.login')}
                 </Link>
@@ -105,7 +105,7 @@ const Header = ({ showAuth = false }) => {
               </div>
               
               {/* Mobile - одна кнопка */}
-              <div className="flex sm:hidden">
+              <div className={styles.authMobile}>
                 <Link to="/login">
                   <Button size="sm" className="h-8 px-3 text-xs bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600">
                     Войти
