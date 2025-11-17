@@ -1318,7 +1318,7 @@ const SignContractPage = () => {
                       rel="noopener noreferrer"
                       className="block w-full text-center py-3 text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline"
                     >
-                      ↻ Отправить код повторно (открыть Telegram)
+                      ↻ Отправить код повторно
                     </a>
                   </motion.div>
                 ) : null}
