@@ -1,0 +1,18 @@
+/* Auth buttons responsive */
+.authDesktop {
+  display: none;
+}
+
+.authMobile {
+  display: flex;
+}
+
+@media (min-width: 640px) {
+  .authDesktop {
+    display: flex !important;
+  }
+  
+  .authMobile {
+    display: none !important;
+  }
+}
