@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -15,8 +15,8 @@ const Header = ({ showAuth = false }) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
-  const [currentLang, setCurrentLang] = React.useState(i18n.language || 'ru');
-  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const [currentLang, setCurrentLang] = useState(i18n.language || 'ru');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
