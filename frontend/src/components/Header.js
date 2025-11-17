@@ -15,18 +15,6 @@ const Header = ({ showAuth = false }) => {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
   const [currentLang, setCurrentLang] = React.useState(i18n.language || 'ru');
-  const [isMobile, setIsMobile] = React.useState(false);
-
-  React.useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 640);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
