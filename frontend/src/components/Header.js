@@ -37,18 +37,18 @@ const Header = ({ showAuth = false }) => {
 
   return (
     <header className="border-b border-gray-200/50 bg-white/90 backdrop-blur-md sticky top-0 z-50 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <Link to={token ? "/dashboard" : "/"} className="flex items-center gap-2" data-testid="header-logo-link">
-          {/* Логотип 2tick */}
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 h-14 md:h-16 flex items-center justify-between">
+        <Link to={token ? "/dashboard" : "/"} className="flex items-center gap-1.5 md:gap-2" data-testid="header-logo-link">
+          {/* Логотип 2tick - адаптивный */}
           <div className="relative">
             <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full"></div>
-            <svg width="32" height="32" viewBox="0 0 32 32" className="relative">
+            <svg width="28" height="28" viewBox="0 0 32 32" className="relative md:w-8 md:h-8">
               <circle cx="16" cy="16" r="15" fill="#3B82F6" />
               <path d="M10 16 L14 20 L22 12" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
               <path d="M14 16 L18 20 L26 12" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity="0.6" />
             </svg>
           </div>
-          <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
+          <span className="text-lg md:text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
             2tick.kz
           </span>
         </Link>
