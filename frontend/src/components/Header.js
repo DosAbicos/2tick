@@ -90,23 +90,27 @@ const Header = ({ showAuth = false }) => {
           </DropdownMenu>
           
           {showAuth && !token && (
-            <>
-              {/* Desktop - две кнопки (скрыты на мобилке) */}
-              <Link to="/login" className="hidden sm:inline-block text-sm text-neutral-700 hover:text-neutral-900" data-testid="login-link">
-                {t('landing.nav.login')}
-              </Link>
-              <Link to="/register" className="hidden sm:inline-block">
-                <Button size="sm" className="h-9 px-4 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600" data-testid="register-primary-button">
-                  {t('landing.nav.register')}
-                </Button>
-              </Link>
-              {/* Mobile - одна кнопка "Войти" (видна только на мобилке) */}
-              <Link to="/login" className="block sm:hidden">
-                <Button size="sm" className="h-8 px-3 text-xs bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600">
-                  Войти
-                </Button>
-              </Link>
-            </>
+            <div className="flex items-center gap-2">
+              {/* Desktop - две кнопки */}
+              <div className="hidden sm:flex items-center gap-2">
+                <Link to="/login" className="text-sm text-neutral-700 hover:text-neutral-900" data-testid="login-link">
+                  {t('landing.nav.login')}
+                </Link>
+                <Link to="/register">
+                  <Button size="sm" className="h-9 px-4 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600" data-testid="register-primary-button">
+                    {t('landing.nav.register')}
+                  </Button>
+                </Link>
+              </div>
+              {/* Mobile - одна кнопка */}
+              <div className="sm:hidden">
+                <Link to="/login">
+                  <Button size="sm" className="h-8 px-3 text-xs bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600">
+                    Войти
+                  </Button>
+                </Link>
+              </div>
+            </div>
           )}
           
           {token && (
