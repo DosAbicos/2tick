@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { ChevronDown, LogOut, User } from 'lucide-react';
+import { ChevronDown, LogOut, User, Menu, X } from 'lucide-react';
 import styles from './Header.module.css';
 
 const Header = ({ showAuth = false }) => {
@@ -16,6 +16,7 @@ const Header = ({ showAuth = false }) => {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
   const [currentLang, setCurrentLang] = React.useState(i18n.language || 'ru');
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
