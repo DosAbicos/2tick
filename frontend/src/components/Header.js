@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { ChevronDown, LogOut } from 'lucide-react';
+import { ChevronDown, LogOut, User } from 'lucide-react';
 
 const Header = ({ showAuth = false }) => {
   const { t, i18n } = useTranslation();
