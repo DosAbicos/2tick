@@ -240,68 +240,70 @@ const Header = ({ showAuth = false }) => {
                   
                   <div className="border-t border-gray-200"></div>
                   
-                  {/* Кнопки меню */}
-                  {(() => {
-                    try {
-                      const user = JSON.parse(localStorage.getItem('user') || '{}');
-                      const isAdminPage = window.location.pathname === '/admin' || 
-                                         window.location.pathname.startsWith('/admin/');
-                      
-                      if (user.role === 'admin') {
-                        if (isAdminPage) {
-                          return (
-                            <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
-                              <button className="w-full py-3 px-4 text-sm font-semibold text-blue-700 bg-blue-50 rounded-xl hover:bg-blue-100 transition-all flex items-center gap-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                                </svg>
-                                <span>Назад</span>
-                              </button>
-                            </Link>
-                          );
-                        } else {
-                          return (
-                            <Link to="/admin" onClick={() => setMobileMenuOpen(false)}>
-                              <button className="w-full py-3 px-4 text-sm font-semibold text-red-700 bg-red-50 rounded-xl hover:bg-red-100 transition-all flex items-center gap-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                </svg>
-                                <span>Админка</span>
-                              </button>
-                            </Link>
-                          );
+                  {/* Навигационные кнопки */}
+                  <div className="space-y-3">
+                    {(() => {
+                      try {
+                        const user = JSON.parse(localStorage.getItem('user') || '{}');
+                        const isAdminPage = window.location.pathname === '/admin' || 
+                                           window.location.pathname.startsWith('/admin/');
+                        
+                        if (user.role === 'admin') {
+                          if (isAdminPage) {
+                            return (
+                              <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+                                <button className="w-full py-4 px-5 text-base font-semibold text-blue-700 bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl hover:from-blue-100 hover:to-blue-150 transition-all flex items-center gap-4 shadow-sm">
+                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                  </svg>
+                                  <span>Назад к дашборду</span>
+                                </button>
+                              </Link>
+                            );
+                          } else {
+                            return (
+                              <Link to="/admin" onClick={() => setMobileMenuOpen(false)}>
+                                <button className="w-full py-4 px-5 text-base font-semibold text-red-700 bg-gradient-to-r from-red-50 to-red-100 rounded-2xl hover:from-red-100 hover:to-red-150 transition-all flex items-center gap-4 shadow-sm">
+                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                  </svg>
+                                  <span>Админ-панель</span>
+                                </button>
+                              </Link>
+                            );
+                          }
                         }
+                      } catch (e) {
+                        return null;
                       }
-                    } catch (e) {
-                      return null;
-                    }
-                  })()}
-                  
-                  <Link to="/profile" onClick={() => setMobileMenuOpen(false)}>
-                    <button className="w-full py-3 px-4 text-sm font-semibold text-gray-700 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-all flex items-center gap-3">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#374151" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
+                    })()}
+                    
+                    <Link to="/profile" onClick={() => setMobileMenuOpen(false)}>
+                      <button className="w-full py-4 px-5 text-base font-semibold text-gray-700 bg-white border-2 border-gray-200 rounded-2xl hover:bg-gray-50 hover:border-gray-300 transition-all flex items-center gap-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#374151" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                          <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span>Профиль</span>
+                      </button>
+                    </Link>
+                    
+                    <button 
+                      onClick={() => {
+                        handleLogout();
+                        setMobileMenuOpen(false);
+                      }}
+                      className="w-full py-4 px-5 text-base font-semibold text-red-600 bg-white border-2 border-red-200 rounded-2xl hover:bg-red-50 hover:border-red-300 transition-all flex items-center gap-4"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
                       </svg>
-                      <span>Профиль</span>
+                      <span>Выйти</span>
                     </button>
-                  </Link>
-                  
-                  <button 
-                    onClick={() => {
-                      handleLogout();
-                      setMobileMenuOpen(false);
-                    }}
-                    className="w-full py-3 px-4 text-sm font-semibold text-red-600 bg-white border border-gray-200 rounded-xl hover:bg-red-50 transition-all flex items-center gap-3"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                      <polyline points="16 17 21 12 16 7"></polyline>
-                      <line x1="21" y1="12" x2="9" y2="12"></line>
-                    </svg>
-                    <span>Выйти</span>
-                  </button>
+                  </div>
                 </div>
               </div>
             </>
