@@ -185,20 +185,40 @@ const Header = ({ showAuth = false }) => {
             </>
           )}
           
-          {/* Mobile меню overlay - только для авторизованных */}
+          {/* Fullscreen Mobile меню - только для авторизованных */}
           {token && mobileMenuOpen && (
             <>
-              <div 
-                className="fixed inset-0 bg-black/50 z-40 md:hidden"
-                onClick={() => setMobileMenuOpen(false)}
-              />
+              <style>{`
+                body { overflow: hidden !important; }
+              `}</style>
               
-              <div className="fixed top-14 right-0 w-64 bg-white shadow-xl z-50 md:hidden rounded-bl-2xl border-l border-b border-gray-200">
-                <div className="p-4 space-y-3">
-                  {/* Языковой селектор в меню */}
-                  <div className="pb-3 border-b border-gray-200">
-                    <p className="text-xs text-gray-500 mb-2 font-semibold">Язык / Тіл</p>
-                    <div className="flex gap-2">
+              <div className="fixed inset-0 bg-white z-50 md:hidden overflow-y-auto">
+                {/* Header меню */}
+                <div className="flex items-center justify-between p-4 border-b border-gray-200">
+                  <div className="flex items-center gap-2">
+                    <svg width="28" height="28" viewBox="0 0 32 32">
+                      <circle cx="16" cy="16" r="15" fill="#3B82F6" />
+                      <path d="M10 16 L14 20 L22 12" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M14 16 L18 20 L26 12" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity="0.6" />
+                    </svg>
+                    <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
+                      2tick.kz
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  >
+                    <X className="w-6 h-6 text-gray-700" />
+                  </button>
+                </div>
+                
+                {/* Контент меню */}
+                <div className="p-6 space-y-6">
+                  {/* Языковой селектор */}
+                  <div>
+                    <p className="text-sm text-gray-500 mb-3 font-semibold">Язык / Тіл</p>
+                    <div className="flex gap-3">
                       {langOptions.map((lang) => (
                         <button
                           key={lang.code}
@@ -206,9 +226,9 @@ const Header = ({ showAuth = false }) => {
                             changeLanguage(lang.code);
                             setMobileMenuOpen(false);
                           }}
-                          className={`flex-1 py-2 px-3 text-xs font-bold rounded-lg transition-all ${
+                          className={`flex-1 py-3 px-4 text-sm font-bold rounded-xl transition-all ${
                             currentLang === lang.code
-                              ? 'bg-blue-500 text-white'
+                              ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30'
                               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                           }`}
                         >
@@ -217,6 +237,8 @@ const Header = ({ showAuth = false }) => {
                       ))}
                     </div>
                   </div>
+                  
+                  <div className="border-t border-gray-200"></div>
                   
                   {/* Кнопки меню */}
                   {(() => {
