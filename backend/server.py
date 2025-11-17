@@ -2181,6 +2181,13 @@ async def update_signer_info(contract_id: str, data: SignerInfoUpdate):
     if data.placeholder_values:
         existing_values = contract.get('placeholder_values', {})
         update_data['placeholder_values'] = {**existing_values, **data.placeholder_values}
+        
+        # КРИТИЧНО: Копируем email из placeholder_values в signer_email
+        for key in ['EMAIL_КЛИЕНТА', 'EMAIL_НАНИМАТЕЛЯ', 'email', 'Email', 'signer_email', 'tenant_email', 'client_email']:
+            if key in data.placeholder_values and data.placeholder_values[key]:
+                update_data['signer_email'] = data.placeholder_values[key]
+                print(f"📧 Email найден в placeholder_values[{key}]: {data.placeholder_values[key]}")
+                break
     
     print(f"🔧 Update data: {update_data}")
     
