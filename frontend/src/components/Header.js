@@ -91,34 +91,26 @@ const Header = ({ showAuth = false }) => {
           
           {showAuth && !token && (
             <>
-              <style dangerouslySetInnerHTML={{__html: `
-                .auth-desktop { display: none; }
-                .auth-mobile { display: none; }
-                
-                @media (max-width: 639px) {
-                  .auth-mobile { display: inline-block !important; }
-                }
-                @media (min-width: 640px) {
-                  .auth-desktop { display: inline-block !important; }
-                }
-              `}} />
-              
               {/* Desktop - две кнопки */}
-              <Link to="/login" className="auth-desktop text-sm text-neutral-700 hover:text-neutral-900" data-testid="login-link">
-                {t('landing.nav.login')}
-              </Link>
-              <Link to="/register" className="auth-desktop">
-                <Button size="sm" className="h-9 px-4 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600" data-testid="register-primary-button">
-                  {t('landing.nav.register')}
-                </Button>
-              </Link>
+              <div className="hidden sm:flex items-center gap-2">
+                <Link to="/login" className="text-sm text-neutral-700 hover:text-neutral-900" data-testid="login-link">
+                  {t('landing.nav.login')}
+                </Link>
+                <Link to="/register">
+                  <Button size="sm" className="h-9 px-4 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600" data-testid="register-primary-button">
+                    {t('landing.nav.register')}
+                  </Button>
+                </Link>
+              </div>
               
               {/* Mobile - одна кнопка */}
-              <Link to="/login" className="auth-mobile">
-                <Button size="sm" className="h-8 px-3 text-xs bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600">
-                  Войти
-                </Button>
-              </Link>
+              <div className="flex sm:hidden">
+                <Link to="/login">
+                  <Button size="sm" className="h-8 px-3 text-xs bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600">
+                    Войти
+                  </Button>
+                </Link>
+              </div>
             </>
           )}
           
