@@ -312,8 +312,12 @@ const SignContractPage = () => {
             
             console.log('Final unfilled REQUIRED placeholders:', unfilled);
             setUnfilledPlaceholders(unfilled);
+            unfilledTenantPlaceholders = unfilled;
+          } else {
+            // Use restored value from localStorage
+            console.log('📦 Using saved unfilledPlaceholders for needsInfo calculation');
+            unfilledTenantPlaceholders = unfilledPlaceholders; // Use state value restored from localStorage
           }
-          unfilledTenantPlaceholders = unfilled;
         } catch (err) {
           console.error('Error loading template:', err);
         }
