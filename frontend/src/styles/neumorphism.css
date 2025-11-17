@@ -74,7 +74,9 @@
   background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
   color: white;
   border: none;
+  border-radius: 12px;
   box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+  transition: all 0.3s ease;
 }
 
 .neuro-button-primary:hover {
