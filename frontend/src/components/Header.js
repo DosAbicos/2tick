@@ -119,6 +119,8 @@ const Header = ({ showAuth = false }) => {
           
           {token && (
             <>
+              {/* Desktop - все кнопки */}
+              <div className="hidden md:flex items-center gap-2">
               {(() => {
                 try {
                   const user = JSON.parse(localStorage.getItem('user') || '{}');
