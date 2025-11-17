@@ -176,9 +176,13 @@ const Header = ({ showAuth = false }) => {
               
               {/* Mobile - бургер меню */}
               <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                onClick={() => {
+                  console.log('Burger menu clicked! Current state:', mobileMenuOpen);
+                  setMobileMenuOpen(!mobileMenuOpen);
+                }}
                 className="md:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                 aria-label="Menu"
+                data-testid="burger-menu-button"
               >
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
