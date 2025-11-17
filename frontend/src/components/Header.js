@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ChevronDown, LogOut, User } from 'lucide-react';
+import styles from './Header.module.css';
 
 const Header = ({ showAuth = false }) => {
   const { t, i18n } = useTranslation();
