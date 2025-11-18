@@ -52,7 +52,7 @@ const ProfilePage = () => {
 
   const handleSaveProfile = async () => {
     try {
-      await axios.put(`${API}/users/me`, editedUser, {
+      await axios.put(`${API}/auth/me`, editedUser, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
