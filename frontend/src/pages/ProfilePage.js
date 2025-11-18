@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
+import Loader from '@/components/Loader';
 import { User, Mail, Phone, Building, CreditCard, MapPin, Lock, Save, Edit2, FileText, CheckCircle, Clock, XCircle } from 'lucide-react';
 import '../styles/neumorphism.css';
 
