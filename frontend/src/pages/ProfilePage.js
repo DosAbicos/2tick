@@ -225,16 +225,16 @@ const ProfilePage = () => {
                         setEditing(false);
                         setEditedUser(user);
                       }}
-                      className="p-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 transition-all flex items-center justify-center"
+                      className="p-1 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-gray-600 bg-gray-100 rounded hover:bg-gray-200 transition-all flex items-center justify-center flex-shrink-0"
                     >
                       <span className="hidden sm:inline">Отмена</span>
                       <span className="sm:hidden text-sm">✕</span>
                     </button>
                     <button
                       onClick={handleSaveProfile}
-                      className="p-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-md hover:from-blue-700 hover:to-blue-600 transition-all flex items-center justify-center gap-2"
+                      className="p-1 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded hover:from-blue-700 hover:to-blue-600 transition-all flex items-center justify-center gap-1 sm:gap-2 flex-shrink-0"
                     >
-                      <Save className="w-4 h-4" />
+                      <Save className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                       <span className="hidden sm:inline">Сохранить</span>
                     </button>
                   </div>
