@@ -1154,6 +1154,61 @@ async def get_me(current_user: dict = Depends(get_current_user)):
         user_doc['created_at'] = datetime.fromisoformat(user_doc['created_at'])
     return User(**user_doc)
 
+
+@api_router.put("/auth/me")
+async def update_me(
+    name: str = None,
+    phone: str = None,
+    company: str = None,
+    iin_bin: str = None,
+    legal_address: str = None,
+    current_user: dict = Depends(get_current_user)
+):
+    """Update current user profile"""
+    user_doc = await db.users.find_one({"id": current_user['user_id']})
+    if not user_doc:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    update_data = {}
+    if name is not None:
+        update_data['name'] = name
+    if phone is not None:
+        update_data['phone'] = phone
+    if company is not None:
+        update_data['company'] = company
+    if iin_bin is not None:
+        update_data['iin_bin'] = iin_bin
+    if legal_address is not None:
+        update_data['legal_address'] = legal_address
+    
+    if update_data:
+        await db.users.update_one(
+            {"id": current_user['user_id']},
+            {"$set": update_data}
+        )
+    
+    # Get updated user
+    updated_user = await db.users.find_one({"id": current_user['user_id']}, {"_id": 0, "password": 0})
+    if isinstance(updated_user.get('created_at'), str):
+        updated_user['created_at'] = datetime.fromisoformat(updated_user['created_at'])
+    return User(**updated_user)
+
+@api_router.get("/auth/me/stats")
+async def get_me_stats(current_user: dict = Depends(get_current_user)):
+    """Get current user statistics"""
+    # Count contracts by status
+    total_contracts = await db.contracts.count_documents({"creator_id": current_user['user_id']})
+    completed = await db.contracts.count_documents({"creator_id": current_user['user_id'], "status": "completed"})
+    pending = await db.contracts.count_documents({"creator_id": current_user['user_id'], "status": "pending"})
+    approved = await db.contracts.count_documents({"creator_id": current_user['user_id'], "status": "approved"})
+    
+    return {
+        "total_contracts": total_contracts,
+        "completed": completed,
+        "pending": pending,
+        "approved": approved
+    }
+
 @api_router.post("/auth/change-password")
 async def change_password(
     change_pwd: ChangePassword,
