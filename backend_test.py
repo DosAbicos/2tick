@@ -1155,7 +1155,8 @@ class BackendTester:
             
             update_data = {
                 "placeholder_values": {
-                    "EMAIL_КЛИЕНТА": "test.client@2tick.kz"
+                    "EMAIL_КЛИЕНТА": "test.client@2tick.kz",
+                    "tenant_phone": "+77071234567"  # Add phone for OTP
                 }
             }
             
