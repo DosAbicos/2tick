@@ -192,25 +192,6 @@ const Header = ({ showAuth = false }) => {
                 </svg>
               </button>
               </div>
-              
-              {/* Mobile - бургер меню */}
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  console.log('[BURGER CLICK] Current:', mobileMenuOpen, 'Token:', !!token);
-                  setMobileMenuOpen(prev => {
-                    console.log('[BURGER STATE] Changing from', prev, 'to', !prev);
-                    return !prev;
-                  });
-                }}
-                className="md:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-                aria-label="Menu"
-                data-testid="burger-menu-button"
-                style={{cursor: 'pointer', touchAction: 'manipulation'}}
-              >
-                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              </button>
             </>
           )}
           
