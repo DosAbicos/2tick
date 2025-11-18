@@ -28,12 +28,11 @@ const Loader = ({ size = 'medium' }) => {
           style={{
             strokeDasharray: 40,
             strokeDashoffset: 40,
-            animation: 'tick-cycle-1 4s ease-in-out infinite',
-            transformOrigin: '28px 32px'
+            animation: 'tick-1 3.5s ease-in-out infinite'
           }}
         />
         
-        {/* Вторая галочка (с небольшим смещением) */}
+        {/* Вторая галочка */}
         <path
           d="M24 32 L32 40 L48 24"
           fill="none"
@@ -44,12 +43,11 @@ const Loader = ({ size = 'medium' }) => {
           style={{
             strokeDasharray: 40,
             strokeDashoffset: 40,
-            animation: 'tick-cycle-2 4s ease-in-out infinite',
-            transformOrigin: '36px 32px'
+            animation: 'tick-2 3.5s ease-in-out infinite'
           }}
         />
 
-        {/* Вращающийся круг */}
+        {/* Круг - рисуется после подпрыга */}
         <circle
           cx="32"
           cy="32"
@@ -58,23 +56,20 @@ const Loader = ({ size = 'medium' }) => {
           stroke="#3B82F6"
           strokeWidth={config.strokeWidth}
           strokeLinecap="round"
-          strokeDasharray="126"
-          strokeDashoffset="95"
           style={{
-            opacity: 0,
-            animation: 'circle-appear 4s ease-in-out infinite',
-            transformOrigin: 'center'
+            strokeDasharray: 126,
+            strokeDashoffset: 126,
+            animation: 'draw-circle 3.5s ease-in-out infinite'
           }}
         />
       </svg>
 
       <style>{`
-        @keyframes tick-cycle-1 {
-          /* Рисование галочки */
+        @keyframes tick-1 {
+          /* Рисование первой галочки */
           0%, 100% {
             stroke-dashoffset: 40;
             opacity: 0;
-            transform: scale(1) rotate(0deg);
           }
           5% {
             opacity: 1;
@@ -82,53 +77,35 @@ const Loader = ({ size = 'medium' }) => {
           15% {
             stroke-dashoffset: 0;
             opacity: 1;
-            transform: scale(1) rotate(0deg);
           }
           
           /* Подпрыг */
           25% {
-            transform: scale(1.1) translateY(-5px) rotate(0deg);
+            stroke-dashoffset: 0;
+            opacity: 1;
+            transform: translateY(-8px);
           }
           30% {
-            transform: scale(1) translateY(0) rotate(0deg);
+            stroke-dashoffset: 0;
+            opacity: 1;
+            transform: translateY(0);
           }
           
-          /* Превращение в круг */
-          40% {
-            stroke-dashoffset: 0;
-            opacity: 1;
-            transform: scale(1) rotate(0deg);
-          }
-          50% {
-            stroke-dashoffset: 0;
+          /* Исчезновение сразу после подпрыга */
+          35% {
             opacity: 0;
-            transform: scale(0.8) rotate(180deg);
           }
           
-          /* Возврат из круга */
-          70% {
-            stroke-dashoffset: 40;
+          /* Остается невидимой до конца цикла */
+          95% {
             opacity: 0;
-            transform: scale(0.8) rotate(360deg);
-          }
-          80% {
-            opacity: 1;
-          }
-          90% {
             stroke-dashoffset: 0;
-            opacity: 1;
-            transform: scale(1) rotate(360deg);
           }
         }
 
-        @keyframes tick-cycle-2 {
-          /* Рисование галочки с задержкой */
-          0%, 100% {
-            stroke-dashoffset: 40;
-            opacity: 0;
-            transform: scale(1) rotate(0deg);
-          }
-          10% {
+        @keyframes tick-2 {
+          /* Рисование второй галочки с небольшой задержкой */
+          0%, 10%, 100% {
             stroke-dashoffset: 40;
             opacity: 0;
           }
@@ -138,77 +115,66 @@ const Loader = ({ size = 'medium' }) => {
           22% {
             stroke-dashoffset: 0;
             opacity: 1;
-            transform: scale(1) rotate(0deg);
           }
           
-          /* Подпрыг */
+          /* Подпрыг вместе с первой */
           25% {
-            transform: scale(1.1) translateY(-5px) rotate(0deg);
+            stroke-dashoffset: 0;
+            opacity: 1;
+            transform: translateY(-8px);
           }
           30% {
-            transform: scale(1) translateY(0) rotate(0deg);
+            stroke-dashoffset: 0;
+            opacity: 1;
+            transform: translateY(0);
           }
           
-          /* Превращение в круг */
-          40% {
-            stroke-dashoffset: 0;
-            opacity: 1;
-            transform: scale(1) rotate(0deg);
-          }
-          50% {
-            stroke-dashoffset: 0;
+          /* Исчезновение сразу после подпрыга */
+          35% {
             opacity: 0;
-            transform: scale(0.8) rotate(-180deg);
           }
           
-          /* Возврат из круга */
-          70% {
-            stroke-dashoffset: 40;
+          /* Остается невидимой до конца цикла */
+          95% {
             opacity: 0;
-            transform: scale(0.8) rotate(-360deg);
-          }
-          80% {
-            opacity: 1;
-          }
-          90% {
             stroke-dashoffset: 0;
-            opacity: 1;
-            transform: scale(1) rotate(-360deg);
           }
         }
 
-        @keyframes circle-appear {
-          /* Скрыт пока рисуются галочки */
-          0%, 40% {
+        @keyframes draw-circle {
+          /* Невидим пока галочки рисуются и прыгают */
+          0%, 30% {
+            stroke-dashoffset: 126;
             opacity: 0;
-            transform: scale(0.5) rotate(0deg);
-            stroke-dashoffset: 95;
           }
           
-          /* Появление круга */
-          50% {
+          /* Появляется сразу после подпрыга галочек */
+          35% {
+            stroke-dashoffset: 126;
             opacity: 1;
-            transform: scale(1) rotate(0deg);
-            stroke-dashoffset: 95;
           }
           
-          /* Вращение */
+          /* Рисуется круг по часовой стрелке */
           60% {
+            stroke-dashoffset: 0;
             opacity: 1;
-            transform: scale(1) rotate(360deg);
-            stroke-dashoffset: 95;
+          }
+          
+          /* Пауза с полным кругом */
+          70% {
+            stroke-dashoffset: 0;
+            opacity: 1;
           }
           
           /* Исчезновение */
-          70% {
+          80% {
+            stroke-dashoffset: 0;
             opacity: 0;
-            transform: scale(0.5) rotate(720deg);
-            stroke-dashoffset: 95;
           }
           
           100% {
+            stroke-dashoffset: 126;
             opacity: 0;
-            transform: scale(0.5) rotate(720deg);
           }
         }
       `}</style>
