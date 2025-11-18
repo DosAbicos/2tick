@@ -240,33 +240,41 @@ const ProfilePage = () => {
                 )}
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-6">
+              <div className="space-y-6">
                 {/* ФИО */}
-                <div className="sm:col-span-2">
-                  <label className="text-sm font-medium text-gray-700 flex items-center gap-2 mb-2">
-                    <User className="w-4 h-4 text-blue-500" />
-                    ФИО
-                  </label>
-                  {editing ? (
-                    <input
-                      type="text"
-                      value={editedUser.full_name || ''}
-                      onChange={(e) => setEditedUser({ ...editedUser, full_name: e.target.value })}
-                      className="minimal-input w-full"
-                    />
-                  ) : (
-                    <p className="text-gray-900">{user?.full_name}</p>
-                  )}
+                <div>
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mt-1">
+                      <User className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <label className="text-sm font-medium text-gray-500 mb-1 block">ФИО</label>
+                      {editing ? (
+                        <input
+                          type="text"
+                          value={editedUser.full_name || ''}
+                          onChange={(e) => setEditedUser({ ...editedUser, full_name: e.target.value })}
+                          className="minimal-input w-full"
+                        />
+                      ) : (
+                        <p className="text-base font-medium text-gray-900 break-words">{user?.full_name}</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
                 {/* Email */}
                 <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center gap-2 mb-2">
-                    <Mail className="w-4 h-4 text-blue-500" />
-                    Email
-                  </label>
-                  <p className="text-gray-900">{user?.email}</p>
-                  <p className="text-xs text-gray-500 mt-1">Email нельзя изменить</p>
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mt-1">
+                      <Mail className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <label className="text-sm font-medium text-gray-500 mb-1 block">Email</label>
+                      <p className="text-base font-medium text-gray-900 break-words">{user?.email}</p>
+                      <p className="text-xs text-gray-400 mt-1">Email нельзя изменить</p>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Телефон */}
