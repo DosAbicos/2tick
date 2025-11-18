@@ -196,17 +196,15 @@ const Header = ({ showAuth = false }) => {
             </>
           )}
           
-          {/* Fullscreen Mobile меню - только для авторизованных */}
-          {token && mobileMenuOpen && (
-            <>
+          {/* Fullscreen Mobile меню - рендерится через Portal в body */}
+          {token && mobileMenuOpen && typeof document !== 'undefined' && ReactDOM.createPortal(
+            <div className="mobile-fullscreen-menu fixed inset-0 bg-white overflow-y-auto" style={{zIndex: 9999}}>
               <style dangerouslySetInnerHTML={{__html: `
                 body { overflow: hidden !important; }
                 @media (min-width: 768px) {
                   .mobile-fullscreen-menu { display: none !important; }
                 }
               `}} />
-              
-              <div className="mobile-fullscreen-menu fixed inset-0 bg-white overflow-y-auto" style={{zIndex: 9999}}>
                 {/* Header меню */}
                 <div className="flex items-center justify-between p-4 border-b border-gray-200">
                   <div className="flex items-center gap-2">
