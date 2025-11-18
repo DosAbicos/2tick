@@ -154,71 +154,33 @@ const Loader = ({ size = 'medium' }) => {
           /* Невидим пока галочки рисуются и прыгают */
           0%, 35% {
             opacity: 0;
-            stroke-dasharray: 2 124;
+            stroke-dasharray: 3 123;
             stroke-dashoffset: 0;
           }
           
           /* Плавное появление - маленькая точка в точке старта */
           40% {
-            opacity: 0.5;
-            stroke-dasharray: 2 124;
-            stroke-dashoffset: 0;
-          }
-          43% {
             opacity: 1;
-            stroke-dasharray: 5 121;
+            stroke-dasharray: 3 123;
             stroke-dashoffset: 0;
           }
           
-          /* Линия начинает расти (25%) */
-          48% {
-            opacity: 1;
-            stroke-dasharray: 20 106;
-            stroke-dashoffset: -20;
-          }
-          
-          /* Продолжает расти (37.5%) */
-          52% {
-            opacity: 1;
-            stroke-dasharray: 40 86;
-            stroke-dashoffset: -40;
-          }
-          
-          /* Максимум в середине круга (50% - 180°) */
+          /* Максимум в середине круга (180°) - браузер сам интерполирует рост */
           56% {
             opacity: 1;
             stroke-dasharray: 63 63;
             stroke-dashoffset: -63;
           }
           
-          /* Начинает уменьшаться (62.5%) */
-          60% {
+          /* Финиш - полностью исчезает (360°) - браузер сам интерполирует уменьшение */
+          72% {
             opacity: 1;
-            stroke-dasharray: 40 86;
-            stroke-dashoffset: -86;
+            stroke-dasharray: 0 126;
+            stroke-dashoffset: -126;
           }
           
-          /* Продолжает уменьшаться (75%) */
-          64% {
-            opacity: 1;
-            stroke-dasharray: 20 106;
-            stroke-dashoffset: -106;
-          }
-          
-          /* Очень маленькая линия (87.5%) */
-          68% {
-            opacity: 1;
-            stroke-dasharray: 5 121;
-            stroke-dashoffset: -121;
-          }
-          
-          /* Полностью исчезает в финише */
-          71% {
-            opacity: 0.7;
-            stroke-dasharray: 1 125;
-            stroke-dashoffset: -125;
-          }
-          74% {
+          /* Исчезновение */
+          76% {
             opacity: 0;
             stroke-dasharray: 0 126;
             stroke-dashoffset: -126;
@@ -226,7 +188,7 @@ const Loader = ({ size = 'medium' }) => {
           
           100% {
             opacity: 0;
-            stroke-dasharray: 2 124;
+            stroke-dasharray: 3 123;
             stroke-dashoffset: 0;
           }
         }
