@@ -129,7 +129,9 @@ const NotificationsAdminPage = () => {
     return (
       <div className="min-h-screen bg-neutral-50">
         <Header />
-        <div className="max-w-7xl mx-auto px-4 py-8 text-center">Загрузка...</div>
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <Loader text="Загрузка оповещений..." size="large" />
+        </div>
       </div>
     );
   }
