@@ -213,7 +213,7 @@ const ProfilePage = () => {
                 {!editing ? (
                   <button
                     onClick={() => setEditing(true)}
-                    className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-all flex items-center gap-2"
+                    className="p-2 sm:px-4 sm:py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-all flex items-center gap-2"
                   >
                     <Edit2 className="w-4 h-4" />
                     <span className="hidden sm:inline">Редактировать</span>
@@ -225,16 +225,17 @@ const ProfilePage = () => {
                         setEditing(false);
                         setEditedUser(user);
                       }}
-                      className="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all"
+                      className="p-2 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all"
                     >
-                      Отмена
+                      <span className="hidden sm:inline">Отмена</span>
+                      <span className="sm:hidden">✕</span>
                     </button>
                     <button
                       onClick={handleSaveProfile}
-                      className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all flex items-center gap-2"
+                      className="p-2 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all flex items-center gap-2"
                     >
                       <Save className="w-4 h-4" />
-                      Сохранить
+                      <span className="hidden sm:inline">Сохранить</span>
                     </button>
                   </div>
                 )}
