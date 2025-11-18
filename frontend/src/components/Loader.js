@@ -150,42 +150,56 @@ const Loader = ({ size = 'medium' }) => {
           }
         }
 
-        @keyframes snake-circle {
+        @keyframes grow-shrink-circle {
           /* Невидим пока галочки рисуются и прыгают */
           0%, 35% {
             opacity: 0;
-            stroke-dashoffset: 126;
+            stroke-dasharray: 5 121;
+            stroke-dashoffset: 0;
           }
           
-          /* Плавное появление после исчезновения галочек */
+          /* Плавное появление - маленький круг в точке старта */
           40% {
             opacity: 0.3;
-            stroke-dashoffset: 126;
+            stroke-dasharray: 5 121;
+            stroke-dashoffset: 0;
           }
           42% {
             opacity: 1;
-            stroke-dashoffset: 126;
+            stroke-dasharray: 5 121;
+            stroke-dashoffset: 0;
           }
           
-          /* Змейка движется по кругу - рисует и стирает одновременно */
-          72% {
+          /* Линия РАСТЕТ до середины круга (180°) */
+          56% {
             opacity: 1;
-            stroke-dashoffset: 0;
+            stroke-dasharray: 63 63;
+            stroke-dashoffset: -63;
+          }
+          
+          /* Линия УМЕНЬШАЕТСЯ от середины до конца (360°) */
+          70% {
+            opacity: 1;
+            stroke-dasharray: 5 121;
+            stroke-dashoffset: -126;
           }
           
           /* Плавное исчезновение */
-          78% {
+          76% {
             opacity: 0.5;
-            stroke-dashoffset: 0;
+            stroke-dasharray: 5 121;
+            stroke-dashoffset: -126;
           }
-          82% {
+          80% {
             opacity: 0;
-            stroke-dashoffset: 0;
+            stroke-dasharray: 5 121;
+            stroke-dashoffset: -126;
           }
           
           100% {
             opacity: 0;
-            stroke-dashoffset: 126;
+            stroke-dasharray: 5 121;
+            stroke-dashoffset: 0;
           }
         }
       `}</style>
