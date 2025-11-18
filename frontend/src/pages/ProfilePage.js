@@ -208,14 +208,14 @@ const ProfilePage = () => {
           <div className="lg:col-span-2 space-y-3 sm:space-y-6">
             {/* Основная информация */}
             <div className="bg-white rounded-lg sm:shadow-md sm:border sm:border-gray-200 p-4 sm:p-8">
-              <div className="flex items-center gap-3 mb-6">
+              <div className="flex items-center gap-2 mb-6">
                 <h2 className="text-base sm:text-xl font-bold text-gray-900">Основная информация</h2>
                 {!editing ? (
                   <button
                     onClick={() => setEditing(true)}
                     className="text-blue-600 hover:text-blue-700 sm:px-4 sm:py-2 sm:bg-blue-50 sm:rounded-lg sm:hover:bg-blue-100 transition-all flex items-center justify-center gap-2 flex-shrink-0"
                   >
-                    <Edit2 className="w-4 h-4" />
+                    <Edit2 className="w-3 h-3 sm:w-4 sm:h-4" />
                     <span className="hidden sm:inline sm:text-sm sm:font-medium">Редактировать</span>
                   </button>
                 ) : (
