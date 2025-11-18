@@ -131,12 +131,17 @@ const Header = ({ showAuth = false }) => {
                     return !prev;
                   });
                 }}
-                className="md:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                className="md:hidden p-2 text-gray-700 hover:bg-blue-50 rounded-lg transition-all"
                 aria-label="Menu"
                 data-testid="burger-menu-button"
                 style={{cursor: 'pointer', touchAction: 'manipulation'}}
               >
-                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                <div style={{
+                  transform: mobileMenuOpen ? 'rotate(90deg)' : 'rotate(0deg)',
+                  transition: 'transform 0.3s ease-in-out'
+                }}>
+                  {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                </div>
               </button>
               
               {/* Desktop - все кнопки */}
