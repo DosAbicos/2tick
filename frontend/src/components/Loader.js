@@ -59,9 +59,9 @@ const Loader = ({ size = 'medium' }) => {
             strokeLinecap="round"
             style={{
               opacity: 0,
-              strokeDasharray: '5 121',
+              strokeDasharray: '2 124',
               strokeDashoffset: 0,
-              animation: 'grow-shrink-circle 3.5s ease-in-out infinite'
+              animation: 'grow-shrink-circle 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite'
             }}
           />
         </g>
