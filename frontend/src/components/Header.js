@@ -225,23 +225,23 @@ const Header = ({ showAuth = false }) => {
                 @media (min-width: 768px) {
                   .mobile-fullscreen-menu { display: none !important; }
                 }
-                @keyframes slideInFromRight {
+                @keyframes slideInFromTop {
                   from {
-                    transform: translateX(100%);
+                    transform: translateY(-100%);
                     opacity: 0;
                   }
                   to {
-                    transform: translateX(0);
+                    transform: translateY(0);
                     opacity: 1;
                   }
                 }
-                @keyframes slideOutToRight {
+                @keyframes slideOutToBottom {
                   from {
-                    transform: translateX(0);
+                    transform: translateY(0);
                     opacity: 1;
                   }
                   to {
-                    transform: translateX(100%);
+                    transform: translateY(-100%);
                     opacity: 0;
                   }
                 }
