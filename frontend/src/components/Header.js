@@ -331,8 +331,8 @@ const Header = ({ showAuth = false }) => {
                     })()}
                     
                     <Link to="/profile" onClick={() => setMobileMenuOpen(false)}>
-                      <button className="neuro-button w-full py-4 px-5 text-base font-semibold text-gray-700 bg-white rounded-2xl hover:shadow-lg transition-all flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                      <button className="w-full py-4 px-5 text-base font-semibold text-gray-700 bg-white rounded-2xl hover:shadow-xl transition-all flex items-center gap-4 shadow-md" style={{boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06), inset 0 -2px 4px rgba(0, 0, 0, 0.05)'}}>
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center shadow-sm">
                           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#374151" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                             <circle cx="12" cy="7" r="4"></circle>
@@ -347,9 +347,10 @@ const Header = ({ showAuth = false }) => {
                         handleLogout();
                         setMobileMenuOpen(false);
                       }}
-                      className="neuro-button w-full py-4 px-5 text-base font-semibold text-red-600 bg-white rounded-2xl hover:shadow-lg transition-all flex items-center gap-4"
+                      className="w-full py-4 px-5 text-base font-semibold text-red-600 bg-white rounded-2xl hover:shadow-xl transition-all flex items-center gap-4 shadow-md"
+                      style={{boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06), inset 0 -2px 4px rgba(0, 0, 0, 0.05)'}}
                     >
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-100 to-red-200 flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-100 to-red-200 flex items-center justify-center shadow-sm">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                           <polyline points="16 17 21 12 16 7"></polyline>
