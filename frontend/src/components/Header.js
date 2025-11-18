@@ -127,10 +127,18 @@ const Header = ({ showAuth = false }) => {
                   e.preventDefault();
                   e.stopPropagation();
                   console.log('[BURGER CLICK] Current:', mobileMenuOpen, 'Token:', !!token);
-                  setMobileMenuOpen(prev => {
-                    console.log('[BURGER STATE] Changing from', prev, 'to', !prev);
-                    return !prev;
-                  });
+                  
+                  if (mobileMenuOpen) {
+                    // Закрытие с анимацией
+                    setIsClosing(true);
+                    setTimeout(() => {
+                      setMobileMenuOpen(false);
+                      setIsClosing(false);
+                    }, 300); // Длительность анимации
+                  } else {
+                    // Открытие
+                    setMobileMenuOpen(true);
+                  }
                 }}
                 className="md:hidden p-2 text-gray-700 hover:bg-blue-50 rounded-lg transition-all"
                 aria-label="Menu"
