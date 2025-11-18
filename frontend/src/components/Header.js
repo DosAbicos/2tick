@@ -192,8 +192,19 @@ const Header = ({ showAuth = false }) => {
             </>
           )}
           
-          {/* Fullscreen Mobile меню - только для авторизованных */}
-          {token && mobileMenuOpen && (
+          {/* ТЕСТОВАЯ кнопка для демонстрации меню */}
+          {showBurgerForTest && (
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+              style={{backgroundColor: 'red'}}
+            >
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          )}
+          
+          {/* Fullscreen Mobile меню - для авторизованных ИЛИ тестового режима */}
+          {(token || showBurgerForTest) && mobileMenuOpen && (
             <>
               <style>{`
                 body { overflow: hidden !important; }
