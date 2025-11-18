@@ -32,8 +32,8 @@ const ProfilePage = () => {
   const fetchUserProfile = async () => {
     try {
       const [profileRes, statsRes] = await Promise.all([
-        axios.get(`${API}/users/me`, { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get(`${API}/users/me/stats`, { headers: { Authorization: `Bearer ${token}` } })
+        axios.get(`${API}/auth/me`, { headers: { Authorization: `Bearer ${token}` } }),
+        axios.get(`${API}/auth/me/stats`, { headers: { Authorization: `Bearer ${token}` } })
       ]);
       
       setUser(profileRes.data);
