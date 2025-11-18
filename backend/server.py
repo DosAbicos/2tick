@@ -1207,11 +1207,15 @@ async def get_me_stats(current_user: dict = Depends(get_current_user)):
     pending = await db.contracts.count_documents({"creator_id": current_user['user_id'], "status": "pending"})
     approved = await db.contracts.count_documents({"creator_id": current_user['user_id'], "status": "approved"})
     
+    # signed_contracts = completed + approved (подписано)
+    # pending_contracts = pending (в ожидании)
+    # contracts_used = total_contracts (использовано от лимита)
+    
     return {
         "total_contracts": total_contracts,
-        "completed": completed,
-        "pending": pending,
-        "approved": approved
+        "signed_contracts": completed + approved,
+        "pending_contracts": pending,
+        "contracts_used": total_contracts
     }
 
 @api_router.post("/auth/change-password")
