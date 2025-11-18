@@ -436,7 +436,7 @@ const ProfilePage = () => {
                     </button>
                     <button
                       onClick={handleChangePassword}
-                      className="flex-1 px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all"
+                      className="w-full sm:flex-1 px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all"
                     >
                       Сохранить пароль
                     </button>
