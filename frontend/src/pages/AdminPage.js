@@ -730,7 +730,7 @@ const AdminPage = () => {
                   {/* Activity Tab */}
                   <TabsContent value="activity" className="mt-4">
                     {loadingLogs ? (
-                      <div className="text-center py-4 text-neutral-500">Загрузка...</div>
+                      <Loader text="Загрузка логов..." size="small" />
                     ) : userLogs.length === 0 ? (
                       <div className="text-center py-4 text-neutral-500">Нет логов</div>
                     ) : (
