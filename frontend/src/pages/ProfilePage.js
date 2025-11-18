@@ -205,9 +205,9 @@ const ProfilePage = () => {
           </div>
 
           {/* Правая колонка - Информация профиля */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-3 sm:space-y-6">
             {/* Основная информация */}
-            <div className="minimal-card p-6 sm:p-8">
+            <div className="bg-white rounded-lg sm:shadow-md sm:border sm:border-gray-200 p-4 sm:p-8">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-lg sm:text-xl font-bold text-gray-900">Основная информация</h2>
                 {!editing ? (
