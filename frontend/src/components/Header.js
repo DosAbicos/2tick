@@ -317,8 +317,8 @@ const Header = ({ showAuth = false }) => {
                     </button>
                   </div>
                 </div>
-              </div>
-            </>
+              </div>,
+            document.body
           )}
         </div>
       </div>
