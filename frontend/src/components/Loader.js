@@ -47,23 +47,24 @@ const Loader = ({ size = 'medium' }) => {
           }}
         />
 
-        {/* Круг с эффектом "рисующейся змейки" */}
-        <circle
-          cx="32"
-          cy="32"
-          r="20"
-          fill="none"
-          stroke="#3B82F6"
-          strokeWidth={config.strokeWidth}
-          strokeLinecap="round"
-          strokeDasharray="40 86"
-          style={{
-            opacity: 0,
-            animation: 'snake-circle 3.5s linear infinite',
-            transformOrigin: 'center',
-            transform: 'rotate(-90deg)'
-          }}
-        />
+        {/* Круг с эффектом роста и уменьшения */}
+        <g style={{ transformOrigin: 'center', transform: 'rotate(-90deg)' }}>
+          <circle
+            cx="32"
+            cy="32"
+            r="20"
+            fill="none"
+            stroke="#3B82F6"
+            strokeWidth={config.strokeWidth}
+            strokeLinecap="round"
+            style={{
+              opacity: 0,
+              strokeDasharray: '5 121',
+              strokeDashoffset: 0,
+              animation: 'grow-shrink-circle 3.5s ease-in-out infinite'
+            }}
+          />
+        </g>
       </svg>
 
       <style>{`
