@@ -1540,7 +1540,7 @@ agent_communication:
   - task: "Замена статических индикаторов загрузки на компонент Loader"
     implemented: true
     working: "NA"
-    file: "/app/frontend/src/pages/DashboardPage.js, /app/frontend/src/pages/ProfilePage.js, /app/frontend/src/pages/UserLogsPage.js, /app/frontend/src/pages/NotificationsAdminPage.js, /app/frontend/src/pages/AdminTemplatesPage.js, /app/frontend/src/pages/AdminTemplatesPageNew.js, /app/frontend/src/pages/SignContractPage.js"
+    file: "/app/frontend/src/components/Loader.js, /app/frontend/src/pages/DashboardPage.js, /app/frontend/src/pages/ProfilePage.js, /app/frontend/src/pages/UserLogsPage.js, /app/frontend/src/pages/NotificationsAdminPage.js, /app/frontend/src/pages/AdminTemplatesPage.js, /app/frontend/src/pages/AdminTemplatesPageNew.js, /app/frontend/src/pages/SignContractPage.js, /app/frontend/src/pages/AdminPage.js"
     stuck_count: 0
     priority: "medium"
     needs_retesting: true
@@ -1550,7 +1550,13 @@ agent_communication:
         comment: "ТРЕБОВАНИЕ: Заменить все статические текстовые индикаторы 'Загрузка...' на анимированный компонент Loader для единообразия UI."
       - working: "NA"
         agent: "main"
-        comment: "РЕАЛИЗОВАНО: 1) DashboardPage.js - добавлен импорт Loader и заменен статический текст на <Loader text='Загрузка договоров...' size='large' />, 2) ProfilePage.js - добавлен импорт Loader и заменен статический текст на <Loader text='Загрузка профиля...' size='large' />, 3) UserLogsPage.js - добавлен импорт Loader и заменен статический текст на <Loader text='Загрузка логов пользователя...' size='large' />, 4) NotificationsAdminPage.js - добавлен импорт Loader и заменен статический текст на <Loader text='Загрузка оповещений...' size='large' />, 5) AdminTemplatesPage.js - добавлен импорт Loader и заменен статический текст на <Loader text='Загрузка шаблонов...' size='medium' />, 6) AdminTemplatesPageNew.js - добавлен импорт Loader и заменен статический текст на <Loader text='Загрузка шаблонов...' size='medium' />, 7) SignContractPage.js - добавлен импорт Loader и заменен статический текст на <Loader text='Загрузка договора...' size='large' />. Все изменения скомпилированы успешно без ошибок. Frontend перезапущен. ПРИМЕЧАНИЕ: Текст 'Загрузка...' внутри кнопок (например, в UploadPdfContractPage.js, CreateContractPage.js) намеренно оставлен без изменений, так как это правильная UX практика для кнопок в состоянии загрузки."
+        comment: "РЕАЛИЗОВАНО ПЕРВАЯ ИТЕРАЦИЯ: Добавлен импорт Loader во все страницы и заменены статические тексты на компонент с текстом."
+      - working: "NA"
+        agent: "user"
+        comment: "НОВЫЕ ТРЕБОВАНИЯ: 1) Анимация должна быть по середине экрана, 2) Убрать логотип с галочками, сделать современную плавную анимацию, 3) Убрать все комментарии типа 'Загрузка договоров', 'Загрузка профиля' - только чистая анимация без текста."
+      - working: "NA"
+        agent: "main"
+        comment: "РЕАЛИЗОВАНО ПОЛНОСТЬЮ: 1) Loader.js - ПОЛНОСТЬЮ ПЕРЕРАБОТАН: убран логотип с галочками, создан современный минималистичный спиннер с градиентом (conic-gradient от синего до голубого), добавлена плавная анимация вращения (1.2s), пульсирующий внешний эффект с blur, центральная точка с pulse анимацией. 2) УБРАНЫ ВСЕ ТЕКСТЫ: удален параметр text из всех использований Loader, компонент теперь показывает только чистую анимацию. 3) ЦЕНТРИРОВАНИЕ: все страницы обновлены с использованием 'flex items-center justify-center' для размещения лоадера строго по центру экрана. 4) Обновлено 8 файлов: DashboardPage.js, ProfilePage.js, UserLogsPage.js, NotificationsAdminPage.js, AdminTemplatesPage.js, AdminTemplatesPageNew.js, SignContractPage.js, AdminPage.js. Frontend успешно перезапущен и скомпилирован без ошибок."
 
 agent_communication:
   - agent: "main"
