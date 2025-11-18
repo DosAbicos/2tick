@@ -262,8 +262,8 @@ const Header = ({ showAuth = false }) => {
                 {/* Контент меню */}
                 <div className="p-6 space-y-5">
                   {/* Языковой селектор */}
-                  <div className="neuro-card p-4">
-                    <p className="text-xs text-gray-500 mb-3 font-semibold uppercase tracking-wide">Язык / Тіл / Language</p>
+                  <div>
+                    <p className="text-xs text-gray-500 mb-3 font-semibold uppercase tracking-wide px-2">Язык / Тіл / Language</p>
                     <div className="flex gap-2">
                       {langOptions.map((lang) => (
                         <button
@@ -272,11 +272,14 @@ const Header = ({ showAuth = false }) => {
                             changeLanguage(lang.code);
                             setMobileMenuOpen(false);
                           }}
-                          className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all shadow-sm ${
+                          className={`flex-1 py-3 text-sm font-bold rounded-xl transition-all ${
                             currentLang === lang.code
-                              ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/40'
-                              : 'bg-white text-gray-700 hover:shadow-md border border-gray-200'
+                              ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/30'
+                              : 'bg-white text-gray-700 shadow-md hover:shadow-lg'
                           }`}
+                          style={currentLang !== lang.code ? {
+                            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06), inset 0 -2px 4px rgba(0, 0, 0, 0.05)'
+                          } : {}}
                         >
                           {lang.code.toUpperCase()}
                         </button>
