@@ -16,7 +16,6 @@ const Loader = ({ size = 'medium' }) => {
         width={config.width} 
         height={config.height} 
         viewBox="0 0 64 64"
-        style={{ animation: 'container-bounce 2s ease-in-out 1.4s' }}
       >
         {/* Первая галочка */}
         <path
@@ -29,7 +28,8 @@ const Loader = ({ size = 'medium' }) => {
           style={{
             strokeDasharray: 40,
             strokeDashoffset: 40,
-            animation: 'draw-tick 0.6s ease-out forwards'
+            animation: 'tick-cycle-1 4s ease-in-out infinite',
+            transformOrigin: '28px 32px'
           }}
         />
         
@@ -44,60 +44,171 @@ const Loader = ({ size = 'medium' }) => {
           style={{
             strokeDasharray: 40,
             strokeDashoffset: 40,
-            animation: 'draw-tick 0.6s ease-out 0.4s forwards'
+            animation: 'tick-cycle-2 4s ease-in-out infinite',
+            transformOrigin: '36px 32px'
           }}
         />
 
-        {/* Круг вокруг для акцента */}
+        {/* Вращающийся круг */}
         <circle
           cx="32"
           cy="32"
-          r="28"
+          r="20"
           fill="none"
-          stroke="#DBEAFE"
-          strokeWidth="2"
+          stroke="#3B82F6"
+          strokeWidth={config.strokeWidth}
+          strokeLinecap="round"
+          strokeDasharray="126"
+          strokeDashoffset="95"
           style={{
             opacity: 0,
-            animation: 'fade-in-circle 0.3s ease-out 1.2s forwards'
+            animation: 'circle-appear 4s ease-in-out infinite',
+            transformOrigin: 'center'
           }}
         />
       </svg>
 
       <style>{`
-        @keyframes draw-tick {
-          0% {
+        @keyframes tick-cycle-1 {
+          /* Рисование галочки */
+          0%, 100% {
+            stroke-dashoffset: 40;
+            opacity: 0;
+            transform: scale(1) rotate(0deg);
+          }
+          5% {
+            opacity: 1;
+          }
+          15% {
+            stroke-dashoffset: 0;
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+          }
+          
+          /* Подпрыг */
+          25% {
+            transform: scale(1.1) translateY(-5px) rotate(0deg);
+          }
+          30% {
+            transform: scale(1) translateY(0) rotate(0deg);
+          }
+          
+          /* Превращение в круг */
+          40% {
+            stroke-dashoffset: 0;
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+          }
+          50% {
+            stroke-dashoffset: 0;
+            opacity: 0;
+            transform: scale(0.8) rotate(180deg);
+          }
+          
+          /* Возврат из круга */
+          70% {
+            stroke-dashoffset: 40;
+            opacity: 0;
+            transform: scale(0.8) rotate(360deg);
+          }
+          80% {
+            opacity: 1;
+          }
+          90% {
+            stroke-dashoffset: 0;
+            opacity: 1;
+            transform: scale(1) rotate(360deg);
+          }
+        }
+
+        @keyframes tick-cycle-2 {
+          /* Рисование галочки с задержкой */
+          0%, 100% {
+            stroke-dashoffset: 40;
+            opacity: 0;
+            transform: scale(1) rotate(0deg);
+          }
+          10% {
             stroke-dashoffset: 40;
             opacity: 0;
           }
-          10% {
+          12% {
             opacity: 1;
           }
-          100% {
+          22% {
             stroke-dashoffset: 0;
             opacity: 1;
+            transform: scale(1) rotate(0deg);
           }
-        }
-
-        @keyframes fade-in-circle {
-          0% {
+          
+          /* Подпрыг */
+          25% {
+            transform: scale(1.1) translateY(-5px) rotate(0deg);
+          }
+          30% {
+            transform: scale(1) translateY(0) rotate(0deg);
+          }
+          
+          /* Превращение в круг */
+          40% {
+            stroke-dashoffset: 0;
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+          }
+          50% {
+            stroke-dashoffset: 0;
             opacity: 0;
-            transform: scale(0.8);
+            transform: scale(0.8) rotate(-180deg);
           }
-          50% {
-            opacity: 0.3;
+          
+          /* Возврат из круга */
+          70% {
+            stroke-dashoffset: 40;
+            opacity: 0;
+            transform: scale(0.8) rotate(-360deg);
           }
-          100% {
-            opacity: 0.2;
-            transform: scale(1);
+          80% {
+            opacity: 1;
+          }
+          90% {
+            stroke-dashoffset: 0;
+            opacity: 1;
+            transform: scale(1) rotate(-360deg);
           }
         }
 
-        @keyframes container-bounce {
-          0%, 100% {
-            transform: translateY(0) scale(1);
+        @keyframes circle-appear {
+          /* Скрыт пока рисуются галочки */
+          0%, 40% {
+            opacity: 0;
+            transform: scale(0.5) rotate(0deg);
+            stroke-dashoffset: 95;
           }
+          
+          /* Появление круга */
           50% {
-            transform: translateY(-10px) scale(1.05);
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+            stroke-dashoffset: 95;
+          }
+          
+          /* Вращение */
+          60% {
+            opacity: 1;
+            transform: scale(1) rotate(360deg);
+            stroke-dashoffset: 95;
+          }
+          
+          /* Исчезновение */
+          70% {
+            opacity: 0;
+            transform: scale(0.5) rotate(720deg);
+            stroke-dashoffset: 95;
+          }
+          
+          100% {
+            opacity: 0;
+            transform: scale(0.5) rotate(720deg);
           }
         }
       `}</style>
