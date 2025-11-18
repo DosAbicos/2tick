@@ -198,32 +198,41 @@ const Header = ({ showAuth = false }) => {
           
           {/* Fullscreen Mobile меню - рендерится через Portal в body */}
           {token && mobileMenuOpen && typeof document !== 'undefined' && ReactDOM.createPortal(
-            <div className="mobile-fullscreen-menu fixed inset-0 bg-white overflow-y-auto" style={{zIndex: 9999}}>
+            <div 
+              className="mobile-fullscreen-menu fixed inset-0 bg-gradient-to-br from-gray-50 to-white overflow-y-auto" 
+              style={{
+                zIndex: 9999,
+                animation: 'slideInFromRight 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+              }}
+            >
               <style dangerouslySetInnerHTML={{__html: `
                 body { overflow: hidden !important; }
                 @media (min-width: 768px) {
                   .mobile-fullscreen-menu { display: none !important; }
                 }
+                @keyframes slideInFromRight {
+                  from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                  }
+                  to {
+                    transform: translateX(0);
+                    opacity: 1;
+                  }
+                }
+                @keyframes fadeOut {
+                  from {
+                    transform: translateX(0);
+                    opacity: 1;
+                  }
+                  to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                  }
+                }
               `}} />
-                {/* Header меню */}
-                <div className="flex items-center justify-between p-4 border-b border-gray-200">
-                  <div className="flex items-center gap-2">
-                    <svg width="28" height="28" viewBox="0 0 32 32">
-                      <circle cx="16" cy="16" r="15" fill="#3B82F6" />
-                      <path d="M10 16 L14 20 L22 12" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-                      <path d="M14 16 L18 20 L26 12" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity="0.6" />
-                    </svg>
-                    <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
-                      2tick.kz
-                    </span>
-                  </div>
-                  <button
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                  >
-                    <X className="w-6 h-6 text-gray-700" />
-                  </button>
-                </div>
+                {/* Пустой header для отступа (чтобы не перекрывать основной header) */}
+                <div className="h-14"></div>
                 
                 {/* Контент меню */}
                 <div className="p-6 space-y-6">
