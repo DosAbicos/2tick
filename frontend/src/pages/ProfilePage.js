@@ -213,9 +213,9 @@ const ProfilePage = () => {
                 {!editing ? (
                   <button
                     onClick={() => setEditing(true)}
-                    className="p-1.5 sm:px-4 sm:py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100 transition-all flex items-center justify-center gap-2"
+                    className="p-1 sm:px-4 sm:py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded hover:bg-blue-100 transition-all flex items-center justify-center gap-2 flex-shrink-0"
                   >
-                    <Edit2 className="w-4 h-4 sm:w-4 sm:h-4" />
+                    <Edit2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     <span className="hidden sm:inline">Редактировать</span>
                   </button>
                 ) : (
