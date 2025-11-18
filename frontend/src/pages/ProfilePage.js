@@ -279,65 +279,80 @@ const ProfilePage = () => {
 
                 {/* Телефон */}
                 <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center gap-2 mb-2">
-                    <Phone className="w-4 h-4 text-blue-500" />
-                    Телефон
-                  </label>
-                  {editing ? (
-                    <input
-                      type="tel"
-                      value={editedUser.phone || ''}
-                      onChange={(e) => setEditedUser({ ...editedUser, phone: e.target.value })}
-                      className="minimal-input w-full"
-                    />
-                  ) : (
-                    <p className="text-gray-900">{user?.phone}</p>
-                  )}
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mt-1">
+                      <Phone className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <label className="text-sm font-medium text-gray-500 mb-1 block">Телефон</label>
+                      {editing ? (
+                        <input
+                          type="tel"
+                          value={editedUser.phone || ''}
+                          onChange={(e) => setEditedUser({ ...editedUser, phone: e.target.value })}
+                          className="minimal-input w-full"
+                        />
+                      ) : (
+                        <p className="text-base font-medium text-gray-900 break-words">{user?.phone}</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
                 {/* Компания */}
                 <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center gap-2 mb-2">
-                    <Building className="w-4 h-4 text-blue-500" />
-                    Компания
-                  </label>
-                  {editing ? (
-                    <input
-                      type="text"
-                      value={editedUser.company_name || ''}
-                      onChange={(e) => setEditedUser({ ...editedUser, company_name: e.target.value })}
-                      className="minimal-input w-full"
-                      placeholder="Не указана"
-                    />
-                  ) : (
-                    <p className="text-gray-900">{user?.company_name || 'Не указана'}</p>
-                  )}
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mt-1">
+                      <Building className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <label className="text-sm font-medium text-gray-500 mb-1 block">Компания</label>
+                      {editing ? (
+                        <input
+                          type="text"
+                          value={editedUser.company_name || ''}
+                          onChange={(e) => setEditedUser({ ...editedUser, company_name: e.target.value })}
+                          className="minimal-input w-full"
+                          placeholder="Не указана"
+                        />
+                      ) : (
+                        <p className="text-base font-medium text-gray-900 break-words">{user?.company_name || 'Не указана'}</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
                 {/* ИИН/БИН */}
                 <div>
-                  <label className="text-sm font-medium text-gray-700 flex items-center gap-2 mb-2">
-                    <CreditCard className="w-4 h-4 text-blue-500" />
-                    ИИН/БИН
-                  </label>
-                  {editing ? (
-                    <input
-                      type="text"
-                      value={editedUser.iin || ''}
-                      onChange={(e) => setEditedUser({ ...editedUser, iin: e.target.value })}
-                      className="minimal-input w-full"
-                      placeholder="Не указан"
-                    />
-                  ) : (
-                    <p className="text-gray-900">{user?.iin || 'Не указан'}</p>
-                  )}
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mt-1">
+                      <CreditCard className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <label className="text-sm font-medium text-gray-500 mb-1 block">ИИН/БИН</label>
+                      {editing ? (
+                        <input
+                          type="text"
+                          value={editedUser.iin || ''}
+                          onChange={(e) => setEditedUser({ ...editedUser, iin: e.target.value })}
+                          className="minimal-input w-full"
+                          placeholder="Не указан"
+                        />
+                      ) : (
+                        <p className="text-base font-medium text-gray-900 break-words">{user?.iin || 'Не указан'}</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
                 {/* Юридический адрес */}
-                <div className="sm:col-span-2">
-                  <label className="text-sm font-medium text-gray-700 flex items-center gap-2 mb-2">
-                    <MapPin className="w-4 h-4 text-blue-500" />
-                    Юридический адрес
+                <div>
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mt-1">
+                      <MapPin className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <label className="text-sm font-medium text-gray-500 mb-1 block">Юридический адрес
                   </label>
                   {editing ? (
                     <input
