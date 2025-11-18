@@ -106,18 +106,18 @@ const ProfilePage = () => {
     <div className="min-h-screen gradient-bg">
       <Header />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Заголовок */}
-        <div className="mb-6 sm:mb-8">
+        <div className="mb-4 sm:mb-8 px-2 sm:px-0">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Мой профиль</h1>
           <p className="text-sm sm:text-base text-gray-600">Управляйте своей учетной записью</p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="grid lg:grid-cols-3 gap-3 sm:gap-6">
           {/* Левая колонка - Статистика */}
-          <div className="lg:col-span-1 space-y-6">
+          <div className="lg:col-span-1 space-y-3 sm:space-y-6">
             {/* Статистика */}
-            <div className="minimal-card p-6">
+            <div className="bg-white rounded-lg sm:shadow-md sm:border sm:border-gray-200 p-4 sm:p-6">
               <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <FileText className="w-5 h-5 text-blue-500" />
                 Статистика
