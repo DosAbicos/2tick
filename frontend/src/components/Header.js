@@ -119,6 +119,25 @@ const Header = ({ showAuth = false }) => {
           
           {token && (
             <>
+              {/* Mobile - бургер меню СНАЧАЛА */}
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log('[BURGER CLICK] Current:', mobileMenuOpen, 'Token:', !!token);
+                  setMobileMenuOpen(prev => {
+                    console.log('[BURGER STATE] Changing from', prev, 'to', !prev);
+                    return !prev;
+                  });
+                }}
+                className="md:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                aria-label="Menu"
+                data-testid="burger-menu-button"
+                style={{cursor: 'pointer', touchAction: 'manipulation'}}
+              >
+                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
+              
               {/* Desktop - все кнопки */}
               <div className="hidden md:flex items-center gap-2">
               {(() => {
