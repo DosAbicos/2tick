@@ -217,7 +217,7 @@ const Header = ({ showAuth = false }) => {
               style={{
                 top: '56px',
                 zIndex: 40,
-                animation: 'slideInFromRight 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                animation: isClosing ? 'slideOutToRight 0.3s cubic-bezier(0.4, 0, 0.2, 1)' : 'slideInFromRight 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
               }}
             >
               <style dangerouslySetInnerHTML={{__html: `
@@ -233,6 +233,16 @@ const Header = ({ showAuth = false }) => {
                   to {
                     transform: translateX(0);
                     opacity: 1;
+                  }
+                }
+                @keyframes slideOutToRight {
+                  from {
+                    transform: translateX(0);
+                    opacity: 1;
+                  }
+                  to {
+                    transform: translateX(100%);
+                    opacity: 0;
                   }
                 }
               `}} />
