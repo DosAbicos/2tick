@@ -219,23 +219,23 @@ const ProfilePage = () => {
                     <span className="hidden sm:inline sm:text-sm sm:font-medium">Редактировать</span>
                   </button>
                 ) : (
-                  <div className="flex gap-1.5 sm:gap-2">
+                  <div className="flex gap-2 sm:gap-2">
                     <button
                       onClick={() => {
                         setEditing(false);
                         setEditedUser(user);
                       }}
-                      className="p-1 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-gray-600 bg-gray-100 rounded hover:bg-gray-200 transition-all flex items-center justify-center flex-shrink-0"
+                      className="text-gray-600 hover:text-gray-800 sm:px-4 sm:py-2 sm:bg-gray-100 sm:rounded-lg sm:hover:bg-gray-200 transition-all flex items-center justify-center flex-shrink-0"
                     >
-                      <span className="hidden sm:inline">Отмена</span>
-                      <span className="sm:hidden text-sm">✕</span>
+                      <span className="hidden sm:inline sm:text-sm sm:font-medium">Отмена</span>
+                      <span className="sm:hidden text-base">✕</span>
                     </button>
                     <button
                       onClick={handleSaveProfile}
-                      className="p-1 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded hover:from-blue-700 hover:to-blue-600 transition-all flex items-center justify-center gap-1 sm:gap-2 flex-shrink-0"
+                      className="sm:px-4 sm:py-2 text-white sm:bg-gradient-to-r sm:from-blue-600 sm:to-blue-500 sm:rounded-lg sm:hover:from-blue-700 sm:hover:to-blue-600 transition-all flex items-center justify-center gap-1 sm:gap-2 flex-shrink-0"
                     >
-                      <Save className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                      <span className="hidden sm:inline">Сохранить</span>
+                      <Save className="w-4 h-4 text-blue-600 sm:text-white" />
+                      <span className="hidden sm:inline sm:text-sm sm:font-medium">Сохранить</span>
                     </button>
                   </div>
                 )}
