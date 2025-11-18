@@ -28,11 +28,8 @@ const DashboardPage = () => {
   const [loadingFavorites, setLoadingFavorites] = useState(false);
 
   useEffect(() => {
-    // ТЕСТОВАЯ ЗАДЕРЖКА 2 МИНУТЫ - для проверки анимации загрузки
-    setTimeout(() => {
-      fetchContracts();
-      fetchLimitInfo();
-    }, 120000); // 120000ms = 2 минуты
+    fetchContracts();
+    fetchLimitInfo();
   }, []);
 
   // Load favorite templates for modal
