@@ -151,25 +151,33 @@ const Loader = ({ size = 'medium' }) => {
 
         @keyframes snake-circle {
           /* Невидим пока галочки рисуются и прыгают */
-          0%, 30% {
+          0%, 35% {
             opacity: 0;
             stroke-dashoffset: 126;
           }
           
-          /* Появляется сразу после подпрыга галочек */
-          35% {
+          /* Плавное появление после исчезновения галочек */
+          40% {
+            opacity: 0.3;
+            stroke-dashoffset: 126;
+          }
+          42% {
             opacity: 1;
             stroke-dashoffset: 126;
           }
           
           /* Змейка движется по кругу - рисует и стирает одновременно */
-          70% {
+          72% {
             opacity: 1;
             stroke-dashoffset: 0;
           }
           
-          /* Исчезновение */
-          80% {
+          /* Плавное исчезновение */
+          78% {
+            opacity: 0.5;
+            stroke-dashoffset: 0;
+          }
+          82% {
             opacity: 0;
             stroke-dashoffset: 0;
           }
