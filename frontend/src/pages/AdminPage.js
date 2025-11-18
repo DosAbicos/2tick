@@ -28,6 +28,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import Header from '@/components/Header';
+import Loader from '@/components/Loader';
 import { 
   Users, 
   FileText, 
