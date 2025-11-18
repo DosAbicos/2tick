@@ -1166,11 +1166,7 @@ async def get_me(current_user: dict = Depends(get_current_user)):
 
 @api_router.put("/auth/me")
 async def update_me(
-    name: str = None,
-    phone: str = None,
-    company: str = None,
-    iin_bin: str = None,
-    legal_address: str = None,
+    user_update: UserUpdate,
     current_user: dict = Depends(get_current_user)
 ):
     """Update current user profile"""
@@ -1179,16 +1175,16 @@ async def update_me(
         raise HTTPException(status_code=404, detail="User not found")
     
     update_data = {}
-    if name is not None:
-        update_data['name'] = name
-    if phone is not None:
-        update_data['phone'] = phone
-    if company is not None:
-        update_data['company'] = company
-    if iin_bin is not None:
-        update_data['iin_bin'] = iin_bin
-    if legal_address is not None:
-        update_data['legal_address'] = legal_address
+    if user_update.full_name is not None:
+        update_data['full_name'] = user_update.full_name
+    if user_update.phone is not None:
+        update_data['phone'] = user_update.phone
+    if user_update.company_name is not None:
+        update_data['company_name'] = user_update.company_name
+    if user_update.iin is not None:
+        update_data['iin'] = user_update.iin
+    if user_update.legal_address is not None:
+        update_data['legal_address'] = user_update.legal_address
     
     if update_data:
         await db.users.update_one(
