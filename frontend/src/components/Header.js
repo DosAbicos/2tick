@@ -248,7 +248,7 @@ const Header = ({ showAuth = false }) => {
               `}} />
                 
                 {/* Контент меню */}
-                <div className="p-6 space-y-5">
+                <div className="px-6 pt-8 pb-6 space-y-5">
                   {/* Языковой селектор */}
                   <div>
                     <p className="text-xs text-gray-500 mb-3 font-semibold uppercase tracking-wide px-2">Язык / Тіл / Language</p>
