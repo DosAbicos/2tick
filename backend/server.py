@@ -1201,20 +1201,21 @@ async def update_me(
 @api_router.get("/auth/me/stats")
 async def get_me_stats(current_user: dict = Depends(get_current_user)):
     """Get current user statistics"""
-    # Count contracts by status
-    total_contracts = await db.contracts.count_documents({"creator_id": current_user['user_id']})
-    completed = await db.contracts.count_documents({"creator_id": current_user['user_id'], "status": "completed"})
-    pending = await db.contracts.count_documents({"creator_id": current_user['user_id'], "status": "pending"})
-    approved = await db.contracts.count_documents({"creator_id": current_user['user_id'], "status": "approved"})
+    # Count contracts by status (реальные статусы: draft, sent, pending-signature, signed, declined)
+    total_contracts = await db.contracts.count_documents({"creator_id": current_user['user_id'], "deleted": {"$ne": True}})
+    signed = await db.contracts.count_documents({"creator_id": current_user['user_id'], "status": "signed", "deleted": {"$ne": True}})
+    pending_signature = await db.contracts.count_documents({"creator_id": current_user['user_id'], "status": "pending-signature", "deleted": {"$ne": True}})
+    sent = await db.contracts.count_documents({"creator_id": current_user['user_id'], "status": "sent", "deleted": {"$ne": True}})
+    draft = await db.contracts.count_documents({"creator_id": current_user['user_id'], "status": "draft", "deleted": {"$ne": True}})
     
-    # signed_contracts = completed + approved (подписано)
-    # pending_contracts = pending (в ожидании)
+    # signed_contracts = signed (подписано)
+    # pending_contracts = pending-signature + sent + draft (в ожидании)
     # contracts_used = total_contracts (использовано от лимита)
     
     return {
         "total_contracts": total_contracts,
-        "signed_contracts": completed + approved,
-        "pending_contracts": pending,
+        "signed_contracts": signed,
+        "pending_contracts": pending_signature + sent + draft,
         "contracts_used": total_contracts
     }
 
