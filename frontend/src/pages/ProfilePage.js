@@ -372,7 +372,7 @@ const ProfilePage = () => {
             </div>
 
             {/* Смена пароля */}
-            <div className="minimal-card p-6 sm:p-8">
+            <div className="bg-white rounded-lg sm:shadow-md sm:border sm:border-gray-200 p-4 sm:p-8">
               <div className="flex items-center gap-3 mb-6">
                 <div className="flex-shrink-0 w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
                   <Lock className="w-5 h-5 text-blue-600" />
