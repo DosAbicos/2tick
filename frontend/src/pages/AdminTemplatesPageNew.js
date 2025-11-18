@@ -613,7 +613,7 @@ const AdminTemplatesPageNew = () => {
         {/* Templates List */}
         {loading ? (
           <div className="text-center py-12">
-            <p className="text-neutral-600">Загрузка...</p>
+            <Loader text="Загрузка шаблонов..." size="medium" />
           </div>
         ) : templates.length === 0 ? (
           <Card className="shadow-lg">
