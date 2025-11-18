@@ -760,7 +760,7 @@ const AdminPage = () => {
                   {/* Contracts Tab */}
                   <TabsContent value="contracts" className="mt-4">
                     {loadingUserContracts ? (
-                      <div className="text-center py-4 text-neutral-500">Загрузка...</div>
+                      <Loader text="Загрузка договоров..." size="small" />
                     ) : userContracts.length === 0 ? (
                       <div className="text-center py-4 text-neutral-500">У пользователя нет договоров</div>
                     ) : (
