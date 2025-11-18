@@ -208,8 +208,8 @@ const ProfilePage = () => {
           <div className="lg:col-span-2 space-y-3 sm:space-y-6">
             {/* Основная информация */}
             <div className="bg-white rounded-lg sm:shadow-md sm:border sm:border-gray-200 p-4 sm:p-8">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg sm:text-xl font-bold text-gray-900">Основная информация</h2>
+              <div className="flex items-center justify-between gap-2 mb-6">
+                <h2 className="text-base sm:text-xl font-bold text-gray-900 flex-1 min-w-0 truncate">Основная информация</h2>
                 {!editing ? (
                   <button
                     onClick={() => setEditing(true)}
