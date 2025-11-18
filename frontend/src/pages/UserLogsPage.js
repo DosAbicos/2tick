@@ -61,11 +61,8 @@ const UserLogsPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen gradient-bg">
-        <Header />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
-          <Loader text="Загрузка логов пользователя..." size="large" />
-        </div>
+      <div className="min-h-screen gradient-bg flex items-center justify-center">
+        <Loader size="large" />
       </div>
     );
   }
