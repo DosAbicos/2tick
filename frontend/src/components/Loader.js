@@ -1,82 +1,48 @@
 import React from 'react';
 import '../styles/neumorphism.css';
 
-const Loader = ({ text = 'Загрузка...', fullScreen = false, size = 'medium' }) => {
+const Loader = ({ size = 'medium' }) => {
   const sizeClasses = {
-    small: 'w-8 h-8',
-    medium: 'w-12 h-12',
-    large: 'w-16 h-16'
+    small: 'w-10 h-10',
+    medium: 'w-16 h-16',
+    large: 'w-20 h-20'
   };
 
-  const containerClass = fullScreen 
-    ? 'fixed inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-50 z-50'
-    : 'flex flex-col items-center justify-center py-8';
-
   return (
-    <div className={containerClass}>
-      {/* Loader с двумя галочками в стиле 2tick */}
+    <div className="flex items-center justify-center py-12">
       <div className="relative">
-        {/* Neumorphic круг */}
-        <div className={`${sizeClasses[size]} rounded-full bg-white shadow-lg relative overflow-hidden`}
+        {/* Внешний вращающийся круг с градиентом */}
+        <div 
+          className={`${sizeClasses[size]} rounded-full relative`}
           style={{
-            boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1), inset 0 -2px 4px rgba(0, 0, 0, 0.05)'
+            background: 'conic-gradient(from 0deg, #3B82F6 0deg, #60A5FA 90deg, #93C5FD 180deg, #DBEAFE 270deg, #3B82F6 360deg)',
+            animation: 'spin 1.2s linear infinite'
           }}
         >
-          {/* Анимированный градиентный фон */}
+          {/* Внутренний белый круг для создания кольца */}
           <div 
-            className="absolute inset-0 bg-gradient-to-r from-blue-500 to-blue-600"
+            className="absolute inset-[3px] rounded-full bg-gradient-to-br from-blue-50 via-white to-blue-50"
             style={{
-              animation: 'spin 1.5s linear infinite',
-              clipPath: 'polygon(50% 50%, 50% 0%, 100% 0%, 100% 100%, 50% 100%)'
+              boxShadow: 'inset 0 2px 8px rgba(59, 130, 246, 0.1)'
             }}
           />
-          
-          {/* Иконка 2tick */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <svg width="60%" height="60%" viewBox="0 0 32 32">
-              <path d="M10 16 L14 20 L22 12" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M14 16 L18 20 L26 12" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity="0.6" />
-            </svg>
-          </div>
         </div>
-        
-        {/* Пульсирующий эффект вокруг */}
+
+        {/* Пульсирующий внешний эффект */}
         <div 
-          className={`absolute inset-0 ${sizeClasses[size]} rounded-full bg-blue-500/20`}
+          className={`absolute inset-0 ${sizeClasses[size]} rounded-full bg-blue-400/20`}
           style={{
-            animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+            animation: 'pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            filter: 'blur(8px)'
           }}
         />
-      </div>
-      
-      {/* Текст загрузки */}
-      {text && (
-        <p className="mt-6 text-base font-semibold text-gray-700 animate-pulse">
-          {text}
-        </p>
-      )}
-      
-      {/* Анимированные точки */}
-      <div className="flex gap-1.5 mt-3">
+
+        {/* Центральная точка */}
         <div 
-          className="w-2 h-2 rounded-full bg-blue-500"
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-gradient-to-r from-blue-500 to-blue-600"
           style={{
-            animation: 'bounce 1s infinite',
-            animationDelay: '0s'
-          }}
-        />
-        <div 
-          className="w-2 h-2 rounded-full bg-blue-500"
-          style={{
-            animation: 'bounce 1s infinite',
-            animationDelay: '0.2s'
-          }}
-        />
-        <div 
-          className="w-2 h-2 rounded-full bg-blue-500"
-          style={{
-            animation: 'bounce 1s infinite',
-            animationDelay: '0.4s'
+            animation: 'pulse-dot 1.5s ease-in-out infinite',
+            boxShadow: '0 0 12px rgba(59, 130, 246, 0.5)'
           }}
         />
       </div>
@@ -91,23 +57,25 @@ const Loader = ({ text = 'Загрузка...', fullScreen = false, size = 'medi
           }
         }
         
-        @keyframes pulse {
+        @keyframes pulse-ring {
           0%, 100% {
             opacity: 0.3;
             transform: scale(1);
           }
           50% {
-            opacity: 0.5;
-            transform: scale(1.1);
+            opacity: 0.6;
+            transform: scale(1.15);
           }
         }
         
-        @keyframes bounce {
+        @keyframes pulse-dot {
           0%, 100% {
-            transform: translateY(0);
+            opacity: 0.8;
+            transform: translate(-50%, -50%) scale(1);
           }
           50% {
-            transform: translateY(-8px);
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1.2);
           }
         }
       `}</style>
