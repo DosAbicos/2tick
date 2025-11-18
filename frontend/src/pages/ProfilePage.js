@@ -372,22 +372,27 @@ const ProfilePage = () => {
 
             {/* Смена пароля */}
             <div className="minimal-card p-6 sm:p-8">
-              <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                <Lock className="w-5 h-5 text-blue-500" />
-                Смена пароля
-              </h2>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="flex-shrink-0 w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                  <Lock className="w-5 h-5 text-blue-600" />
+                </div>
+                <div className="flex-1">
+                  <h2 className="text-lg font-bold text-gray-900">Смена пароля</h2>
+                  <p className="text-sm text-gray-500">Обновите пароль для безопасности</p>
+                </div>
+              </div>
 
               {!changingPassword ? (
                 <button
                   onClick={() => setChangingPassword(true)}
-                  className="px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all"
+                  className="w-full sm:w-auto px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all"
                 >
                   Изменить пароль
                 </button>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-5">
                   <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 block">Старый пароль</label>
+                    <label className="text-sm font-medium text-gray-500 mb-2 block">Старый пароль</label>
                     <input
                       type="password"
                       value={passwordData.old_password}
@@ -398,7 +403,7 @@ const ProfilePage = () => {
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 block">Новый пароль</label>
+                    <label className="text-sm font-medium text-gray-500 mb-2 block">Новый пароль</label>
                     <input
                       type="password"
                       value={passwordData.new_password}
@@ -409,7 +414,7 @@ const ProfilePage = () => {
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium text-gray-700 mb-2 block">Подтвердите новый пароль</label>
+                    <label className="text-sm font-medium text-gray-500 mb-2 block">Подтвердите новый пароль</label>
                     <input
                       type="password"
                       value={passwordData.confirm_password}
@@ -419,13 +424,13 @@ const ProfilePage = () => {
                     />
                   </div>
 
-                  <div className="flex gap-3 pt-2">
+                  <div className="flex flex-col sm:flex-row gap-3 pt-2">
                     <button
                       onClick={() => {
                         setChangingPassword(false);
                         setPasswordData({ old_password: '', new_password: '', confirm_password: '' });
                       }}
-                      className="flex-1 px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all"
+                      className="w-full sm:flex-1 px-4 py-2.5 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all"
                     >
                       Отмена
                     </button>
