@@ -154,51 +154,79 @@ const Loader = ({ size = 'medium' }) => {
           /* Невидим пока галочки рисуются и прыгают */
           0%, 35% {
             opacity: 0;
-            stroke-dasharray: 5 121;
+            stroke-dasharray: 2 124;
             stroke-dashoffset: 0;
           }
           
-          /* Плавное появление - маленький круг в точке старта */
+          /* Плавное появление - маленькая точка в точке старта */
           40% {
-            opacity: 0.3;
-            stroke-dasharray: 5 121;
+            opacity: 0.5;
+            stroke-dasharray: 2 124;
             stroke-dashoffset: 0;
           }
-          42% {
+          43% {
             opacity: 1;
             stroke-dasharray: 5 121;
             stroke-dashoffset: 0;
           }
           
-          /* Линия РАСТЕТ до середины круга (180°) */
+          /* Линия начинает расти (25%) */
+          48% {
+            opacity: 1;
+            stroke-dasharray: 20 106;
+            stroke-dashoffset: -20;
+          }
+          
+          /* Продолжает расти (37.5%) */
+          52% {
+            opacity: 1;
+            stroke-dasharray: 40 86;
+            stroke-dashoffset: -40;
+          }
+          
+          /* Максимум в середине круга (50% - 180°) */
           56% {
             opacity: 1;
             stroke-dasharray: 63 63;
             stroke-dashoffset: -63;
           }
           
-          /* Линия УМЕНЬШАЕТСЯ от середины до конца (360°) */
-          70% {
+          /* Начинает уменьшаться (62.5%) */
+          60% {
             opacity: 1;
-            stroke-dasharray: 5 121;
-            stroke-dashoffset: -126;
+            stroke-dasharray: 40 86;
+            stroke-dashoffset: -86;
           }
           
-          /* Плавное исчезновение */
-          76% {
-            opacity: 0.5;
-            stroke-dasharray: 5 121;
-            stroke-dashoffset: -126;
+          /* Продолжает уменьшаться (75%) */
+          64% {
+            opacity: 1;
+            stroke-dasharray: 20 106;
+            stroke-dashoffset: -106;
           }
-          80% {
-            opacity: 0;
+          
+          /* Очень маленькая линия (87.5%) */
+          68% {
+            opacity: 1;
             stroke-dasharray: 5 121;
+            stroke-dashoffset: -121;
+          }
+          
+          /* Полностью исчезает в финише */
+          71% {
+            opacity: 0.7;
+            stroke-dasharray: 1 125;
+            stroke-dashoffset: -125;
+          }
+          74% {
+            opacity: 0;
+            stroke-dasharray: 0 126;
             stroke-dashoffset: -126;
           }
           
           100% {
             opacity: 0;
-            stroke-dasharray: 5 121;
+            stroke-dasharray: 2 124;
             stroke-dashoffset: 0;
           }
         }
