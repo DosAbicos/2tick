@@ -235,11 +235,11 @@ const Header = ({ showAuth = false }) => {
                 <div className="h-14"></div>
                 
                 {/* Контент меню */}
-                <div className="p-6 space-y-6">
+                <div className="p-6 space-y-5">
                   {/* Языковой селектор */}
-                  <div>
-                    <p className="text-sm text-gray-500 mb-3 font-semibold">Язык / Тіл</p>
-                    <div className="flex gap-3">
+                  <div className="neuro-card p-4">
+                    <p className="text-xs text-gray-500 mb-3 font-semibold uppercase tracking-wide">Язык / Тіл / Language</p>
+                    <div className="flex gap-2">
                       {langOptions.map((lang) => (
                         <button
                           key={lang.code}
@@ -247,10 +247,10 @@ const Header = ({ showAuth = false }) => {
                             changeLanguage(lang.code);
                             setMobileMenuOpen(false);
                           }}
-                          className={`flex-1 py-3 px-4 text-sm font-bold rounded-xl transition-all ${
+                          className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all shadow-sm ${
                             currentLang === lang.code
-                              ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30'
-                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                              ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/40'
+                              : 'bg-white text-gray-700 hover:shadow-md border border-gray-200'
                           }`}
                         >
                           {lang.code.toUpperCase()}
@@ -258,8 +258,6 @@ const Header = ({ showAuth = false }) => {
                       ))}
                     </div>
                   </div>
-                  
-                  <div className="border-t border-gray-200"></div>
                   
                   {/* Навигационные кнопки */}
                   <div className="space-y-3">
