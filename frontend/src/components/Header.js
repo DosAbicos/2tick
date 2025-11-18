@@ -299,8 +299,8 @@ const Header = ({ showAuth = false }) => {
                           if (isAdminPage) {
                             return (
                               <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)}>
-                                <button className="neuro-button w-full py-4 px-5 text-base font-semibold text-blue-700 bg-white rounded-2xl hover:shadow-lg transition-all flex items-center gap-4">
-                                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
+                                <button className="w-full py-4 px-5 text-base font-semibold text-blue-700 bg-white rounded-2xl hover:shadow-xl transition-all flex items-center gap-4 shadow-md" style={{boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06), inset 0 -2px 4px rgba(0, 0, 0, 0.05)'}}>
+                                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center shadow-sm">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                                       <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                                     </svg>
