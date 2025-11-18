@@ -237,8 +237,8 @@ const Header = ({ showAuth = false }) => {
                 }
               `}} />
                 {/* Header меню с логотипом и кнопкой закрытия */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-                  <div className="flex items-center gap-2">
+                <div className="flex items-center justify-between px-4 h-14 border-b border-gray-100">
+                  <div className="flex items-center gap-1.5">
                     <div className="relative">
                       <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full"></div>
                       <svg width="28" height="28" viewBox="0 0 32 32" className="relative">
@@ -247,7 +247,7 @@ const Header = ({ showAuth = false }) => {
                         <path d="M14 16 L18 20 L26 12" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity="0.6" />
                       </svg>
                     </div>
-                    <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
+                    <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
                       2tick.kz
                     </span>
                   </div>
