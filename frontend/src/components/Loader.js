@@ -47,7 +47,7 @@ const Loader = ({ size = 'medium' }) => {
           }}
         />
 
-        {/* Просто вращающийся круг */}
+        {/* Круг с эффектом "рисующейся змейки" */}
         <circle
           cx="32"
           cy="32"
@@ -56,11 +56,12 @@ const Loader = ({ size = 'medium' }) => {
           stroke="#3B82F6"
           strokeWidth={config.strokeWidth}
           strokeLinecap="round"
-          strokeDasharray="95 31"
+          strokeDasharray="40 86"
           style={{
             opacity: 0,
-            animation: 'spin-circle 3.5s linear infinite',
-            transformOrigin: 'center'
+            animation: 'snake-circle 3.5s linear infinite',
+            transformOrigin: 'center',
+            transform: 'rotate(-90deg)'
           }}
         />
       </svg>
