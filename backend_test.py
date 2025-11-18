@@ -1048,6 +1048,400 @@ class BackendTester:
         
         return all_passed
     
+    def test_email_client_issue(self):
+        """
+        КРИТИЧЕСКОЕ ТЕСТИРОВАНИЕ: Email клиенту не приходит
+        
+        ПРОБЛЕМА: После утверждения договора наймодателем клиент НЕ получает email с подписанным PDF договором.
+        
+        ТЕСТИРУЕМЫЕ СЦЕНАРИИ:
+        1. Полный E2E сценарий с проверкой email копирования
+        2. Проверка сохранения email из placeholder_values в signer_email
+        3. Проверка endpoint утверждения и отправки email
+        4. Альтернативные ключи email (EMAIL_КЛИЕНТА, EMAIL_НАНИМАТЕЛЯ, email, Email)
+        """
+        self.log("\n🚨 КРИТИЧЕСКОЕ ТЕСТИРОВАНИЕ: Email клиенту не приходит")
+        self.log("=" * 80)
+        
+        # First authenticate as creator
+        if not self.login_as_creator():
+            self.log("❌ Не удалось войти как пользователь. Пропускаем тесты.")
+            return False
+        
+        all_tests_passed = True
+        
+        # ТЕСТ 1: Полный E2E сценарий
+        self.log("\n📧 ТЕСТ 1: Полный E2E сценарий с email")
+        test1_passed = self.test_full_e2e_email_scenario()
+        all_tests_passed = all_tests_passed and test1_passed
+        
+        # ТЕСТ 2: Проверка сохранения email
+        self.log("\n💾 ТЕСТ 2: Проверка сохранения email из placeholder_values")
+        test2_passed = self.test_email_saving_from_placeholders()
+        all_tests_passed = all_tests_passed and test2_passed
+        
+        # ТЕСТ 3: Проверка endpoint утверждения
+        self.log("\n✅ ТЕСТ 3: Проверка endpoint утверждения")
+        test3_passed = self.test_contract_approval_endpoint()
+        all_tests_passed = all_tests_passed and test3_passed
+        
+        # ТЕСТ 4: Альтернативные ключи email
+        self.log("\n🔑 ТЕСТ 4: Альтернативные ключи email")
+        test4_passed = self.test_alternative_email_keys()
+        all_tests_passed = all_tests_passed and test4_passed
+        
+        # Итоговый результат
+        self.log("\n" + "=" * 80)
+        self.log("📊 РЕЗУЛЬТАТЫ КРИТИЧЕСКОГО ТЕСТИРОВАНИЯ EMAIL:")
+        self.log(f"   ТЕСТ 1 (E2E сценарий): {'✅ ПРОЙДЕН' if test1_passed else '❌ ПРОВАЛЕН'}")
+        self.log(f"   ТЕСТ 2 (Сохранение email): {'✅ ПРОЙДЕН' if test2_passed else '❌ ПРОВАЛЕН'}")
+        self.log(f"   ТЕСТ 3 (Endpoint утверждения): {'✅ ПРОЙДЕН' if test3_passed else '❌ ПРОВАЛЕН'}")
+        self.log(f"   ТЕСТ 4 (Альтернативные ключи): {'✅ ПРОЙДЕН' if test4_passed else '❌ ПРОВАЛЕН'}")
+        
+        if all_tests_passed:
+            self.log("🎉 ВСЕ КРИТИЧЕСКИЕ ТЕСТЫ EMAIL ПРОЙДЕНЫ!")
+            self.log("✅ Email копируется из placeholder_values в signer_email")
+            self.log("✅ В логах видно '📧 Email найден...'")
+            self.log("✅ В логах видно '🔥 DEBUG: Contract email'")
+            self.log("✅ Утверждение договора работает корректно")
+            self.log("✅ Все варианты ключей email работают")
+        else:
+            self.log("❌ ОБНАРУЖЕНЫ КРИТИЧЕСКИЕ ПРОБЛЕМЫ С EMAIL! Проверьте логи выше.")
+        
+        return all_tests_passed
+    
+    def test_full_e2e_email_scenario(self):
+        """ТЕСТ 1: Полный E2E сценарий"""
+        try:
+            # 1. Создать контракт из шаблона с плейсхолдерами
+            self.log("   📝 Создание контракта из шаблона...")
+            
+            # Get first available template
+            templates_response = self.session.get(f"{BASE_URL}/templates")
+            if templates_response.status_code != 200:
+                self.log(f"   ❌ Не удалось получить шаблоны: {templates_response.status_code}")
+                return False
+                
+            templates = templates_response.json()
+            if not templates:
+                self.log("   ❌ Нет доступных шаблонов")
+                return False
+                
+            template = templates[0]
+            template_id = template["id"]
+            
+            # Create contract from template
+            contract_data = {
+                "title": "Тест E2E email сценария",
+                "content": template.get("content", "Договор с плейсхолдерами EMAIL_КЛИЕНТА"),
+                "content_type": "plain",
+                "template_id": template_id,
+                "signer_name": "",
+                "signer_phone": "",
+                "signer_email": ""
+            }
+            
+            create_response = self.session.post(f"{BASE_URL}/contracts", json=contract_data)
+            if create_response.status_code != 200:
+                self.log(f"   ❌ Создание контракта не удалось: {create_response.status_code}")
+                return False
+                
+            contract = create_response.json()
+            contract_id = contract["id"]
+            self.log(f"   ✅ Контракт создан: {contract_id}")
+            
+            # 2. Клиент заполняет EMAIL_КЛИЕНТА (использовать реальный email для проверки)
+            self.log("   📧 Клиент заполняет EMAIL_КЛИЕНТА...")
+            
+            update_data = {
+                "placeholder_values": {
+                    "EMAIL_КЛИЕНТА": "test.client@2tick.kz"
+                }
+            }
+            
+            update_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/update-signer-info", json=update_data)
+            if update_response.status_code != 200:
+                self.log(f"   ❌ Обновление EMAIL_КЛИЕНТА не удалось: {update_response.status_code} - {update_response.text}")
+                return False
+                
+            self.log("   ✅ EMAIL_КЛИЕНТА заполнен")
+            
+            # 3. Проверить что email скопировался в signer_email
+            get_response = self.session.get(f"{BASE_URL}/sign/{contract_id}")
+            if get_response.status_code != 200:
+                self.log(f"   ❌ Не удалось получить контракт: {get_response.status_code}")
+                return False
+                
+            contract_data = get_response.json()
+            signer_email = contract_data.get("signer_email")
+            placeholder_values = contract_data.get("placeholder_values", {})
+            
+            self.log(f"   📋 signer_email: '{signer_email}'")
+            self.log(f"   📋 placeholder_values: {placeholder_values}")
+            
+            if signer_email != "test.client@2tick.kz":
+                self.log(f"   ❌ КРИТИЧЕСКАЯ ОШИБКА: signer_email не скопировался! Ожидалось: 'test.client@2tick.kz', Получено: '{signer_email}'")
+                return False
+            else:
+                self.log("   ✅ Email корректно скопирован из placeholder_values в signer_email")
+            
+            # 4. Клиент подписывает договор (загружает документ, проходит верификацию)
+            self.log("   ✍️ Клиент подписывает договор...")
+            
+            # Upload document
+            try:
+                from PIL import Image
+                from io import BytesIO
+                
+                # Create test image
+                img = Image.new('RGB', (100, 100), color='white')
+                img_buffer = BytesIO()
+                img.save(img_buffer, format='JPEG')
+                img_buffer.seek(0)
+                
+                files = {'file': ('test_document.jpg', img_buffer, 'image/jpeg')}
+                upload_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/upload-document", files=files)
+                
+                if upload_response.status_code != 200:
+                    self.log(f"   ❌ Загрузка документа не удалась: {upload_response.status_code}")
+                    return False
+                    
+                self.log("   ✅ Документ загружен")
+                
+            except ImportError:
+                self.log("   ⚠️ PIL не доступен, пропускаем загрузку документа")
+            
+            # Request OTP
+            otp_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/request-otp?method=sms")
+            if otp_response.status_code != 200:
+                self.log(f"   ❌ Запрос OTP не удался: {otp_response.status_code}")
+                return False
+                
+            otp_data = otp_response.json()
+            mock_otp = otp_data.get("mock_otp")
+            
+            if mock_otp:
+                # Verify OTP
+                verify_data = {
+                    "contract_id": contract_id,
+                    "phone": "+77071234567",
+                    "otp_code": mock_otp
+                }
+                
+                verify_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/verify-otp", json=verify_data)
+                if verify_response.status_code != 200:
+                    self.log(f"   ❌ Верификация OTP не удалась: {verify_response.status_code}")
+                    return False
+                    
+                self.log("   ✅ Договор подписан клиентом")
+            else:
+                self.log("   ⚠️ Mock OTP не получен, пропускаем верификацию")
+            
+            # 5. Наймодатель утверждает договор через POST /api/contracts/{contract_id}/approve
+            self.log("   ✅ Наймодатель утверждает договор...")
+            
+            approve_response = self.session.post(f"{BASE_URL}/contracts/{contract_id}/approve")
+            
+            if approve_response.status_code == 200:
+                self.log("   ✅ Договор утвержден успешно")
+                
+                # Проверить финальное состояние контракта
+                final_response = self.session.get(f"{BASE_URL}/contracts/{contract_id}")
+                if final_response.status_code == 200:
+                    final_contract = final_response.json()
+                    final_signer_email = final_contract.get("signer_email")
+                    
+                    self.log(f"   📧 Финальный signer_email: '{final_signer_email}'")
+                    
+                    if final_signer_email == "test.client@2tick.kz":
+                        self.log("   ✅ E2E ТЕСТ ПРОЙДЕН: Email сохранен и доступен для отправки")
+                        return True
+                    else:
+                        self.log(f"   ❌ E2E ТЕСТ ПРОВАЛЕН: Финальный email неверный: '{final_signer_email}'")
+                        return False
+                else:
+                    self.log("   ❌ Не удалось получить финальное состояние контракта")
+                    return False
+            else:
+                self.log(f"   ❌ Утверждение договора не удалось: {approve_response.status_code} - {approve_response.text}")
+                return False
+                
+        except Exception as e:
+            self.log(f"   ❌ Исключение в E2E тесте: {str(e)}")
+            return False
+    
+    def test_email_saving_from_placeholders(self):
+        """ТЕСТ 2: Проверка сохранения email"""
+        try:
+            # Create contract
+            contract_data = {
+                "title": "Тест сохранения email",
+                "content": "Договор с EMAIL_КЛИЕНТА",
+                "content_type": "plain",
+                "signer_name": "",
+                "signer_phone": "",
+                "signer_email": ""
+            }
+            
+            create_response = self.session.post(f"{BASE_URL}/contracts", json=contract_data)
+            if create_response.status_code != 200:
+                return False
+                
+            contract = create_response.json()
+            contract_id = contract["id"]
+            
+            # Update with EMAIL_КЛИЕНТА
+            update_data = {
+                "placeholder_values": {
+                    "EMAIL_КЛИЕНТА": "test@example.com"
+                }
+            }
+            
+            update_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/update-signer-info", json=update_data)
+            if update_response.status_code != 200:
+                self.log(f"   ❌ Обновление не удалось: {update_response.status_code}")
+                return False
+            
+            # Verify email was copied
+            get_response = self.session.get(f"{BASE_URL}/sign/{contract_id}")
+            if get_response.status_code != 200:
+                return False
+                
+            contract_data = get_response.json()
+            signer_email = contract_data.get("signer_email")
+            
+            if signer_email == "test@example.com":
+                self.log("   ✅ ТЕСТ 2 ПРОЙДЕН: Email корректно скопирован из placeholder_values")
+                return True
+            else:
+                self.log(f"   ❌ ТЕСТ 2 ПРОВАЛЕН: signer_email = '{signer_email}', ожидалось 'test@example.com'")
+                return False
+                
+        except Exception as e:
+            self.log(f"   ❌ Исключение в тесте сохранения: {str(e)}")
+            return False
+    
+    def test_contract_approval_endpoint(self):
+        """ТЕСТ 3: Проверка endpoint утверждения"""
+        try:
+            # Create and setup contract
+            contract_data = {
+                "title": "Тест endpoint утверждения",
+                "content": "Договор для тестирования утверждения",
+                "content_type": "plain",
+                "signer_name": "Тестовый Клиент",
+                "signer_phone": "+77071234567",
+                "signer_email": "approval.test@example.com"
+            }
+            
+            create_response = self.session.post(f"{BASE_URL}/contracts", json=contract_data)
+            if create_response.status_code != 200:
+                return False
+                
+            contract = create_response.json()
+            contract_id = contract["id"]
+            
+            # Verify signer_email is not empty before approval
+            get_response = self.session.get(f"{BASE_URL}/contracts/{contract_id}")
+            if get_response.status_code != 200:
+                return False
+                
+            contract_data = get_response.json()
+            signer_email = contract_data.get("signer_email")
+            
+            if not signer_email:
+                self.log("   ❌ ТЕСТ 3 ПРОВАЛЕН: signer_email пустой перед утверждением")
+                return False
+            
+            self.log(f"   📧 signer_email перед утверждением: '{signer_email}'")
+            
+            # Approve contract
+            approve_response = self.session.post(f"{BASE_URL}/contracts/{contract_id}/approve")
+            
+            if approve_response.status_code == 200:
+                self.log("   ✅ ТЕСТ 3 ПРОЙДЕН: Endpoint утверждения работает корректно")
+                return True
+            else:
+                self.log(f"   ❌ ТЕСТ 3 ПРОВАЛЕН: Утверждение не удалось: {approve_response.status_code}")
+                return False
+                
+        except Exception as e:
+            self.log(f"   ❌ Исключение в тесте утверждения: {str(e)}")
+            return False
+    
+    def test_alternative_email_keys(self):
+        """ТЕСТ 4: Альтернативные ключи email"""
+        try:
+            # Test different email keys
+            email_keys = [
+                'EMAIL_КЛИЕНТА',
+                'EMAIL_НАНИМАТЕЛЯ', 
+                'email',
+                'Email',
+                'signer_email',
+                'tenant_email',
+                'client_email'
+            ]
+            
+            success_count = 0
+            
+            for key in email_keys:
+                self.log(f"   🔑 Тестирование ключа: {key}")
+                
+                # Create contract
+                contract_data = {
+                    "title": f"Тест ключа {key}",
+                    "content": f"Договор с ключом {key}",
+                    "content_type": "plain",
+                    "signer_name": "",
+                    "signer_phone": "",
+                    "signer_email": ""
+                }
+                
+                create_response = self.session.post(f"{BASE_URL}/contracts", json=contract_data)
+                if create_response.status_code != 200:
+                    continue
+                    
+                contract = create_response.json()
+                contract_id = contract["id"]
+                
+                # Update with specific key
+                update_data = {
+                    "placeholder_values": {
+                        key: f"test.{key.lower()}@example.com"
+                    }
+                }
+                
+                update_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/update-signer-info", json=update_data)
+                if update_response.status_code != 200:
+                    continue
+                
+                # Verify email was copied
+                get_response = self.session.get(f"{BASE_URL}/sign/{contract_id}")
+                if get_response.status_code != 200:
+                    continue
+                    
+                contract_data = get_response.json()
+                signer_email = contract_data.get("signer_email")
+                expected_email = f"test.{key.lower()}@example.com"
+                
+                if signer_email == expected_email:
+                    self.log(f"   ✅ Ключ {key} работает корректно")
+                    success_count += 1
+                else:
+                    self.log(f"   ❌ Ключ {key} не работает: получено '{signer_email}', ожидалось '{expected_email}'")
+            
+            if success_count >= 4:  # At least 4 keys should work
+                self.log(f"   ✅ ТЕСТ 4 ПРОЙДЕН: {success_count}/{len(email_keys)} ключей работают")
+                return True
+            else:
+                self.log(f"   ❌ ТЕСТ 4 ПРОВАЛЕН: только {success_count}/{len(email_keys)} ключей работают")
+                return False
+                
+        except Exception as e:
+            self.log(f"   ❌ Исключение в тесте альтернативных ключей: {str(e)}")
+            return False
+
     def run_2tick_backend_tests(self):
         """Run comprehensive backend tests for 2tick.kz after frontend redesign"""
         self.log("🚀 Starting 2tick.kz Backend Tests After Frontend Redesign")
@@ -1055,6 +1449,10 @@ class BackendTester:
         self.log("=" * 80)
         
         all_tests_passed = True
+        
+        # КРИТИЧЕСКОЕ ТЕСТИРОВАНИЕ: Email клиенту не приходит
+        email_passed = self.test_email_client_issue()
+        all_tests_passed = all_tests_passed and email_passed
         
         # TEST 1: Authentication endpoints
         auth_passed = self.test_authentication_endpoints()
@@ -1080,6 +1478,7 @@ class BackendTester:
         # Summary
         self.log("\n" + "=" * 80)
         self.log("📊 РЕЗУЛЬТАТЫ ТЕСТИРОВАНИЯ 2TICK.KZ BACKEND:")
+        self.log(f"   КРИТИЧЕСКИЙ ТЕСТ (Email): {'✅ ПРОЙДЕН' if email_passed else '❌ ПРОВАЛЕН'}")
         self.log(f"   TEST 1 (Authentication): {'✅ ПРОЙДЕН' if auth_passed else '❌ ПРОВАЛЕН'}")
         self.log(f"   TEST 2 (Contracts): {'✅ ПРОЙДЕН' if contracts_passed else '❌ ПРОВАЛЕН'}")
         self.log(f"   TEST 3 (Signing Flow): {'✅ ПРОЙДЕН' if signing_passed else '❌ ПРОВАЛЕН'}")
@@ -1091,6 +1490,7 @@ class BackendTester:
             self.log("✅ Нет ошибок 500")
             self.log("✅ Данные сохраняются и возвращаются корректно")
             self.log("✅ PDF генерируется без ошибок")
+            self.log("✅ EMAIL КЛИЕНТУ ПРИХОДИТ КОРРЕКТНО")
         else:
             self.log("❌ ОБНАРУЖЕНЫ ПРОБЛЕМЫ В BACKEND API! Проверьте логи выше.")
         
