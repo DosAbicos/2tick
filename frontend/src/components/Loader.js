@@ -162,21 +162,21 @@ const Loader = ({ size = 'medium' }) => {
             opacity: 1;
           }
           
-          /* Рисуется круг по часовой стрелке, но не до конца (оставляем зазор) */
+          /* Рисуется полный круг */
           60% {
-            stroke-dashoffset: 20;
+            stroke-dashoffset: 0;
             opacity: 1;
           }
           
-          /* Конец круга начинает исчезать */
+          /* Круг остается, но начинает плавно исчезать с конца */
           70% {
-            stroke-dashoffset: 20;
-            opacity: 0.7;
+            stroke-dashoffset: -10;
+            opacity: 0.6;
           }
           
           /* Исчезновение */
           80% {
-            stroke-dashoffset: 20;
+            stroke-dashoffset: -20;
             opacity: 0;
           }
           
