@@ -47,13 +47,21 @@ const Loader = ({ size = 'medium' }) => {
           }}
         />
 
-        {/* Круг - рисуется после подпрыга */}
+        {/* Круг - рисуется после подпрыга с градиентом */}
+        <defs>
+          <linearGradient id="circleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#3B82F6" stopOpacity="0" />
+            <stop offset="30%" stopColor="#3B82F6" stopOpacity="1" />
+            <stop offset="100%" stopColor="#3B82F6" stopOpacity="1" />
+          </linearGradient>
+        </defs>
+        
         <circle
           cx="32"
           cy="32"
           r="20"
           fill="none"
-          stroke="#3B82F6"
+          stroke="url(#circleGradient)"
           strokeWidth={config.strokeWidth}
           strokeLinecap="round"
           style={{
