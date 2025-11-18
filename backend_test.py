@@ -1923,5 +1923,29 @@ class BackendTester:
 
 if __name__ == "__main__":
     tester = BackendTester()
-    success = tester.test_signer_phone_not_found_fix()
-    sys.exit(0 if success else 1)
+    
+    print("🚨 КРИТИЧЕСКОЕ ТЕСТИРОВАНИЕ: Email клиенту не приходит")
+    print("=" * 80)
+    
+    # Run critical email tests first
+    email_success = tester.test_email_client_issue()
+    
+    if email_success:
+        print("\n🎉 КРИТИЧЕСКИЕ EMAIL ТЕСТЫ ПРОЙДЕНЫ!")
+        
+        # Run comprehensive backend tests
+        print("\n🚀 Starting Full Backend Tests for 2tick.kz")
+        print("=" * 50)
+        
+        full_success = tester.run_2tick_backend_tests()
+        
+        if full_success:
+            print("\n🎉 ALL BACKEND TESTS PASSED!")
+            sys.exit(0)
+        else:
+            print("\n❌ SOME BACKEND TESTS FAILED!")
+            sys.exit(1)
+    else:
+        print("\n❌ КРИТИЧЕСКИЕ EMAIL ТЕСТЫ ПРОВАЛЕНЫ!")
+        print("🚨 ПРОБЛЕМА С EMAIL НЕ РЕШЕНА!")
+        sys.exit(1)
