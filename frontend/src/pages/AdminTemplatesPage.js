@@ -22,6 +22,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import Header from '@/components/Header';
+import Loader from '@/components/Loader';
 import { Plus, Edit, Trash2, Eye, Save } from 'lucide-react';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
