@@ -16,7 +16,7 @@ import re
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://docusign-plus.preview.emergentagent.com/api"
+BASE_URL = "https://docusignapp.preview.emergentagent.com/api"
 
 class NewFeaturesTester:
     def __init__(self):
