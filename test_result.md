@@ -1537,6 +1537,21 @@ agent_communication:
         agent: "main"
         comment: "ИСПРАВЛЕНО: 1) Добавлен флаг hasRestoredState чтобы восстановление из localStorage происходило только один раз при монтировании компонента, а не при каждом обновлении contract. 2) В fetchContract() проверяется наличие savedState перед установкой step=1, чтобы не сбрасывать сохраненное состояние. 3) Состояние сохраняется в localStorage при каждом изменении step, signerInfo, placeholderValues, documentUploaded. 4) Восстановление происходит ПОСЛЕ загрузки contract. Frontend перезапущен, требуется автоматическое тестирование."
 
+  - task: "Замена статических индикаторов загрузки на компонент Loader"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/DashboardPage.js, /app/frontend/src/pages/ProfilePage.js, /app/frontend/src/pages/UserLogsPage.js, /app/frontend/src/pages/NotificationsAdminPage.js, /app/frontend/src/pages/AdminTemplatesPage.js, /app/frontend/src/pages/AdminTemplatesPageNew.js, /app/frontend/src/pages/SignContractPage.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "user"
+        comment: "ТРЕБОВАНИЕ: Заменить все статические текстовые индикаторы 'Загрузка...' на анимированный компонент Loader для единообразия UI."
+      - working: "NA"
+        agent: "main"
+        comment: "РЕАЛИЗОВАНО: 1) DashboardPage.js - добавлен импорт Loader и заменен статический текст на <Loader text='Загрузка договоров...' size='large' />, 2) ProfilePage.js - добавлен импорт Loader и заменен статический текст на <Loader text='Загрузка профиля...' size='large' />, 3) UserLogsPage.js - добавлен импорт Loader и заменен статический текст на <Loader text='Загрузка логов пользователя...' size='large' />, 4) NotificationsAdminPage.js - добавлен импорт Loader и заменен статический текст на <Loader text='Загрузка оповещений...' size='large' />, 5) AdminTemplatesPage.js - добавлен импорт Loader и заменен статический текст на <Loader text='Загрузка шаблонов...' size='medium' />, 6) AdminTemplatesPageNew.js - добавлен импорт Loader и заменен статический текст на <Loader text='Загрузка шаблонов...' size='medium' />, 7) SignContractPage.js - добавлен импорт Loader и заменен статический текст на <Loader text='Загрузка договора...' size='large' />. Все изменения скомпилированы успешно без ошибок. Frontend перезапущен. ПРИМЕЧАНИЕ: Текст 'Загрузка...' внутри кнопок (например, в UploadPdfContractPage.js, CreateContractPage.js) намеренно оставлен без изменений, так как это правильная UX практика для кнопок в состоянии загрузки."
+
 agent_communication:
   - agent: "main"
     message: "ИСПРАВЛЕНА НАВИГАЦИЯ И СОХРАНЕНИЕ СОСТОЯНИЯ. Проблема была в том что localStorage восстанавливался при каждом обновлении contract, что блокировало навигацию. Исправлено: 1) Добавлен флаг hasRestoredState для одноразового восстановления, 2) fetchContract не сбрасывает step если есть savedState, 3) Состояние сохраняется корректно. ТРЕБУЕТСЯ ПОЛНОЕ E2E ТЕСТИРОВАНИЕ: 1) Заполнение формы и переход на Step 2, 2) Обновление страницы и проверка что step и данные сохранены, 3) Загрузка документа, 4) Полный flow подписания."
