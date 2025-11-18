@@ -165,18 +165,41 @@ const ProfilePage = () => {
             <div className="minimal-card p-6">
               <h3 className="text-sm font-medium text-gray-700 mb-2">Лимит договоров</h3>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-2xl font-bold text-blue-600">{stats?.contracts_used || 0}</span>
+                <span className={`text-2xl font-bold ${
+                  Math.max((user?.contract_limit || 10) - (stats?.contracts_used || 0), 0) === 0 
+                    ? 'text-red-600' 
+                    : Math.max((user?.contract_limit || 10) - (stats?.contracts_used || 0), 0) <= 2 
+                    ? 'text-amber-600' 
+                    : 'text-blue-600'
+                }`}>{stats?.contracts_used || 0}</span>
                 <span className="text-gray-400">/</span>
                 <span className="text-2xl font-bold text-gray-400">{user?.contract_limit || 10}</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
                 <div 
-                  className="bg-gradient-to-r from-blue-600 to-blue-500 h-2 rounded-full transition-all"
+                  className={`h-2 rounded-full transition-all ${
+                    Math.max((user?.contract_limit || 10) - (stats?.contracts_used || 0), 0) === 0 
+                      ? 'bg-gradient-to-r from-red-600 to-red-500' 
+                      : Math.max((user?.contract_limit || 10) - (stats?.contracts_used || 0), 0) <= 2 
+                      ? 'bg-gradient-to-r from-amber-600 to-amber-500' 
+                      : 'bg-gradient-to-r from-blue-600 to-blue-500'
+                  }`}
                   style={{ width: `${Math.min(((stats?.contracts_used || 0) / (user?.contract_limit || 10)) * 100, 100)}%` }}
                 ></div>
               </div>
-              <p className="text-xs text-gray-500 mt-2">
-                Осталось {Math.max((user?.contract_limit || 10) - (stats?.contracts_used || 0), 0)} договоров
+              <p className={`text-xs mt-2 font-medium ${
+                Math.max((user?.contract_limit || 10) - (stats?.contracts_used || 0), 0) === 0 
+                  ? 'text-red-600' 
+                  : Math.max((user?.contract_limit || 10) - (stats?.contracts_used || 0), 0) <= 2 
+                  ? 'text-amber-600' 
+                  : 'text-gray-500'
+              }`}>
+                {Math.max((user?.contract_limit || 10) - (stats?.contracts_used || 0), 0) === 0 
+                  ? '⚠️ Лимит исчерпан! Обратитесь к администратору.' 
+                  : Math.max((user?.contract_limit || 10) - (stats?.contracts_used || 0), 0) <= 2 
+                  ? `⚠️ Осталось всего ${Math.max((user?.contract_limit || 10) - (stats?.contracts_used || 0), 0)} договоров!` 
+                  : `Осталось ${Math.max((user?.contract_limit || 10) - (stats?.contracts_used || 0), 0)} договоров`
+                }
               </p>
             </div>
           </div>
