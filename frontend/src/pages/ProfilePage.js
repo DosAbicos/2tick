@@ -162,7 +162,7 @@ const ProfilePage = () => {
             </div>
 
             {/* Лимит договоров */}
-            <div className="minimal-card p-6">
+            <div className="bg-white rounded-lg sm:shadow-md sm:border sm:border-gray-200 p-4 sm:p-6">
               <h3 className="text-sm font-medium text-gray-700 mb-2">Лимит договоров</h3>
               <div className="flex items-center justify-between mb-2">
                 <span className={`text-2xl font-bold ${
