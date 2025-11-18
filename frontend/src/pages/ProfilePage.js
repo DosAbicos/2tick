@@ -352,19 +352,20 @@ const ProfilePage = () => {
                       <MapPin className="w-5 h-5 text-blue-600" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <label className="text-sm font-medium text-gray-500 mb-1 block">Юридический адрес
-                  </label>
-                  {editing ? (
-                    <input
-                      type="text"
-                      value={editedUser.legal_address || ''}
-                      onChange={(e) => setEditedUser({ ...editedUser, legal_address: e.target.value })}
-                      className="minimal-input w-full"
-                      placeholder="Не указан"
-                    />
-                  ) : (
-                    <p className="text-gray-900">{user?.legal_address || 'Не указан'}</p>
-                  )}
+                      <label className="text-sm font-medium text-gray-500 mb-1 block">Юридический адрес</label>
+                      {editing ? (
+                        <input
+                          type="text"
+                          value={editedUser.legal_address || ''}
+                          onChange={(e) => setEditedUser({ ...editedUser, legal_address: e.target.value })}
+                          className="minimal-input w-full"
+                          placeholder="Не указан"
+                        />
+                      ) : (
+                        <p className="text-base font-medium text-gray-900 break-words">{user?.legal_address || 'Не указан'}</p>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
