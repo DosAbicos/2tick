@@ -236,8 +236,28 @@ const Header = ({ showAuth = false }) => {
                   }
                 }
               `}} />
-                {/* Пустой header для отступа (чтобы не перекрывать основной header) */}
-                <div className="h-14"></div>
+                {/* Header меню с логотипом и кнопкой закрытия */}
+                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+                  <div className="flex items-center gap-2">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-blue-500/20 blur-xl rounded-full"></div>
+                      <svg width="28" height="28" viewBox="0 0 32 32" className="relative">
+                        <circle cx="16" cy="16" r="15" fill="#3B82F6" />
+                        <path d="M10 16 L14 20 L22 12" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M14 16 L18 20 L26 12" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity="0.6" />
+                      </svg>
+                    </div>
+                    <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
+                      2tick.kz
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                  >
+                    <X className="w-6 h-6 text-gray-700" />
+                  </button>
+                </div>
                 
                 {/* Контент меню */}
                 <div className="p-6 space-y-5">
