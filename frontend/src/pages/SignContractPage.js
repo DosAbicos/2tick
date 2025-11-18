@@ -644,8 +644,8 @@ const SignContractPage = () => {
     return (
       <div className="min-h-screen bg-neutral-50">
         <Header />
-        <div className="max-w-3xl mx-auto px-4 py-16 text-center">
-          {t('common.loading')}
+        <div className="max-w-3xl mx-auto px-4 py-16">
+          <Loader text="Загрузка договора..." size="large" />
         </div>
       </div>
     );
