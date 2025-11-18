@@ -143,34 +143,34 @@ const Loader = ({ size = 'medium' }) => {
           }
         }
 
-        @keyframes spin-circle {
+        @keyframes snake-circle {
           /* Невидим пока галочки рисуются и прыгают */
           0%, 30% {
             opacity: 0;
-            transform: rotate(0deg);
+            stroke-dashoffset: 126;
           }
           
           /* Появляется сразу после подпрыга галочек */
           35% {
             opacity: 1;
-            transform: rotate(0deg);
+            stroke-dashoffset: 126;
           }
           
-          /* Красиво вращается */
+          /* Змейка движется по кругу - рисует и стирает одновременно */
           70% {
             opacity: 1;
-            transform: rotate(360deg);
+            stroke-dashoffset: 0;
           }
           
           /* Исчезновение */
           80% {
             opacity: 0;
-            transform: rotate(360deg);
+            stroke-dashoffset: 0;
           }
           
           100% {
             opacity: 0;
-            transform: rotate(360deg);
+            stroke-dashoffset: 126;
           }
         }
       `}</style>
