@@ -18,6 +18,7 @@ const Header = ({ showAuth = false }) => {
   const token = localStorage.getItem('token');
   const [currentLang, setCurrentLang] = useState(i18n.language || 'ru');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
