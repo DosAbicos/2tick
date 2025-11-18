@@ -47,27 +47,20 @@ const Loader = ({ size = 'medium' }) => {
           }}
         />
 
-        {/* Круг - рисуется после подпрыга с градиентом */}
-        <defs>
-          <linearGradient id="circleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#3B82F6" stopOpacity="0" />
-            <stop offset="30%" stopColor="#3B82F6" stopOpacity="1" />
-            <stop offset="100%" stopColor="#3B82F6" stopOpacity="1" />
-          </linearGradient>
-        </defs>
-        
+        {/* Просто вращающийся круг */}
         <circle
           cx="32"
           cy="32"
           r="20"
           fill="none"
-          stroke="url(#circleGradient)"
+          stroke="#3B82F6"
           strokeWidth={config.strokeWidth}
           strokeLinecap="round"
+          strokeDasharray="95 31"
           style={{
-            strokeDasharray: 126,
-            strokeDashoffset: 126,
-            animation: 'draw-circle 3.5s ease-in-out infinite'
+            opacity: 0,
+            animation: 'spin-circle 3.5s linear infinite',
+            transformOrigin: 'center'
           }}
         />
       </svg>
