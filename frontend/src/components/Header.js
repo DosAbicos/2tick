@@ -17,6 +17,9 @@ const Header = ({ showAuth = false }) => {
   const token = localStorage.getItem('token');
   const [currentLang, setCurrentLang] = useState(i18n.language || 'ru');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  // ВРЕМЕННЫЙ DEBUG: показываем кнопку всегда на мобильных для теста
+  const showBurgerForTest = !token && typeof window !== 'undefined' && window.location.search.includes('test=1');
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
