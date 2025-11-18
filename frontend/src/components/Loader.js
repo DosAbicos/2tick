@@ -142,40 +142,34 @@ const Loader = ({ size = 'medium' }) => {
           }
         }
 
-        @keyframes draw-circle {
+        @keyframes spin-circle {
           /* Невидим пока галочки рисуются и прыгают */
           0%, 30% {
-            stroke-dashoffset: 126;
             opacity: 0;
+            transform: rotate(0deg);
           }
           
           /* Появляется сразу после подпрыга галочек */
           35% {
-            stroke-dashoffset: 126;
             opacity: 1;
+            transform: rotate(0deg);
           }
           
-          /* Рисуется полный круг */
-          60% {
-            stroke-dashoffset: 0;
-            opacity: 1;
-          }
-          
-          /* Круг остается, но начинает плавно исчезать с конца */
+          /* Красиво вращается */
           70% {
-            stroke-dashoffset: -10;
-            opacity: 0.6;
+            opacity: 1;
+            transform: rotate(360deg);
           }
           
           /* Исчезновение */
           80% {
-            stroke-dashoffset: -20;
             opacity: 0;
+            transform: rotate(360deg);
           }
           
           100% {
-            stroke-dashoffset: 126;
             opacity: 0;
+            transform: rotate(360deg);
           }
         }
       `}</style>
