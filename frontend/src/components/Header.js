@@ -217,7 +217,7 @@ const Header = ({ showAuth = false }) => {
               style={{
                 top: '56px',
                 zIndex: 40,
-                animation: isClosing ? 'slideOutToRight 0.3s cubic-bezier(0.4, 0, 0.2, 1)' : 'slideInFromRight 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                animation: isClosing ? 'slideOutToBottom 0.3s cubic-bezier(0.4, 0, 0.2, 1)' : 'slideInFromTop 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
               }}
             >
               <style dangerouslySetInnerHTML={{__html: `
