@@ -4,6 +4,7 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Header';
+import Loader from '@/components/Loader';
 import { ArrowLeft, Clock, Activity, User } from 'lucide-react';
 import '../styles/neumorphism.css';
 
