@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Header from '@/components/Header';
+import Loader from '@/components/Loader';
 import { CheckCircle, CheckCircle2, FileUp, Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { IMaskInput } from 'react-imask';
