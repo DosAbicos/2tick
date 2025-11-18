@@ -176,13 +176,19 @@ const Header = ({ showAuth = false }) => {
               
               {/* Mobile - бургер меню */}
               <button
-                onClick={() => {
-                  console.log('Burger menu clicked! Current state:', mobileMenuOpen);
-                  setMobileMenuOpen(!mobileMenuOpen);
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log('[BURGER CLICK] Current:', mobileMenuOpen, 'Token:', !!token);
+                  setMobileMenuOpen(prev => {
+                    console.log('[BURGER STATE] Changing from', prev, 'to', !prev);
+                    return !prev;
+                  });
                 }}
                 className="md:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                 aria-label="Menu"
                 data-testid="burger-menu-button"
+                style={{cursor: 'pointer', touchAction: 'manipulation'}}
               >
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
