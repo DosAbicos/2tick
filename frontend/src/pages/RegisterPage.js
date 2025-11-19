@@ -284,57 +284,6 @@ const RegisterPage = () => {
                   )}
                 </div>
 
-                {/* Название компании */}
-                <div className="space-y-2">
-                  <label htmlFor="company_name" className="text-gray-700 text-sm font-medium flex items-center gap-2">
-                    <Building className="w-4 h-4 text-gray-400" />
-                    Название компании
-                  </label>
-                  <input
-                    id="company_name"
-                    name="company_name"
-                    type="text"
-                    value={formData.company_name}
-                    onChange={handleChange}
-                    className="minimal-input w-full"
-                    placeholder="ТОО 'Компания' (опционально)"
-                  />
-                </div>
-
-                {/* ИИН/БИН */}
-                <div className="space-y-2">
-                  <label htmlFor="iin" className="text-gray-700 text-sm font-medium flex items-center gap-2">
-                    <CreditCard className="w-4 h-4 text-gray-400" />
-                    ИИН/БИН
-                  </label>
-                  <input
-                    id="iin"
-                    name="iin"
-                    type="text"
-                    value={formData.iin}
-                    onChange={handleChange}
-                    className="minimal-input w-full"
-                    placeholder="123456789012 (опционально)"
-                  />
-                </div>
-
-                {/* Юридический адрес */}
-                <div className="space-y-2">
-                  <label htmlFor="legal_address" className="text-gray-700 text-sm font-medium flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-gray-400" />
-                    Юридический адрес
-                  </label>
-                  <input
-                    id="legal_address"
-                    name="legal_address"
-                    type="text"
-                    value={formData.legal_address}
-                    onChange={handleChange}
-                    className="minimal-input w-full"
-                    placeholder="г. Алматы, ул. Абая, 1 (опционально)"
-                  />
-                </div>
-
                 <div className="flex gap-3 pt-2">
                   <button
                     type="button"
