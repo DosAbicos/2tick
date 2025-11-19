@@ -152,11 +152,12 @@ const RegisterPage = () => {
         {/* Прогресс */}
         <div className="mb-8">
           <div className="flex items-center justify-center gap-2">
-            <div className={`w-12 h-2 rounded-full transition-all ${step >= 1 ? 'bg-blue-500' : 'bg-gray-200'}`}></div>
-            <div className={`w-12 h-2 rounded-full transition-all ${step >= 2 ? 'bg-blue-500' : 'bg-gray-200'}`}></div>
+            <div className={`w-8 h-2 rounded-full transition-all ${step >= 1 ? 'bg-blue-500' : 'bg-gray-200'}`}></div>
+            <div className={`w-8 h-2 rounded-full transition-all ${step >= 2 ? 'bg-blue-500' : 'bg-gray-200'}`}></div>
+            <div className={`w-8 h-2 rounded-full transition-all ${step >= 3 ? 'bg-blue-500' : 'bg-gray-200'}`}></div>
           </div>
           <p className="text-center text-sm text-gray-500 mt-2">
-            Шаг {step} из 2
+            Шаг {step} из 3
           </p>
         </div>
 
