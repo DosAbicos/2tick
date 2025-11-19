@@ -62,23 +62,23 @@ const LoginPage = () => {
     <div className="min-h-screen gradient-bg flex items-start sm:items-center justify-center px-4 py-8 sm:py-12">
       <div className="w-full max-w-md animate-fade-in">
         {/* Логотип и заголовок */}
-        <div className="text-center mb-8">
+        <div className="text-left sm:text-center mb-6 sm:mb-8">
           <Link to="/" className="inline-flex items-center gap-2 mb-4">
             <div className="relative">
-              <svg width="48" height="48" viewBox="0 0 32 32">
+              <svg width="40" height="40" viewBox="0 0 32 32" className="sm:w-12 sm:h-12">
                 <circle cx="16" cy="16" r="15" fill="#3B82F6" />
                 <path d="M10 16 L14 20 L22 12" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
                 <path d="M14 16 L18 20 L26 12" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity="0.6" />
               </svg>
             </div>
-            <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
+            <span className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
               2tick.kz
             </span>
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
             Вход в аккаунт
           </h1>
-          <p className="text-gray-600 text-sm">
+          <p className="text-gray-600 text-xs sm:text-sm">
             Войдите чтобы продолжить работу
           </p>
         </div>
