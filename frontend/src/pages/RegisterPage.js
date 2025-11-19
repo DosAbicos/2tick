@@ -332,50 +332,58 @@ const RegisterPage = () => {
 
             {step === 2 && (
               <>
-                {/* Пароль */}
+                {/* Название компании */}
                 <div className="space-y-2">
-                  <label htmlFor="password" className="text-gray-700 text-sm font-medium flex items-center gap-2">
-                    <Lock className="w-4 h-4 text-blue-500" />
-                    Пароль *
+                  <label htmlFor="company_name" className="text-gray-700 text-sm font-medium flex items-center gap-2">
+                    <Building className="w-4 h-4 text-blue-500" />
+                    Название компании *
                   </label>
                   <input
-                    id="password"
-                    name="password"
-                    type="password"
+                    id="company_name"
+                    name="company_name"
+                    type="text"
                     required
-                    value={formData.password}
+                    value={formData.company_name}
                     onChange={handleChange}
                     className="minimal-input w-full"
-                    placeholder="Минимум 6 символов"
+                    placeholder="ТОО 'Компания'"
                   />
                 </div>
 
-                {/* Подтверждение пароля */}
+                {/* ИИН/БИН */}
                 <div className="space-y-2">
-                  <label htmlFor="confirmPassword" className="text-gray-700 text-sm font-medium flex items-center gap-2">
-                    <Lock className="w-4 h-4 text-blue-500" />
-                    Подтвердите пароль *
+                  <label htmlFor="iin" className="text-gray-700 text-sm font-medium flex items-center gap-2">
+                    <CreditCard className="w-4 h-4 text-blue-500" />
+                    ИИН/БИН *
                   </label>
                   <input
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    type="password"
+                    id="iin"
+                    name="iin"
+                    type="text"
                     required
-                    value={formData.confirmPassword}
+                    value={formData.iin}
                     onChange={handleChange}
                     className="minimal-input w-full"
-                    placeholder="Повторите пароль"
+                    placeholder="123456789012"
                   />
-                  {!passwordMatch && formData.confirmPassword && (
-                    <p className="text-red-500 text-sm flex items-center gap-1">
-                      <X className="w-4 h-4" /> Пароли не совпадают
-                    </p>
-                  )}
-                  {passwordMatch && formData.confirmPassword && (
-                    <p className="text-green-500 text-sm flex items-center gap-1">
-                      <Check className="w-4 h-4" /> Пароли совпадают
-                    </p>
-                  )}
+                </div>
+
+                {/* Юридический адрес */}
+                <div className="space-y-2">
+                  <label htmlFor="legal_address" className="text-gray-700 text-sm font-medium flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-blue-500" />
+                    Юридический адрес *
+                  </label>
+                  <input
+                    id="legal_address"
+                    name="legal_address"
+                    type="text"
+                    required
+                    value={formData.legal_address}
+                    onChange={handleChange}
+                    className="minimal-input w-full"
+                    placeholder="г. Алматы, ул. Абая, 1"
+                  />
                 </div>
 
                 <div className="flex gap-3 pt-2">
@@ -389,8 +397,7 @@ const RegisterPage = () => {
                   <button
                     type="button"
                     onClick={handleNextStep}
-                    disabled={!passwordMatch}
-                    className="flex-1 py-4 px-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 py-4 px-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30"
                   >
                     Продолжить
                   </button>
