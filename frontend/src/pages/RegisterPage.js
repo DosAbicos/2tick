@@ -187,31 +187,16 @@ const RegisterPage = () => {
     
     setVerificationLoading(true);
     
-    // Для iOS Safari: открываем окно синхронно, чтобы избежать блокировки
-    const newWindow = window.open('', '_blank');
-    
     try {
       const response = await axios.get(`${API}/auth/registration/${registrationId}/telegram-deep-link`);
       const deepLink = response.data.deep_link;
       setTelegramDeepLink(deepLink);
       setVerificationMethod('telegram');
       
-      // Перенаправляем уже открытое окно на Telegram deep link
-      if (newWindow) {
-        newWindow.location.href = deepLink;
-      } else {
-        // Fallback если popup заблокирован - пытаемся через location.href
-        window.location.href = deepLink;
-      }
-      
-      toast.success('Telegram открыт! Скопируйте код из бота @twotick_bot');
+      // Открываем Telegram в текущей вкладке (как в SignContractPage)
+      window.location.href = deepLink;
     } catch (error) {
-      // Закрываем пустое окно если была ошибка
-      if (newWindow) {
-        newWindow.close();
-      }
       toast.error(error.response?.data?.detail || 'Ошибка получения ссылки Telegram');
-    } finally {
       setVerificationLoading(false);
     }
   };
