@@ -116,34 +116,34 @@ const RegisterPage = () => {
     <div className="min-h-screen gradient-bg flex items-start sm:items-center justify-center px-4 py-8 sm:py-12">
       <div className="w-full max-w-md animate-fade-in">
         {/* Логотип и заголовок */}
-        <div className="text-left sm:text-center mb-6 sm:mb-8">
+        <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2 mb-4">
             <div className="relative">
-              <svg width="40" height="40" viewBox="0 0 32 32" className="sm:w-12 sm:h-12">
+              <svg width="48" height="48" viewBox="0 0 32 32">
                 <circle cx="16" cy="16" r="15" fill="#3B82F6" />
                 <path d="M10 16 L14 20 L22 12" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
                 <path d="M14 16 L18 20 L26 12" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity="0.6" />
               </svg>
             </div>
-            <span className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
+            <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
               2tick.kz
             </span>
           </Link>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
             Создайте аккаунт
           </h1>
-          <p className="text-gray-600 text-xs sm:text-sm">
+          <p className="text-gray-600 text-sm">
             Подписывайте договоры за 2 клика
           </p>
         </div>
 
         {/* Прогресс */}
-        <div className="mb-6 sm:mb-8">
-          <div className="flex items-center gap-2 sm:justify-center">
+        <div className="mb-8">
+          <div className="flex items-center justify-center gap-2">
             <div className={`w-12 h-2 rounded-full transition-all ${step >= 1 ? 'bg-blue-500' : 'bg-gray-200'}`}></div>
             <div className={`w-12 h-2 rounded-full transition-all ${step >= 2 ? 'bg-blue-500' : 'bg-gray-200'}`}></div>
           </div>
-          <p className="text-left sm:text-center text-xs sm:text-sm text-gray-500 mt-2">
+          <p className="text-center text-sm text-gray-500 mt-2">
             Шаг {step} из 2
           </p>
         </div>
