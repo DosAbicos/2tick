@@ -232,61 +232,134 @@ const VerifyRegistrationPage = () => {
           </div>
           <div className="space-y-6">
             {!verificationMethod && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="space-y-4"
-              >
-                <div className="text-center mb-6">
-                  <div className="w-16 h-16 mx-auto bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-blue-500/30">
-                    <Phone className="w-8 h-8 text-white" />
-                  </div>
-                  <p className="text-gray-600">Для завершения регистрации подтвердите ваш номер телефона одним из способов:</p>
-                </div>
-
-                {/* SMS Button */}
-                <button
-                  onClick={handleRequestSMS}
-                  disabled={smsCooldown > 0}
-                  className="w-full px-6 py-3 text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-                  data-testid="sms-button"
+              <div className="text-center">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                  className="w-20 h-20 mx-auto mb-6 neuro-card flex items-center justify-center"
                 >
-                  {smsCooldown > 0 ? `SMS (${smsCooldown}с)` : '📱 SMS-сообщение'}
-                </button>
-
-                {/* Call Button */}
-                <button
-                  onClick={handleRequestCall}
-                  disabled={callCooldown > 0 || requestingCall}
-                  className="w-full px-6 py-3 text-gray-700 bg-white border-2 border-gray-200 rounded-xl hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-                  data-testid="call-button"
+                  <svg className="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                </motion.div>
+                
+                <motion.h3
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                  className="text-2xl font-bold text-gray-900 mb-2"
                 >
-                  {requestingCall ? 'Звоним...' : callCooldown > 0 ? `Звонок (${callCooldown}с)` : '📞 Входящий звонок'}
-                </button>
-
-                {/* Telegram Button */}
-                {telegramDeepLink && (
-                  <a
-                    href={telegramDeepLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block w-full"
+                  Подтверждение телефона
+                </motion.h3>
+                
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                  className="text-gray-600 text-sm mb-8"
+                >
+                  Выберите удобный способ верификации
+                </motion.p>
+                
+                <div className="space-y-4 max-w-md mx-auto">
+                  {/* SMS Button - Neumorphism */}
+                  <motion.button
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
+                    whileHover={{ y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={handleRequestSMS}
+                    disabled={smsCooldown > 0}
+                    className="neuro-card w-full p-6 rounded-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
+                    data-testid="sms-button"
                   >
-                    <button
-                      type="button"
-                      className="w-full px-6 py-3 text-gray-700 bg-white border-2 border-gray-200 rounded-xl hover:bg-gray-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-                      onClick={() => {
+                    <div className="flex items-center gap-4">
+                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center flex-shrink-0 group-hover:from-blue-100 group-hover:to-blue-200 transition-all">
+                        <svg className="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                        </svg>
+                      </div>
+                      <div className="flex-1 text-left">
+                        <h4 className="text-lg font-semibold text-gray-900 mb-1">
+                          {smsCooldown > 0 ? `SMS через ${smsCooldown}с` : 'SMS'}
+                        </h4>
+                        <p className="text-sm text-gray-600">Код придет в сообщении</p>
+                      </div>
+                      <svg className="w-5 h-5 text-blue-600 flex-shrink-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </motion.button>
+                  
+                  {/* Call Button - Neumorphism */}
+                  <motion.button
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6 }}
+                    whileHover={{ y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={handleRequestCall}
+                    disabled={callCooldown > 0 || requestingCall}
+                    className="neuro-card w-full p-6 rounded-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
+                    data-testid="call-button"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center flex-shrink-0 group-hover:from-blue-100 group-hover:to-blue-200 transition-all">
+                        <svg className="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                        </svg>
+                      </div>
+                      <div className="flex-1 text-left">
+                        <h4 className="text-lg font-semibold text-gray-900 mb-1">
+                          {requestingCall ? 'Звоним...' : callCooldown > 0 ? `Звонок через ${callCooldown}с` : 'Звонок'}
+                        </h4>
+                        <p className="text-sm text-gray-600">Вам поступит вызов</p>
+                      </div>
+                      <svg className="w-5 h-5 text-blue-600 flex-shrink-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </motion.button>
+                  
+                  {/* Telegram Button - Always visible */}
+                  <motion.button
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.7 }}
+                    whileHover={{ y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      if (telegramDeepLink) {
                         setVerificationMethod('telegram');
                         setTelegramCooldown(60);
-                      }}
-                      disabled={telegramCooldown > 0}
-                      data-testid="telegram-button"
-                    >
-                      {telegramCooldown > 0 ? `Telegram (${telegramCooldown}с)` : '✈️ Telegram'}
-                    </button>
-                  </a>
-                )}
-              </motion.div>
+                        window.location.href = telegramDeepLink;
+                      }
+                    }}
+                    disabled={!telegramDeepLink || telegramCooldown > 0}
+                    className="relative overflow-hidden w-full p-6 rounded-2xl bg-gradient-to-br from-[#0088cc] to-[#0077b3] transition-all group shadow-lg shadow-[#0088cc]/20 hover:shadow-xl hover:shadow-[#0088cc]/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                    data-testid="telegram-button"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-14 h-14 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0 group-hover:bg-white/30 transition-all">
+                        <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+                        </svg>
+                      </div>
+                      <div className="flex-1 text-left">
+                        <h4 className="text-lg font-semibold text-white mb-1">
+                          {loadingTelegramLink ? 'Загрузка...' : telegramCooldown > 0 ? `Telegram (${telegramCooldown}с)` : 'Telegram'}
+                        </h4>
+                        <p className="text-sm text-white/80">Код в боте @twotick_bot</p>
+                      </div>
+                      <svg className="w-5 h-5 text-white/80 flex-shrink-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </motion.button>
+                </div>
+              </div>
             )}
 
             {/* SMS Verification */}
