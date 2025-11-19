@@ -196,16 +196,8 @@ const RegisterPage = () => {
       const response = await axios.get(`${API}/auth/registration/${registrationId}/telegram-deep-link`);
       const deepLink = response.data.deep_link;
       setTelegramDeepLink(deepLink);
-      setVerificationMethod('telegram');
-      
-      // На мобильном - открываем в текущей вкладке
-      // На ПК - открываем в новом окне
-      if (isMobileDevice()) {
-        window.location.href = deepLink;
-      } else {
-        window.open(deepLink, '_blank');
-        toast.success('Откройте Telegram и скопируйте код');
-      }
+      // После получения ссылки - кнопка станет кликабельной ссылкой с target="_blank"
+      // Пользователь сам кликнет по ней
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Ошибка получения ссылки Telegram');
     } finally {
