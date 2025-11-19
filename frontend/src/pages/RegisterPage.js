@@ -344,16 +344,12 @@ const RegisterPage = () => {
                     Назад
                   </button>
                   <button
-                    type="submit"
-                    disabled={loading || !passwordMatch}
+                    type="button"
+                    onClick={handleNextStep}
+                    disabled={!passwordMatch}
                     className="flex-1 py-4 px-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {loading ? 'Регистрация...' : (
-                      <>
-                        <span className="hidden sm:inline">Зарегистрироваться</span>
-                        <span className="sm:hidden">Регистрация</span>
-                      </>
-                    )}
+                    Продолжить
                   </button>
                 </div>
               </>
