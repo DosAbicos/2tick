@@ -254,7 +254,15 @@ const ProfilePage = () => {
                 )}
               </div>
 
-              <div className="space-y-6">
+              <AnimatePresence mode="wait">
+              <motion.div 
+                key={editing ? 'editing' : 'viewing'}
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+                className="space-y-6"
+              >
                 {/* ФИО */}
                 <div>
                   <div className="flex items-start gap-3">
