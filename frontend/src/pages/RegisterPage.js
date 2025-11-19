@@ -597,14 +597,16 @@ const RegisterPage = () => {
         </div>
 
         {/* Ссылка на вход */}
-        <div className="text-center mt-6">
-          <p className="text-sm text-gray-600">
-            Уже есть аккаунт?{' '}
-            <Link to="/login" className="text-blue-600 hover:text-blue-700 font-semibold">
-              Войти
-            </Link>
-          </p>
-        </div>
+        {step !== 4 && (
+          <div className="text-center mt-6">
+            <p className="text-sm text-gray-600">
+              Уже есть аккаунт?{' '}
+              <Link to="/login" className="text-blue-600 hover:text-blue-700 font-semibold">
+                Войти
+              </Link>
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
