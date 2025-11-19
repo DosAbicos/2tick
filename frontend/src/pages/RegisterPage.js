@@ -165,7 +165,7 @@ const RegisterPage = () => {
 
   // Запрос верификации звонком
   const handleRequestCall = async () => {
-    if (!registrationId) return;
+    if (!registrationId || callCooldown > 0) return;
     
     setVerificationLoading(true);
     try {
@@ -173,6 +173,7 @@ const RegisterPage = () => {
       toast.success('Вам поступит звонок. Введите последние 4 цифры номера');
       setVerificationMethod('call');
       setCallHint(response.data.hint || '');
+      setCallCooldown(60); // 60 seconds cooldown
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Ошибка инициации звонка');
     } finally {
