@@ -198,10 +198,17 @@ const RegisterPage = () => {
       setTelegramDeepLink(deepLink);
       setVerificationMethod('telegram');
       
-      // Открываем Telegram в текущей вкладке (как в SignContractPage)
-      window.location.href = deepLink;
+      // На мобильном - открываем в текущей вкладке
+      // На ПК - открываем в новом окне
+      if (isMobileDevice()) {
+        window.location.href = deepLink;
+      } else {
+        window.open(deepLink, '_blank');
+        toast.success('Откройте Telegram и скопируйте код');
+      }
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Ошибка получения ссылки Telegram');
+    } finally {
       setVerificationLoading(false);
     }
   };
