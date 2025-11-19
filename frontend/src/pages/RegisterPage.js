@@ -57,6 +57,7 @@ const RegisterPage = () => {
 
   const handleNextStep = () => {
     if (step === 1) {
+      // Валидация личных данных
       if (!formData.full_name || !formData.email || !formData.phone) {
         toast.error('Заполните все обязательные поля');
         return;
@@ -66,6 +67,13 @@ const RegisterPage = () => {
         return;
       }
       setStep(2);
+    } else if (step === 2) {
+      // Валидация юридических данных
+      if (!formData.company_name || !formData.iin || !formData.legal_address) {
+        toast.error('Заполните все юридические данные');
+        return;
+      }
+      setStep(3);
     }
   };
 
