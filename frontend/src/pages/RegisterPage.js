@@ -196,25 +196,6 @@ const RegisterPage = () => {
     }
   };
 
-  // Запрос Telegram deep link
-  const handleRequestTelegram = async () => {
-    if (!registrationId) return;
-    
-    setVerificationLoading(true);
-    
-    try {
-      const response = await axios.get(`${API}/auth/registration/${registrationId}/telegram-deep-link`);
-      const deepLink = response.data.deep_link;
-      setTelegramDeepLink(deepLink);
-      // После получения ссылки - кнопка станет кликабельной ссылкой с target="_blank"
-      // Пользователь сам кликнет по ней
-    } catch (error) {
-      toast.error(error.response?.data?.detail || 'Ошибка получения ссылки Telegram');
-    } finally {
-      setVerificationLoading(false);
-    }
-  };
-
   // Верификация кода
   const handleVerifyCode = async () => {
     if (!registrationId || !verificationCode) {
