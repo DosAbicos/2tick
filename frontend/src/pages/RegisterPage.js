@@ -36,6 +36,9 @@ const RegisterPage = () => {
   const [telegramDeepLink, setTelegramDeepLink] = useState('');
   const [callHint, setCallHint] = useState('');
   const [verificationLoading, setVerificationLoading] = useState(false);
+  const [mockOtp, setMockOtp] = useState('');
+  const [smsCooldown, setSmsCooldown] = useState(0);
+  const [callCooldown, setCallCooldown] = useState(0);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
