@@ -476,8 +476,9 @@ const ProfilePage = () => {
                       Сохранить пароль
                     </button>
                   </div>
-                </div>
+                </motion.div>
               )}
+              </AnimatePresence>
             </div>
           </div>
         </div>
