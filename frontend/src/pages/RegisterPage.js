@@ -61,6 +61,21 @@ const RegisterPage = () => {
     return emailRegex.test(email);
   };
 
+  // Cooldown timers
+  useEffect(() => {
+    if (smsCooldown > 0) {
+      const timer = setTimeout(() => setSmsCooldown(smsCooldown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [smsCooldown]);
+
+  useEffect(() => {
+    if (callCooldown > 0) {
+      const timer = setTimeout(() => setCallCooldown(callCooldown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [callCooldown]);
+
   const handleNextStep = () => {
     if (step === 1) {
       // Валидация личных данных
