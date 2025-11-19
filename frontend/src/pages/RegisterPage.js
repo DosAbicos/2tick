@@ -354,6 +354,86 @@ const RegisterPage = () => {
                 </div>
               </>
             )}
+
+            {step === 3 && (
+              <>
+                {/* Название компании */}
+                <div className="space-y-2">
+                  <label htmlFor="company_name" className="text-gray-700 text-sm font-medium flex items-center gap-2">
+                    <Building className="w-4 h-4 text-blue-500" />
+                    Название компании *
+                  </label>
+                  <input
+                    id="company_name"
+                    name="company_name"
+                    type="text"
+                    required
+                    value={formData.company_name}
+                    onChange={handleChange}
+                    className="minimal-input w-full"
+                    placeholder="ТОО 'Компания'"
+                  />
+                </div>
+
+                {/* ИИН/БИН */}
+                <div className="space-y-2">
+                  <label htmlFor="iin" className="text-gray-700 text-sm font-medium flex items-center gap-2">
+                    <CreditCard className="w-4 h-4 text-blue-500" />
+                    ИИН/БИН *
+                  </label>
+                  <input
+                    id="iin"
+                    name="iin"
+                    type="text"
+                    required
+                    value={formData.iin}
+                    onChange={handleChange}
+                    className="minimal-input w-full"
+                    placeholder="123456789012"
+                  />
+                </div>
+
+                {/* Юридический адрес */}
+                <div className="space-y-2">
+                  <label htmlFor="legal_address" className="text-gray-700 text-sm font-medium flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-blue-500" />
+                    Юридический адрес *
+                  </label>
+                  <input
+                    id="legal_address"
+                    name="legal_address"
+                    type="text"
+                    required
+                    value={formData.legal_address}
+                    onChange={handleChange}
+                    className="minimal-input w-full"
+                    placeholder="г. Алматы, ул. Абая, 1"
+                  />
+                </div>
+
+                <div className="flex gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setStep(2)}
+                    className="flex-1 py-4 px-4 text-base font-medium text-gray-600 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all"
+                  >
+                    Назад
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="flex-1 py-4 px-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {loading ? 'Регистрация...' : (
+                      <>
+                        <span className="hidden sm:inline">Зарегистрироваться</span>
+                        <span className="sm:hidden">Регистрация</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </>
+            )}
           </form>
         </div>
 
