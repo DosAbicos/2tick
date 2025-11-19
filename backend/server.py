@@ -113,6 +113,10 @@ class UserCreate(BaseModel):
     password: str
     full_name: str
     phone: str
+    company_name: str  # Название компании (обязательно при регистрации)
+    iin: str  # ИИН/БИН (обязательно при регистрации)
+    legal_address: str  # Юридический адрес (обязательно при регистрации)
+    language: str = "ru"
 
 class UserUpdate(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -121,11 +125,6 @@ class UserUpdate(BaseModel):
     company_name: Optional[str] = None
     iin: Optional[str] = None
     legal_address: Optional[str] = None
-
-    company_name: str  # Название компании (обязательно при регистрации)
-    iin: str  # ИИН/БИН (обязательно при регистрации)
-    legal_address: str  # Юридический адрес (обязательно при регистрации)
-    language: str = "ru"
 
 class UserLogin(BaseModel):
     email: EmailStr
