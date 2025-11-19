@@ -98,7 +98,11 @@ const Header = ({ showAuth = false }) => {
             <>
               {/* Desktop - две кнопки */}
               <div className={`${styles.authDesktop} items-center gap-2`}>
-                <Link to="/login" className="text-sm text-neutral-700 hover:text-neutral-900" data-testid="login-link">
+                <Link 
+                  to="/login" 
+                  className="text-sm text-neutral-700 hover:text-neutral-900 px-4 py-2 rounded-lg border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all font-medium" 
+                  data-testid="login-link"
+                >
                   {t('landing.nav.login')}
                 </Link>
                 <Link to="/register">
