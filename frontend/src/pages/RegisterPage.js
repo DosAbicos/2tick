@@ -471,6 +471,128 @@ const RegisterPage = () => {
                 </div>
               </>
             )}
+
+            {step === 4 && (
+              <>
+                <div className="text-center mb-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                    Подтвердите номер телефона
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    {formData.phone}
+                  </p>
+                </div>
+
+                {!verificationMethod ? (
+                  <>
+                    <p className="text-sm text-gray-600 mb-4 text-center">
+                      Выберите способ получения кода:
+                    </p>
+                    
+                    <div className="space-y-3">
+                      {/* SMS */}
+                      <button
+                        type="button"
+                        onClick={handleRequestSMS}
+                        disabled={verificationLoading}
+                        className="w-full py-4 px-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      >
+                        <Mail className="w-5 h-5" />
+                        SMS на телефон
+                      </button>
+
+                      {/* Звонок */}
+                      <button
+                        type="button"
+                        onClick={handleRequestCall}
+                        disabled={verificationLoading}
+                        className="w-full py-4 px-4 text-base font-semibold text-white bg-gradient-to-r from-green-600 to-green-500 rounded-xl hover:from-green-700 hover:to-green-600 transition-all shadow-lg shadow-green-500/30 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      >
+                        <Phone className="w-5 h-5" />
+                        Звонок на телефон
+                      </button>
+
+                      {/* Telegram */}
+                      <button
+                        type="button"
+                        onClick={handleRequestTelegram}
+                        disabled={verificationLoading}
+                        className="w-full py-4 px-4 text-base font-semibold text-white bg-gradient-to-r from-purple-600 to-purple-500 rounded-xl hover:from-purple-700 hover:to-purple-600 transition-all shadow-lg shadow-purple-500/30 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      >
+                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
+                        </svg>
+                        Telegram
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    {telegramDeepLink && (
+                      <div className="mb-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                        <p className="text-sm text-purple-900 mb-3">
+                          Нажмите кнопку ниже чтобы открыть Telegram и получить код верификации
+                        </p>
+                        <a
+                          href={telegramDeepLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full py-3 px-4 text-base font-semibold text-white bg-gradient-to-r from-purple-600 to-purple-500 rounded-xl hover:from-purple-700 hover:to-purple-600 transition-all shadow-lg shadow-purple-500/30 flex items-center justify-center gap-2"
+                        >
+                          Открыть Telegram
+                        </a>
+                      </div>
+                    )}
+
+                    {callHint && (
+                      <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                        <p className="text-sm text-green-900">
+                          {callHint}
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <label className="text-gray-700 text-sm font-medium">
+                          {verificationMethod === 'call' ? 'Последние 4 цифры номера' : 'Код подтверждения'}
+                        </label>
+                        <input
+                          type="text"
+                          value={verificationCode}
+                          onChange={(e) => setVerificationCode(e.target.value)}
+                          className="minimal-input w-full text-center text-2xl tracking-widest"
+                          placeholder={verificationMethod === 'call' ? '1234' : '123456'}
+                          maxLength={verificationMethod === 'call' ? 4 : 6}
+                        />
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={handleVerifyCode}
+                        disabled={verificationLoading || !verificationCode}
+                        className="w-full py-4 px-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {verificationLoading ? 'Проверка...' : 'Подтвердить код'}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setVerificationMethod('');
+                          setVerificationCode('');
+                          setTelegramDeepLink('');
+                          setCallHint('');
+                        }}
+                        className="w-full py-3 px-4 text-base font-medium text-gray-600 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all"
+                      >
+                        Выбрать другой способ
+                      </button>
+                    </div>
+                  </>
+                )}
+              </>
+            )}
           </form>
         </div>
 
