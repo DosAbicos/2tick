@@ -389,7 +389,8 @@ const ProfilePage = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
+              </AnimatePresence>
             </div>
 
             {/* Смена пароля */}
