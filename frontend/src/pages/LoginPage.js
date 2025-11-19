@@ -143,7 +143,7 @@ const LoginPage = () => {
         </div>
 
         {/* Ссылка на регистрацию */}
-        <div className="text-center mt-6">
+        <div className="text-left sm:text-center mt-6">
           <p className="text-sm text-gray-600">
             Нет аккаунта?{' '}
             <Link to="/register" className="text-blue-600 hover:text-blue-700 font-semibold">
