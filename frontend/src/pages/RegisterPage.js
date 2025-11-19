@@ -188,9 +188,13 @@ const RegisterPage = () => {
     setVerificationLoading(true);
     try {
       const response = await axios.get(`${API}/auth/registration/${registrationId}/telegram-deep-link`);
-      setTelegramDeepLink(response.data.deep_link);
+      const deepLink = response.data.deep_link;
+      setTelegramDeepLink(deepLink);
       setVerificationMethod('telegram');
-      toast.success('Нажмите кнопку ниже чтобы получить код в Telegram');
+      
+      // Автоматически открываем Telegram
+      window.open(deepLink, '_blank');
+      toast.success('Telegram открыт! Скопируйте код из бота @twotick_bot');
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Ошибка получения ссылки Telegram');
     } finally {
