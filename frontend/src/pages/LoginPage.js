@@ -84,7 +84,7 @@ const LoginPage = () => {
         </div>
 
         {/* Форма */}
-        <div className="minimal-card p-8">
+        <div className="minimal-card p-4 sm:p-8">
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Email */}
             <div className="space-y-2">
