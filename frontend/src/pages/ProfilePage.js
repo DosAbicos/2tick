@@ -207,35 +207,34 @@ const ProfilePage = () => {
           {/* Правая колонка - Информация профиля */}
           <div className="lg:col-span-2 space-y-3 sm:space-y-6">
             {/* Основная информация */}
-            <div className="bg-white rounded-lg sm:shadow-md sm:border sm:border-gray-200 p-4 sm:p-8">
-              <div className="flex items-center gap-1.5 mb-6">
-                <h2 className="text-sm sm:text-xl font-bold text-gray-900">Основная информация</h2>
+            <div className="bg-white rounded-lg sm:shadow-md sm:border sm:border-gray-200 p-4 sm:p-8 relative">
+              <div className="flex items-start justify-between mb-6">
+                <h2 className="text-base sm:text-xl font-bold text-gray-900">Основная информация</h2>
                 {!editing ? (
                   <button
                     onClick={() => setEditing(true)}
-                    className="text-blue-600 hover:text-blue-700 sm:px-4 sm:py-2 sm:bg-blue-50 sm:rounded-lg sm:hover:bg-blue-100 transition-all flex items-center justify-center gap-2 flex-shrink-0"
+                    className="text-blue-600 hover:text-blue-700 sm:px-3 sm:py-1.5 sm:bg-blue-50 sm:rounded-md sm:hover:bg-blue-100 transition-all flex items-center gap-1.5"
                   >
-                    <Edit2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                    <span className="hidden sm:inline sm:text-sm sm:font-medium">Редактировать</span>
+                    <Edit2 className="w-4 h-4" />
+                    <span className="hidden sm:inline text-xs font-medium">Изменить</span>
                   </button>
                 ) : (
-                  <div className="flex gap-2 sm:gap-2">
+                  <div className="flex gap-1.5">
                     <button
                       onClick={() => {
                         setEditing(false);
                         setEditedUser(user);
                       }}
-                      className="text-gray-600 hover:text-gray-800 sm:px-4 sm:py-2 sm:bg-gray-100 sm:rounded-lg sm:hover:bg-gray-200 transition-all flex items-center justify-center flex-shrink-0"
+                      className="text-gray-600 hover:text-gray-800 p-1 sm:px-3 sm:py-1.5 sm:bg-gray-100 sm:rounded-md sm:hover:bg-gray-200 transition-all"
                     >
-                      <span className="hidden sm:inline sm:text-sm sm:font-medium">Отмена</span>
-                      <span className="sm:hidden text-base">✕</span>
+                      <span className="text-lg sm:text-xs sm:font-medium">✕</span>
                     </button>
                     <button
                       onClick={handleSaveProfile}
-                      className="sm:px-4 sm:py-2 text-white sm:bg-gradient-to-r sm:from-blue-600 sm:to-blue-500 sm:rounded-lg sm:hover:from-blue-700 sm:hover:to-blue-600 transition-all flex items-center justify-center gap-1 sm:gap-2 flex-shrink-0"
+                      className="text-blue-600 p-1 sm:px-3 sm:py-1.5 sm:text-white sm:bg-gradient-to-r sm:from-blue-600 sm:to-blue-500 sm:rounded-md sm:hover:from-blue-700 sm:hover:to-blue-600 transition-all flex items-center gap-1"
                     >
-                      <Save className="w-4 h-4 text-blue-600 sm:text-white" />
-                      <span className="hidden sm:inline sm:text-sm sm:font-medium">Сохранить</span>
+                      <Save className="w-4 h-4" />
+                      <span className="hidden sm:inline text-xs font-medium">Сохранить</span>
                     </button>
                   </div>
                 )}
