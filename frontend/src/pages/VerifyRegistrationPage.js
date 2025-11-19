@@ -426,17 +426,25 @@ const VerifyRegistrationPage = () => {
               </motion.div>
             )}
 
-            {/* Call Verification */}
+            {/* Call Verification - Neumorphism */}
             {verificationMethod === 'call' && (
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="space-y-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="space-y-6"
               >
                 <div className="text-center">
-                  <h3 className="text-lg font-semibold mb-2">Введите последние 4 цифры номера</h3>
+                  <div className="w-16 h-16 mx-auto mb-4 neuro-card flex items-center justify-center">
+                    <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Звонок верификация</h3>
+                  <p className="text-sm text-gray-600 mb-4">Введите последние 4 цифры номера</p>
                   {callHint && (
-                    <p className="text-sm text-neutral-600 mb-4">{callHint}</p>
+                    <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-200 mb-4">
+                      <p className="text-sm text-blue-900 font-medium">📞 {callHint}</p>
+                    </div>
                   )}
                 </div>
                 
@@ -451,23 +459,24 @@ const VerifyRegistrationPage = () => {
                   </InputOTP>
                 </div>
 
-                <button
-                  onClick={handleVerifyCall}
-                  disabled={verifying || callCode.length !== 4}
-                  className="w-full px-6 py-3 text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-                >
-                  {verifying ? 'Проверка...' : 'Подтвердить'}
-                </button>
-
-                <button
-                  onClick={() => {
-                    setVerificationMethod('');
-                    setCallCode('');
-                  }}
-                  className="w-full px-6 py-3 text-gray-700 bg-white border-2 border-gray-200 rounded-xl hover:bg-gray-50 transition-all font-medium"
-                >
-                  Выбрать другой способ
-                </button>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => {
+                      setVerificationMethod('');
+                      setCallCode('');
+                    }}
+                    className="neuro-button flex-1 py-3"
+                  >
+                    ← Назад
+                  </button>
+                  <button
+                    onClick={handleVerifyCall}
+                    disabled={verifying || callCode.length !== 4}
+                    className="neuro-button-primary flex-1 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {verifying ? 'Проверяем...' : '✓ Подтвердить'}
+                  </button>
+                </div>
               </motion.div>
             )}
 
