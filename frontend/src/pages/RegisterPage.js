@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { IMaskInput } from 'react-imask';
+import { motion } from 'framer-motion';
 import { Check, X, User, Mail, Phone, Lock, Building, CreditCard, MapPin } from 'lucide-react';
 import '../styles/neumorphism.css';
 
