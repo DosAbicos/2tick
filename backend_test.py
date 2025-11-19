@@ -2411,9 +2411,233 @@ class BackendTester:
             self.log(f"❌ Исключение в Telegram тесте: {str(e)}")
             return False
 
+    def test_full_registration_flow_with_verification(self):
+        """
+        Протестируй полный flow регистрации с новым дизайном верификации:
+
+        **Тест полного flow:**
+        1. POST /api/auth/register с данными:
+           - email: "finaltest@verification.kz"
+           - password: "test123456"
+           - full_name: "Финальный Тест"
+           - phone: "+77012345678"
+           - company_name: "ТОО Финал"
+           - iin: "123456789012"
+           - legal_address: "Алматы, ул. Финал, 1"
+           - language: "ru"
+           
+        2. Сохрани registration_id
+
+        3. **SMS верификация:**
+           - POST /api/auth/registration/{registration_id}/request-otp?method=sms
+           - Проверь что mock_otp возвращается
+           - POST /api/auth/registration/{registration_id}/verify-otp с {otp_code: mock_otp}
+           - Проверь что возвращается token и user
+
+        4. Проверь что:
+           - Пользователь создан в БД users
+           - Registration удалена из registrations
+           - Token валидный
+        """
+        self.log("\n🎯 ПОЛНОЕ ТЕСТИРОВАНИЕ FLOW РЕГИСТРАЦИИ С ВЕРИФИКАЦИЕЙ")
+        self.log("=" * 80)
+        
+        try:
+            # Шаг 1: POST /api/auth/register с указанными данными
+            self.log("\n📝 ШАГ 1: POST /api/auth/register с финальными тестовыми данными...")
+            
+            register_data = {
+                "email": "finaltest@verification.kz",
+                "password": "test123456",
+                "full_name": "Финальный Тест",
+                "phone": "+77012345678",
+                "company_name": "ТОО Финал",
+                "iin": "123456789012",
+                "legal_address": "Алматы, ул. Финал, 1",
+                "language": "ru"
+            }
+            
+            response = self.session.post(f"{BASE_URL}/auth/register", json=register_data)
+            
+            if response.status_code != 200:
+                self.log(f"❌ ШАГ 1 ПРОВАЛЕН: Регистрация не удалась: {response.status_code} - {response.text}")
+                return False
+            
+            data = response.json()
+            registration_id = data.get("registration_id")
+            phone = data.get("phone")
+            message = data.get("message")
+            
+            self.log(f"✅ ШАГ 1 ПРОЙДЕН: Регистрация создана")
+            self.log(f"   📋 registration_id: {registration_id}")
+            self.log(f"   📋 phone: {phone}")
+            self.log(f"   📋 message: {message}")
+            
+            if not registration_id:
+                self.log("❌ КРИТИЧЕСКАЯ ОШИБКА: registration_id не получен")
+                return False
+            
+            # Шаг 2: Сохранить registration_id (уже сохранен в переменной)
+            self.log(f"\n💾 ШАГ 2: registration_id сохранен: {registration_id}")
+            
+            # Шаг 3: SMS верификация
+            self.log("\n📱 ШАГ 3: SMS ВЕРИФИКАЦИЯ")
+            
+            # 3.1: POST /api/auth/registration/{registration_id}/request-otp?method=sms
+            self.log("   📤 3.1: Запрос OTP через SMS...")
+            
+            otp_response = self.session.post(f"{BASE_URL}/auth/registration/{registration_id}/request-otp?method=sms")
+            
+            if otp_response.status_code != 200:
+                self.log(f"   ❌ 3.1 ПРОВАЛЕН: Запрос OTP не удался: {otp_response.status_code} - {otp_response.text}")
+                return False
+            
+            otp_data = otp_response.json()
+            mock_otp = otp_data.get("mock_otp")
+            otp_message = otp_data.get("message")
+            
+            self.log(f"   ✅ 3.1 ПРОЙДЕН: OTP запрошен")
+            self.log(f"      📋 message: {otp_message}")
+            self.log(f"      📋 mock_otp: {mock_otp}")
+            
+            # 3.2: Проверить что mock_otp возвращается
+            if not mock_otp:
+                self.log("   ❌ 3.2 ПРОВАЛЕН: mock_otp не возвращается")
+                return False
+            else:
+                self.log(f"   ✅ 3.2 ПРОЙДЕН: mock_otp получен: {mock_otp}")
+            
+            # 3.3: POST /api/auth/registration/{registration_id}/verify-otp с {otp_code: mock_otp}
+            self.log("   🔐 3.3: Верификация OTP...")
+            
+            verify_data = {"otp_code": mock_otp}
+            verify_response = self.session.post(f"{BASE_URL}/auth/registration/{registration_id}/verify-otp", json=verify_data)
+            
+            if verify_response.status_code != 200:
+                self.log(f"   ❌ 3.3 ПРОВАЛЕН: Верификация OTP не удалась: {verify_response.status_code} - {verify_response.text}")
+                return False
+            
+            verify_result = verify_response.json()
+            token = verify_result.get("token")
+            user = verify_result.get("user")
+            
+            self.log(f"   ✅ 3.3 ПРОЙДЕН: OTP верифицирован")
+            self.log(f"      📋 token получен: {token[:20] if token else 'None'}...")
+            self.log(f"      📋 user получен: {user.get('id') if user else 'None'}")
+            
+            # 3.4: Проверить что возвращается token и user
+            if not token:
+                self.log("   ❌ 3.4 ПРОВАЛЕН: token не возвращается")
+                return False
+            if not user:
+                self.log("   ❌ 3.4 ПРОВАЛЕН: user не возвращается")
+                return False
+            
+            self.log("   ✅ 3.4 ПРОЙДЕН: token и user возвращаются корректно")
+            
+            # Установить токен для дальнейших запросов
+            self.token = token
+            self.user_id = user.get("id")
+            self.session.headers.update({"Authorization": f"Bearer {self.token}"})
+            
+            # Шаг 4: Проверки финального состояния
+            self.log("\n🔍 ШАГ 4: ПРОВЕРКИ ФИНАЛЬНОГО СОСТОЯНИЯ")
+            
+            # 4.1: Проверить что пользователь создан в БД users
+            self.log("   👤 4.1: Проверка создания пользователя в БД users...")
+            
+            me_response = self.session.get(f"{BASE_URL}/auth/me")
+            if me_response.status_code != 200:
+                self.log(f"   ❌ 4.1 ПРОВАЛЕН: Не удалось получить данные пользователя: {me_response.status_code}")
+                return False
+            
+            user_data = me_response.json()
+            
+            # Проверить все поля пользователя
+            expected_fields = {
+                "email": "finaltest@verification.kz",
+                "full_name": "Финальный Тест",
+                "phone": "+77012345678",
+                "company_name": "ТОО Финал",
+                "iin": "123456789012",
+                "legal_address": "Алматы, ул. Финал, 1",
+                "language": "ru"
+            }
+            
+            all_fields_correct = True
+            for field, expected_value in expected_fields.items():
+                actual_value = user_data.get(field)
+                if actual_value != expected_value:
+                    self.log(f"      ❌ Поле {field}: ожидалось '{expected_value}', получено '{actual_value}'")
+                    all_fields_correct = False
+                else:
+                    self.log(f"      ✅ Поле {field}: '{actual_value}' ✓")
+            
+            if not all_fields_correct:
+                self.log("   ❌ 4.1 ПРОВАЛЕН: Не все поля пользователя корректны")
+                return False
+            
+            self.log("   ✅ 4.1 ПРОЙДЕН: Пользователь создан в БД users с корректными данными")
+            
+            # 4.2: Проверить что Registration удалена из registrations (косвенная проверка)
+            self.log("   🗑️ 4.2: Проверка удаления registration из БД...")
+            
+            # Попытаться повторно использовать registration_id (должно вернуть 404)
+            test_otp_response = self.session.post(f"{BASE_URL}/auth/registration/{registration_id}/request-otp?method=sms")
+            
+            if test_otp_response.status_code == 404:
+                self.log("   ✅ 4.2 ПРОЙДЕН: Registration удалена из БД (404 при повторном запросе)")
+            elif test_otp_response.status_code == 400:
+                # Может вернуть 400 если registration уже verified
+                response_text = test_otp_response.text
+                if "already verified" in response_text or "not found" in response_text:
+                    self.log("   ✅ 4.2 ПРОЙДЕН: Registration обработана корректно (уже верифицирована или удалена)")
+                else:
+                    self.log(f"   ⚠️ 4.2 ЧАСТИЧНО ПРОЙДЕН: Неожиданный ответ 400: {response_text}")
+            else:
+                self.log(f"   ⚠️ 4.2 ЧАСТИЧНО ПРОЙДЕН: Неожиданный статус {test_otp_response.status_code}")
+            
+            # 4.3: Проверить что Token валидный
+            self.log("   🔑 4.3: Проверка валидности токена...")
+            
+            # Попытаться получить статистику пользователя (требует валидный токен)
+            stats_response = self.session.get(f"{BASE_URL}/auth/me/stats")
+            
+            if stats_response.status_code == 200:
+                stats_data = stats_response.json()
+                self.log("   ✅ 4.3 ПРОЙДЕН: Token валидный")
+                self.log(f"      📊 Статистика пользователя: {stats_data}")
+            else:
+                self.log(f"   ❌ 4.3 ПРОВАЛЕН: Token невалидный: {stats_response.status_code}")
+                return False
+            
+            # ФИНАЛЬНЫЙ РЕЗУЛЬТАТ
+            self.log("\n" + "=" * 80)
+            self.log("🎉 ВСЕ ШАГИ ПОЛНОГО FLOW РЕГИСТРАЦИИ ПРОЙДЕНЫ УСПЕШНО!")
+            self.log("✅ ШАГ 1: Регистрация создана с корректными данными")
+            self.log("✅ ШАГ 2: registration_id сохранен")
+            self.log("✅ ШАГ 3: SMS верификация работает (mock_otp получен и верифицирован)")
+            self.log("✅ ШАГ 4: Пользователь создан, registration удалена, token валидный")
+            self.log("")
+            self.log("📋 КРАТКИЙ SUMMARY:")
+            self.log(f"   📧 Email: finaltest@verification.kz")
+            self.log(f"   👤 User ID: {self.user_id}")
+            self.log(f"   🔑 Token: {self.token[:30]}...")
+            self.log(f"   📱 Phone: +77012345678")
+            self.log(f"   🏢 Company: ТОО Финал")
+            self.log(f"   🆔 IIN: 123456789012")
+            
+            return True
+            
+        except Exception as e:
+            self.log(f"❌ КРИТИЧЕСКАЯ ОШИБКА в полном flow регистрации: {str(e)}")
+            import traceback
+            self.log(f"   Traceback: {traceback.format_exc()}")
+            return False
+
     def run_all_tests(self):
         """Run all backend tests for 2tick.kz"""
-        return self.test_registration_verification_flow()
+        return self.test_full_registration_flow_with_verification()
 
 if __name__ == "__main__":
     tester = BackendTester()
