@@ -29,6 +29,10 @@ const RegisterPage = () => {
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [userExists, setUserExists] = useState(false);
   const [step, setStep] = useState(1);
+  const [showVerification, setShowVerification] = useState(false);
+  const [verificationMethod, setVerificationMethod] = useState(''); // 'sms', 'call', 'telegram'
+  const [verificationCode, setVerificationCode] = useState('');
+  const [tempUserId, setTempUserId] = useState(null);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
