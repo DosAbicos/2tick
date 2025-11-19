@@ -125,9 +125,19 @@ const RegisterPage = () => {
       });
 
       if (response.data.registration_id) {
-        setRegistrationId(response.data.registration_id);
+        const regId = response.data.registration_id;
+        setRegistrationId(regId);
         toast.success('Данные сохранены. Теперь подтвердите телефон');
         setStep(4); // Переход к верификации
+        
+        // Предварительно загружаем Telegram deep link
+        axios.get(`${API}/auth/registration/${regId}/telegram-deep-link`)
+          .then(res => {
+            setTelegramDeepLink(res.data.deep_link);
+          })
+          .catch(err => {
+            console.error('Failed to pre-fetch Telegram link:', err);
+          });
       } else {
         toast.error(response.data.message || 'Ошибка регистрации');
       }
