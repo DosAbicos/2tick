@@ -405,15 +405,27 @@ const ProfilePage = () => {
                 </div>
               </div>
 
+              <AnimatePresence mode="wait">
               {!changingPassword ? (
-                <button
+                <motion.button
+                  key="change-btn"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
                   onClick={() => setChangingPassword(true)}
                   className="w-full sm:w-auto px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all"
                 >
                   Изменить пароль
-                </button>
+                </motion.button>
               ) : (
-                <div className="space-y-5">
+                <motion.div
+                  key="password-fields"
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="space-y-5"
+                >
                   <div>
                     <label className="text-sm font-medium text-gray-500 mb-2 block">Старый пароль</label>
                     <input
