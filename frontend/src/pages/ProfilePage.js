@@ -221,6 +221,13 @@ const ProfilePage = () => {
                 ) : (
                   <div className="flex gap-1.5">
                     <button
+                      onClick={handleSaveProfile}
+                      className="p-1.5 border border-blue-500 rounded text-blue-600 hover:bg-blue-50 sm:px-3 sm:py-1.5 sm:text-white sm:bg-gradient-to-r sm:from-blue-600 sm:to-blue-500 sm:border-0 sm:hover:from-blue-700 sm:hover:to-blue-600 transition-all flex items-center gap-1"
+                    >
+                      <Save className="w-4 h-4" />
+                      <span className="hidden sm:inline text-xs font-medium">Сохранить</span>
+                    </button>
+                    <button
                       onClick={() => {
                         setEditing(false);
                         setEditedUser(user);
@@ -228,13 +235,6 @@ const ProfilePage = () => {
                       className="p-1.5 border border-gray-300 rounded text-gray-600 hover:bg-gray-100 sm:px-3 sm:py-1.5 sm:bg-gray-100 sm:hover:bg-gray-200 transition-all flex items-center justify-center"
                     >
                       <span className="text-base sm:text-xs sm:font-medium">✕</span>
-                    </button>
-                    <button
-                      onClick={handleSaveProfile}
-                      className="p-1.5 border border-blue-500 rounded text-blue-600 hover:bg-blue-50 sm:px-3 sm:py-1.5 sm:text-white sm:bg-gradient-to-r sm:from-blue-600 sm:to-blue-500 sm:border-0 sm:hover:from-blue-700 sm:hover:to-blue-600 transition-all flex items-center gap-1"
-                    >
-                      <Save className="w-4 h-4" />
-                      <span className="hidden sm:inline text-xs font-medium">Сохранить</span>
                     </button>
                   </div>
                 )}
