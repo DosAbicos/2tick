@@ -108,11 +108,24 @@ const ProfilePage = () => {
       <Header />
       
       <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-4 sm:py-8">
-        {/* Заголовок */}
-        <div className="mb-4 sm:mb-8 px-2 sm:px-0">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Мой профиль</h1>
-          <p className="text-sm sm:text-base text-gray-600">Управляйте своей учетной записью</p>
-        </div>
+        {/* Заголовок с улучшенным дизайном */}
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-4 sm:mb-8 px-2 sm:px-0"
+        >
+          <div className="bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl p-6 sm:p-8 shadow-lg">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                <User className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-xl sm:text-3xl font-bold text-white mb-1">Мой профиль</h1>
+                <p className="text-sm sm:text-base text-blue-100">Управляйте своей учетной записью</p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
 
         <div className="grid lg:grid-cols-3 gap-3 sm:gap-6">
           {/* Левая колонка - Статистика */}
