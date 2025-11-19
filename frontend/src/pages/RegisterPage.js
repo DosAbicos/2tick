@@ -95,19 +95,15 @@ const RegisterPage = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post(`${API}/register`, {
+      const response = await axios.post(`${API}/auth/register`, {
         ...formData,
         language: i18n.language
       });
 
-      if (response.data.message === 'OTP sent to your phone') {
-        toast.success('Код подтверждения отправлен на ваш телефон');
-        navigate('/verify-registration', { 
-          state: { 
-            phone: formData.phone,
-            email: formData.email 
-          } 
-        });
+      if (response.data.registration_id) {
+        setRegistrationId(response.data.registration_id);
+        toast.success('Данные сохранены. Теперь подтвердите телефон');
+        setStep(4); // Переход к верификации
       } else {
         toast.error(response.data.message || 'Ошибка регистрации');
       }
@@ -123,6 +119,98 @@ const RegisterPage = () => {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Запрос верификации SMS
+  const handleRequestSMS = async () => {
+    if (!registrationId) return;
+    
+    setVerificationLoading(true);
+    try {
+      const response = await axios.post(`${API}/auth/registration/${registrationId}/request-otp?method=sms`);
+      toast.success('Код отправлен на ваш телефон');
+      setVerificationMethod('sms');
+      
+      // Если есть mock_otp (для тестирования), показываем его
+      if (response.data.mock_otp) {
+        toast.info(`Тестовый код: ${response.data.mock_otp}`, { duration: 10000 });
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Ошибка отправки SMS');
+    } finally {
+      setVerificationLoading(false);
+    }
+  };
+
+  // Запрос верификации звонком
+  const handleRequestCall = async () => {
+    if (!registrationId) return;
+    
+    setVerificationLoading(true);
+    try {
+      const response = await axios.post(`${API}/auth/registration/${registrationId}/request-call-otp`);
+      toast.success('Вам поступит звонок. Введите последние 4 цифры номера');
+      setVerificationMethod('call');
+      setCallHint(response.data.hint || '');
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Ошибка инициации звонка');
+    } finally {
+      setVerificationLoading(false);
+    }
+  };
+
+  // Запрос Telegram deep link
+  const handleRequestTelegram = async () => {
+    if (!registrationId) return;
+    
+    setVerificationLoading(true);
+    try {
+      const response = await axios.get(`${API}/auth/registration/${registrationId}/telegram-deep-link`);
+      setTelegramDeepLink(response.data.deep_link);
+      setVerificationMethod('telegram');
+      toast.success('Нажмите кнопку ниже чтобы получить код в Telegram');
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Ошибка получения ссылки Telegram');
+    } finally {
+      setVerificationLoading(false);
+    }
+  };
+
+  // Верификация кода
+  const handleVerifyCode = async () => {
+    if (!registrationId || !verificationCode) {
+      toast.error('Введите код подтверждения');
+      return;
+    }
+
+    setVerificationLoading(true);
+    try {
+      let response;
+      
+      if (verificationMethod === 'sms') {
+        response = await axios.post(`${API}/auth/registration/${registrationId}/verify-otp`, {
+          otp_code: verificationCode
+        });
+      } else if (verificationMethod === 'call') {
+        response = await axios.post(`${API}/auth/registration/${registrationId}/verify-call-otp`, {
+          code: verificationCode
+        });
+      } else if (verificationMethod === 'telegram') {
+        response = await axios.post(`${API}/auth/registration/${registrationId}/verify-telegram-otp`, {
+          code: verificationCode
+        });
+      }
+
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        toast.success('Регистрация успешно завершена!');
+        navigate('/dashboard');
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Неверный код. Попробуйте снова.');
+    } finally {
+      setVerificationLoading(false);
     }
   };
 
