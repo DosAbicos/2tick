@@ -640,25 +640,15 @@ const RegisterPage = () => {
                     </div>
                   </div>
                 ) : verificationMethod === 'sms' ? (
-                  // SMS verification - Neumorphism style
+                  // SMS verification - Minimalist style
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="space-y-6"
+                    className="space-y-8"
                   >
                     <div className="text-center">
-                      <div className="w-16 h-16 mx-auto mb-4 neuro-card flex items-center justify-center">
-                        <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                        </svg>
-                      </div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">SMS верификация</h3>
-                      <p className="text-sm text-gray-600 mb-4">Введите 6-значный код из SMS</p>
-                      {mockOtp && (
-                        <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-200 mb-4">
-                          <p className="text-sm text-blue-900 font-medium">🔐 Тестовый код: <strong className="text-lg">{mockOtp}</strong></p>
-                        </div>
-                      )}
+                      <h3 className="text-2xl font-bold text-gray-900 mb-2">Введите код из SMS</h3>
+                      <p className="text-sm text-gray-500">Мы отправили 6-значный код на ваш номер</p>
                     </div>
                     
                     <input
@@ -666,10 +656,17 @@ const RegisterPage = () => {
                       maxLength={6}
                       value={verificationCode}
                       onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, ''))}
-                      className="neuro-input w-full text-center text-3xl font-bold tracking-[0.5em]"
-                      placeholder="______"
+                      className="w-full text-center text-4xl font-light tracking-[0.8em] py-4 px-4 border-b-2 border-gray-300 focus:border-blue-500 bg-transparent outline-none transition-colors"
+                      placeholder="· · · · · ·"
                       autoFocus
                     />
+                    
+                    {mockOtp && (
+                      <div className="text-center">
+                        <p className="text-xs text-gray-400 mb-1">Тестовый режим</p>
+                        <p className="text-sm text-gray-600 font-mono">{mockOtp}</p>
+                      </div>
+                    )}
                     
                     <div className="flex gap-3">
                       <button
@@ -679,17 +676,17 @@ const RegisterPage = () => {
                           setVerificationCode('');
                           setMockOtp('');
                         }}
-                        className="neuro-button flex-1 py-3"
+                        className="flex-1 py-3 px-6 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all font-medium"
                       >
-                        ← Назад
+                        Назад
                       </button>
                       <button
                         type="button"
                         onClick={handleVerifyCode}
                         disabled={verificationLoading || verificationCode.length !== 6}
-                        className="neuro-button-primary flex-1 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex-1 py-3 px-6 text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                       >
-                        {verificationLoading ? 'Проверяем...' : '✓ Подтвердить'}
+                        {verificationLoading ? 'Проверяем...' : 'Подтвердить'}
                       </button>
                     </div>
                     
@@ -697,9 +694,9 @@ const RegisterPage = () => {
                       type="button"
                       onClick={handleRequestSMS}
                       disabled={smsCooldown > 0}
-                      className="w-full text-sm text-blue-600 font-medium hover:text-blue-700 hover:underline disabled:opacity-50 disabled:cursor-not-allowed py-2"
+                      className="w-full text-sm text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed py-2 transition-colors"
                     >
-                      {smsCooldown > 0 ? `Повторить через ${smsCooldown}с` : '↻ Отправить код повторно'}
+                      {smsCooldown > 0 ? `Повторить через ${smsCooldown}с` : 'Отправить код повторно'}
                     </button>
                   </motion.div>
                 ) : verificationMethod === 'call' ? (
