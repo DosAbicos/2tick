@@ -485,7 +485,7 @@ const RegisterPage = () => {
                     disabled={loading || !passwordMatch}
                     className="flex-1 py-4 px-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {loading ? 'Сохранение...' : 'Продолжить к верификации'}
+                    {loading ? 'Сохранение...' : 'Продолжить'}
                   </button>
                 </div>
               </>
