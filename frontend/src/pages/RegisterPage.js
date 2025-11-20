@@ -751,27 +751,17 @@ const RegisterPage = () => {
                     </div>
                   </motion.div>
                 ) : verificationMethod === 'telegram' ? (
-                  // Telegram verification - Neumorphism style
+                  // Telegram verification - Minimalist style
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="space-y-6"
+                    className="space-y-8"
                   >
                     <div className="text-center">
-                      <div className="w-16 h-16 mx-auto mb-4 neuro-card flex items-center justify-center">
-                        <svg className="w-8 h-8 text-[#0088cc]" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
-                        </svg>
-                      </div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">Telegram верификация</h3>
-                      <p className="text-sm text-gray-600 mb-4">
-                        Скопируйте код из чата с ботом <span className="font-semibold text-[#0088cc]">@twotick_bot</span>
+                      <h3 className="text-2xl font-bold text-gray-900 mb-2">Введите код из Telegram</h3>
+                      <p className="text-sm text-gray-500">
+                        Код отправлен в чат с ботом <span className="font-semibold text-[#0088cc]">@twotick_bot</span>
                       </p>
-                      <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-200 mb-4">
-                        <p className="text-sm text-blue-900 font-medium">
-                          💡 Код отправлен в Telegram. Если не получили - нажмите кнопку ниже
-                        </p>
-                      </div>
                     </div>
                     
                     <input
@@ -779,8 +769,8 @@ const RegisterPage = () => {
                       maxLength={6}
                       value={verificationCode}
                       onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, ''))}
-                      className="neuro-input w-full text-center text-3xl font-bold tracking-[0.5em]"
-                      placeholder="______"
+                      className="w-full text-center text-4xl font-light tracking-[0.8em] py-4 px-4 border-b-2 border-gray-300 focus:border-blue-500 bg-transparent outline-none transition-colors"
+                      placeholder="· · · · · ·"
                       autoFocus
                     />
                     
@@ -792,17 +782,17 @@ const RegisterPage = () => {
                           setVerificationCode('');
                           setTelegramDeepLink('');
                         }}
-                        className="neuro-button flex-1 py-3"
+                        className="flex-1 py-3 px-6 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all font-medium"
                       >
-                        ← Назад
+                        Назад
                       </button>
                       <button
                         type="button"
                         onClick={handleVerifyCode}
                         disabled={verificationLoading || verificationCode.length !== 6}
-                        className="neuro-button-primary flex-1 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex-1 py-3 px-6 text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                       >
-                        {verificationLoading ? 'Проверяем...' : '✓ Подтвердить'}
+                        {verificationLoading ? 'Проверяем...' : 'Подтвердить'}
                       </button>
                     </div>
                     
@@ -810,9 +800,9 @@ const RegisterPage = () => {
                       href={telegramDeepLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block w-full text-center py-3 text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline"
+                      className="block w-full text-center py-2 text-sm text-gray-500 hover:text-gray-700 transition-colors"
                     >
-                      ↻ Отправить код повторно
+                      Не получили код? Открыть Telegram снова
                     </a>
                   </motion.div>
                 ) : null}
