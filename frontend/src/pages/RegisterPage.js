@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { IMaskInput } from 'react-imask';
 import { motion } from 'framer-motion';
 import { Check, X, User, Mail, Phone, Lock, Building, CreditCard, MapPin } from 'lucide-react';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import '../styles/neumorphism.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
