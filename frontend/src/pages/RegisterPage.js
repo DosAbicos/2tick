@@ -700,25 +700,15 @@ const RegisterPage = () => {
                     </button>
                   </motion.div>
                 ) : verificationMethod === 'call' ? (
-                  // Call verification - Neumorphism style
+                  // Call verification - Minimalist style
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="space-y-6"
+                    className="space-y-8"
                   >
                     <div className="text-center">
-                      <div className="w-16 h-16 mx-auto mb-4 neuro-card flex items-center justify-center">
-                        <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                        </svg>
-                      </div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">Звонок верификация</h3>
-                      <p className="text-sm text-gray-600 mb-4">Введите последние 4 цифры номера</p>
-                      {callHint && (
-                        <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-200 mb-4">
-                          <p className="text-sm text-blue-900 font-medium">📞 {callHint}</p>
-                        </div>
-                      )}
+                      <h3 className="text-2xl font-bold text-gray-900 mb-2">Введите последние 4 цифры</h3>
+                      <p className="text-sm text-gray-500">Вам поступит звонок с номера</p>
                     </div>
                     
                     <input
@@ -726,10 +716,17 @@ const RegisterPage = () => {
                       maxLength={4}
                       value={verificationCode}
                       onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, ''))}
-                      className="neuro-input w-full text-center text-3xl font-bold tracking-[0.5em]"
-                      placeholder="____"
+                      className="w-full text-center text-4xl font-light tracking-[0.8em] py-4 px-4 border-b-2 border-gray-300 focus:border-blue-500 bg-transparent outline-none transition-colors"
+                      placeholder="· · · ·"
                       autoFocus
                     />
+                    
+                    {callHint && (
+                      <div className="text-center">
+                        <p className="text-xs text-gray-400 mb-1">Подсказка</p>
+                        <p className="text-sm text-gray-600">{callHint}</p>
+                      </div>
+                    )}
                     
                     <div className="flex gap-3">
                       <button
@@ -739,17 +736,17 @@ const RegisterPage = () => {
                           setVerificationCode('');
                           setCallHint('');
                         }}
-                        className="neuro-button flex-1 py-3"
+                        className="flex-1 py-3 px-6 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all font-medium"
                       >
-                        ← Назад
+                        Назад
                       </button>
                       <button
                         type="button"
                         onClick={handleVerifyCode}
                         disabled={verificationLoading || verificationCode.length !== 4}
-                        className="neuro-button-primary flex-1 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex-1 py-3 px-6 text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                       >
-                        {verificationLoading ? 'Проверяем...' : '✓ Подтвердить'}
+                        {verificationLoading ? 'Проверяем...' : 'Подтвердить'}
                       </button>
                     </div>
                   </motion.div>
