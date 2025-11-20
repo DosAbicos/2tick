@@ -641,26 +641,29 @@ const RegisterPage = () => {
                     </div>
                   </div>
                 ) : verificationMethod === 'sms' ? (
-                  // SMS verification - Minimalist style
+                  // SMS verification - OTP boxes style
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="space-y-8"
                   >
                     <div className="text-center">
-                      <h3 className="text-2xl font-bold text-gray-900 mb-2">Введите код из SMS</h3>
+                      <h3 className="text-2xl font-bold text-gray-900 mb-2">Введите код верификации</h3>
                       <p className="text-sm text-gray-500">Мы отправили 6-значный код на ваш номер</p>
                     </div>
                     
-                    <input
-                      type="text"
-                      maxLength={6}
-                      value={verificationCode}
-                      onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, ''))}
-                      className="w-full text-center text-4xl font-light tracking-[0.8em] py-4 px-4 border-b-2 border-gray-300 focus:border-blue-500 bg-transparent outline-none transition-colors"
-                      placeholder="· · · · · ·"
-                      autoFocus
-                    />
+                    <div className="flex justify-center">
+                      <InputOTP maxLength={6} value={verificationCode} onChange={setVerificationCode}>
+                        <InputOTPGroup>
+                          <InputOTPSlot index={0} />
+                          <InputOTPSlot index={1} />
+                          <InputOTPSlot index={2} />
+                          <InputOTPSlot index={3} />
+                          <InputOTPSlot index={4} />
+                          <InputOTPSlot index={5} />
+                        </InputOTPGroup>
+                      </InputOTP>
+                    </div>
                     
                     {mockOtp && (
                       <div className="text-center">
