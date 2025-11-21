@@ -40,6 +40,8 @@ const RegisterPage = () => {
   const [mockOtp, setMockOtp] = useState('');
   const [smsCooldown, setSmsCooldown] = useState(0);
   const [callCooldown, setCallCooldown] = useState(0);
+  const [smsRequestCount, setSmsRequestCount] = useState(0);
+  const [callRequestCount, setCallRequestCount] = useState(0);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
