@@ -136,17 +136,21 @@ const RegisterPage = () => {
         
         if (checkResponse.data.exists) {
           if (checkResponse.data.field === 'email') {
-            toast.error('Пользователь с таким email уже зарегистрирован');
             setUserExists(true);
+            setEmailError(true);
+            setPhoneError(false);
           } else if (checkResponse.data.field === 'phone') {
-            toast.error('Пользователь с таким номером телефона уже зарегистрирован');
             setUserExists(true);
+            setEmailError(false);
+            setPhoneError(true);
           }
           setLoading(false);
           return;
         }
         
         setUserExists(false);
+        setEmailError(false);
+        setPhoneError(false);
         setLoading(false);
         setStep(2);
       } catch (error) {
