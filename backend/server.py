@@ -1079,6 +1079,36 @@ async def log_user_action(user_id: str, action: str, details: str = None, ip: st
     await db.user_logs.insert_one(log_entry)
 
 # ===== AUTH ROUTES =====
+@api_router.post("/auth/check-user-exists")
+async def check_user_exists(data: dict):
+    """Check if user with given email or phone already exists"""
+    email = data.get('email')
+    phone = data.get('phone')
+    
+    # Check in users collection
+    if email:
+        existing_user = await db.users.find_one({"email": email})
+        if existing_user:
+            return {"exists": True, "field": "email"}
+    
+    if phone:
+        existing_user = await db.users.find_one({"phone": phone})
+        if existing_user:
+            return {"exists": True, "field": "phone"}
+    
+    # Check in pending registrations
+    if email:
+        pending_reg = await db.registrations.find_one({"email": email})
+        if pending_reg:
+            return {"exists": True, "field": "email"}
+    
+    if phone:
+        pending_reg = await db.registrations.find_one({"phone": phone})
+        if pending_reg:
+            return {"exists": True, "field": "phone"}
+    
+    return {"exists": False}
+
 @api_router.post("/auth/register")
 async def register(user_data: UserCreate):
     # Check if user already exists
