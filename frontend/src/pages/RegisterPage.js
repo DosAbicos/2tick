@@ -169,13 +169,23 @@ const RegisterPage = () => {
 
   // Запрос верификации SMS
   const handleRequestSMS = async () => {
-    if (!registrationId) return;
+    if (!registrationId || smsCooldown > 0) return;
     
     setVerificationLoading(true);
     try {
       const response = await axios.post(`${API}/auth/registration/${registrationId}/request-otp?method=sms`);
       toast.success('Код отправлен на ваш телефон');
       setVerificationMethod('sms');
+      
+      // Увеличиваем счетчик запросов
+      const newCount = smsRequestCount + 1;
+      setSmsRequestCount(newCount);
+      
+      // Устанавливаем прогрессивный cooldown
+      const cooldownTime = getProgressiveCooldown(newCount);
+      if (cooldownTime > 0) {
+        setSmsCooldown(cooldownTime);
+      }
       
       // Если есть mock_otp (для тестирования), показываем его
       if (response.data.mock_otp) {
