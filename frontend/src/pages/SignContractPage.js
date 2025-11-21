@@ -283,7 +283,10 @@ const SignContractPage = () => {
           if (shouldRecalculate) {
             console.log('🔄 Recalculating placeholders from backend');
             // Initialize placeholder values with existing values
-            const existingValues = contractData.placeholder_values || {};
+            // Use approved values if contract is approved, otherwise use current values
+            const existingValues = contractData.approved 
+              ? (contractData.approved_placeholder_values || contractData.placeholder_values || {})
+              : (contractData.placeholder_values || {});
             setPlaceholderValues(existingValues);
             
             console.log('Debug SignContractPage:');
