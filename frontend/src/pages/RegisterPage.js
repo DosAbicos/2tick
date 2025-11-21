@@ -816,14 +816,16 @@ const RegisterPage = () => {
                       </button>
                     </div>
                     
-                    <button
-                      type="button"
-                      onClick={sendCallCode}
-                      disabled={callCooldown > 0 || sendingCode}
-                      className="w-full py-3 px-6 text-white bg-gradient-to-r from-green-600 to-green-500 rounded-xl hover:from-green-700 hover:to-green-600 transition-all shadow-lg shadow-green-500/30 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-                    >
-                      {sendingCode ? 'Инициация звонка...' : callCooldown > 0 ? `Позвонить через ${Math.floor(callCooldown / 60)}:${(callCooldown % 60).toString().padStart(2, '0')}` : 'Инициировать звонок'}
-                    </button>
+                    {(!callFirstEntry || callRequestCount > 0) && (
+                      <button
+                        type="button"
+                        onClick={sendCallCode}
+                        disabled={callCooldown > 0 || sendingCode}
+                        className="w-full py-3 px-6 text-sm text-blue-600 bg-blue-50 rounded-xl hover:bg-blue-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                      >
+                        {sendingCode ? 'Инициация звонка...' : callCooldown > 0 ? `Позвонить через ${Math.floor(callCooldown / 60)}:${(callCooldown % 60).toString().padStart(2, '0')}` : 'Инициировать звонок повторно'}
+                      </button>
+                    )}
                   </motion.div>
                 ) : verificationMethod === 'telegram' ? (
                   // Telegram verification - OTP boxes
