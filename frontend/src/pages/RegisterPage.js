@@ -513,17 +513,14 @@ const RegisterPage = () => {
                     placeholder="example@company.kz"
                   />
                   {userExists && emailError && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10 }}
+                    <motion.p
+                      initial={{ opacity: 0, y: -5 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg"
+                      exit={{ opacity: 0 }}
+                      className="text-sm text-red-500 font-medium"
                     >
-                      <svg className="w-5 h-5 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <p className="text-sm text-red-700 font-medium">Пользователь с таким email уже зарегистрирован</p>
-                    </motion.div>
+                      Пользователь с таким email уже зарегистрирован
+                    </motion.p>
                   )}
                 </div>
 
