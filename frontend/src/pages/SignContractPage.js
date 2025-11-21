@@ -1309,51 +1309,66 @@ const SignContractPage = () => {
                     </div>
                   </motion.div>
                 ) : verificationMethod === 'call' ? (
-                  // Call verification - Neumorphism style
+                  // Call verification - OTP boxes (4 digits)
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="space-y-6"
+                    className="space-y-8"
                   >
                     <div className="text-center">
-                      <div className="w-16 h-16 mx-auto mb-4 neuro-card flex items-center justify-center">
-                        <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                        </svg>
-                      </div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">Звонок верификация</h3>
-                      <p className="text-sm text-gray-600 mb-4">Введите последние 4 цифры номера</p>
-                      {callHint && (
-                        <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-200 mb-4">
-                          <p className="text-sm text-blue-900 font-medium">📞 {callHint}</p>
-                        </div>
-                      )}
+                      <h3 className="text-2xl font-bold text-gray-900 mb-2">Введите код верификации</h3>
+                      <p className="text-sm text-gray-500">
+                        {!callFirstEntry && !callHint ? 'Нажмите кнопку ниже для инициации звонка' : 'Введите последние 4 цифры номера входящего звонка'}
+                      </p>
                     </div>
                     
-                    <input
-                      type="text"
-                      maxLength={4}
-                      value={callCode}
-                      onChange={(e) => setCallCode(e.target.value.replace(/\D/g, ''))}
-                      className="neuro-input w-full text-center text-3xl font-bold tracking-[0.5em]"
-                      placeholder="____"
-                      data-testid="call-code-input"
-                    />
+                    {callHint && (
+                      <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-200">
+                        <p className="text-sm text-blue-900 font-medium text-center">📞 Подсказка: {callHint}</p>
+                      </div>
+                    )}
+                    
+                    <div className="flex justify-center">
+                      <InputOTP maxLength={4} value={verificationCode} onChange={setVerificationCode}>
+                        <InputOTPGroup>
+                          <InputOTPSlot index={0} />
+                          <InputOTPSlot index={1} />
+                          <InputOTPSlot index={2} />
+                          <InputOTPSlot index={3} />
+                        </InputOTPGroup>
+                      </InputOTP>
+                    </div>
+                    
+                    {!callFirstEntry && !callHint && (
+                      <button
+                        type="button"
+                        onClick={sendCallCode}
+                        disabled={callCooldown > 0 || sendingCode}
+                        className="w-full py-3 px-6 text-sm text-blue-600 bg-blue-50 rounded-xl hover:bg-blue-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                      >
+                        {sendingCode ? 'Инициация звонка...' : callCooldown > 0 ? `Позвонить через ${Math.floor(callCooldown / 60)}:${(callCooldown % 60).toString().padStart(2, '0')}` : 'Инициировать звонок повторно'}
+                      </button>
+                    )}
                     
                     <div className="flex gap-3">
                       <button
-                        onClick={() => setVerificationMethod('')}
-                        className="neuro-button flex-1 py-3"
+                        type="button"
+                        onClick={() => {
+                          setVerificationMethod('');
+                          setVerificationCode('');
+                          setCallHint('');
+                        }}
+                        className="flex-1 py-3 px-6 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all font-medium"
                       >
-                        ← Назад
+                        Назад
                       </button>
                       <button
-                        onClick={handleVerifyCallOTP}
-                        disabled={verifying || callCode.length !== 4}
-                        className="neuro-button-primary flex-1 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
-                        data-testid="call-verify-button"
+                        type="button"
+                        onClick={handleVerifyOTP}
+                        disabled={verifying || verificationCode.length !== 4}
+                        className="flex-1 py-3 px-6 text-white bg-gradient-to-r from-green-600 to-green-500 rounded-xl hover:from-green-700 hover:to-green-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-lg shadow-green-500/20"
                       >
-                        {verifying ? 'Проверяем...' : '✓ Подтвердить'}
+                        {verifying ? 'Проверяем...' : 'Подписать договор'}
                       </button>
                     </div>
                   </motion.div>
