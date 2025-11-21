@@ -71,7 +71,8 @@ class ContractApprovalTester:
                 "full_name": "Тестовый Пользователь Утверждения",
                 "phone": "+77071234567",
                 "company_name": "ТОО Тест Утверждения",
-                "iin": "123456789012"
+                "iin": "123456789012",
+                "legal_address": "г. Алматы, ул. Тестовая 123"
             }
             
             register_response = self.session.post(f"{BASE_URL}/auth/register", json=register_data)
