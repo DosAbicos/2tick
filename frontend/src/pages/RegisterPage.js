@@ -691,7 +691,7 @@ const RegisterPage = () => {
                     </div>
                   </div>
                 ) : verificationMethod === 'sms' ? (
-                  // SMS verification - OTP boxes style
+                  // SMS verification - OTP boxes
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -699,7 +699,9 @@ const RegisterPage = () => {
                   >
                     <div className="text-center">
                       <h3 className="text-2xl font-bold text-gray-900 mb-2">Введите код верификации</h3>
-                      <p className="text-sm text-gray-500">Мы отправили 6-значный код на ваш номер</p>
+                      <p className="text-sm text-gray-500">
+                        {smsRequestCount === 0 ? 'Нажмите кнопку ниже для получения кода' : 'Мы отправили 6-значный код на ваш номер'}
+                      </p>
                     </div>
                     
                     <div className="flex justify-center">
@@ -746,11 +748,11 @@ const RegisterPage = () => {
                     
                     <button
                       type="button"
-                      onClick={handleRequestSMS}
-                      disabled={smsCooldown > 0}
-                      className="w-full text-sm text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed py-2 transition-colors"
+                      onClick={sendSmsCode}
+                      disabled={smsCooldown > 0 || sendingCode}
+                      className="w-full py-3 px-6 text-white bg-gradient-to-r from-green-600 to-green-500 rounded-xl hover:from-green-700 hover:to-green-600 transition-all shadow-lg shadow-green-500/30 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                     >
-                      {smsCooldown > 0 ? `Повторить через ${Math.floor(smsCooldown / 60)}:${(smsCooldown % 60).toString().padStart(2, '0')}` : 'Отправить код повторно'}
+                      {sendingCode ? 'Отправка...' : smsCooldown > 0 ? `Отправить через ${Math.floor(smsCooldown / 60)}:${(smsCooldown % 60).toString().padStart(2, '0')}` : 'Отправить код'}
                     </button>
                   </motion.div>
                 ) : verificationMethod === 'call' ? (
