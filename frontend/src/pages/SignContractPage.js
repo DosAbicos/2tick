@@ -887,6 +887,8 @@ const SignContractPage = () => {
                             className="minimal-input w-full mt-1"
                             placeholder="example@email.com"
                             required={config.required}
+                            readOnly={contract?.approved}
+                            disabled={contract?.approved}
                           />
                         )}
                       </div>
