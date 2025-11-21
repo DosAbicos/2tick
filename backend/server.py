@@ -214,7 +214,10 @@ class Contract(BaseModel):
     file_data: Optional[str] = None  # base64 encoded file
     signature_link: Optional[str] = None
     landlord_signature_hash: Optional[str] = None  # Landlord's signature hash
+    approved: bool = False  # Утвержден ли договор создателем
     approved_at: Optional[datetime] = None
+    approved_content: Optional[str] = None  # Зафиксированный контент после утверждения
+    approved_placeholder_values: Optional[dict] = None  # Зафиксированные значения плейсхолдеров
     landlord_name: Optional[str] = None  # Название компании
     landlord_email: Optional[str] = None  # Email наймодателя
     landlord_full_name: Optional[str] = None  # ФИО наймодателя
