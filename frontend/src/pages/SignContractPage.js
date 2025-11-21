@@ -75,6 +75,14 @@ const SignContractPage = () => {
   const [callCooldown, setCallCooldown] = useState(0);
   const [telegramCooldown, setTelegramCooldown] = useState(0);
   
+  // Progressive cooldown tracking
+  const [smsRequestCount, setSmsRequestCount] = useState(0);
+  const [callRequestCount, setCallRequestCount] = useState(0);
+  const [smsFirstEntry, setSmsFirstEntry] = useState(true);
+  const [callFirstEntry, setCallFirstEntry] = useState(true);
+  const [sendingCode, setSendingCode] = useState(false);
+  const [verificationCode, setVerificationCode] = useState('');
+  
   // Initialize from localStorage if available
   const getInitialSignerInfo = () => {
     const savedState = localStorage.getItem(`contract_${id}_state`);
