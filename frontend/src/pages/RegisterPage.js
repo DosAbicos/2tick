@@ -826,7 +826,7 @@ const RegisterPage = () => {
                       </button>
                     </div>
                     
-                    {(!callFirstEntry || callRequestCount > 0) && (
+                    {!callFirstEntry && !callHint && (
                       <button
                         type="button"
                         onClick={sendCallCode}
