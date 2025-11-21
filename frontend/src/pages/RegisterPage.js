@@ -651,25 +651,26 @@ const RegisterPage = () => {
                         </div>
                       </motion.button>
                       
-                      {/* Telegram Button - Single click */}
+                      {/* Telegram Button - Always active */}
                       <motion.a
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.7 }}
-                        whileHover={telegramDeepLink ? { y: -2 } : {}}
-                        whileTap={telegramDeepLink ? { scale: 0.98 } : {}}
+                        whileHover={{ y: -2 }}
+                        whileTap={{ scale: 0.98 }}
                         href={telegramDeepLink || '#'}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => {
                           if (!telegramDeepLink) {
                             e.preventDefault();
+                            toast.error('Ссылка Telegram еще загружается...');
                             return;
                           }
                           setVerificationMethod('telegram');
                           toast.success('Откройте Telegram и скопируйте код');
                         }}
-                        className={`relative overflow-hidden block w-full p-6 rounded-2xl bg-gradient-to-br from-[#0088cc] to-[#0077b3] transition-all no-underline group shadow-lg shadow-[#0088cc]/20 hover:shadow-xl hover:shadow-[#0088cc]/30 ${!telegramDeepLink ? 'opacity-50 cursor-wait' : ''}`}
+                        className="relative overflow-hidden block w-full p-6 rounded-2xl bg-gradient-to-br from-[#0088cc] to-[#0077b3] transition-all no-underline group shadow-lg shadow-[#0088cc]/20 hover:shadow-xl hover:shadow-[#0088cc]/30"
                       >
                         <div className="flex items-center gap-4">
                           <div className="w-14 h-14 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0 group-hover:bg-white/30 transition-all">
@@ -678,9 +679,7 @@ const RegisterPage = () => {
                             </svg>
                           </div>
                           <div className="flex-1 text-left">
-                            <h4 className="text-lg font-semibold text-white mb-1">
-                              {!telegramDeepLink ? 'Загрузка...' : 'Telegram'}
-                            </h4>
+                            <h4 className="text-lg font-semibold text-white mb-1">Telegram</h4>
                             <p className="text-sm text-white/80">Код в боте @twotick_bot</p>
                           </div>
                           <svg className="w-5 h-5 text-white/80 flex-shrink-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
