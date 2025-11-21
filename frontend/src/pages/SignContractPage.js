@@ -136,7 +136,8 @@ const SignContractPage = () => {
   const highlightPlaceholders = (content) => {
     if (!content) return '';
     
-    let result = content;
+    // Use approved content if contract is approved
+    let result = contract?.approved ? (contract.approved_content || content) : content;
     
     // Regular expression to match placeholders like [Label]
     const placeholderRegex = /\[([^\]]+)\]/g;
