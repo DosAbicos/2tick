@@ -31,20 +31,37 @@ const RegisterPage = () => {
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [userExists, setUserExists] = useState(false);
   const [step, setStep] = useState(1);
-  const [verificationMethod, setVerificationMethod] = useState(''); // 'sms', 'call', 'telegram'
-  const [verificationCode, setVerificationCode] = useState('');
-  const [registrationId, setRegistrationId] = useState(null);
-  const [telegramDeepLink, setTelegramDeepLink] = useState('');
-  const [callHint, setCallHint] = useState('');
-  const [verificationLoading, setVerificationLoading] = useState(false);
+  // Verification states - copied from SignContractPage
+  const [verificationMethod, setVerificationMethod] = useState(''); // 'sms', 'call', or 'telegram'
+  const [otpValue, setOtpValue] = useState('');
+  const [verifying, setVerifying] = useState(false);
   const [mockOtp, setMockOtp] = useState('');
+  
+  // Call OTP states
+  const [callCode, setCallCode] = useState('');
+  const [callHint, setCallHint] = useState('');
+  const [requestingCall, setRequestingCall] = useState(false);
+  
+  // Telegram states
+  const [telegramUsername, setTelegramUsername] = useState('');
+  const [telegramCode, setTelegramCode] = useState('');
+  const [requestingTelegram, setRequestingTelegram] = useState(false);
+  const [telegramDeepLink, setTelegramDeepLink] = useState('');
+  const [loadingTelegramLink, setLoadingTelegramLink] = useState(false);
+  
+  // Cooldown states
   const [smsCooldown, setSmsCooldown] = useState(0);
   const [callCooldown, setCallCooldown] = useState(0);
+  const [telegramCooldown, setTelegramCooldown] = useState(0);
+  
+  // Progressive cooldown tracking
   const [smsRequestCount, setSmsRequestCount] = useState(0);
   const [callRequestCount, setCallRequestCount] = useState(0);
   const [smsFirstEntry, setSmsFirstEntry] = useState(true);
   const [callFirstEntry, setCallFirstEntry] = useState(true);
   const [sendingCode, setSendingCode] = useState(false);
+  const [verificationCode, setVerificationCode] = useState('');
+  const [registrationId, setRegistrationId] = useState(null);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
