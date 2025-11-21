@@ -692,8 +692,9 @@ const SignContractPage = () => {
   };
 
   const handleVerifyOTP = async () => {
-    if (otpValue.length !== 6) {
-      toast.error('Please enter 6-digit code');
+    const codeToVerify = verificationCode || otpValue;
+    if (codeToVerify.length !== 6 && codeToVerify.length !== 4) {
+      toast.error('Введите корректный код');
       return;
     }
     
@@ -710,20 +711,35 @@ const SignContractPage = () => {
       // Use the actual phone from contract (which may have been updated by signer)
       const phoneToUse = contract.signer_phone || signerInfo.phone;
       
-      const response = await axios.post(`${API}/sign/${id}/verify-otp`, {
-        contract_id: id,
-        phone: phoneToUse,
-        otp_code: otpValue
-      });
+      // Determine which verification endpoint to use
+      let response;
+      if (verificationMethod === 'call' && codeToVerify.length === 4) {
+        response = await axios.post(`${API}/sign/${id}/verify-call-otp`, {
+          code: codeToVerify
+        });
+      } else if (verificationMethod === 'telegram') {
+        response = await axios.post(`${API}/sign/${id}/verify-telegram-otp`, {
+          code: codeToVerify
+        });
+      } else {
+        // SMS verification
+        response = await axios.post(`${API}/sign/${id}/verify-otp`, {
+          contract_id: id,
+          phone: phoneToUse,
+          otp_code: codeToVerify
+        });
+      }
       
       if (response.data.signature_hash) {
         setSignatureHash(response.data.signature_hash);
       }
       
-      toast.success(t('signing.success'));
-      setStep(6);
+      if (response.data.verified) {
+        toast.success('Договор успешно подписан!');
+        setStep(6);
+      }
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Invalid OTP');
+      toast.error(error.response?.data?.detail || 'Неверный код');
     } finally {
       setVerifying(false);
     }
