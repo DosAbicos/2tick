@@ -61,7 +61,7 @@ const RegisterPage = () => {
   const [callFirstEntry, setCallFirstEntry] = useState(true);
   const [sendingCode, setSendingCode] = useState(false);
   const [verificationCode, setVerificationCode] = useState('');
-  const [verificationLoading, setVerificationLoading] = useState(false);
+  const [verifying, setVerificationLoading] = useState(false);
   const [registrationId, setRegistrationId] = useState(null);
 
   const handleChange = (e) => {
@@ -854,10 +854,10 @@ const RegisterPage = () => {
                       <button
                         type="button"
                         onClick={handleVerifyCode}
-                        disabled={verificationLoading || verificationCode.length !== 6}
+                        disabled={verifying || verificationCode.length !== 6}
                         className="flex-1 py-3 px-6 text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                       >
-                        {verificationLoading ? 'Проверяем...' : 'Подтвердить'}
+                        {verifying ? 'Проверяем...' : 'Подтвердить'}
                       </button>
                     </div>
                     
@@ -918,10 +918,10 @@ const RegisterPage = () => {
                       <button
                         type="button"
                         onClick={handleVerifyCode}
-                        disabled={verificationLoading || verificationCode.length !== 4}
+                        disabled={verifying || verificationCode.length !== 4}
                         className="flex-1 py-3 px-6 text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                       >
-                        {verificationLoading ? 'Проверяем...' : 'Подтвердить'}
+                        {verifying ? 'Проверяем...' : 'Подтвердить'}
                       </button>
                     </div>
                     
@@ -978,10 +978,10 @@ const RegisterPage = () => {
                       <button
                         type="button"
                         onClick={handleVerifyCode}
-                        disabled={verificationLoading || verificationCode.length !== 6}
+                        disabled={verifying || verificationCode.length !== 6}
                         className="flex-1 py-3 px-6 text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                       >
-                        {verificationLoading ? 'Проверяем...' : 'Подтвердить'}
+                        {verifying ? 'Проверяем...' : 'Подтвердить'}
                       </button>
                     </div>
                     
