@@ -61,7 +61,6 @@ const RegisterPage = () => {
   const [callFirstEntry, setCallFirstEntry] = useState(true);
   const [sendingCode, setSendingCode] = useState(false);
   const [verificationCode, setVerificationCode] = useState('');
-  const [verifying, setVerifying] = useState(false);
   const [registrationId, setRegistrationId] = useState(null);
 
   const handleChange = (e) => {
