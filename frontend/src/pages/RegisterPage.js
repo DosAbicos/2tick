@@ -855,16 +855,14 @@ const RegisterPage = () => {
                       </button>
                     </div>
                     
-                    {!smsFirstEntry && !mockOtp && (
-                      <button
-                        type="button"
-                        onClick={sendSmsCode}
-                        disabled={smsCooldown > 0 || sendingCode}
-                        className="block w-full text-center py-2 text-sm text-gray-500 hover:text-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        {sendingCode ? 'Отправка...' : smsCooldown > 0 ? `Отправить через ${Math.floor(smsCooldown / 60)}:${(smsCooldown % 60).toString().padStart(2, '0')}` : 'Не пришел SMS? Отправить повторно'}
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      onClick={sendSmsCode}
+                      disabled={smsCooldown > 0 || sendingCode}
+                      className="block w-full text-center py-2 text-sm text-gray-500 hover:text-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {sendingCode ? 'Отправка...' : smsCooldown > 0 ? `Отправить через ${Math.floor(smsCooldown / 60)}:${(smsCooldown % 60).toString().padStart(2, '0')}` : 'Не пришел SMS? Отправить повторно'}
+                    </button>
                   </motion.div>
                 ) : verificationMethod === 'call' ? (
                   // Call verification - OTP boxes
