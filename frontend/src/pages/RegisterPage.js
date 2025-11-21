@@ -42,6 +42,9 @@ const RegisterPage = () => {
   const [callCooldown, setCallCooldown] = useState(0);
   const [smsRequestCount, setSmsRequestCount] = useState(0);
   const [callRequestCount, setCallRequestCount] = useState(0);
+  const [smsFirstEntry, setSmsFirstEntry] = useState(true);
+  const [callFirstEntry, setCallFirstEntry] = useState(true);
+  const [sendingCode, setSendingCode] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
