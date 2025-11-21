@@ -834,6 +834,8 @@ const SignContractPage = () => {
                             className="minimal-input w-full mt-1"
                             placeholder={`Введите ${config.label.toLowerCase()}`}
                             required={config.required}
+                            readOnly={contract?.approved}
+                            disabled={contract?.approved}
                           />
                         )}
                         
