@@ -32,6 +32,7 @@ const RegisterPage = () => {
   const [userExists, setUserExists] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [phoneError, setPhoneError] = useState(false);
+  const [emailFormatError, setEmailFormatError] = useState(false);
   const [step, setStep] = useState(1);
   // Verification states - copied from SignContractPage
   const [verificationMethod, setVerificationMethod] = useState(''); // 'sms', 'call', or 'telegram'
