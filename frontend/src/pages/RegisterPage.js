@@ -355,42 +355,46 @@ const RegisterPage = () => {
     }
   };
 
-  // Верификация кода
-  const handleVerifyCode = async () => {
-    if (!registrationId || !verificationCode) {
-      toast.error('Введите код подтверждения');
+  // Универсальная верификация кода - copied from SignContractPage
+  const handleVerifyOTP = async () => {
+    const codeToVerify = verificationCode || otpValue;
+    if (codeToVerify.length !== 6 && codeToVerify.length !== 4) {
+      toast.error('Введите корректный код');
       return;
     }
-
-    setVerificationLoading(true);
+    
+    setVerifying(true);
     try {
+      // Determine which verification endpoint to use
       let response;
-      
-      if (verificationMethod === 'sms') {
-        response = await axios.post(`${API}/auth/registration/${registrationId}/verify-otp`, {
-          otp_code: verificationCode
-        });
-      } else if (verificationMethod === 'call') {
+      if (verificationMethod === 'call' && codeToVerify.length === 4) {
         response = await axios.post(`${API}/auth/registration/${registrationId}/verify-call-otp`, {
-          code: verificationCode
+          code: codeToVerify
         });
       } else if (verificationMethod === 'telegram') {
         response = await axios.post(`${API}/auth/registration/${registrationId}/verify-telegram-otp`, {
-          code: verificationCode
+          code: codeToVerify
+        });
+      } else {
+        // SMS verification
+        response = await axios.post(`${API}/auth/registration/${registrationId}/verify-otp`, {
+          otp_code: codeToVerify
         });
       }
-
-      if (response.data.token) {
-        localStorage.setItem('token', response.data.token);
-        toast.success('Регистрация успешно завершена!');
-        navigate('/dashboard');
+      
+      if (response.data.verified) {
+        toast.success('Регистрация завершена успешно!');
+        navigate('/login');
       }
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Неверный код. Попробуйте снова.');
+      toast.error(error.response?.data?.detail || 'Неверный код');
     } finally {
-      setVerificationLoading(false);
+      setVerifying(false);
     }
   };
+
+  // Legacy function name for compatibility
+  const handleVerifyCode = handleVerifyOTP;
 
   return (
     <div className="min-h-screen gradient-bg flex items-center justify-center px-4 py-12">
