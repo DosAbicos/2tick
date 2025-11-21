@@ -761,7 +761,7 @@ const RegisterPage = () => {
                       </button>
                     </div>
                     
-                    {(!smsFirstEntry || smsRequestCount > 0) && (
+                    {!smsFirstEntry && !mockOtp && (
                       <button
                         type="button"
                         onClick={sendSmsCode}
