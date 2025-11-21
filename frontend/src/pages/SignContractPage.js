@@ -861,6 +861,8 @@ const SignContractPage = () => {
                             onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
                             className="minimal-input w-full mt-1"
                             required={config.required}
+                            readOnly={contract?.approved}
+                            disabled={contract?.approved}
                           />
                         )}
                         
