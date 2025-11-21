@@ -500,14 +500,25 @@ const RegisterPage = () => {
                     type="email"
                     required
                     value={formData.email}
-                    onChange={handleChange}
-                    className="minimal-input w-full"
+                    onChange={(e) => {
+                      handleChange(e);
+                      if (userExists) setUserExists(false);
+                    }}
+                    className={`minimal-input w-full ${userExists && emailError ? 'border-red-500 focus:border-red-500' : ''}`}
                     placeholder="example@company.kz"
                   />
-                  {userExists && (
-                    <p className="text-red-500 text-sm flex items-center gap-1">
-                      <X className="w-4 h-4" /> Пользователь уже зарегистрирован
-                    </p>
+                  {userExists && emailError && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg"
+                    >
+                      <svg className="w-5 h-5 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <p className="text-sm text-red-700 font-medium">Пользователь с таким email уже зарегистрирован</p>
+                    </motion.div>
                   )}
                 </div>
 
@@ -524,10 +535,26 @@ const RegisterPage = () => {
                     type="tel"
                     required
                     value={formData.phone}
-                    onAccept={(value) => setFormData({ ...formData, phone: value })}
-                    className="minimal-input w-full"
+                    onAccept={(value) => {
+                      setFormData({ ...formData, phone: value });
+                      if (userExists) setUserExists(false);
+                    }}
+                    className={`minimal-input w-full ${userExists && phoneError ? 'border-red-500 focus:border-red-500' : ''}`}
                     placeholder="+7 (777) 123-45-67"
                   />
+                  {userExists && phoneError && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg"
+                    >
+                      <svg className="w-5 h-5 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <p className="text-sm text-red-700 font-medium">Пользователь с таким номером телефона уже зарегистрирован</p>
+                    </motion.div>
+                  )}
                 </div>
 
                 <button
