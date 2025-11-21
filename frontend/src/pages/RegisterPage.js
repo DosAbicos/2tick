@@ -785,6 +785,12 @@ const RegisterPage = () => {
                       </p>
                     </div>
                     
+                    {callHint && (
+                      <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-200">
+                        <p className="text-sm text-blue-900 font-medium text-center">📞 Подсказка: {callHint}</p>
+                      </div>
+                    )}
+                    
                     <div className="flex justify-center">
                       <InputOTP maxLength={4} value={verificationCode} onChange={setVerificationCode}>
                         <InputOTPGroup>
@@ -795,13 +801,6 @@ const RegisterPage = () => {
                         </InputOTPGroup>
                       </InputOTP>
                     </div>
-                    
-                    {callHint && (
-                      <div className="text-center">
-                        <p className="text-xs text-gray-400 mb-1">Подсказка</p>
-                        <p className="text-sm text-gray-600">{callHint}</p>
-                      </div>
-                    )}
                     
                     <div className="flex gap-3">
                       <button
