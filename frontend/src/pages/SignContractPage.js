@@ -1337,16 +1337,14 @@ const SignContractPage = () => {
                       </InputOTP>
                     </div>
                     
-                    {!callFirstEntry && !callHint && (
-                      <button
-                        type="button"
-                        onClick={sendCallCode}
-                        disabled={callCooldown > 0 || sendingCode}
-                        className="block w-full text-center py-2 text-sm text-gray-500 hover:text-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        {sendingCode ? 'Инициация звонка...' : callCooldown > 0 ? `Позвонить через ${Math.floor(callCooldown / 60)}:${(callCooldown % 60).toString().padStart(2, '0')}` : 'Позвонить повторно'}
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      onClick={sendCallCode}
+                      disabled={callCooldown > 0 || sendingCode}
+                      className="block w-full text-center py-2 text-sm text-gray-500 hover:text-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {sendingCode ? 'Инициация звонка...' : callCooldown > 0 ? `Позвонить через ${Math.floor(callCooldown / 60)}:${(callCooldown % 60).toString().padStart(2, '0')}` : 'Позвонить повторно'}
+                    </button>
                     
                     <div className="flex gap-3">
                       <button
