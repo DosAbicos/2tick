@@ -170,15 +170,27 @@ const RegisterPage = () => {
     }
   };
 
-  // Запрос верификации SMS
+  // Клик на кнопку SMS - открывает экран
   const handleRequestSMS = async () => {
+    if (!registrationId) return;
+    
+    setVerificationMethod('sms');
+    
+    // Если первый вход - отправляем код автоматически
+    if (smsFirstEntry) {
+      setSmsFirstEntry(false);
+      await sendSmsCode();
+    }
+  };
+
+  // Отправка SMS кода (вручную или автоматически)
+  const sendSmsCode = async () => {
     if (!registrationId || smsCooldown > 0) return;
     
-    setVerificationLoading(true);
+    setSendingCode(true);
     try {
       const response = await axios.post(`${API}/auth/registration/${registrationId}/request-otp?method=sms`);
       toast.success('Код отправлен на ваш телефон');
-      setVerificationMethod('sms');
       
       // Увеличиваем счетчик запросов
       const newCount = smsRequestCount + 1;
@@ -197,7 +209,7 @@ const RegisterPage = () => {
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Ошибка отправки SMS');
     } finally {
-      setVerificationLoading(false);
+      setSendingCode(false);
     }
   };
 
