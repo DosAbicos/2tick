@@ -719,6 +719,12 @@ const RegisterPage = () => {
                       </p>
                     </div>
                     
+                    {mockOtp && (
+                      <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-200">
+                        <p className="text-sm text-blue-900 font-medium text-center">🔐 Тестовый режим: <strong className="text-lg">{mockOtp}</strong></p>
+                      </div>
+                    )}
+                    
                     <div className="flex justify-center">
                       <InputOTP maxLength={6} value={verificationCode} onChange={setVerificationCode}>
                         <InputOTPGroup>
@@ -731,13 +737,6 @@ const RegisterPage = () => {
                         </InputOTPGroup>
                       </InputOTP>
                     </div>
-                    
-                    {mockOtp && (
-                      <div className="text-center">
-                        <p className="text-xs text-gray-400 mb-1">Тестовый режим</p>
-                        <p className="text-sm text-gray-600 font-mono">{mockOtp}</p>
-                      </div>
-                    )}
                     
                     <div className="flex gap-3">
                       <button
