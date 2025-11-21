@@ -1373,50 +1373,48 @@ const SignContractPage = () => {
                     </div>
                   </motion.div>
                 ) : verificationMethod === 'telegram' ? (
-                  // Telegram verification - Neumorphism style
+                  // Telegram verification - OTP boxes
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="space-y-6"
+                    className="space-y-8"
                   >
                     <div className="text-center">
-                      <div className="w-16 h-16 mx-auto mb-4 neuro-card flex items-center justify-center">
-                        <svg className="w-8 h-8 text-[#0088cc]" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
-                        </svg>
-                      </div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">Telegram верификация</h3>
-                      <p className="text-sm text-gray-600 mb-4">
-                        Скопируйте код из чата с ботом <span className="font-semibold text-[#0088cc]">@twotick_bot</span>
+                      <h3 className="text-2xl font-bold text-gray-900 mb-2">Введите код верификации</h3>
+                      <p className="text-sm text-gray-500">
+                        Код отправлен в чат с ботом <span className="font-semibold text-[#0088cc]">@twotick_bot</span>
                       </p>
-                      <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-200 mb-4">
-                        <p className="text-sm text-blue-900 font-medium">
-                          💡 Код отправлен в Telegram. Если не получили - нажмите кнопку ниже
-                        </p>
-                      </div>
                     </div>
                     
-                    <input
-                      type="text"
-                      maxLength={6}
-                      value={telegramCode}
-                      onChange={(e) => setTelegramCode(e.target.value.replace(/\D/g, ''))}
-                      className="neuro-input w-full text-center text-3xl font-bold tracking-[0.5em]"
-                      placeholder="______"
-                      data-testid="telegram-code-input"
-                      autoFocus
-                    />
+                    <div className="flex justify-center">
+                      <InputOTP maxLength={6} value={verificationCode} onChange={setVerificationCode}>
+                        <InputOTPGroup>
+                          <InputOTPSlot index={0} />
+                          <InputOTPSlot index={1} />
+                          <InputOTPSlot index={2} />
+                          <InputOTPSlot index={3} />
+                          <InputOTPSlot index={4} />
+                          <InputOTPSlot index={5} />
+                        </InputOTPGroup>
+                      </InputOTP>
+                    </div>
                     
                     <div className="flex gap-3">
                       <button
-                        onClick={() => setVerificationMethod('')}
-                        className="neuro-button flex-1 py-3"
+                        type="button"
+                        onClick={() => {
+                          setVerificationMethod('');
+                          setVerificationCode('');
+                          setTelegramDeepLink('');
+                        }}
+                        className="flex-1 py-3 px-6 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all font-medium"
                       >
-                        ← Назад
+                        Назад
                       </button>
                       <button
-                        onClick={handleVerifyTelegramOTP}
-                        disabled={verifying || telegramCode.length !== 6}
+                        type="button"
+                        onClick={handleVerifyOTP}
+                        disabled={verifying || verificationCode.length !== 6}
                         className="neuro-button-primary flex-1 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
                         data-testid="telegram-verify-button"
                       >
