@@ -89,6 +89,11 @@ const RegisterPage = () => {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   };
 
+  // Detect mobile device
+  const isMobileDevice = () => {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  };
+
   // Calculate progressive cooldown time based on request count
   const getProgressiveCooldown = (requestCount) => {
     if (requestCount <= 2) return 0; // First 2 requests - no cooldown
