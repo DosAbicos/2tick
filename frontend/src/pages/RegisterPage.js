@@ -200,7 +200,7 @@ const RegisterPage = () => {
 
   // Запрос верификации звонком
   const handleRequestCall = async () => {
-    if (!registrationId) return;
+    if (!registrationId || callCooldown > 0) return;
     
     setVerificationLoading(true);
     try {
@@ -208,6 +208,16 @@ const RegisterPage = () => {
       toast.success('Вам поступит звонок. Введите последние 4 цифры номера');
       setVerificationMethod('call');
       setCallHint(response.data.hint || '');
+      
+      // Увеличиваем счетчик запросов
+      const newCount = callRequestCount + 1;
+      setCallRequestCount(newCount);
+      
+      // Устанавливаем прогрессивный cooldown
+      const cooldownTime = getProgressiveCooldown(newCount);
+      if (cooldownTime > 0) {
+        setCallCooldown(cooldownTime);
+      }
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Ошибка инициации звонка');
     } finally {
