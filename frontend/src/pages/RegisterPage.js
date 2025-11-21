@@ -550,8 +550,7 @@ const RegisterPage = () => {
                         whileTap={{ scale: 0.98 }}
                         type="button"
                         onClick={handleRequestSMS}
-                        disabled={smsCooldown > 0 || verificationLoading}
-                        className="neuro-card w-full p-6 rounded-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
+                        className="neuro-card w-full p-6 rounded-2xl transition-all group"
                       >
                         <div className="flex items-center gap-4">
                           <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center flex-shrink-0 group-hover:from-blue-100 group-hover:to-blue-200 transition-all">
@@ -560,9 +559,7 @@ const RegisterPage = () => {
                             </svg>
                           </div>
                           <div className="flex-1 text-left">
-                            <h4 className="text-lg font-semibold text-gray-900 mb-1">
-                              {smsCooldown > 0 ? `SMS через ${smsCooldown}с` : 'SMS'}
-                            </h4>
+                            <h4 className="text-lg font-semibold text-gray-900 mb-1">SMS</h4>
                             <p className="text-sm text-gray-600">Код придет в сообщении</p>
                           </div>
                           <svg className="w-5 h-5 text-blue-600 flex-shrink-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
