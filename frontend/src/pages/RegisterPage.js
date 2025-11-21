@@ -128,7 +128,7 @@ const RegisterPage = () => {
         return;
       }
       if (!validateEmail(formData.email)) {
-        toast.error('Введите корректный email адрес');
+        setEmailFormatError(true);
         return;
       }
       
