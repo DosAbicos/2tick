@@ -13,7 +13,7 @@ from datetime import datetime
 with open('/app/frontend/.env', 'r') as f:
     for line in f:
         if line.startswith('REACT_APP_BACKEND_URL='):
-            BASE_URL = line.strip().split('=')[1]
+            BASE_URL = line.strip().split('=')[1] + "/api"
             break
     else:
         BASE_URL = "https://signify.2tick.kz/api"
