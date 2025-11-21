@@ -1415,10 +1415,9 @@ const SignContractPage = () => {
                         type="button"
                         onClick={handleVerifyOTP}
                         disabled={verifying || verificationCode.length !== 6}
-                        className="neuro-button-primary flex-1 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
-                        data-testid="telegram-verify-button"
+                        className="flex-1 py-3 px-6 text-white bg-gradient-to-r from-green-600 to-green-500 rounded-xl hover:from-green-700 hover:to-green-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-lg shadow-green-500/20"
                       >
-                        {verifying ? 'Проверяем...' : '✓ Подтвердить'}
+                        {verifying ? 'Проверяем...' : 'Подписать договор'}
                       </button>
                     </div>
                     
