@@ -69,6 +69,14 @@ const RegisterPage = () => {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   };
 
+  // Calculate progressive cooldown time based on request count
+  const getProgressiveCooldown = (requestCount) => {
+    if (requestCount <= 2) return 0; // First 2 requests - no cooldown
+    if (requestCount === 3) return 60; // 3rd request - 1 minute
+    if (requestCount === 4) return 150; // 4th request - 2.5 minutes
+    return 150 + (requestCount - 4) * 60; // 5th+ requests - increase by 1 minute each
+  };
+
   // Cooldown timers
   useEffect(() => {
     if (smsCooldown > 0) {
