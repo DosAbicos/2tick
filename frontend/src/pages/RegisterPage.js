@@ -702,7 +702,7 @@ const RegisterPage = () => {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
                         </div>
-                      </motion.a>
+                      </motion.button>
                     </div>
                   </div>
                 ) : verificationMethod === 'sms' ? (
