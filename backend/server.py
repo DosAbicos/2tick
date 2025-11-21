@@ -3058,6 +3058,110 @@ async def verify_otp(contract_id: str, otp_data: OTPVerify):
     
     return {"message": "Signature verified successfully", "signature_hash": signature_hash}
 
+@api_router.post("/contracts/{contract_id}/approve-for-signing")
+async def approve_contract_for_signing(contract_id: str, current_user: dict = Depends(get_current_user)):
+    """Утвердить договор перед отправкой клиенту (фиксирует content и placeholder values)"""
+    contract = await db.contracts.find_one({"id": contract_id})
+    
+    if not contract:
+        raise HTTPException(status_code=404, detail="Договор не найден")
+    
+    # Проверка прав доступа
+    if contract.get('creator_id') != current_user['user_id']:
+        raise HTTPException(status_code=403, detail="Доступ запрещен")
+    
+    # Если договор уже утвержден, ошибка
+    if contract.get('approved'):
+        raise HTTPException(status_code=400, detail="Договор уже утвержден")
+    
+    # Зафиксировать content и placeholder_values
+    current_content = contract.get('content', '')
+    current_placeholder_values = contract.get('placeholder_values', {})
+    
+    # Обновить договор
+    await db.contracts.update_one(
+        {"id": contract_id},
+        {"$set": {
+            "approved": True,
+            "approved_at": datetime.now(timezone.utc).isoformat(),
+            "approved_content": current_content,
+            "approved_placeholder_values": current_placeholder_values,
+            "status": "sent",  # Изменить статус на "sent" (отправлен клиенту)
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    await log_audit("contract_approved_for_signing", contract_id=contract_id, user_id=current_user['user_id'])
+    
+    # Отправить email клиенту с договором
+    if contract.get('signer_email'):
+        # Generate PDF with approved content
+        landlord = await db.users.find_one({"id": contract.get('creator_id')})
+        signature = await db.signatures.find_one({"contract_id": contract_id})
+        
+        # Temporarily update contract with approved values for PDF generation
+        pdf_contract = {**contract, 'content': current_content, 'placeholder_values': current_placeholder_values}
+        pdf_bytes = generate_contract_pdf(pdf_contract, signature, None, landlord)
+        
+        subject = f"📄 Договор на подпись: {contract['title']}"
+        body = f"""
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+        .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+        .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
+        .header h1 {{ color: white; margin: 0; font-size: 24px; }}
+        .content {{ background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }}
+        .button {{ display: inline-block; padding: 12px 30px; background: #667eea; color: white; text-decoration: none; border-radius: 5px; margin-top: 20px; }}
+        .footer {{ text-align: center; margin-top: 20px; color: #666; font-size: 12px; }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📄 Договор готов к подписанию</h1>
+        </div>
+        <div class="content">
+            <p>Здравствуйте!</p>
+            <p>Договор "<strong>{contract['title']}</strong>" утвержден и готов к подписанию.</p>
+            <p>Пожалуйста, ознакомьтесь с договором во вложении и перейдите по ссылке для подписания.</p>
+            <p style="text-align: center;">
+                <a href="{BACKEND_URL.replace('/api', '')}/sign/{contract_id}" class="button">
+                    ✍️ Подписать договор
+                </a>
+            </p>
+            <p style="margin-top: 30px; color: #666; font-size: 14px;">
+                Договор прикреплен к этому письму в формате PDF.
+            </p>
+        </div>
+        <div class="footer">
+            <p>© 2tick.kz - Подписывайте договоры за 2 клика</p>
+        </div>
+    </div>
+</body>
+</html>
+"""
+        
+        try:
+            await send_email_with_attachment(
+                contract['signer_email'],
+                subject,
+                body,
+                pdf_bytes,
+                f"Contract_{contract.get('contract_code', contract_id)}.pdf"
+            )
+        except Exception as e:
+            print(f"Error sending email: {e}")
+    
+    return {
+        "message": "Договор утвержден и отправлен клиенту",
+        "contract_id": contract_id,
+        "approved_at": datetime.now(timezone.utc).isoformat()
+    }
+
 @api_router.post("/contracts/{contract_id}/approve")
 async def approve_signature(contract_id: str, current_user: dict = Depends(get_current_user)):
     # Generate landlord signature hash
