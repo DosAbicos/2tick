@@ -1143,10 +1143,7 @@ const SignContractPage = () => {
                         transition={{ delay: 0.5 }}
                         whileHover={{ y: -2 }}
                         whileTap={{ scale: 0.98 }}
-                        onClick={() => {
-                          setVerificationMethod('sms');
-                          handleRequestOTP('sms');
-                        }}
+                        onClick={handleRequestSMS}
                         disabled={smsCooldown > 0}
                         className="neuro-card w-full p-6 rounded-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
                       >
