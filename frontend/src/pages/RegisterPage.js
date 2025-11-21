@@ -213,15 +213,27 @@ const RegisterPage = () => {
     }
   };
 
-  // Запрос верификации звонком
+  // Клик на кнопку Call - открывает экран
   const handleRequestCall = async () => {
+    if (!registrationId) return;
+    
+    setVerificationMethod('call');
+    
+    // Если первый вход - отправляем код автоматически
+    if (callFirstEntry) {
+      setCallFirstEntry(false);
+      await sendCallCode();
+    }
+  };
+
+  // Отправка Call кода (вручную или автоматически)
+  const sendCallCode = async () => {
     if (!registrationId || callCooldown > 0) return;
     
-    setVerificationLoading(true);
+    setSendingCode(true);
     try {
       const response = await axios.post(`${API}/auth/registration/${registrationId}/request-call-otp`);
       toast.success('Вам поступит звонок. Введите последние 4 цифры номера');
-      setVerificationMethod('call');
       setCallHint(response.data.hint || '');
       
       // Увеличиваем счетчик запросов
@@ -236,7 +248,7 @@ const RegisterPage = () => {
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Ошибка инициации звонка');
     } finally {
-      setVerificationLoading(false);
+      setSendingCode(false);
     }
   };
 
