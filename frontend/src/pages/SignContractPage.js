@@ -580,21 +580,51 @@ const SignContractPage = () => {
     await handleRequestSMS();
   };
 
-  const handleRequestCallOTP = async () => {
-    if (callCooldown > 0) return;
+  // Клик на кнопку Call - открывает экран
+  const handleRequestCall = async () => {
+    if (!id) return;
     
-    setRequestingCall(true);
+    setVerificationMethod('call');
+    
+    // Если первый вход - отправляем код автоматически
+    if (callFirstEntry) {
+      setCallFirstEntry(false);
+      await sendCallCode();
+    } else {
+      // Если повторный вход - очищаем старый hint
+      setCallHint('');
+    }
+  };
+
+  // Отправка Call кода (вручную или автоматически)
+  const sendCallCode = async () => {
+    if (!id || callCooldown > 0) return;
+    
+    setSendingCode(true);
     try {
       const response = await axios.post(`${API}/sign/${id}/request-call-otp`);
-      toast.success(response.data.message);
-      setCallHint(response.data.hint);
-      setVerificationMethod('call');
-      setCallCooldown(60); // 60 seconds cooldown
+      toast.success('Вам поступит звонок. Введите последние 4 цифры номера');
+      setCallHint(response.data.hint || '');
+      
+      // Увеличиваем счетчик запросов
+      const newCount = callRequestCount + 1;
+      setCallRequestCount(newCount);
+      
+      // Устанавливаем прогрессивный cooldown
+      const cooldownTime = getProgressiveCooldown(newCount);
+      if (cooldownTime > 0) {
+        setCallCooldown(cooldownTime);
+      }
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Ошибка при звонке');
     } finally {
-      setRequestingCall(false);
+      setSendingCode(false);
     }
+  };
+
+  const handleRequestCallOTP = async () => {
+    // Legacy function - redirects to new implementation
+    await handleRequestCall();
   };
 
   const handleRequestTelegramOTP = async () => {
