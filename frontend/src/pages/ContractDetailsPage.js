@@ -181,12 +181,12 @@ const ContractDetailsPage = () => {
     setApproving(true);
     try {
       const response = await axios.post(
-        `${API}/contracts/${id}/approve`,
+        `${API}/contracts/${id}/approve-for-signing`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
-      toast.success('Договор утвержден и отправлен на email нанимателя');
+      toast.success('Договор утвержден и отправлен клиенту на email');
       fetchContract();
       fetchSignature();
     } catch (error) {
