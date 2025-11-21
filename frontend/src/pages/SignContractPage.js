@@ -1243,66 +1243,70 @@ const SignContractPage = () => {
                     </div>
                   </div>
                 ) : verificationMethod === 'sms' ? (
-                  // SMS verification - Neumorphism style
+                  // SMS verification - OTP boxes
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="space-y-6"
+                    className="space-y-8"
                   >
                     <div className="text-center">
-                      <div className="w-16 h-16 mx-auto mb-4 neuro-card flex items-center justify-center">
-                        <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                        </svg>
-                      </div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">SMS верификация</h3>
-                      <p className="text-sm text-gray-600 mb-4">Введите 6-значный код из SMS</p>
-                      {mockOtp && (
-                        <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-200 mb-4">
-                          <p className="text-sm text-blue-900 font-medium">🔐 Тестовый код: <strong className="text-lg">{mockOtp}</strong></p>
-                        </div>
-                      )}
+                      <h3 className="text-2xl font-bold text-gray-900 mb-2">Введите код верификации</h3>
+                      <p className="text-sm text-gray-500">
+                        {!smsFirstEntry && !mockOtp ? 'Нажмите кнопку ниже для получения кода' : 'Мы отправили 6-значный код на ваш номер'}
+                      </p>
                     </div>
                     
+                    {mockOtp && (
+                      <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-200">
+                        <p className="text-sm text-blue-900 font-medium text-center">🔐 Тестовый режим: <strong className="text-lg">{mockOtp}</strong></p>
+                      </div>
+                    )}
+                    
                     <div className="flex justify-center">
-                      <InputOTP
-                        maxLength={6}
-                        value={otpValue}
-                        onChange={setOtpValue}
-                        data-testid="otp-input"
-                      >
+                      <InputOTP maxLength={6} value={verificationCode} onChange={setVerificationCode}>
                         <InputOTPGroup>
-                          {[0, 1, 2, 3, 4, 5].map((index) => (
-                            <InputOTPSlot key={index} index={index} />
-                          ))}
+                          <InputOTPSlot index={0} />
+                          <InputOTPSlot index={1} />
+                          <InputOTPSlot index={2} />
+                          <InputOTPSlot index={3} />
+                          <InputOTPSlot index={4} />
+                          <InputOTPSlot index={5} />
                         </InputOTPGroup>
                       </InputOTP>
                     </div>
                     
+                    {!smsFirstEntry && !mockOtp && (
+                      <button
+                        type="button"
+                        onClick={sendSmsCode}
+                        disabled={smsCooldown > 0 || sendingCode}
+                        className="w-full py-3 px-6 text-sm text-blue-600 bg-blue-50 rounded-xl hover:bg-blue-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                      >
+                        {sendingCode ? 'Отправка...' : smsCooldown > 0 ? `Отправить через ${Math.floor(smsCooldown / 60)}:${(smsCooldown % 60).toString().padStart(2, '0')}` : 'Отправить код повторно'}
+                      </button>
+                    )}
+                    
                     <div className="flex gap-3">
                       <button
-                        onClick={() => setVerificationMethod('')}
-                        className="neuro-button flex-1 py-3"
+                        type="button"
+                        onClick={() => {
+                          setVerificationMethod('');
+                          setVerificationCode('');
+                          setMockOtp('');
+                        }}
+                        className="flex-1 py-3 px-6 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all font-medium"
                       >
-                        ← Назад
+                        Назад
                       </button>
                       <button
+                        type="button"
                         onClick={handleVerifyOTP}
-                        disabled={verifying || otpValue.length !== 6}
-                        className="neuro-button-primary flex-1 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
-                        data-testid="otp-verify-button"
+                        disabled={verifying || verificationCode.length !== 6}
+                        className="flex-1 py-3 px-6 text-white bg-gradient-to-r from-green-600 to-green-500 rounded-xl hover:from-green-700 hover:to-green-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-lg shadow-green-500/20"
                       >
-                        {verifying ? 'Проверяем...' : '✓ Подтвердить'}
+                        {verifying ? 'Проверяем...' : 'Подписать договор'}
                       </button>
                     </div>
-                    
-                    <button
-                      onClick={() => handleRequestOTP('sms')}
-                      disabled={smsCooldown > 0}
-                      className="w-full text-sm text-blue-600 font-medium hover:text-blue-700 hover:underline disabled:opacity-50 disabled:cursor-not-allowed py-2"
-                    >
-                      {smsCooldown > 0 ? `Повторить через ${smsCooldown}с` : '↻ Отправить код повторно'}
-                    </button>
                   </motion.div>
                 ) : verificationMethod === 'call' ? (
                   // Call verification - Neumorphism style
