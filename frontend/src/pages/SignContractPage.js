@@ -1172,8 +1172,8 @@ const SignContractPage = () => {
                         transition={{ delay: 0.6 }}
                         whileHover={{ y: -2 }}
                         whileTap={{ scale: 0.98 }}
-                        onClick={handleRequestCallOTP}
-                        disabled={requestingCall || callCooldown > 0}
+                        onClick={handleRequestCall}
+                        disabled={sendingCode || callCooldown > 0}
                         className="neuro-card w-full p-6 rounded-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
                       >
                         <div className="flex items-center gap-4">
