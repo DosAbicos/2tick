@@ -238,6 +238,11 @@ const RegisterPage = () => {
     }
   };
 
+  const handleRequestOTP = async (method = 'sms') => {
+    // Legacy function - redirects to new implementation
+    await handleRequestSMS();
+  };
+
   // Клик на кнопку Call - открывает экран
   const handleRequestCall = async () => {
     if (!registrationId) return;
@@ -277,6 +282,75 @@ const RegisterPage = () => {
       toast.error(error.response?.data?.detail || 'Ошибка инициации звонка');
     } finally {
       setSendingCode(false);
+    }
+  };
+
+  const handleRequestCallOTP = async () => {
+    // Legacy function - redirects to new implementation
+    await handleRequestCall();
+  };
+
+  const handleRequestTelegramOTP = async () => {
+    if (telegramCooldown > 0 || !telegramUsername.trim()) return;
+    
+    setRequestingTelegram(true);
+    try {
+      const response = await axios.post(`${API}/auth/registration/${registrationId}/request-telegram-otp`, {
+        telegram_username: telegramUsername
+      });
+      toast.success(response.data.message);
+      setVerificationMethod('telegram');
+      setTelegramCooldown(60);
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Ошибка Telegram');
+    } finally {
+      setRequestingTelegram(false);
+    }
+  };
+
+  const handleVerifyTelegramOTP = async () => {
+    if (telegramCode.length !== 6) {
+      toast.error('Введите 6-значный код');
+      return;
+    }
+    
+    setVerifying(true);
+    try {
+      const response = await axios.post(`${API}/auth/registration/${registrationId}/verify-telegram-otp`, {
+        code: telegramCode
+      });
+      
+      if (response.data.verified) {
+        toast.success('Регистрация завершена успешно!');
+        navigate('/login');
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Неверный код');
+    } finally {
+      setVerifying(false);
+    }
+  };
+
+  const handleVerifyCallOTP = async () => {
+    if (callCode.length !== 4) {
+      toast.error('Введите 4 цифры');
+      return;
+    }
+    
+    setVerifying(true);
+    try {
+      const response = await axios.post(`${API}/auth/registration/${registrationId}/verify-call-otp`, {
+        code: callCode
+      });
+      
+      if (response.data.verified) {
+        toast.success('Регистрация завершена успешно!');
+        navigate('/login');
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Неверный код');
+    } finally {
+      setVerifying(false);
     }
   };
 
