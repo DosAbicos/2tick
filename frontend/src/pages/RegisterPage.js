@@ -764,7 +764,7 @@ const RegisterPage = () => {
                     <div className="text-center">
                       <h3 className="text-2xl font-bold text-gray-900 mb-2">Введите код верификации</h3>
                       <p className="text-sm text-gray-500">
-                        {callRequestCount === 0 ? 'Нажмите кнопку ниже для инициации звонка' : 'Введите последние 4 цифры номера входящего звонка'}
+                        {!callFirstEntry && !callHint ? 'Нажмите кнопку ниже для инициации звонка' : 'Введите последние 4 цифры номера входящего звонка'}
                       </p>
                     </div>
                     
