@@ -206,7 +206,10 @@ const AdminTemplatesPage = () => {
       label: '',
       type: 'text',
       owner: 'signer',
-      required: true
+      required: true,
+      showInContractDetails: true,
+      showInContent: true,
+      showInSignatureInfo: true
     });
     setShowPlaceholderDialog(false);
     toast.success(`Плейсхолдер {{${placeholderName}}} добавлен`);
