@@ -764,7 +764,9 @@ const RegisterPage = () => {
                   >
                     <div className="text-center">
                       <h3 className="text-2xl font-bold text-gray-900 mb-2">Введите код верификации</h3>
-                      <p className="text-sm text-gray-500">Введите последние 4 цифры номера входящего звонка</p>
+                      <p className="text-sm text-gray-500">
+                        {callRequestCount === 0 ? 'Нажмите кнопку ниже для инициации звонка' : 'Введите последние 4 цифры номера входящего звонка'}
+                      </p>
                     </div>
                     
                     <div className="flex justify-center">
@@ -806,6 +808,15 @@ const RegisterPage = () => {
                         {verificationLoading ? 'Проверяем...' : 'Подтвердить'}
                       </button>
                     </div>
+                    
+                    <button
+                      type="button"
+                      onClick={sendCallCode}
+                      disabled={callCooldown > 0 || sendingCode}
+                      className="w-full py-3 px-6 text-white bg-gradient-to-r from-green-600 to-green-500 rounded-xl hover:from-green-700 hover:to-green-600 transition-all shadow-lg shadow-green-500/30 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                    >
+                      {sendingCode ? 'Инициация звонка...' : callCooldown > 0 ? `Позвонить через ${Math.floor(callCooldown / 60)}:${(callCooldown % 60).toString().padStart(2, '0')}` : 'Инициировать звонок'}
+                    </button>
                   </motion.div>
                 ) : verificationMethod === 'telegram' ? (
                   // Telegram verification - OTP boxes
