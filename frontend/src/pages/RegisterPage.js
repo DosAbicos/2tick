@@ -756,28 +756,31 @@ const RegisterPage = () => {
                     </div>
                   </motion.div>
                 ) : verificationMethod === 'telegram' ? (
-                  // Telegram verification - Minimalist style
+                  // Telegram verification - OTP boxes
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="space-y-8"
                   >
                     <div className="text-center">
-                      <h3 className="text-2xl font-bold text-gray-900 mb-2">Введите код из Telegram</h3>
+                      <h3 className="text-2xl font-bold text-gray-900 mb-2">Введите код верификации</h3>
                       <p className="text-sm text-gray-500">
                         Код отправлен в чат с ботом <span className="font-semibold text-[#0088cc]">@twotick_bot</span>
                       </p>
                     </div>
                     
-                    <input
-                      type="text"
-                      maxLength={6}
-                      value={verificationCode}
-                      onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, ''))}
-                      className="w-full text-center text-4xl font-light tracking-[0.8em] py-4 px-4 border-b-2 border-gray-300 focus:border-blue-500 bg-transparent outline-none transition-colors"
-                      placeholder="· · · · · ·"
-                      autoFocus
-                    />
+                    <div className="flex justify-center">
+                      <InputOTP maxLength={6} value={verificationCode} onChange={setVerificationCode}>
+                        <InputOTPGroup>
+                          <InputOTPSlot index={0} />
+                          <InputOTPSlot index={1} />
+                          <InputOTPSlot index={2} />
+                          <InputOTPSlot index={3} />
+                          <InputOTPSlot index={4} />
+                          <InputOTPSlot index={5} />
+                        </InputOTPGroup>
+                      </InputOTP>
+                    </div>
                     
                     <div className="flex gap-3">
                       <button
