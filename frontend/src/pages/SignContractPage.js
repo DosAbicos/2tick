@@ -516,17 +516,68 @@ const SignContractPage = () => {
     }
   };
 
-  const handleRequestOTP = async (method = 'sms') => {
-    if (smsCooldown > 0) return;
+  // Detect mobile device
+  const isMobileDevice = () => {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  };
+
+  // Calculate progressive cooldown time based on request count
+  const getProgressiveCooldown = (requestCount) => {
+    if (requestCount <= 2) return 0; // First 2 requests - no cooldown
+    if (requestCount === 3) return 60; // 3rd request - 1 minute
+    if (requestCount === 4) return 150; // 4th request - 2.5 minutes
+    return 150 + (requestCount - 4) * 60; // 5th+ requests - increase by 1 minute each
+  };
+
+  // Клик на кнопку SMS - открывает экран
+  const handleRequestSMS = async () => {
+    if (!id) return;
     
-    try {
-      const response = await axios.post(`${API}/sign/${id}/request-otp?method=${method}`);
-      setMockOtp(response.data.mock_otp);
-      toast.success(`OTP sent! Mock code: ${response.data.mock_otp}`);
-      setSmsCooldown(60); // 60 seconds cooldown
-    } catch (error) {
-      toast.error(t('common.error'));
+    setVerificationMethod('sms');
+    
+    // Если первый вход - отправляем код автоматически
+    if (smsFirstEntry) {
+      setSmsFirstEntry(false);
+      await sendSmsCode();
+    } else {
+      // Если повторный вход - очищаем старый код
+      setMockOtp('');
     }
+  };
+
+  // Отправка SMS кода (вручную или автоматически)
+  const sendSmsCode = async () => {
+    if (!id || smsCooldown > 0) return;
+    
+    setSendingCode(true);
+    try {
+      const response = await axios.post(`${API}/sign/${id}/request-otp?method=sms`);
+      toast.success('Код отправлен на ваш телефон');
+      
+      // Увеличиваем счетчик запросов
+      const newCount = smsRequestCount + 1;
+      setSmsRequestCount(newCount);
+      
+      // Устанавливаем прогрессивный cooldown
+      const cooldownTime = getProgressiveCooldown(newCount);
+      if (cooldownTime > 0) {
+        setSmsCooldown(cooldownTime);
+      }
+      
+      // Если есть mock_otp (для тестирования), показываем его
+      if (response.data.mock_otp) {
+        setMockOtp(response.data.mock_otp);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Ошибка отправки SMS');
+    } finally {
+      setSendingCode(false);
+    }
+  };
+
+  const handleRequestOTP = async (method = 'sms') => {
+    // Legacy function - redirects to new implementation
+    await handleRequestSMS();
   };
 
   const handleRequestCallOTP = async () => {
