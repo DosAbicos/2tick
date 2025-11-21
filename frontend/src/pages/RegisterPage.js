@@ -112,7 +112,7 @@ const RegisterPage = () => {
     }
   }, [callCooldown]);
 
-  const handleNextStep = () => {
+  const handleNextStep = async () => {
     if (step === 1) {
       // Валидация личных данных
       if (!formData.full_name || !formData.email || !formData.phone) {
@@ -123,7 +123,35 @@ const RegisterPage = () => {
         toast.error('Введите корректный email адрес');
         return;
       }
-      setStep(2);
+      
+      // Проверка существования email и номера телефона
+      setLoading(true);
+      try {
+        const checkResponse = await axios.post(`${API}/auth/check-user-exists`, {
+          email: formData.email,
+          phone: formData.phone
+        });
+        
+        if (checkResponse.data.exists) {
+          if (checkResponse.data.field === 'email') {
+            toast.error('Пользователь с таким email уже зарегистрирован');
+            setUserExists(true);
+          } else if (checkResponse.data.field === 'phone') {
+            toast.error('Пользователь с таким номером телефона уже зарегистрирован');
+            setUserExists(true);
+          }
+          setLoading(false);
+          return;
+        }
+        
+        setUserExists(false);
+        setLoading(false);
+        setStep(2);
+      } catch (error) {
+        setLoading(false);
+        toast.error('Ошибка проверки данных');
+        return;
+      }
     } else if (step === 2) {
       // Валидация юридических данных
       if (!formData.company_name || !formData.iin || !formData.legal_address) {
