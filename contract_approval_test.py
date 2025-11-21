@@ -32,7 +32,7 @@ class ContractApprovalTester:
         print(f"[{timestamp}] {message}")
     
     def login_as_creator(self):
-        """Login as existing creator user"""
+        """Login as existing creator user or register new one"""
         try:
             # Try to login with existing test user
             login_data = {
@@ -53,11 +53,60 @@ class ContractApprovalTester:
                 self.log(f"✅ Вход выполнен как creator@test.kz (ID: {self.user_id})")
                 return True
             else:
-                self.log(f"❌ Не удалось войти: {response.status_code} - {response.text}")
-                return False
+                self.log(f"⚠️ Не удалось войти с существующими данными: {response.status_code}")
+                self.log("🔄 Попытка регистрации нового пользователя...")
+                return self.register_and_login()
                 
         except Exception as e:
             self.log(f"❌ Исключение при входе: {str(e)}")
+            return False
+    
+    def register_and_login(self):
+        """Register a new test user and login"""
+        try:
+            # Register new user
+            register_data = {
+                "email": "approval.test@example.kz",
+                "password": "testpass123",
+                "full_name": "Тестовый Пользователь Утверждения",
+                "phone": "+77071234567",
+                "company_name": "ТОО Тест Утверждения",
+                "iin": "123456789012"
+            }
+            
+            register_response = self.session.post(f"{BASE_URL}/auth/register", json=register_data)
+            
+            if register_response.status_code == 200:
+                register_result = register_response.json()
+                self.log(f"✅ Регистрация успешна: {register_result.get('message', 'N/A')}")
+                
+                # Now try to login
+                login_data = {
+                    "email": "approval.test@example.kz",
+                    "password": "testpass123"
+                }
+                
+                login_response = self.session.post(f"{BASE_URL}/auth/login", json=login_data)
+                
+                if login_response.status_code == 200:
+                    data = login_response.json()
+                    self.token = data.get("access_token")
+                    self.user_id = data.get("user", {}).get("id")
+                    
+                    # Set authorization header
+                    self.session.headers.update({"Authorization": f"Bearer {self.token}"})
+                    
+                    self.log(f"✅ Вход выполнен как approval.test@example.kz (ID: {self.user_id})")
+                    return True
+                else:
+                    self.log(f"❌ Не удалось войти после регистрации: {login_response.status_code} - {login_response.text}")
+                    return False
+            else:
+                self.log(f"❌ Регистрация не удалась: {register_response.status_code} - {register_response.text}")
+                return False
+                
+        except Exception as e:
+            self.log(f"❌ Исключение при регистрации: {str(e)}")
             return False
     
     def test_contract_approval_system(self):
