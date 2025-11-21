@@ -226,6 +226,9 @@ const RegisterPage = () => {
     if (callFirstEntry) {
       setCallFirstEntry(false);
       await sendCallCode();
+    } else {
+      // Если повторный вход - очищаем старый hint
+      setCallHint('');
     }
   };
 
