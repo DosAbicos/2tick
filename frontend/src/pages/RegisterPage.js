@@ -511,9 +511,19 @@ const RegisterPage = () => {
                       handleChange(e);
                       if (userExists) setUserExists(false);
                     }}
-                    className={`minimal-input w-full ${userExists && emailError ? 'border-red-500 focus:border-red-500' : ''}`}
+                    className={`minimal-input w-full ${(userExists && emailError) || emailFormatError ? 'border-red-500 focus:border-red-500' : ''}`}
                     placeholder="example@company.kz"
                   />
+                  {emailFormatError && (
+                    <motion.p
+                      initial={{ opacity: 0, y: -5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      className="text-sm text-red-500 font-medium"
+                    >
+                      Введите корректный email адрес
+                    </motion.p>
+                  )}
                   {userExists && emailError && (
                     <motion.p
                       initial={{ opacity: 0, y: -5 }}
