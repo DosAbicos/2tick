@@ -1421,9 +1421,9 @@ const SignContractPage = () => {
                       href={telegramDeepLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block w-full text-center py-3 text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline"
+                      className="block w-full text-center py-2 text-sm text-gray-500 hover:text-gray-700 transition-colors"
                     >
-                      ↻ Отправить код повторно
+                      Не получили код? Открыть Telegram снова
                     </a>
                   </motion.div>
                 ) : null}
