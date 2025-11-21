@@ -72,6 +72,7 @@ const RegisterPage = () => {
     if (e.target.name === 'email') {
       setUserExists(false);
       setEmailError(false);
+      setEmailFormatError(false);
     }
     if (e.target.name === 'phone') {
       setUserExists(false);
