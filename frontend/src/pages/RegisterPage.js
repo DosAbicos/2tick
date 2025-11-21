@@ -577,7 +577,7 @@ const RegisterPage = () => {
                         whileTap={{ scale: 0.98 }}
                         type="button"
                         onClick={handleRequestCall}
-                        disabled={callCooldown > 0 || verificationLoading}
+                        disabled={verificationLoading}
                         className="neuro-card w-full p-6 rounded-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
                       >
                         <div className="flex items-center gap-4">
@@ -588,7 +588,7 @@ const RegisterPage = () => {
                           </div>
                           <div className="flex-1 text-left">
                             <h4 className="text-lg font-semibold text-gray-900 mb-1">
-                              {verificationLoading ? 'Звоним...' : callCooldown > 0 ? `Звонок через ${callCooldown}с` : 'Звонок'}
+                              {verificationLoading ? 'Звоним...' : 'Звонок'}
                             </h4>
                             <p className="text-sm text-gray-600">Вам поступит вызов</p>
                           </div>
