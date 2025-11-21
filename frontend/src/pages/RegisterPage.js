@@ -658,25 +658,35 @@ const RegisterPage = () => {
                       </motion.button>
                       
                       {/* Telegram Button - Always active */}
-                      <motion.a
+                      <motion.button
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.7 }}
                         whileHover={{ y: -2 }}
                         whileTap={{ scale: 0.98 }}
-                        href={telegramDeepLink || '#'}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => {
-                          if (!telegramDeepLink) {
-                            e.preventDefault();
-                            toast.error('Ссылка Telegram еще загружается...');
-                            return;
+                        type="button"
+                        onClick={async () => {
+                          // Загружаем/перезагружаем ссылку при каждом клике
+                          if (!telegramDeepLink || telegramDeepLink === '#') {
+                            try {
+                              const res = await axios.get(`${API}/auth/registration/${registrationId}/telegram-deep-link`);
+                              setTelegramDeepLink(res.data.deep_link);
+                              // Открываем ссылку
+                              window.open(res.data.deep_link, '_blank');
+                              setVerificationMethod('telegram');
+                              toast.success('Откройте Telegram и скопируйте код');
+                            } catch (err) {
+                              console.error('Failed to load Telegram link:', err);
+                              toast.error('Ошибка загрузки ссылки Telegram');
+                            }
+                          } else {
+                            // Если ссылка уже есть, просто открываем
+                            window.open(telegramDeepLink, '_blank');
+                            setVerificationMethod('telegram');
+                            toast.success('Откройте Telegram и скопируйте код');
                           }
-                          setVerificationMethod('telegram');
-                          toast.success('Откройте Telegram и скопируйте код');
                         }}
-                        className="relative overflow-hidden block w-full p-6 rounded-2xl bg-gradient-to-br from-[#0088cc] to-[#0077b3] transition-all no-underline group shadow-lg shadow-[#0088cc]/20 hover:shadow-xl hover:shadow-[#0088cc]/30"
+                        className="relative overflow-hidden block w-full p-6 rounded-2xl bg-gradient-to-br from-[#0088cc] to-[#0077b3] transition-all no-underline group shadow-lg shadow-[#0088cc]/20 hover:shadow-xl hover:shadow-[#0088cc]/30 text-left"
                       >
                         <div className="flex items-center gap-4">
                           <div className="w-14 h-14 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0 group-hover:bg-white/30 transition-all">
