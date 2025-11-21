@@ -699,7 +699,7 @@ const RegisterPage = () => {
                     <div className="text-center">
                       <h3 className="text-2xl font-bold text-gray-900 mb-2">Введите код верификации</h3>
                       <p className="text-sm text-gray-500">
-                        {smsRequestCount === 0 ? 'Нажмите кнопку ниже для получения кода' : 'Мы отправили 6-значный код на ваш номер'}
+                        {!smsFirstEntry && !mockOtp ? 'Нажмите кнопку ниже для получения кода' : 'Мы отправили 6-значный код на ваш номер'}
                       </p>
                     </div>
                     
