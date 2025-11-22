@@ -312,6 +312,9 @@ const AdminTemplatesPageNew = () => {
     type: 'text',
     owner: 'signer',
     required: true,
+    showInContractDetails: true,
+    showInContent: true,
+    showInSignatureInfo: true,
     // For calculated fields
     isCalculated: false,
     formula: {
