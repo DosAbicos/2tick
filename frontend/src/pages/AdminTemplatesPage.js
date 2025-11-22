@@ -1281,28 +1281,46 @@ const AdminTemplatesPageNew = () => {
                 const isAlreadyAdded = formData.placeholders[preset.name];
                 
                 return (
-                  <button
+                  <div
                     key={preset.name}
-                    onClick={() => {
-                      if (!isAlreadyAdded) {
-                        handleInsertPreset(preset);
-                        setShowPresetDialog(false);
-                      }
-                    }}
-                    disabled={isAlreadyAdded}
                     className={`p-4 text-left border-2 rounded-lg transition-all ${
                       isAlreadyAdded 
-                        ? 'border-neutral-200 bg-neutral-50 cursor-not-allowed opacity-50' 
-                        : 'border-blue-200 bg-blue-50/50 hover:border-blue-400 hover:bg-blue-100/50 cursor-pointer'
+                        ? 'border-neutral-200 bg-neutral-50' 
+                        : 'border-blue-200 bg-blue-50/50'
                     }`}
                   >
                     <div className="flex items-start justify-between mb-2">
                       <h3 className="font-semibold text-neutral-900">{preset.label}</h3>
-                      {isAlreadyAdded && (
-                        <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded">
-                          ✓ Добавлен
-                        </span>
-                      )}
+                      <div className="flex gap-2">
+                        {isAlreadyAdded ? (
+                          <>
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleEditPreset(preset)}
+                              className="h-6 px-2 text-xs text-blue-600 hover:text-blue-700"
+                            >
+                              <Edit className="h-3 w-3 mr-1" />
+                              Редактировать
+                            </Button>
+                            <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded">
+                              ✓ Добавлен
+                            </span>
+                          </>
+                        ) : (
+                          <Button
+                            type="button"
+                            size="sm"
+                            onClick={() => {
+                              handleInsertPreset(preset);
+                            }}
+                            className="h-6 px-2 text-xs"
+                          >
+                            Добавить
+                          </Button>
+                        )}
+                      </div>
                     </div>
                     
                     <div className="space-y-1">
