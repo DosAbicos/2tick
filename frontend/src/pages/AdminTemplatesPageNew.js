@@ -474,7 +474,10 @@ const AdminTemplatesPageNew = () => {
       label: currentPlaceholder.label,
       type: currentPlaceholder.type,
       owner: currentPlaceholder.owner,
-      required: currentPlaceholder.required
+      required: currentPlaceholder.required,
+      showInContractDetails: currentPlaceholder.showInContractDetails,
+      showInContent: currentPlaceholder.showInContent,
+      showInSignatureInfo: currentPlaceholder.showInSignatureInfo
     };
 
     // Add formula for calculated fields
