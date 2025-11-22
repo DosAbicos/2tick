@@ -501,6 +501,9 @@ const AdminTemplatesPageNew = () => {
       type: 'text',
       owner: 'signer',
       required: true,
+      showInContractDetails: true,
+      showInContent: true,
+      showInSignatureInfo: true,
       isCalculated: false,
       formula: {
         operand1: '',
