@@ -495,16 +495,52 @@ const AdminTemplatesPageNew = () => {
       placeholderConfig.formula = currentPlaceholder.formula;
     }
 
-    setFormData({
-      ...formData,
-      placeholders: {
-        ...formData.placeholders,
-        [placeholderName]: placeholderConfig
+    // Check if editing existing placeholder
+    if (editingPlaceholderName) {
+      // Remove old placeholder if name changed
+      if (editingPlaceholderName !== placeholderName) {
+        const newPlaceholders = { ...formData.placeholders };
+        delete newPlaceholders[editingPlaceholderName];
+        
+        setFormData({
+          ...formData,
+          placeholders: {
+            ...newPlaceholders,
+            [placeholderName]: placeholderConfig
+          }
+        });
+        
+        // Update order
+        setPlaceholderOrder(placeholderOrder.map(name => 
+          name === editingPlaceholderName ? placeholderName : name
+        ));
+      } else {
+        // Just update config
+        setFormData({
+          ...formData,
+          placeholders: {
+            ...formData.placeholders,
+            [placeholderName]: placeholderConfig
+          }
+        });
       }
-    });
+      toast.success(`Плейсхолдер {{${placeholderName}}} обновлен`);
+    } else {
+      // Adding new placeholder
+      setFormData({
+        ...formData,
+        placeholders: {
+          ...formData.placeholders,
+          [placeholderName]: placeholderConfig
+        }
+      });
 
-    setPlaceholderOrder([...placeholderOrder, placeholderName]);
+      setPlaceholderOrder([...placeholderOrder, placeholderName]);
+      toast.success(`Плейсхолдер {{${placeholderName}}} добавлен`);
+    }
 
+    // Reset state
+    setEditingPlaceholderName(null);
     setCurrentPlaceholder({
       name: '',
       label: '',
@@ -522,7 +558,6 @@ const AdminTemplatesPageNew = () => {
       }
     });
     setShowPlaceholderDialog(false);
-    toast.success(`Плейсхолдер {{${placeholderName}}} добавлен`);
   };
 
 
