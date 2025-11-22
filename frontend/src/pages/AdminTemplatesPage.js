@@ -562,6 +562,27 @@ const AdminTemplatesPageNew = () => {
     setPlaceholderOrder(placeholderOrder.filter(id => id !== name));
   };
 
+  const handleEditPlaceholder = (name, config) => {
+    setEditingPlaceholderName(name);
+    setCurrentPlaceholder({
+      name: name,
+      label: config.label,
+      type: config.type,
+      owner: config.owner,
+      required: config.required,
+      showInContractDetails: config.showInContractDetails !== false,
+      showInContent: config.showInContent !== false,
+      showInSignatureInfo: config.showInSignatureInfo !== false,
+      isCalculated: config.type === 'calculated',
+      formula: config.formula || {
+        operand1: '',
+        operation: 'add',
+        operand2: ''
+      }
+    });
+    setShowPlaceholderDialog(true);
+  };
+
   const contentTextareaRef = React.useRef(null);
 
   const insertPlaceholderToContent = (name) => {
