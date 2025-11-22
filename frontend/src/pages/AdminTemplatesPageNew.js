@@ -1099,6 +1099,61 @@ const AdminTemplatesPageNew = () => {
                 </div>
               )}
 
+              {/* Секции отображения */}
+              <div className="border rounded-lg p-4 bg-purple-50 border-purple-200">
+                <Label className="text-sm font-semibold mb-3 block text-purple-900">📍 Отображать в секциях:</Label>
+                
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="showInContractDetails"
+                      checked={currentPlaceholder.showInContractDetails !== false}
+                      onChange={(e) => setCurrentPlaceholder({
+                        ...currentPlaceholder,
+                        showInContractDetails: e.target.checked
+                      })}
+                      className="h-4 w-4"
+                    />
+                    <Label htmlFor="showInContractDetails" className="cursor-pointer text-sm">
+                      📋 Contract Details (Детали договора)
+                    </Label>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="showInContent"
+                      checked={currentPlaceholder.showInContent !== false}
+                      onChange={(e) => setCurrentPlaceholder({
+                        ...currentPlaceholder,
+                        showInContent: e.target.checked
+                      })}
+                      className="h-4 w-4"
+                    />
+                    <Label htmlFor="showInContent" className="cursor-pointer text-sm">
+                      📄 Content (Содержимое документа)
+                    </Label>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="showInSignatureInfo"
+                      checked={currentPlaceholder.showInSignatureInfo !== false}
+                      onChange={(e) => setCurrentPlaceholder({
+                        ...currentPlaceholder,
+                        showInSignatureInfo: e.target.checked
+                      })}
+                      className="h-4 w-4"
+                    />
+                    <Label htmlFor="showInSignatureInfo" className="cursor-pointer text-sm">
+                      ✍️ Signature Info (Информация о подписании)
+                    </Label>
+                  </div>
+                </div>
+              </div>
+
               <div className="flex gap-3 pt-2">
                 <Button
                   onClick={handleAddPlaceholder}
