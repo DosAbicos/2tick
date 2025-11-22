@@ -572,7 +572,10 @@ const AdminTemplatesPageNew = () => {
       label: preset.label,
       type: preset.type,
       owner: preset.owner,
-      required: preset.required
+      required: preset.required,
+      showInContractDetails: true,
+      showInContent: true,
+      showInSignatureInfo: true
     };
 
     setFormData({
@@ -585,6 +588,21 @@ const AdminTemplatesPageNew = () => {
 
     setPlaceholderOrder([...placeholderOrder, preset.name]);
     toast.success(`Плейсхолдер "${preset.label}" добавлен`);
+    setShowPresetDialog(false);
+  };
+
+  const handleEditPreset = (preset) => {
+    // Open dialog with preset values
+    handleEditPlaceholder(preset.name, {
+      label: preset.label,
+      type: preset.type,
+      owner: preset.owner,
+      required: preset.required,
+      showInContractDetails: true,
+      showInContent: true,
+      showInSignatureInfo: true
+    });
+    setShowPresetDialog(false);
   };
 
   const handleRemovePlaceholder = (name) => {
