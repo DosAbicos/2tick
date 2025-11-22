@@ -315,6 +315,7 @@ const AdminTemplatesPageNew = () => {
   
   const [showPlaceholderDialog, setShowPlaceholderDialog] = useState(false);
   const [showPresetDialog, setShowPresetDialog] = useState(false);
+  const [editingPlaceholderName, setEditingPlaceholderName] = useState(null);
   const [currentPlaceholder, setCurrentPlaceholder] = useState({
     name: '',
     label: '',
