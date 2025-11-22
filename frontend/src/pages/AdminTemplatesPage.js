@@ -1358,7 +1358,7 @@ const AdminTemplatesPageNew = () => {
                         )}
                       </div>
                     </div>
-                  </button>
+                  </div>
                 );
               })}
             </div>
