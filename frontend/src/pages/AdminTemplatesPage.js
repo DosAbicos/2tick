@@ -273,6 +273,15 @@ const SortablePlaceholder = ({ id, placeholder, config, onInsert, onRemove }) =>
               type="button"
               variant="ghost"
               size="sm"
+              onClick={() => config.onEdit && config.onEdit(id, config)}
+              className="opacity-0 group-hover:opacity-100 transition-opacity text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+            >
+              <Edit className="h-4 w-4" />
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
               onClick={() => onRemove(id)}
               className="opacity-0 group-hover:opacity-100 transition-opacity text-red-600 hover:text-red-700 hover:bg-red-50"
             >
