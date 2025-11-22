@@ -20,7 +20,7 @@ import UserLogsPage from './pages/UserLogsPage';
 import ProfilePage from './pages/ProfilePage';
 import TemplatesPage from './pages/TemplatesPage';
 import UploadPdfContractPage from './pages/UploadPdfContractPage';
-import AdminTemplatesPage from './pages/AdminTemplatesPageNew';
+import AdminTemplatesPage from './pages/AdminTemplatesPage';
 
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem('token');
