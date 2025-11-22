@@ -842,7 +842,7 @@ const AdminTemplatesPageNew = () => {
                             key={name}
                             id={name}
                             placeholder={name}
-                            config={formData.placeholders[name]}
+                            config={{...formData.placeholders[name], onEdit: handleEditPlaceholder}}
                             onInsert={insertPlaceholderToContent}
                             onRemove={handleRemovePlaceholder}
                           />
