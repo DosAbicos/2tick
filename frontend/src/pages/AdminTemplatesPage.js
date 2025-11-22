@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Select,
@@ -23,7 +24,23 @@ import {
 } from '@/components/ui/dialog';
 import Header from '@/components/Header';
 import Loader from '@/components/Loader';
-import { Plus, Edit, Trash2, Eye, Save } from 'lucide-react';
+import { Plus, Edit, Trash2, Save, GripVertical, Type, Hash, Calendar, Phone, Mail, FileText, User, Building } from 'lucide-react';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -35,7 +52,240 @@ const CATEGORIES = [
   { value: 'other', label: '📄 Другое' }
 ];
 
-const AdminTemplatesPage = () => {
+const FIELD_TYPES = [
+  { value: 'text', label: 'Текст', icon: Type },
+  { value: 'number', label: 'Число', icon: Hash },
+  { value: 'date', label: 'Дата', icon: Calendar },
+  { value: 'phone', label: 'Телефон', icon: Phone },
+  { value: 'email', label: 'Email', icon: Mail },
+  { value: 'textarea', label: 'Длинный текст', icon: FileText },
+  { value: 'calculated', label: '🧮 Вычисляемое', icon: Hash }
+];
+
+const CALCULATOR_OPERATIONS = [
+  { value: 'add', label: '+  Сложение', symbol: '+' },
+  { value: 'subtract', label: '−  Вычитание', symbol: '-' },
+  { value: 'multiply', label: '×  Умножение', symbol: '*' },
+  { value: 'divide', label: '÷  Деление', symbol: '/' },
+  { value: 'modulo', label: '%  Остаток от деления', symbol: '%' },
+  { value: 'days_between', label: '📅  Разница в днях (для дат)', symbol: 'days' }
+];
+
+// Predefined placeholder templates for quick insertion
+const PRESET_PLACEHOLDERS = [
+  {
+    name: 'CONTRACT_DATE',
+    label: 'Дата составления договора',
+    type: 'date',
+    owner: 'landlord',
+    required: true
+  },
+  {
+    name: 'SIGNING_DATETIME',
+    label: 'Дата и время подписания',
+    type: 'text',
+    owner: 'tenant',
+    required: false
+  },
+  {
+    name: 'COMPANY_NAME',
+    label: 'Наименование компании',
+    type: 'text',
+    owner: 'landlord',
+    required: true
+  },
+  {
+    name: 'COMPANY_IIN',
+    label: 'ИИН/БИН компании',
+    type: 'text',
+    owner: 'landlord',
+    required: true
+  },
+  {
+    name: 'CITY',
+    label: 'Город',
+    type: 'text',
+    owner: 'landlord',
+    required: true
+  },
+  {
+    name: 'ADDRESS',
+    label: 'Адрес',
+    type: 'text',
+    owner: 'landlord',
+    required: true
+  },
+  {
+    name: 'TENANT_FULL_NAME',
+    label: 'ФИО нанимателя',
+    type: 'text',
+    owner: 'tenant',
+    required: true
+  },
+  {
+    name: 'TENANT_PHONE',
+    label: 'Телефон нанимателя',
+    type: 'phone',
+    owner: 'tenant',
+    required: true
+  },
+  {
+    name: 'TENANT_EMAIL',
+    label: 'Email нанимателя',
+    type: 'email',
+    owner: 'tenant',
+    required: false
+  },
+  {
+    name: 'TENANT_IIN',
+    label: 'ИИН нанимателя',
+    type: 'text',
+    owner: 'tenant',
+    required: true
+  },
+  {
+    name: 'START_DATE',
+    label: 'Дата начала',
+    type: 'date',
+    owner: 'landlord',
+    required: true
+  },
+  {
+    name: 'END_DATE',
+    label: 'Дата окончания',
+    type: 'date',
+    owner: 'landlord',
+    required: true
+  },
+  {
+    name: 'AMOUNT',
+    label: 'Сумма',
+    type: 'number',
+    owner: 'landlord',
+    required: true
+  }
+];
+
+
+// Sortable Placeholder Item Component
+const SortablePlaceholder = ({ id, placeholder, config, onInsert, onRemove }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  const TypeIcon = FIELD_TYPES.find(t => t.value === config.type)?.icon || Type;
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`group relative bg-white border rounded-lg p-4 hover:shadow-md transition-all ${
+        isDragging ? 'shadow-2xl ring-2 ring-primary' : ''
+      }`}
+    >
+      {/* Drag Handle */}
+      <div
+        {...attributes}
+        {...listeners}
+        className="absolute left-2 top-1/2 -translate-y-1/2 cursor-grab active:cursor-grabbing text-neutral-400 hover:text-neutral-600"
+      >
+        <GripVertical className="h-5 w-5" />
+      </div>
+
+      <div className="ml-8">
+        {/* Header */}
+        <div className="flex items-start justify-between mb-2">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 flex-wrap mb-2">
+              <code className="text-sm font-mono bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-1 rounded-md">
+                {'{{'}{id}{'}}'}
+              </code>
+              
+              {/* Type Badge */}
+              <div className="flex items-center gap-1 bg-neutral-100 text-neutral-700 px-2 py-1 rounded text-xs">
+                <TypeIcon className="h-3 w-3" />
+                <span>{FIELD_TYPES.find(t => t.value === config.type)?.label}</span>
+              </div>
+
+              {/* Owner Badge */}
+              <div className={`flex items-center gap-1 px-2 py-1 rounded text-xs ${
+                config.owner === 'landlord'
+                  ? 'bg-purple-100 text-purple-700'
+                  : 'bg-green-100 text-green-700'
+              }`}>
+                {config.owner === 'landlord' ? (
+                  <>
+                    <Building className="h-3 w-3" />
+                    <span>Наймодатель</span>
+                  </>
+                ) : (
+                  <>
+                    <User className="h-3 w-3" />
+                    <span>Наниматель</span>
+                  </>
+                )}
+              </div>
+
+              {/* Required Badge */}
+              {config.required && (
+                <div className="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-medium">
+                  обязательно
+                </div>
+              )}
+            </div>
+
+            {/* Label */}
+            <p className="text-sm text-neutral-700 font-medium">{config.label}</p>
+            
+            {/* Formula for calculated fields */}
+            {config.type === 'calculated' && config.formula && (
+              <div className="mt-2 text-xs bg-amber-50 border border-amber-200 rounded px-2 py-1 font-mono">
+                🧮 {'{{'}{config.formula.operand1}{'}}'}
+                {' '}{CALCULATOR_OPERATIONS.find(op => op.value === config.formula.operation)?.symbol || config.formula.operation}{' '}
+                {'{{'}{config.formula.operand2}{'}}'}
+              </div>
+            )}
+          </div>
+
+          {/* Actions */}
+          <div className="flex gap-1 ml-4">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => onInsert(id)}
+              className="opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              Вставить
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => onRemove(id)}
+              className="opacity-0 group-hover:opacity-100 transition-opacity text-red-600 hover:text-red-700 hover:bg-red-50"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const AdminTemplatesPageNew = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
   
@@ -49,9 +299,13 @@ const AdminTemplatesPage = () => {
     category: 'real_estate',
     content: '',
     content_type: 'plain',
-    placeholders: {} // { PLACEHOLDER_NAME: { label, type, owner, required } }
+    placeholders: {},
+    requires_tenant_document: false
   });
+  const [placeholderOrder, setPlaceholderOrder] = useState([]);
+  
   const [showPlaceholderDialog, setShowPlaceholderDialog] = useState(false);
+  const [showPresetDialog, setShowPresetDialog] = useState(false);
   const [currentPlaceholder, setCurrentPlaceholder] = useState({
     name: '',
     label: '',
@@ -60,8 +314,22 @@ const AdminTemplatesPage = () => {
     required: true,
     showInContractDetails: true,
     showInContent: true,
-    showInSignatureInfo: true
+    showInSignatureInfo: true,
+    // For calculated fields
+    isCalculated: false,
+    formula: {
+      operand1: '',
+      operation: 'add',
+      operand2: ''
+    }
   });
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   useEffect(() => {
     fetchTemplates();
@@ -87,10 +355,11 @@ const AdminTemplatesPage = () => {
   };
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   const handleCategoryChange = (value) => {
@@ -110,7 +379,6 @@ const AdminTemplatesPage = () => {
 
     try {
       if (editingTemplate) {
-        // Update
         await axios.put(
           `${API}/admin/templates/${editingTemplate.id}`,
           formData,
@@ -120,7 +388,6 @@ const AdminTemplatesPage = () => {
         );
         toast.success('Шаблон обновлен');
       } else {
-        // Create
         await axios.post(
           `${API}/admin/templates`,
           formData,
@@ -149,6 +416,7 @@ const AdminTemplatesPage = () => {
       content_type: template.content_type || 'plain',
       placeholders: template.placeholders || {}
     });
+    setPlaceholderOrder(Object.keys(template.placeholders || {}));
     setShowDialog(true);
   };
 
@@ -177,7 +445,13 @@ const AdminTemplatesPage = () => {
       content_type: 'plain',
       placeholders: {}
     });
+    setPlaceholderOrder([]);
     setEditingTemplate(null);
+  };
+
+  const handleDialogClose = () => {
+    setShowDialog(false);
+    resetForm();
   };
 
   const handleAddPlaceholder = () => {
@@ -186,20 +460,40 @@ const AdminTemplatesPage = () => {
       return;
     }
 
+    // Validation for calculated fields
+    if (currentPlaceholder.type === 'calculated') {
+      if (!currentPlaceholder.formula.operand1 || !currentPlaceholder.formula.operand2) {
+        toast.error('Укажите оба операнда для вычисляемого поля');
+        return;
+      }
+    }
+
     const placeholderName = currentPlaceholder.name.toUpperCase().replace(/\s+/g, '_');
     
+    const placeholderConfig = {
+      label: currentPlaceholder.label,
+      type: currentPlaceholder.type,
+      owner: currentPlaceholder.owner,
+      required: currentPlaceholder.required,
+      showInContractDetails: currentPlaceholder.showInContractDetails,
+      showInContent: currentPlaceholder.showInContent,
+      showInSignatureInfo: currentPlaceholder.showInSignatureInfo
+    };
+
+    // Add formula for calculated fields
+    if (currentPlaceholder.type === 'calculated') {
+      placeholderConfig.formula = currentPlaceholder.formula;
+    }
+
     setFormData({
       ...formData,
       placeholders: {
         ...formData.placeholders,
-        [placeholderName]: {
-          label: currentPlaceholder.label,
-          type: currentPlaceholder.type,
-          owner: currentPlaceholder.owner,
-          required: currentPlaceholder.required
-        }
+        [placeholderName]: placeholderConfig
       }
     });
+
+    setPlaceholderOrder([...placeholderOrder, placeholderName]);
 
     setCurrentPlaceholder({
       name: '',
@@ -209,10 +503,43 @@ const AdminTemplatesPage = () => {
       required: true,
       showInContractDetails: true,
       showInContent: true,
-      showInSignatureInfo: true
+      showInSignatureInfo: true,
+      isCalculated: false,
+      formula: {
+        operand1: '',
+        operation: 'add',
+        operand2: ''
+      }
     });
     setShowPlaceholderDialog(false);
     toast.success(`Плейсхолдер {{${placeholderName}}} добавлен`);
+  };
+
+
+  const handleInsertPreset = (preset) => {
+    // Check if placeholder with this name already exists
+    if (formData.placeholders[preset.name]) {
+      toast.error(`Плейсхолдер "${preset.name}" уже существует`);
+      return;
+    }
+
+    const placeholderConfig = {
+      label: preset.label,
+      type: preset.type,
+      owner: preset.owner,
+      required: preset.required
+    };
+
+    setFormData({
+      ...formData,
+      placeholders: {
+        ...formData.placeholders,
+        [preset.name]: placeholderConfig
+      }
+    });
+
+    setPlaceholderOrder([...placeholderOrder, preset.name]);
+    toast.success(`Плейсхолдер "${preset.label}" добавлен`);
   };
 
   const handleRemovePlaceholder = (name) => {
@@ -222,36 +549,71 @@ const AdminTemplatesPage = () => {
       ...formData,
       placeholders: newPlaceholders
     });
+    setPlaceholderOrder(placeholderOrder.filter(id => id !== name));
   };
+
+  const contentTextareaRef = React.useRef(null);
 
   const insertPlaceholderToContent = (name) => {
     const placeholder = `{{${name}}}`;
-    setFormData({
-      ...formData,
-      content: formData.content + ' ' + placeholder
-    });
+    const textarea = contentTextareaRef.current;
+    
+    if (textarea) {
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const text = formData.content;
+      
+      // Вставить в позицию курсора
+      const newText = text.substring(0, start) + placeholder + text.substring(end);
+      
+      setFormData(prev => ({
+        ...prev,
+        content: newText
+      }));
+      
+      // Установить курсор после вставленного плейсхолдера
+      setTimeout(() => {
+        textarea.focus();
+        const newPosition = start + placeholder.length;
+        textarea.setSelectionRange(newPosition, newPosition);
+      }, 0);
+    } else {
+      // Fallback - добавить в конец
+      setFormData(prev => ({
+        ...prev,
+        content: prev.content + ' ' + placeholder
+      }));
+    }
+    
     toast.success(`Вставлен ${placeholder}`);
   };
 
-  const handleDialogClose = () => {
-    setShowDialog(false);
-    resetForm();
+  const handleDragEnd = (event) => {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      setPlaceholderOrder((items) => {
+        const oldIndex = items.indexOf(active.id);
+        const newIndex = items.indexOf(over.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100">
       <Header />
       
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold mb-2">⚙️ Управление Шаблонами</h1>
+            <h1 className="text-3xl font-bold text-neutral-900 mb-2">⚙️ Управление Шаблонами</h1>
             <p className="text-neutral-600">
-              Создавайте и редактируйте шаблоны договоров для маркетплейса
+              Создавайте и редактируйте шаблоны договоров с конструктором плейсхолдеров
             </p>
           </div>
-          <Button onClick={() => setShowDialog(true)}>
+          <Button onClick={() => setShowDialog(true)} className="shadow-lg">
             <Plus className="mr-2 h-4 w-4" />
             Создать шаблон
           </Button>
@@ -263,7 +625,7 @@ const AdminTemplatesPage = () => {
             <Loader size="medium" />
           </div>
         ) : templates.length === 0 ? (
-          <Card>
+          <Card className="shadow-lg">
             <CardContent className="py-12 text-center">
               <p className="text-neutral-600 mb-4">Шаблоны еще не созданы</p>
               <Button onClick={() => setShowDialog(true)}>
@@ -275,7 +637,7 @@ const AdminTemplatesPage = () => {
         ) : (
           <div className="grid grid-cols-1 gap-4">
             {templates.map((template) => (
-              <Card key={template.id} className={!template.is_active ? 'opacity-50' : ''}>
+              <Card key={template.id} className={`shadow-md hover:shadow-lg transition-shadow ${!template.is_active ? 'opacity-50' : ''}`}>
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -319,28 +681,46 @@ const AdminTemplatesPage = () => {
 
         {/* Create/Edit Dialog */}
         <Dialog open={showDialog} onOpenChange={handleDialogClose}>
-          <DialogContent className="max-w-3xl max-h-[90vh] overflow-auto">
+          <DialogContent className="max-w-5xl max-h-[90vh] overflow-auto">
             <DialogHeader>
-              <DialogTitle>
-                {editingTemplate ? 'Редактировать шаблон' : 'Создать новый шаблон'}
+              <DialogTitle className="text-2xl">
+                {editingTemplate ? '✏️ Редактировать шаблон' : '✨ Создать новый шаблон'}
               </DialogTitle>
               <DialogDescription>
-                Заполните информацию о шаблоне договора
+                Заполните информацию о шаблоне договора и настройте плейсхолдеры
               </DialogDescription>
             </DialogHeader>
 
-            <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-              <div>
-                <Label htmlFor="title">Название *</Label>
-                <Input
-                  id="title"
-                  name="title"
-                  value={formData.title}
-                  onChange={handleChange}
-                  placeholder="Договор аренды квартиры"
-                  required
-                  className="mt-1"
-                />
+            <form onSubmit={handleSubmit} className="space-y-6 mt-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="title">Название *</Label>
+                  <Input
+                    id="title"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleChange}
+                    placeholder="Договор аренды квартиры"
+                    required
+                    className="mt-1"
+                  />
+                </div>
+
+                <div>
+                  <Label>Категория *</Label>
+                  <Select value={formData.category} onValueChange={handleCategoryChange}>
+                    <SelectTrigger className="mt-1">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {CATEGORIES.map((cat) => (
+                        <SelectItem key={cat.value} value={cat.value}>
+                          {cat.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
               <div>
@@ -351,116 +731,117 @@ const AdminTemplatesPage = () => {
                   value={formData.description}
                   onChange={handleChange}
                   placeholder="Краткое описание шаблона..."
-                  rows={3}
+                  rows={2}
                   required
                   className="mt-1"
                 />
               </div>
 
-              <div>
-                <Label>Категория *</Label>
-                <Select value={formData.category} onValueChange={handleCategoryChange}>
-                  <SelectTrigger className="mt-1">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {CATEGORIES.map((cat) => (
-                      <SelectItem key={cat.value} value={cat.value}>
-                        {cat.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              {/* Настройка требования документа нанимателя */}
+              <div className="flex items-start space-x-3 p-4 border border-amber-200 rounded-lg bg-amber-50/30">
+                <Checkbox 
+                  id="requires_tenant_document"
+                  checked={formData.requires_tenant_document}
+                  onCheckedChange={(checked) => setFormData({...formData, requires_tenant_document: checked})}
+                />
+                <div className="flex-1">
+                  <label htmlFor="requires_tenant_document" className="text-sm font-medium text-neutral-900 cursor-pointer">
+                    Требуется удостоверение личности нанимателя
+                  </label>
+                  <p className="text-xs text-neutral-600 mt-1">
+                    При подписании договора наниматель должен будет загрузить копию своего удостоверения личности
+                  </p>
+                </div>
               </div>
 
-              {/* Конструктор плейсхолдеров */}
-              <div className="border rounded-lg p-4 bg-neutral-50">
-                <div className="flex items-center justify-between mb-3">
-                  <Label className="text-base font-semibold">Конструктор плейсхолдеров</Label>
-                  <Button
-                    type="button"
-                    size="sm"
-                    onClick={() => setShowPlaceholderDialog(true)}
-                  >
-                    <Plus className="mr-2 h-3 w-3" />
-                    Добавить плейсхолдер
-                  </Button>
+              {/* Beautiful Placeholder Constructor */}
+              <div className="border-2 border-dashed border-neutral-200 rounded-xl p-6 bg-gradient-to-br from-blue-50/50 to-purple-50/50">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <Label className="text-lg font-bold text-neutral-900 flex items-center gap-2">
+                      🎨 Конструктор плейсхолдеров
+                    </Label>
+                    <p className="text-sm text-neutral-600 mt-1">
+                      Перетаскивайте для изменения порядка
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      onClick={() => setShowPlaceholderDialog(true)}
+                      className="shadow-md"
+                    >
+                      <Plus className="mr-2 h-4 w-4" />
+                      Добавить плейсхолдер
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setShowPresetDialog(true)}
+                      className="shadow-md"
+                    >
+                      ⚡ Быстрая вставка
+                    </Button>
+                  </div>
                 </div>
 
-                {Object.keys(formData.placeholders).length === 0 ? (
-                  <p className="text-sm text-neutral-500 text-center py-4">
-                    Нет плейсхолдеров. Добавьте их для создания форм заполнения
-                  </p>
-                ) : (
-                  <div className="space-y-2">
-                    {Object.entries(formData.placeholders).map(([name, config]) => (
-                      <div key={name} className="flex items-center justify-between bg-white p-3 rounded border">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <code className="text-sm font-mono bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
-                              {'{{'}{name}{'}}'} 
-                            </code>
-                            <span className="text-xs text-neutral-500">
-                              {config.type}
-                            </span>
-                            <span className={`text-xs px-2 py-0.5 rounded ${
-                              config.owner === 'landlord' 
-                                ? 'bg-purple-100 text-purple-800' 
-                                : 'bg-green-100 text-green-800'
-                            }`}>
-                              {config.owner === 'landlord' ? '🏢 Наймодатель' : '👤 Наниматель'}
-                            </span>
-                            {config.required && (
-                              <span className="text-xs bg-red-100 text-red-800 px-2 py-0.5 rounded">
-                                обязательно
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-sm text-neutral-600">{config.label}</p>
-                        </div>
-                        <div className="flex gap-1">
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => insertPlaceholderToContent(name)}
-                          >
-                            Вставить
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleRemovePlaceholder(name)}
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
+                {placeholderOrder.length === 0 ? (
+                  <div className="text-center py-12 bg-white/50 rounded-lg border-2 border-dashed border-neutral-200">
+                    <div className="text-6xl mb-4">🎯</div>
+                    <p className="text-neutral-500 mb-2 font-medium">
+                      Нет плейсхолдеров
+                    </p>
+                    <p className="text-sm text-neutral-400">
+                      Добавьте плейсхолдеры для создания динамических форм
+                    </p>
                   </div>
+                ) : (
+                  <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleDragEnd}
+                  >
+                    <SortableContext
+                      items={placeholderOrder}
+                      strategy={verticalListSortingStrategy}
+                    >
+                      <div className="space-y-3">
+                        {placeholderOrder.map((name) => (
+                          <SortablePlaceholder
+                            key={name}
+                            id={name}
+                            placeholder={name}
+                            config={formData.placeholders[name]}
+                            onInsert={insertPlaceholderToContent}
+                            onRemove={handleRemovePlaceholder}
+                          />
+                        ))}
+                      </div>
+                    </SortableContext>
+                  </DndContext>
                 )}
               </div>
 
               <div>
                 <Label htmlFor="content">Содержание договора *</Label>
                 <Textarea
+                  ref={contentTextareaRef}
                   id="content"
                   name="content"
                   value={formData.content}
                   onChange={handleChange}
                   placeholder="Текст договора с плейсхолдерами: {{LANDLORD_NAME}}, {{SIGNER_NAME}} и т.д."
-                  rows={15}
+                  rows={12}
                   required
                   className="mt-1 font-mono text-sm"
                 />
                 <p className="text-xs text-neutral-500 mt-1">
-                  Используйте плейсхолдеры: {'{{'} LANDLORD_NAME {'}}'},  {'{{'} SIGNER_NAME {'}}'},  {'{{'} RENT_AMOUNT {'}}'} и др.
+                  Нажмите "Вставить" на плейсхолдере выше для добавления в текст
                 </p>
               </div>
 
-              <div className="flex gap-3 pt-4">
-                <Button type="submit" className="flex-1">
+              <div className="flex gap-3 pt-4 border-t">
+                <Button type="submit" className="flex-1 shadow-md">
                   <Save className="mr-2 h-4 w-4" />
                   {editingTemplate ? 'Сохранить изменения' : 'Создать шаблон'}
                 </Button>
@@ -476,7 +857,7 @@ const AdminTemplatesPage = () => {
         <Dialog open={showPlaceholderDialog} onOpenChange={setShowPlaceholderDialog}>
           <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle>Добавить плейсхолдер</DialogTitle>
+              <DialogTitle className="text-xl">✨ Добавить плейсхолдер</DialogTitle>
               <DialogDescription>
                 Создайте новый плейсхолдер для формы заполнения
               </DialogDescription>
@@ -521,61 +902,215 @@ const AdminTemplatesPage = () => {
                   value={currentPlaceholder.type}
                   onValueChange={(value) => setCurrentPlaceholder({
                     ...currentPlaceholder,
-                    type: value
+                    type: value,
+                    isCalculated: value === 'calculated'
                   })}
                 >
                   <SelectTrigger className="mt-1">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="text">Текст</SelectItem>
-                    <SelectItem value="number">Число</SelectItem>
-                    <SelectItem value="date">Дата</SelectItem>
-                    <SelectItem value="phone">Телефон</SelectItem>
-                    <SelectItem value="email">Email</SelectItem>
-                    <SelectItem value="textarea">Длинный текст</SelectItem>
+                    {FIELD_TYPES.map(type => (
+                      <SelectItem key={type.value} value={type.value}>
+                        <div className="flex items-center gap-2">
+                          <type.icon className="h-4 w-4" />
+                          {type.label}
+                        </div>
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
 
-              <div>
-                <Label>Кто заполняет? *</Label>
-                <Select
-                  value={currentPlaceholder.owner}
-                  onValueChange={(value) => setCurrentPlaceholder({
-                    ...currentPlaceholder,
-                    owner: value
-                  })}
-                >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="landlord">🏢 Наймодатель</SelectItem>
-                    <SelectItem value="signer">👤 Наниматель</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+              {/* Calculator for calculated fields */}
+              {currentPlaceholder.type === 'calculated' && (
+                <div className="border-2 border-dashed border-amber-200 rounded-lg p-4 bg-amber-50/50 space-y-3">
+                  <Label className="text-sm font-bold text-amber-900">🧮 Настройка формулы</Label>
+                  
+                  {/* Инструкция по использованию */}
+                  <div className="bg-white border border-amber-300 rounded p-3 text-xs space-y-1">
+                    <p className="font-semibold text-amber-900">ℹ️ Как работает калькулятор:</p>
+                    <p className="text-neutral-700">
+                      • Вычисляемые поля автоматически рассчитываются на основе других плейсхолдеров
+                    </p>
+                    <p className="text-neutral-700">
+                      • Калькулятор работает только с полями типа "Число" и "Дата"
+                    </p>
+                    <p className="text-amber-800 font-medium mt-2">
+                      Пример: {'{{'} СУММА_АРЕНДЫ {'}}'} = {'{{'} ЦЕНА_ЗА_ДЕНЬ {'}}'} × {'{{'} КОЛИЧЕСТВО_ДНЕЙ {'}}'}
+                    </p>
+                  </div>
+                  
+                  {/* 1. Первый операнд */}
+                  <div>
+                    <Label className="text-xs font-semibold">1. Первый операнд</Label>
+                    <Select
+                      value={currentPlaceholder.formula.operand1}
+                      onValueChange={(value) => setCurrentPlaceholder({
+                        ...currentPlaceholder,
+                        formula: { ...currentPlaceholder.formula, operand1: value }
+                      })}
+                    >
+                      <SelectTrigger className="mt-1">
+                        <SelectValue placeholder="Выберите плейсхолдер" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {placeholderOrder
+                          .filter(name => {
+                            const ph = formData.placeholders[name];
+                            // Только number, date и calculated
+                            return ph.type === 'number' || ph.type === 'date' || ph.type === 'calculated';
+                          })
+                          .map((name) => (
+                            <SelectItem key={name} value={name}>
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs text-neutral-500">
+                                  {formData.placeholders[name].type === 'date' ? '📅' : 
+                                   formData.placeholders[name].type === 'calculated' ? '🧮' : '🔢'}
+                                </span>
+                                {'{{'}{name}{'}}'} - {formData.placeholders[name].label}
+                              </div>
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="required"
-                  checked={currentPlaceholder.required}
-                  onChange={(e) => setCurrentPlaceholder({
-                    ...currentPlaceholder,
-                    required: e.target.checked
-                  })}
-                  className="h-4 w-4"
-                />
-                <Label htmlFor="required" className="cursor-pointer">
-                  Обязательное поле
-                </Label>
-              </div>
+                  {/* 2. Выберите операцию */}
+                  <div>
+                    <Label className="text-xs font-semibold">2. Выберите операцию</Label>
+                    <Select
+                      value={currentPlaceholder.formula.operation}
+                      onValueChange={(value) => setCurrentPlaceholder({
+                        ...currentPlaceholder,
+                        formula: { 
+                          ...currentPlaceholder.formula,
+                          operation: value
+                        }
+                      })}
+                    >
+                      <SelectTrigger className="mt-1">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {CALCULATOR_OPERATIONS.map((op) => (
+                          <SelectItem key={op.value} value={op.value}>
+                            {op.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* 3. Второй операнд */}
+                  <div>
+                    <Label className="text-xs font-semibold">3. Второй операнд</Label>
+                    <Select
+                      value={currentPlaceholder.formula.operand2}
+                      onValueChange={(value) => setCurrentPlaceholder({
+                        ...currentPlaceholder,
+                        formula: { ...currentPlaceholder.formula, operand2: value }
+                      })}
+                    >
+                      <SelectTrigger className="mt-1">
+                        <SelectValue placeholder="Выберите плейсхолдер" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {placeholderOrder
+                          .filter(name => {
+                            const ph = formData.placeholders[name];
+                            // Только number, date и calculated
+                            return ph.type === 'number' || ph.type === 'date' || ph.type === 'calculated';
+                          })
+                          .map((name) => (
+                            <SelectItem key={name} value={name}>
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs text-neutral-500">
+                                  {formData.placeholders[name].type === 'date' ? '📅' : 
+                                   formData.placeholders[name].type === 'calculated' ? '🧮' : '🔢'}
+                                </span>
+                                {'{{'}{name}{'}}'} - {formData.placeholders[name].label}
+                              </div>
+                            </SelectItem>
+                          ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Preview */}
+                  {currentPlaceholder.formula.operand1 && currentPlaceholder.formula.operand2 && (
+                    <div className="bg-white border border-amber-300 rounded p-2 text-xs font-mono">
+                      <span className="text-amber-700">Формула:</span>
+                      <br />
+                      {'{{'}{currentPlaceholder.formula.operand1}{'}}'}
+                      {' '}{CALCULATOR_OPERATIONS.find(op => op.value === currentPlaceholder.formula.operation)?.symbol || '+'}{' '}
+                      {'{{'}{currentPlaceholder.formula.operand2}{'}}'}
+                      {' = '}
+                      {'{{'}{currentPlaceholder.name || 'РЕЗУЛЬТАТ'}{'}}'}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Owner - only if NOT calculated */}
+              {currentPlaceholder.type !== 'calculated' && (
+                <div>
+                  <Label>Кто заполняет? *</Label>
+                  <Select
+                    value={currentPlaceholder.owner}
+                    onValueChange={(value) => setCurrentPlaceholder({
+                      ...currentPlaceholder,
+                      owner: value
+                    })}
+                  >
+                    <SelectTrigger className="mt-1">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="landlord">
+                        <div className="flex items-center gap-2">
+                          <Building className="h-4 w-4" />
+                          Наймодатель
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="signer">
+                        <div className="flex items-center gap-2">
+                          <User className="h-4 w-4" />
+                          Наниматель
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {/* Required checkbox - only for non-calculated */}
+              {currentPlaceholder.type !== 'calculated' && (
+                <div className="border rounded-lg p-3 bg-blue-50 border-blue-200">
+                  <div className="flex items-center gap-2 mb-2">
+                    <input
+                      type="checkbox"
+                      id="required"
+                      checked={currentPlaceholder.required}
+                      onChange={(e) => setCurrentPlaceholder({
+                        ...currentPlaceholder,
+                        required: e.target.checked
+                      })}
+                      className="h-4 w-4"
+                    />
+                    <Label htmlFor="required" className="cursor-pointer font-medium">
+                      Обязательное поле для наймодателя
+                    </Label>
+                  </div>
+                  <p className="text-xs text-blue-700 ml-6">
+                    ℹ️ Если не обязательно для наймодателя, наниматель всё равно должен заполнить
+                  </p>
+                </div>
+              )}
 
               {/* Секции отображения */}
-              <div className="border-t pt-4 mt-4">
-                <Label className="text-sm font-semibold mb-3 block">Отображать в секциях:</Label>
+              <div className="border rounded-lg p-4 bg-purple-50 border-purple-200">
+                <Label className="text-sm font-semibold mb-3 block text-purple-900">📍 Отображать в секциях:</Label>
                 
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
@@ -633,6 +1168,7 @@ const AdminTemplatesPage = () => {
                   onClick={handleAddPlaceholder}
                   className="flex-1"
                 >
+                  <Plus className="mr-2 h-4 w-4" />
                   Добавить
                 </Button>
                 <Button
@@ -645,9 +1181,99 @@ const AdminTemplatesPage = () => {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Preset Placeholders Dialog */}
+        <Dialog open={showPresetDialog} onOpenChange={setShowPresetDialog}>
+          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-xl">⚡ Быстрая вставка готовых плейсхолдеров</DialogTitle>
+              <DialogDescription>
+                Выберите готовый плейсхолдер для быстрой вставки в шаблон
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {PRESET_PLACEHOLDERS.map((preset) => {
+                const isAlreadyAdded = formData.placeholders[preset.name];
+                
+                return (
+                  <button
+                    key={preset.name}
+                    onClick={() => {
+                      if (!isAlreadyAdded) {
+                        handleInsertPreset(preset);
+                        setShowPresetDialog(false);
+                      }
+                    }}
+                    disabled={isAlreadyAdded}
+                    className={`p-4 text-left border-2 rounded-lg transition-all ${
+                      isAlreadyAdded 
+                        ? 'border-neutral-200 bg-neutral-50 cursor-not-allowed opacity-50' 
+                        : 'border-blue-200 bg-blue-50/50 hover:border-blue-400 hover:bg-blue-100/50 cursor-pointer'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <h3 className="font-semibold text-neutral-900">{preset.label}</h3>
+                      {isAlreadyAdded && (
+                        <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded">
+                          ✓ Добавлен
+                        </span>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-1">
+                      <p className="text-xs text-neutral-600 font-mono">
+                        {'{{'}{preset.name}{'}}'}
+                      </p>
+                      
+                      <div className="flex gap-2 flex-wrap">
+                        <span className={`text-xs px-2 py-0.5 rounded ${
+                          preset.type === 'date' ? 'bg-purple-100 text-purple-700' :
+                          preset.type === 'number' ? 'bg-blue-100 text-blue-700' :
+                          preset.type === 'phone' ? 'bg-green-100 text-green-700' :
+                          preset.type === 'email' ? 'bg-orange-100 text-orange-700' :
+                          'bg-neutral-100 text-neutral-700'
+                        }`}>
+                          {preset.type === 'date' ? '📅 Дата' :
+                           preset.type === 'number' ? '🔢 Число' :
+                           preset.type === 'phone' ? '📞 Телефон' :
+                           preset.type === 'email' ? '📧 Email' :
+                           '✏️ Текст'}
+                        </span>
+                        
+                        <span className={`text-xs px-2 py-0.5 rounded ${
+                          preset.owner === 'landlord' 
+                            ? 'bg-blue-100 text-blue-700' 
+                            : 'bg-amber-100 text-amber-700'
+                        }`}>
+                          {preset.owner === 'landlord' ? '🏢 Наймодатель' : '👤 Наниматель'}
+                        </span>
+                        
+                        {preset.required && (
+                          <span className="text-xs px-2 py-0.5 rounded bg-red-100 text-red-700">
+                            * Обязательное
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="flex justify-end pt-4 border-t">
+              <Button
+                variant="outline"
+                onClick={() => setShowPresetDialog(false)}
+              >
+                Закрыть
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
 };
 
-export default AdminTemplatesPage;
+export default AdminTemplatesPageNew;
