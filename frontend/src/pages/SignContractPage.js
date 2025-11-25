@@ -706,8 +706,8 @@ const SignContractPage = () => {
     try {
       // Save placeholder values before signing if there are any unfilled placeholders
       if (unfilledPlaceholders.length > 0 && template) {
-        // Update contract with filled placeholder values
-        await axios.put(`${API}/contracts/${id}`, {
+        // Update contract with filled placeholder values using public endpoint
+        await axios.post(`${API}/sign/${id}/update-placeholder-values`, {
           placeholder_values: { ...contract.placeholder_values, ...placeholderValues }
         });
       }
