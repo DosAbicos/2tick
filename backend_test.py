@@ -1808,22 +1808,41 @@ class BackendTester:
                     # 2. POST /sign/{contract_id}/verify-telegram-otp
                     self.log("   🔐 Верификация Telegram OTP...")
                     
-                    # Получить OTP из БД через API (в реальности бот отправил бы его)
-                    # Попробуем получить OTP из verifications коллекции
-                    try:
-                        # Используем стандартный 6-значный код для тестирования
-                        # Проверим что в deep_link есть contract_id, значит OTP создан
-                        if contract_id in deep_link:
-                            # Для тестирования используем любой 6-значный код
-                            mock_otp = "123456"
-                        else:
-                            mock_otp = "123456"
-                    except:
-                        mock_otp = "123456"
+                    # Получить OTP из БД - он был создан при запросе deep_link
+                    # Для тестирования нужно получить реальный OTP из verifications коллекции
+                    # Но поскольку у нас нет прямого доступа к БД, используем тестовый подход:
+                    # Попробуем несколько стандартных тестовых кодов
+                    test_codes = ["123456", "000000", "111111", "999999"]
                     
-                    verify_data = {
-                        "code": mock_otp  # Telegram endpoint expects 'code', not 'otp_code'
-                    }
+                    verification_success = False
+                    for test_code in test_codes:
+                        verify_data = {
+                            "code": test_code  # Telegram endpoint expects 'code', not 'otp_code'
+                        }
+                        
+                        verify_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/verify-telegram-otp", json=verify_data)
+                        
+                        if verify_response.status_code == 200:
+                            verify_result = verify_response.json()
+                            verified = verify_result.get("verified")
+                            signature_hash = verify_result.get("signature_hash")
+                            
+                            self.log(f"   ✅ Telegram верификация успешна с кодом {test_code}")
+                            self.log(f"   ✅ verified: {verified}")
+                            self.log(f"   🔑 signature_hash: {signature_hash[:20] if signature_hash else 'None'}...")
+                            
+                            if verified and signature_hash:
+                                self.log("   ✅ ТЕСТ 5 ПРОЙДЕН: Telegram верификация работает без ошибки 'not authenticated'")
+                                verification_success = True
+                                break
+                        else:
+                            self.log(f"   ⚠️ Код {test_code} не подошел: {verify_response.status_code}")
+                    
+                    if verification_success:
+                        return True, contract_id
+                    else:
+                        self.log("   ❌ ТЕСТ 5 ПРОВАЛЕН: Ни один тестовый код не подошел")
+                        return False, contract_id
                     
                     verify_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/verify-telegram-otp", json=verify_data)
                     
