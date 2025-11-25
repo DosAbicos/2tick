@@ -1476,6 +1476,431 @@ class BackendTester:
             self.log(f"   ❌ Исключение в тесте альтернативных ключей: {str(e)}")
             return False
 
+    def test_contract_signing_fixes_e2e(self):
+        """
+        КРИТИЧЕСКОЕ E2E ТЕСТИРОВАНИЕ: Исправление всех багов подписания контрактов
+        
+        Тестирует исправления для трех ошибок:
+        1. Telegram: "not authenticated"
+        2. SMS: "Signer phone number is required"  
+        3. Call: "Signer phone not found"
+        
+        Новые исправления:
+        - Автоматическое сохранение signer_phone из placeholder_values
+        - Автоматическое создание signature при GET /sign/{contract_id}
+        """
+        self.log("\n🚨 КРИТИЧЕСКОЕ E2E ТЕСТИРОВАНИЕ: Исправление багов подписания контрактов")
+        self.log("=" * 80)
+        
+        all_tests_passed = True
+        
+        # ТЕСТ 1: Создание контракта с placeholder'ами (имитация реального сценария)
+        self.log("\n📝 ТЕСТ 1: Создание контракта с placeholder'ами...")
+        test1_passed, contract_id = self.test_create_contract_with_placeholders()
+        all_tests_passed = all_tests_passed and test1_passed
+        
+        if not contract_id:
+            self.log("❌ Не удалось создать контракт, прерываем тестирование")
+            return False
+        
+        # ТЕСТ 2: Прямой доступ к контракту (как клиент)
+        self.log(f"\n🔗 ТЕСТ 2: Прямой доступ к контракту {contract_id}...")
+        test2_passed = self.test_direct_contract_access(contract_id)
+        all_tests_passed = all_tests_passed and test2_passed
+        
+        # ТЕСТ 3: SMS Верификация (полный flow)
+        self.log(f"\n📱 ТЕСТ 3: SMS Верификация для контракта {contract_id}...")
+        test3_passed = self.test_sms_verification_flow(contract_id)
+        all_tests_passed = all_tests_passed and test3_passed
+        
+        # ТЕСТ 4: Call Верификация (полный flow)
+        self.log(f"\n📞 ТЕСТ 4: Call Верификация для нового контракта...")
+        test4_passed, call_contract_id = self.test_call_verification_flow()
+        all_tests_passed = all_tests_passed and test4_passed
+        
+        # ТЕСТ 5: Telegram Верификация (полный flow)
+        self.log(f"\n💬 ТЕСТ 5: Telegram Верификация для нового контракта...")
+        test5_passed, telegram_contract_id = self.test_telegram_verification_flow()
+        all_tests_passed = all_tests_passed and test5_passed
+        
+        # ТЕСТ 6: Контракт БЕЗ placeholder телефона
+        self.log(f"\n📝 ТЕСТ 6: Контракт БЕЗ placeholder телефона...")
+        test6_passed = self.test_contract_without_placeholder_phone()
+        all_tests_passed = all_tests_passed and test6_passed
+        
+        # Итоговый результат
+        self.log("\n" + "=" * 80)
+        self.log("📊 РЕЗУЛЬТАТЫ КРИТИЧЕСКОГО E2E ТЕСТИРОВАНИЯ:")
+        self.log(f"   ТЕСТ 1 (Создание с placeholder): {'✅ ПРОЙДЕН' if test1_passed else '❌ ПРОВАЛЕН'}")
+        self.log(f"   ТЕСТ 2 (Прямой доступ): {'✅ ПРОЙДЕН' if test2_passed else '❌ ПРОВАЛЕН'}")
+        self.log(f"   ТЕСТ 3 (SMS верификация): {'✅ ПРОЙДЕН' if test3_passed else '❌ ПРОВАЛЕН'}")
+        self.log(f"   ТЕСТ 4 (Call верификация): {'✅ ПРОЙДЕН' if test4_passed else '❌ ПРОВАЛЕН'}")
+        self.log(f"   ТЕСТ 5 (Telegram верификация): {'✅ ПРОЙДЕН' if test5_passed else '❌ ПРОВАЛЕН'}")
+        self.log(f"   ТЕСТ 6 (Без placeholder): {'✅ ПРОЙДЕН' if test6_passed else '❌ ПРОВАЛЕН'}")
+        
+        if all_tests_passed:
+            self.log("🎉 ВСЕ КРИТИЧЕСКИЕ ТЕСТЫ ПОДПИСАНИЯ ПРОЙДЕНЫ!")
+            self.log("✅ Signature создается автоматически при GET /sign/{contract_id}")
+            self.log("✅ Телефон извлекается из placeholder_values для всех методов")
+            self.log("✅ SMS: работает без ошибки 'Signer phone number is required'")
+            self.log("✅ Call: работает без ошибки 'Signer phone not found'")
+            self.log("✅ Telegram: работает без ошибки 'not authenticated'")
+            self.log("✅ Все три метода возвращают verified:true")
+        else:
+            self.log("❌ ОБНАРУЖЕНЫ КРИТИЧЕСКИЕ ПРОБЛЕМЫ! Проверьте логи выше.")
+        
+        return all_tests_passed
+    
+    def test_create_contract_with_placeholders(self):
+        """ТЕСТ 1: Создание контракта с placeholder'ами"""
+        try:
+            contract_data = {
+                "title": "Тестовый договор E2E",
+                "content": "Договор аренды для {{ФИО_НАНИМАТЕЛЯ}}, тел: {{НОМЕР_КЛИЕНТА}}",
+                "placeholder_values": {
+                    "ФИО_НАНИМАТЕЛЯ": "Тестовый Клиент",
+                    "НОМЕР_КЛИЕНТА": "+77012345678"
+                }
+            }
+            
+            response = self.session.post(f"{BASE_URL}/contracts", json=contract_data)
+            
+            if response.status_code == 200:
+                contract = response.json()
+                contract_id = contract["id"]
+                
+                # Проверить что placeholder_values сохранились
+                placeholder_values = contract.get("placeholder_values", {})
+                phone_value = placeholder_values.get("НОМЕР_КЛИЕНТА")
+                
+                self.log(f"   ✅ Контракт создан: {contract_id}")
+                self.log(f"   📋 placeholder_values: {placeholder_values}")
+                self.log(f"   📞 НОМЕР_КЛИЕНТА: {phone_value}")
+                
+                if phone_value == "+77012345678":
+                    self.log("   ✅ ТЕСТ 1 ПРОЙДЕН: Контракт создан с placeholder телефоном")
+                    return True, contract_id
+                else:
+                    self.log(f"   ❌ ТЕСТ 1 ПРОВАЛЕН: Неверный телефон в placeholder_values")
+                    return False, contract_id
+            else:
+                self.log(f"   ❌ ТЕСТ 1 ПРОВАЛЕН: Создание контракта не удалось: {response.status_code} - {response.text}")
+                return False, None
+                
+        except Exception as e:
+            self.log(f"   ❌ ТЕСТ 1 ПРОВАЛЕН: Исключение: {str(e)}")
+            return False, None
+    
+    def test_direct_contract_access(self, contract_id):
+        """ТЕСТ 2: Прямой доступ к контракту (должен автоматически создать signature)"""
+        try:
+            # Первый GET /sign/{contract_id} - должен создать signature
+            response = self.session.get(f"{BASE_URL}/sign/{contract_id}")
+            
+            if response.status_code == 200:
+                contract = response.json()
+                signer_phone = contract.get("signer_phone")
+                
+                self.log(f"   ✅ GET /sign/{contract_id} успешен")
+                self.log(f"   📞 signer_phone: {signer_phone}")
+                
+                # Проверить что signature существует в БД
+                signature_response = self.session.get(f"{BASE_URL}/contracts/{contract_id}/signature")
+                
+                if signature_response.status_code == 200:
+                    signature = signature_response.json()
+                    self.log(f"   ✅ Signature существует в БД: {signature.get('id', 'N/A')}")
+                    
+                    # Проверить что signer_phone установлен из placeholder_values
+                    if signer_phone == "+77012345678":
+                        self.log("   ✅ ТЕСТ 2 ПРОЙДЕН: Signature создан, signer_phone установлен из placeholder_values")
+                        return True
+                    else:
+                        self.log(f"   ❌ ТЕСТ 2 ПРОВАЛЕН: signer_phone неверный: {signer_phone}")
+                        return False
+                else:
+                    self.log(f"   ❌ ТЕСТ 2 ПРОВАЛЕН: Signature не найден: {signature_response.status_code}")
+                    return False
+            else:
+                self.log(f"   ❌ ТЕСТ 2 ПРОВАЛЕН: GET /sign/{contract_id} не удался: {response.status_code} - {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log(f"   ❌ ТЕСТ 2 ПРОВАЛЕН: Исключение: {str(e)}")
+            return False
+    
+    def test_sms_verification_flow(self, contract_id):
+        """ТЕСТ 3: SMS Верификация (полный flow)"""
+        try:
+            # 1. POST /sign/{contract_id}/request-otp?method=sms
+            self.log("   📱 Запрос SMS OTP...")
+            otp_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/request-otp?method=sms")
+            
+            if otp_response.status_code == 200:
+                otp_data = otp_response.json()
+                mock_otp = otp_data.get("mock_otp")
+                
+                self.log(f"   ✅ SMS OTP запрос успешен (статус 200)")
+                self.log(f"   📱 Mock OTP: {mock_otp}")
+                
+                if mock_otp:
+                    # 2. POST /sign/{contract_id}/verify-otp
+                    self.log("   🔐 Верификация SMS OTP...")
+                    verify_data = {
+                        "contract_id": contract_id,
+                        "phone": "+77012345678",
+                        "otp_code": mock_otp
+                    }
+                    
+                    verify_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/verify-otp", json=verify_data)
+                    
+                    if verify_response.status_code == 200:
+                        verify_result = verify_response.json()
+                        verified = verify_result.get("verified")
+                        signature_hash = verify_result.get("signature_hash")
+                        
+                        self.log(f"   ✅ SMS верификация успешна")
+                        self.log(f"   ✅ verified: {verified}")
+                        self.log(f"   🔑 signature_hash: {signature_hash[:20] if signature_hash else 'None'}...")
+                        
+                        if verified and signature_hash:
+                            self.log("   ✅ ТЕСТ 3 ПРОЙДЕН: SMS верификация работает без ошибки 'Signer phone number is required'")
+                            return True
+                        else:
+                            self.log("   ❌ ТЕСТ 3 ПРОВАЛЕН: verified=false или нет signature_hash")
+                            return False
+                    else:
+                        self.log(f"   ❌ ТЕСТ 3 ПРОВАЛЕН: Верификация OTP не удалась: {verify_response.status_code} - {verify_response.text}")
+                        return False
+                else:
+                    self.log("   ❌ ТЕСТ 3 ПРОВАЛЕН: Нет mock_otp в ответе")
+                    return False
+            else:
+                self.log(f"   ❌ ТЕСТ 3 ПРОВАЛЕН: SMS OTP запрос не удался: {otp_response.status_code} - {otp_response.text}")
+                return False
+                
+        except Exception as e:
+            self.log(f"   ❌ ТЕСТ 3 ПРОВАЛЕН: Исключение: {str(e)}")
+            return False
+    
+    def test_call_verification_flow(self):
+        """ТЕСТ 4: Call Верификация (полный flow)"""
+        try:
+            # Создать новый контракт с телефоном в placeholder_values
+            contract_data = {
+                "title": "Тест Call верификации",
+                "content": "Договор для тестирования звонков {{НОМЕР_КЛИЕНТА}}",
+                "placeholder_values": {
+                    "НОМЕР_КЛИЕНТА": "+77012345679"
+                }
+            }
+            
+            create_response = self.session.post(f"{BASE_URL}/contracts", json=contract_data)
+            if create_response.status_code != 200:
+                self.log(f"   ❌ Создание контракта не удалось: {create_response.status_code}")
+                return False, None
+                
+            contract = create_response.json()
+            contract_id = contract["id"]
+            self.log(f"   ✅ Контракт для Call создан: {contract_id}")
+            
+            # GET /sign/{contract_id} для создания signature
+            get_response = self.session.get(f"{BASE_URL}/sign/{contract_id}")
+            if get_response.status_code != 200:
+                self.log(f"   ❌ GET /sign/{contract_id} не удался: {get_response.status_code}")
+                return False, contract_id
+            
+            # 1. POST /sign/{contract_id}/request-call-otp
+            self.log("   📞 Запрос Call OTP...")
+            call_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/request-call-otp")
+            
+            if call_response.status_code == 200:
+                call_data = call_response.json()
+                hint = call_data.get("hint")
+                
+                self.log(f"   ✅ Call OTP запрос успешен (статус 200)")
+                self.log(f"   📞 Hint (последние 4 цифры): {hint}")
+                
+                if hint:
+                    # 2. POST /sign/{contract_id}/verify-call-otp
+                    self.log("   🔐 Верификация Call OTP...")
+                    verify_data = {
+                        "code": hint  # Используем hint как код
+                    }
+                    
+                    verify_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/verify-call-otp", json=verify_data)
+                    
+                    if verify_response.status_code == 200:
+                        verify_result = verify_response.json()
+                        verified = verify_result.get("verified")
+                        
+                        self.log(f"   ✅ Call верификация успешна")
+                        self.log(f"   ✅ verified: {verified}")
+                        
+                        if verified:
+                            self.log("   ✅ ТЕСТ 4 ПРОЙДЕН: Call верификация работает без ошибки 'Signer phone not found'")
+                            return True, contract_id
+                        else:
+                            self.log("   ❌ ТЕСТ 4 ПРОВАЛЕН: verified=false")
+                            return False, contract_id
+                    else:
+                        self.log(f"   ❌ ТЕСТ 4 ПРОВАЛЕН: Верификация Call не удалась: {verify_response.status_code} - {verify_response.text}")
+                        return False, contract_id
+                else:
+                    self.log("   ❌ ТЕСТ 4 ПРОВАЛЕН: Нет hint в ответе")
+                    return False, contract_id
+            else:
+                self.log(f"   ❌ ТЕСТ 4 ПРОВАЛЕН: Call OTP запрос не удался: {call_response.status_code} - {call_response.text}")
+                return False, contract_id
+                
+        except Exception as e:
+            self.log(f"   ❌ ТЕСТ 4 ПРОВАЛЕН: Исключение: {str(e)}")
+            return False, None
+    
+    def test_telegram_verification_flow(self):
+        """ТЕСТ 5: Telegram Верификация (полный flow)"""
+        try:
+            # Создать новый контракт
+            contract_data = {
+                "title": "Тест Telegram верификации",
+                "content": "Договор для тестирования Telegram {{НОМЕР_КЛИЕНТА}}",
+                "placeholder_values": {
+                    "НОМЕР_КЛИЕНТА": "+77012345680"
+                }
+            }
+            
+            create_response = self.session.post(f"{BASE_URL}/contracts", json=contract_data)
+            if create_response.status_code != 200:
+                self.log(f"   ❌ Создание контракта не удалось: {create_response.status_code}")
+                return False, None
+                
+            contract = create_response.json()
+            contract_id = contract["id"]
+            self.log(f"   ✅ Контракт для Telegram создан: {contract_id}")
+            
+            # GET /sign/{contract_id} для создания signature
+            get_response = self.session.get(f"{BASE_URL}/sign/{contract_id}")
+            if get_response.status_code != 200:
+                self.log(f"   ❌ GET /sign/{contract_id} не удался: {get_response.status_code}")
+                return False, contract_id
+            
+            # 1. GET /sign/{contract_id}/telegram-deep-link
+            self.log("   💬 Запрос Telegram deep link...")
+            deep_link_response = self.session.get(f"{BASE_URL}/sign/{contract_id}/telegram-deep-link")
+            
+            if deep_link_response.status_code == 200:
+                deep_link_data = deep_link_response.json()
+                deep_link = deep_link_data.get("deep_link")
+                
+                self.log(f"   ✅ Telegram deep link получен (статус 200)")
+                self.log(f"   🔗 Deep link: {deep_link}")
+                
+                if deep_link and "t.me/twotick_bot?start=" in deep_link:
+                    # Проверить что в БД создалась запись verifications с OTP
+                    # Для тестирования используем mock OTP
+                    
+                    # 2. POST /sign/{contract_id}/verify-telegram-otp
+                    self.log("   🔐 Верификация Telegram OTP...")
+                    
+                    # Получить OTP из БД (в реальности бот отправил бы его)
+                    # Для тестирования используем стандартный mock OTP
+                    mock_otp = "123456"  # Стандартный mock OTP
+                    
+                    verify_data = {
+                        "otp_code": mock_otp
+                    }
+                    
+                    verify_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/verify-telegram-otp", json=verify_data)
+                    
+                    if verify_response.status_code == 200:
+                        verify_result = verify_response.json()
+                        verified = verify_result.get("verified")
+                        signature_hash = verify_result.get("signature_hash")
+                        
+                        self.log(f"   ✅ Telegram верификация успешна")
+                        self.log(f"   ✅ verified: {verified}")
+                        self.log(f"   🔑 signature_hash: {signature_hash[:20] if signature_hash else 'None'}...")
+                        
+                        if verified and signature_hash:
+                            self.log("   ✅ ТЕСТ 5 ПРОЙДЕН: Telegram верификация работает без ошибки 'not authenticated'")
+                            return True, contract_id
+                        else:
+                            self.log("   ❌ ТЕСТ 5 ПРОВАЛЕН: verified=false или нет signature_hash")
+                            return False, contract_id
+                    else:
+                        self.log(f"   ❌ ТЕСТ 5 ПРОВАЛЕН: Верификация Telegram не удалась: {verify_response.status_code} - {verify_response.text}")
+                        return False, contract_id
+                else:
+                    self.log("   ❌ ТЕСТ 5 ПРОВАЛЕН: Неверный deep_link")
+                    return False, contract_id
+            else:
+                self.log(f"   ❌ ТЕСТ 5 ПРОВАЛЕН: Telegram deep link запрос не удался: {deep_link_response.status_code} - {deep_link_response.text}")
+                return False, contract_id
+                
+        except Exception as e:
+            self.log(f"   ❌ ТЕСТ 5 ПРОВАЛЕН: Исключение: {str(e)}")
+            return False, None
+    
+    def test_contract_without_placeholder_phone(self):
+        """ТЕСТ 6: Контракт БЕЗ placeholder телефона"""
+        try:
+            # 1. Создать контракт БЕЗ телефона в placeholder_values
+            contract_data = {
+                "title": "Тест без placeholder телефона",
+                "content": "Договор без телефона в placeholder_values",
+                "placeholder_values": {
+                    "ФИО_НАНИМАТЕЛЯ": "Клиент Без Телефона"
+                    # НЕТ НОМЕР_КЛИЕНТА
+                }
+            }
+            
+            create_response = self.session.post(f"{BASE_URL}/contracts", json=contract_data)
+            if create_response.status_code != 200:
+                self.log(f"   ❌ Создание контракта не удалось: {create_response.status_code}")
+                return False
+                
+            contract = create_response.json()
+            contract_id = contract["id"]
+            self.log(f"   ✅ Контракт без placeholder телефона создан: {contract_id}")
+            
+            # 2. POST /sign/{contract_id}/update-signer-info с телефоном
+            self.log("   📞 Обновление signer_phone через update-signer-info...")
+            update_data = {
+                "signer_phone": "+77012345679"
+            }
+            
+            update_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/update-signer-info", json=update_data)
+            if update_response.status_code != 200:
+                self.log(f"   ❌ Обновление signer_phone не удалось: {update_response.status_code} - {update_response.text}")
+                return False
+            
+            self.log("   ✅ signer_phone обновлен")
+            
+            # 3. POST /sign/{contract_id}/request-otp?method=sms
+            self.log("   📱 Запрос SMS OTP с сохраненным signer_phone...")
+            otp_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/request-otp?method=sms")
+            
+            if otp_response.status_code == 200:
+                otp_data = otp_response.json()
+                mock_otp = otp_data.get("mock_otp")
+                
+                self.log(f"   ✅ SMS OTP запрос успешен (статус 200)")
+                self.log(f"   📱 Mock OTP: {mock_otp}")
+                
+                if mock_otp:
+                    self.log("   ✅ ТЕСТ 6 ПРОЙДЕН: SMS работает с сохраненным signer_phone")
+                    return True
+                else:
+                    self.log("   ❌ ТЕСТ 6 ПРОВАЛЕН: Нет mock_otp")
+                    return False
+            else:
+                self.log(f"   ❌ ТЕСТ 6 ПРОВАЛЕН: SMS OTP запрос не удался: {otp_response.status_code} - {otp_response.text}")
+                return False
+                
+        except Exception as e:
+            self.log(f"   ❌ ТЕСТ 6 ПРОВАЛЕН: Исключение: {str(e)}")
+            return False
+
     def run_2tick_backend_tests(self):
         """Run comprehensive backend tests for 2tick.kz after frontend redesign"""
         self.log("🚀 Starting 2tick.kz Backend Tests After Frontend Redesign")
