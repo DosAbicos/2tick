@@ -921,7 +921,8 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Исправление критического бага 405 Method Not Allowed при подписании контрактов"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
