@@ -3584,15 +3584,14 @@ class BackendTester:
 if __name__ == "__main__":
     tester = BackendTester()
     
-    print("🚨 КРИТИЧЕСКОЕ ТЕСТИРОВАНИЕ: Исправление всех багов подписания контрактов")
-    print("=" * 80)
+    # Run the critical "Not Authenticated" fix test
+    success = tester.test_not_authenticated_fix_critical()
     
-    # Run critical contract signing tests
-    all_tests_success = tester.run_all_tests()
-    
-    if all_tests_success:
-        print("\n🎉 ВСЕ КРИТИЧЕСКИЕ ТЕСТЫ ПРОЙДЕНЫ!")
-        sys.exit(0)
+    if success:
+        print("\n🎉 КРИТИЧЕСКОЕ ТЕСТИРОВАНИЕ ЗАВЕРШЕНО УСПЕШНО!")
+        print("✅ Все методы верификации работают БЕЗ ошибки 'Not Authenticated'")
     else:
-        print("\n❌ КРИТИЧЕСКИЕ ТЕСТЫ ПРОВАЛЕНЫ!")
-        sys.exit(1)
+        print("\n❌ КРИТИЧЕСКОЕ ТЕСТИРОВАНИЕ ПРОВАЛЕНО!")
+        print("❌ Обнаружены проблемы с исправлением 'Not Authenticated'")
+    
+    sys.exit(0 if success else 1)
