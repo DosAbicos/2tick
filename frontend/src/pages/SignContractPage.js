@@ -1099,9 +1099,16 @@ const SignContractPage = () => {
                   </button>
                   <button
                     onClick={async () => {
-                      // Ensure signer info is saved before verification
+                      // Ensure placeholder values and signer info are saved before verification
                       try {
-                        // Extract phone from placeholderValues or use existing signer_phone
+                        // Save placeholder values if we have any unfilled placeholders
+                        if (unfilledPlaceholders.length > 0 && template && placeholderValues) {
+                          await axios.post(`${API}/sign/${id}/update-placeholder-values`, {
+                            placeholder_values: { ...contract.placeholder_values, ...placeholderValues }
+                          });
+                        }
+                        
+                        // Extract phone and save signer info
                         let phoneToSave = contract.signer_phone;
                         
                         // Try to find phone in placeholderValues if not set
@@ -1129,9 +1136,9 @@ const SignContractPage = () => {
                         
                         setStep(5);
                       } catch (error) {
-                        console.error('Error saving signer info before verification:', error);
-                        // Continue to verification even if save fails
-                        setStep(5);
+                        console.error('Error saving data before verification:', error);
+                        toast.error('Ошибка сохранения данных. Попробуйте снова.');
+                        // Don't continue if save fails - user needs valid phone for verification
                       }
                     }}
                     className="flex-1 py-4 text-base font-semibold text-white bg-gradient-to-r from-green-600 to-green-500 rounded-xl hover:from-green-700 hover:to-green-600 transition-all shadow-lg shadow-green-500/30"
