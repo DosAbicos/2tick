@@ -2296,6 +2296,40 @@ class SignerInfoUpdate(BaseModel):
     signer_email: Optional[str] = None
     placeholder_values: Optional[dict] = None
 
+@api_router.post("/sign/{contract_id}/update-placeholder-values")
+async def update_placeholder_values_for_signing(contract_id: str, data: dict):
+    """Public endpoint for updating placeholder values during contract signing"""
+    contract = await db.contracts.find_one({"id": contract_id})
+    if not contract:
+        raise HTTPException(status_code=404, detail="Contract not found")
+    
+    placeholder_values = data.get('placeholder_values', {})
+    
+    if placeholder_values:
+        # Update placeholder_values in contract
+        await db.contracts.update_one(
+            {"id": contract_id},
+            {"$set": {
+                "placeholder_values": placeholder_values,
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }}
+        )
+        
+        # Also update signer_phone if it's in placeholder_values
+        phone = None
+        for key in ['tenant_phone', 'signer_phone', 'client_phone', 'phone', 'НОМЕР_КЛИЕНТА']:
+            if key in placeholder_values and placeholder_values[key]:
+                phone = placeholder_values[key]
+                break
+        
+        if phone:
+            await db.contracts.update_one(
+                {"id": contract_id},
+                {"$set": {"signer_phone": phone}}
+            )
+    
+    return {"message": "Placeholder values updated successfully"}
+
 @api_router.post("/sign/{contract_id}/update-signer-info")
 async def update_signer_info(contract_id: str, data: SignerInfoUpdate):
     print(f"🔧 Update signer info called: name={data.signer_name}, phone={data.signer_phone}, email={data.signer_email}, placeholder_values={data.placeholder_values}")
