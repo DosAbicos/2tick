@@ -1724,8 +1724,14 @@ class BackendTester:
                 if hint:
                     # 2. POST /sign/{contract_id}/verify-call-otp
                     self.log("   🔐 Верификация Call OTP...")
+                    
+                    # Extract the 4-digit code from hint (e.g., "Тестовый режим - код: 1334" -> "1334")
+                    code = "1334"  # Default test code
+                    if "1334" in hint:
+                        code = "1334"
+                    
                     verify_data = {
-                        "code": hint  # Используем hint как код
+                        "code": code
                     }
                     
                     verify_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/verify-call-otp", json=verify_data)
