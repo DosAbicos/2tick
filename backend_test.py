@@ -36,7 +36,7 @@ import socket
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://fourstepreg.preview.emergentagent.com/api"
+BASE_URL = "https://signflow-31.preview.emergentagent.com/api"
 ADMIN_EMAIL = "asl@asl.kz"
 ADMIN_PASSWORD = "12345678"
 
