@@ -3062,20 +3062,65 @@ class BackendTester:
 
     def run_all_tests(self):
         """Run all backend tests for 2tick.kz"""
-        return self.test_full_registration_flow_with_verification()
+        self.log("🚀 Starting Backend Testing for 2tick.kz")
+        self.log("=" * 60)
+        
+        # Login as admin first
+        if not self.login_as_admin():
+            self.log("❌ Cannot proceed without admin login")
+            return False
+        
+        all_passed = True
+        
+        # КРИТИЧЕСКОЕ ТЕСТИРОВАНИЕ: Contract Signing Fixes
+        critical_test_passed = self.test_contract_signing_fixes_e2e()
+        all_passed = all_passed and critical_test_passed
+        
+        # Test 1: Authentication endpoints
+        test1_passed = self.test_authentication_endpoints()
+        all_passed = all_passed and test1_passed
+        
+        # Test 2: Contracts endpoints  
+        test2_passed, contract_id = self.test_contracts_endpoints()
+        all_passed = all_passed and test2_passed
+        
+        # Test 3: Signing flow endpoints (if we have a contract)
+        if contract_id:
+            test3_passed = self.test_signing_flow_endpoints(contract_id)
+            all_passed = all_passed and test3_passed
+        
+        # Test 4: Templates endpoints
+        test4_passed = self.test_templates_endpoints()
+        all_passed = all_passed and test4_passed
+        
+        # Final summary
+        self.log("\n" + "=" * 60)
+        self.log("📊 FINAL TEST RESULTS:")
+        self.log(f"   🚨 CRITICAL Contract Signing: {'✅ PASSED' if critical_test_passed else '❌ FAILED'}")
+        self.log(f"   Authentication: {'✅ PASSED' if test1_passed else '❌ FAILED'}")
+        self.log(f"   Contracts: {'✅ PASSED' if test2_passed else '❌ FAILED'}")
+        self.log(f"   Signing Flow: {'✅ PASSED' if (contract_id and test3_passed) else '❌ FAILED'}")
+        self.log(f"   Templates: {'✅ PASSED' if test4_passed else '❌ FAILED'}")
+        
+        if all_passed:
+            self.log("🎉 ALL TESTS PASSED!")
+        else:
+            self.log("❌ SOME TESTS FAILED - CHECK LOGS ABOVE")
+        
+        return all_passed
 
 if __name__ == "__main__":
     tester = BackendTester()
     
-    print("🔐 ТЕСТИРОВАНИЕ РЕГИСТРАЦИИ С ВЕРИФИКАЦИЕЙ ТЕЛЕФОНА")
+    print("🚨 КРИТИЧЕСКОЕ ТЕСТИРОВАНИЕ: Исправление всех багов подписания контрактов")
     print("=" * 80)
     
-    # Run registration verification tests
-    registration_success = tester.run_all_tests()
+    # Run critical contract signing tests
+    all_tests_success = tester.run_all_tests()
     
-    if registration_success:
-        print("\n🎉 ВСЕ ТЕСТЫ РЕГИСТРАЦИИ ПРОЙДЕНЫ!")
+    if all_tests_success:
+        print("\n🎉 ВСЕ КРИТИЧЕСКИЕ ТЕСТЫ ПРОЙДЕНЫ!")
         sys.exit(0)
     else:
-        print("\n❌ ТЕСТЫ РЕГИСТРАЦИИ ПРОВАЛЕНЫ!")
+        print("\n❌ КРИТИЧЕСКИЕ ТЕСТЫ ПРОВАЛЕНЫ!")
         sys.exit(1)
