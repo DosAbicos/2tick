@@ -2245,15 +2245,39 @@ async def get_contract_for_signing(contract_id: str):
     
     # If signature doesn't exist, create it automatically (for direct signing links)
     if not signature:
+        # ИСПРАВЛЕНИЕ #3: Автоматическое сохранение signer_phone перед верификацией
+        # Извлекаем телефон из placeholder_values если он не установлен в contract
+        signer_phone = contract.get('signer_phone', '')
+        
+        if not signer_phone and contract.get('placeholder_values'):
+            placeholder_values = contract.get('placeholder_values', {})
+            # Поиск по ключам: tenant_phone, signer_phone, client_phone, phone, НОМЕР_КЛИЕНТА
+            for key in ['tenant_phone', 'signer_phone', 'client_phone', 'phone', 'НОМЕР_КЛИЕНТА']:
+                if key in placeholder_values and placeholder_values[key]:
+                    signer_phone = placeholder_values[key]
+                    print(f"🔧 Extracted signer_phone from placeholder_values[{key}]: {signer_phone}")
+                    break
+        
+        # ИСПРАВЛЕНИЕ #4: Автоматическое создание signature для прямых ссылок
         initial_signature = {
             "contract_id": contract_id,
-            "signer_phone": contract.get('signer_phone', ''),
+            "signer_phone": signer_phone,
             "signer_name": contract.get('signer_name', ''),
             "verification_method": None,
             "verified": False,
             "created_at": datetime.now(timezone.utc).isoformat()
         }
         await db.signatures.insert_one(initial_signature)
+        
+        # Также обновляем contract.signer_phone если он был извлечен из placeholder_values
+        if signer_phone and not contract.get('signer_phone'):
+            await db.contracts.update_one(
+                {"id": contract_id},
+                {"$set": {"signer_phone": signer_phone}}
+            )
+            contract['signer_phone'] = signer_phone  # Update local copy
+            print(f"🔧 Updated contract.signer_phone: {signer_phone}")
+        
         signature = await db.signatures.find_one({"contract_id": contract_id}, {"_id": 0})
     
     if signature:
