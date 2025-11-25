@@ -2242,6 +2242,20 @@ async def get_contract_for_signing(contract_id: str):
     
     # Get signature data (including document_upload if exists)
     signature = await db.signatures.find_one({"contract_id": contract_id}, {"_id": 0})
+    
+    # If signature doesn't exist, create it automatically (for direct signing links)
+    if not signature:
+        initial_signature = {
+            "contract_id": contract_id,
+            "signer_phone": contract.get('signer_phone', ''),
+            "signer_name": contract.get('signer_name', ''),
+            "verification_method": None,
+            "verified": False,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }
+        await db.signatures.insert_one(initial_signature)
+        signature = await db.signatures.find_one({"contract_id": contract_id}, {"_id": 0})
+    
     if signature:
         # Don't include full document_upload in response (too large), just flag
         contract['signature'] = {
