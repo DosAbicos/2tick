@@ -37,8 +37,8 @@ from datetime import datetime
 
 # Configuration
 BASE_URL = "https://signflow-31.preview.emergentagent.com/api"
-ADMIN_EMAIL = "asl@asl.kz"
-ADMIN_PASSWORD = "12345678"
+ADMIN_EMAIL = "test.admin@2tick.kz"
+ADMIN_PASSWORD = "testadmin123"
 
 class BackendTester:
     def __init__(self):
