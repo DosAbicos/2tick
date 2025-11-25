@@ -1822,7 +1822,7 @@ class BackendTester:
                         mock_otp = "123456"
                     
                     verify_data = {
-                        "otp_code": mock_otp
+                        "code": mock_otp  # Telegram endpoint expects 'code', not 'otp_code'
                     }
                     
                     verify_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/verify-telegram-otp", json=verify_data)
