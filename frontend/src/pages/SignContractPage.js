@@ -1098,7 +1098,42 @@ const SignContractPage = () => {
                     ← Назад
                   </button>
                   <button
-                    onClick={() => setStep(5)}
+                    onClick={async () => {
+                      // Ensure signer info is saved before verification
+                      try {
+                        // Extract phone from placeholderValues or use existing signer_phone
+                        let phoneToSave = contract.signer_phone;
+                        
+                        // Try to find phone in placeholderValues if not set
+                        if (!phoneToSave && placeholderValues) {
+                          const phoneKeys = ['tenant_phone', 'signer_phone', 'client_phone', 'phone', 'НОМЕР_КЛИЕНТА'];
+                          for (const key of phoneKeys) {
+                            if (placeholderValues[key]) {
+                              phoneToSave = placeholderValues[key];
+                              break;
+                            }
+                          }
+                        }
+                        
+                        // If still no phone, check signerInfo state
+                        if (!phoneToSave && signerInfo.phone) {
+                          phoneToSave = signerInfo.phone;
+                        }
+                        
+                        // Save signer info if we have phone
+                        if (phoneToSave) {
+                          await axios.post(`${API}/sign/${id}/update-signer-info`, {
+                            signer_phone: phoneToSave
+                          });
+                        }
+                        
+                        setStep(5);
+                      } catch (error) {
+                        console.error('Error saving signer info before verification:', error);
+                        // Continue to verification even if save fails
+                        setStep(5);
+                      }
+                    }}
                     className="flex-1 py-4 text-base font-semibold text-white bg-gradient-to-r from-green-600 to-green-500 rounded-xl hover:from-green-700 hover:to-green-600 transition-all shadow-lg shadow-green-500/30"
                     data-testid="sign-button"
                   >
