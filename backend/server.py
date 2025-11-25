@@ -3056,7 +3056,7 @@ async def verify_otp(contract_id: str, otp_data: OTPVerify):
             f"✅ Верификация через SMS успешна. Наниматель подписал договор {contract.get('contract_code')} и отправил на утверждение"
         )
     
-    return {"message": "Signature verified successfully", "signature_hash": signature_hash}
+    return {"message": "Signature verified successfully", "verified": True, "signature_hash": signature_hash}
 
 @api_router.post("/contracts/{contract_id}/approve-for-signing")
 async def approve_contract_for_signing(contract_id: str, current_user: dict = Depends(get_current_user)):
