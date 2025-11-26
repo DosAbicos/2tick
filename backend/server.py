@@ -3313,8 +3313,13 @@ async def approve_signature(contract_id: str, current_user: dict = Depends(get_c
         # Get landlord info
         landlord = await db.users.find_one({"id": contract.get('creator_id')})
         
+        # Get template if contract has one
+        template = None
+        if contract.get('template_id'):
+            template = await db.templates.find_one({"id": contract['template_id']}, {"_id": 0})
+        
         # Use the centralized PDF generation function
-        pdf_bytes = generate_contract_pdf(contract, signature, landlord_signature_hash, landlord)
+        pdf_bytes = generate_contract_pdf(contract, signature, landlord_signature_hash, landlord, template)
         print(f"🔥 DEBUG: PDF generated, size: {len(pdf_bytes)} bytes")
         
         # Send email to signer
