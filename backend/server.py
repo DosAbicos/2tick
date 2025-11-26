@@ -3502,12 +3502,18 @@ async def download_pdf(contract_id: str, current_user: dict = Depends(get_curren
     
     # Get template if contract has one
     template = None
+    print(f"🔥 DEBUG: contract.template_id = {contract.get('template_id')}")
     if contract.get('template_id'):
         template = await db.templates.find_one({"id": contract['template_id']}, {"_id": 0})
+        print(f"🔥 DEBUG: Template loaded from DB: {bool(template)}")
+        if template:
+            print(f"🔥 DEBUG: Template has {len(template.get('placeholders', {}))} placeholders")
+    else:
+        print(f"🔥 DEBUG: Contract has no template_id!")
     
     # Generate PDF using centralized function
     try:
-        print(f"🔥 Generating PDF...")
+        print(f"🔥 Generating PDF with template={bool(template)}...")
         pdf_bytes = generate_contract_pdf(contract, signature, landlord_signature_hash, landlord, template)
         print(f"✅ PDF generated: {len(pdf_bytes)} bytes")
         
