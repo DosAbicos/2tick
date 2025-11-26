@@ -981,13 +981,13 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus:
-    - "Исправление критического бага 405 Method Not Allowed при подписании контрактов"
+  current_focus: []
   stuck_tasks: []
   test_all: false
-  test_priority: "high_first"
+  test_priority: "critical_first"
   completed_tests:
     - "Скачивание договора через админ с авторизацией токеном"
+    - "КРИТИЧЕСКОЕ: Синхронизация placeholder'ов между ContractDetailsPage и PDF"
     - "Кнопка 'Админка' в Header для админов"
     - "Кнопка 'Профиль пользователя' в поиске договора активна"
     - "Тестирование исправлений PDF загрузки и функционала скачивания на Step 4"
