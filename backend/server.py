@@ -3327,10 +3327,17 @@ async def approve_signature(contract_id: str, current_user: dict = Depends(get_c
         
         # Get template if contract has one
         template = None
+        print(f"🔥 DEBUG: contract.template_id = {contract.get('template_id')}")
         if contract.get('template_id'):
             template = await db.templates.find_one({"id": contract['template_id']}, {"_id": 0})
+            print(f"🔥 DEBUG: Template loaded from DB: {bool(template)}")
+            if template:
+                print(f"🔥 DEBUG: Template has {len(template.get('placeholders', {}))} placeholders")
+        else:
+            print(f"🔥 DEBUG: Contract has no template_id!")
         
         # Use the centralized PDF generation function
+        print(f"🔥 DEBUG: Calling generate_contract_pdf with template={bool(template)}")
         pdf_bytes = generate_contract_pdf(contract, signature, landlord_signature_hash, landlord, template)
         print(f"🔥 DEBUG: PDF generated, size: {len(pdf_bytes)} bytes")
         
