@@ -334,26 +334,36 @@ class ApproveButtonTester:
         try:
             self.log("   📧 Проверка что в email body используется APP_URL из переменной окружения...")
             
-            # Check that APP_URL is set in backend environment
-            app_url = os.environ.get('APP_URL')
+            # Check that APP_URL is set in backend environment by loading the .env file
+            from dotenv import load_dotenv
+            from pathlib import Path
             
-            if not app_url:
-                self.log("   ❌ APP_URL не установлен в переменных окружения")
+            # Load the backend .env file
+            backend_env_path = Path('/app/backend/.env')
+            if backend_env_path.exists():
+                load_dotenv(backend_env_path)
+                app_url = os.environ.get('APP_URL')
+                
+                if not app_url:
+                    self.log("   ❌ APP_URL не установлен в переменных окружения backend")
+                    return False
+                
+                self.log(f"   ✅ APP_URL установлен в backend: {app_url}")
+                
+                # Verify URL format
+                if not app_url.startswith('http'):
+                    self.log(f"   ❌ APP_URL имеет неверный формат: {app_url}")
+                    return False
+                
+                # Check that it's not hardcoded localhost
+                if 'localhost' in app_url:
+                    self.log(f"   ⚠️ APP_URL содержит localhost: {app_url}")
+                
+                self.log("   ✅ ТЕСТ 3 ПРОЙДЕН: APP_URL корректно установлен")
+                return True
+            else:
+                self.log("   ❌ Backend .env файл не найден")
                 return False
-            
-            self.log(f"   ✅ APP_URL установлен: {app_url}")
-            
-            # Verify URL format
-            if not app_url.startswith('http'):
-                self.log(f"   ❌ APP_URL имеет неверный формат: {app_url}")
-                return False
-            
-            # Check that it's not hardcoded localhost
-            if 'localhost' in app_url:
-                self.log(f"   ⚠️ APP_URL содержит localhost: {app_url}")
-            
-            self.log("   ✅ ТЕСТ 3 ПРОЙДЕН: APP_URL корректно установлен")
-            return True
             
         except Exception as e:
             self.log(f"   ❌ Исключение в ТЕСТ 3: {str(e)}")
