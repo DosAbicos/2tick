@@ -825,68 +825,87 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             p.drawString(landlord_x, y_landlord, landlord_signature_hash)
             y_landlord -= 18
             
-            # ФИО / Название компании (aligned with tenant name)
-            p.drawString(landlord_x, y_landlord, "Название компании:")
-            y_landlord -= 12
-            # Show company_name from landlord profile first, then contract
-            if landlord and landlord.get('company_name'):
-                p.drawString(landlord_x, y_landlord, landlord.get('company_name'))
-            elif contract.get('landlord_name'):
-                p.drawString(landlord_x, y_landlord, contract.get('landlord_name'))
+            # Show dynamic placeholders from template if available
+            if template and template.get('placeholders') and contract.get('placeholder_values'):
+                for key, config in template['placeholders'].items():
+                    # Skip calculated fields
+                    if config.get('type') == 'calculated':
+                        continue
+                    # Show only placeholders marked for Signature Info section
+                    if config.get('showInSignatureInfo') == False:
+                        continue
+                    # Show only landlord placeholders
+                    if config.get('owner') != 'landlord':
+                        continue
+                    
+                    value = contract['placeholder_values'].get(key, 'Не заполнено')
+                    label = config.get('label', key)
+                    
+                    p.drawString(landlord_x, y_landlord, f"{label}:")
+                    y_landlord -= 12
+                    p.drawString(landlord_x, y_landlord, str(value))
+                    y_landlord -= 18
             else:
-                p.drawString(landlord_x, y_landlord, "Не указана")
-            y_landlord -= 18
-            
-            # Представитель (aligned)
-            p.drawString(landlord_x, y_landlord, "Представитель:")
-            y_landlord -= 12
-            # Show landlord's full_name from profile if available
-            if landlord and landlord.get('full_name'):
-                p.drawString(landlord_x, y_landlord, landlord.get('full_name'))
-            elif contract.get('landlord_representative'):
-                p.drawString(landlord_x, y_landlord, contract.get('landlord_representative'))
-            else:
-                p.drawString(landlord_x, y_landlord, "Не указан")
-            y_landlord -= 18
-            
-            # Телефон (aligned with tenant phone)
-            p.drawString(landlord_x, y_landlord, "Телефон:")
-            y_landlord -= 12
-            if landlord and landlord.get('phone'):
-                p.drawString(landlord_x, y_landlord, landlord.get('phone'))
-            else:
-                p.drawString(landlord_x, y_landlord, "Не указан")
-            y_landlord -= 18
-            
-            # Email (aligned with tenant email)
-            p.drawString(landlord_x, y_landlord, "Email:")
-            y_landlord -= 12
-            if landlord and landlord.get('email'):
-                p.drawString(landlord_x, y_landlord, landlord.get('email'))
-            else:
-                p.drawString(landlord_x, y_landlord, "Не указан")
-            y_landlord -= 18
-            
-            # ИИН/БИН (aligned)
-            p.drawString(landlord_x, y_landlord, "ИИН/БИН:")
-            y_landlord -= 12
-            # Show IIN from landlord profile first, then contract
-            if landlord and landlord.get('iin'):
-                p.drawString(landlord_x, y_landlord, landlord.get('iin'))
-            elif contract.get('landlord_iin_bin'):
-                p.drawString(landlord_x, y_landlord, contract.get('landlord_iin_bin'))
-            else:
-                p.drawString(landlord_x, y_landlord, "Не указан")
-            y_landlord -= 18
-            
-            # Юридический адрес (aligned)
-            p.drawString(landlord_x, y_landlord, "Юридический адрес:")
-            y_landlord -= 12
-            if landlord and landlord.get('legal_address'):
-                p.drawString(landlord_x, y_landlord, landlord.get('legal_address'))
-            else:
-                p.drawString(landlord_x, y_landlord, "Не указан")
-            y_landlord -= 18
+                # Fallback to old fields for contracts without template
+                # ФИО / Название компании
+                p.drawString(landlord_x, y_landlord, "Название компании:")
+                y_landlord -= 12
+                if landlord and landlord.get('company_name'):
+                    p.drawString(landlord_x, y_landlord, landlord.get('company_name'))
+                elif contract.get('landlord_name'):
+                    p.drawString(landlord_x, y_landlord, contract.get('landlord_name'))
+                else:
+                    p.drawString(landlord_x, y_landlord, "Не указана")
+                y_landlord -= 18
+                
+                # Представитель
+                p.drawString(landlord_x, y_landlord, "Представитель:")
+                y_landlord -= 12
+                if landlord and landlord.get('full_name'):
+                    p.drawString(landlord_x, y_landlord, landlord.get('full_name'))
+                elif contract.get('landlord_representative'):
+                    p.drawString(landlord_x, y_landlord, contract.get('landlord_representative'))
+                else:
+                    p.drawString(landlord_x, y_landlord, "Не указан")
+                y_landlord -= 18
+                
+                # Телефон
+                p.drawString(landlord_x, y_landlord, "Телефон:")
+                y_landlord -= 12
+                if landlord and landlord.get('phone'):
+                    p.drawString(landlord_x, y_landlord, landlord.get('phone'))
+                else:
+                    p.drawString(landlord_x, y_landlord, "Не указан")
+                y_landlord -= 18
+                
+                # Email
+                p.drawString(landlord_x, y_landlord, "Email:")
+                y_landlord -= 12
+                if landlord and landlord.get('email'):
+                    p.drawString(landlord_x, y_landlord, landlord.get('email'))
+                else:
+                    p.drawString(landlord_x, y_landlord, "Не указан")
+                y_landlord -= 18
+                
+                # ИИН/БИН
+                p.drawString(landlord_x, y_landlord, "ИИН/БИН:")
+                y_landlord -= 12
+                if landlord and landlord.get('iin'):
+                    p.drawString(landlord_x, y_landlord, landlord.get('iin'))
+                elif contract.get('landlord_iin_bin'):
+                    p.drawString(landlord_x, y_landlord, contract.get('landlord_iin_bin'))
+                else:
+                    p.drawString(landlord_x, y_landlord, "Не указан")
+                y_landlord -= 18
+                
+                # Юридический адрес
+                p.drawString(landlord_x, y_landlord, "Юридический адрес:")
+                y_landlord -= 12
+                if landlord and landlord.get('legal_address'):
+                    p.drawString(landlord_x, y_landlord, landlord.get('legal_address'))
+                else:
+                    p.drawString(landlord_x, y_landlord, "Не указан")
+                y_landlord -= 18
             
             # Дата утверждения (aligned)
             p.drawString(landlord_x, y_landlord, "Дата утверждения:")
