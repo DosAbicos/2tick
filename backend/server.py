@@ -967,7 +967,29 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             
             # Show dynamic placeholders from template if available
             print(f"🔥 PDF DEBUG - Tenant section: template={bool(template)}, placeholders={bool(template.get('placeholders') if template else False)}, placeholder_values={bool(contract.get('placeholder_values'))}")
-            if template and template.get('placeholders') and contract.get('placeholder_values'):
+            
+            # If no template but contract has placeholder_values, try to infer tenant fields
+            if not template and contract.get('placeholder_values'):
+                print(f"🔥 PDF DEBUG - No template, using placeholder_values directly for tenant")
+                # Common tenant placeholder keys
+                tenant_keys = [
+                    ('ФИО_НАНИМАТЕЛЯ', 'ФИО Нанимателя'),
+                    ('ИИН_КЛИЕНТА', 'ИИН клиента'),
+                    ('EMAIL_КЛИЕНТА', 'Почта клиента'),
+                    ('НОМЕР_КЛИЕНТА', 'Номер клиента'),
+                    ('КОЛИЧЕСТВО_ЧЕЛОВЕК', 'Количество человек'),
+                    ('ТОЛЬКО_В_ИНФОРМАЦИИ_ПОДПИСАНИИ_И_В_ДОГОВОРЕ', 'Только в информации о подписании'),
+                ]
+                
+                for key, label in tenant_keys:
+                    if key in contract['placeholder_values']:
+                        value = contract['placeholder_values'][key]
+                        if value:
+                            p.drawString(tenant_x, y_tenant, f"{label}:")
+                            y_tenant -= 12
+                            p.drawString(tenant_x, y_tenant, str(value))
+                            y_tenant -= 18
+            elif template and template.get('placeholders') and contract.get('placeholder_values'):
                 print(f"🔥 PDF DEBUG - Using dynamic placeholders for tenant")
                 for key, config in template['placeholders'].items():
                     # Skip calculated fields
