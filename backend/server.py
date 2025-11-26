@@ -35,6 +35,9 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
+# Application URL
+APP_URL = os.environ.get('APP_URL', 'http://localhost:3000')
+
 # JWT Secret
 JWT_SECRET = os.environ.get('JWT_SECRET', 'signify-kz-secret-key-change-in-production')
 JWT_ALGORITHM = 'HS256'
