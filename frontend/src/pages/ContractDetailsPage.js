@@ -556,42 +556,68 @@ const ContractDetailsPage = () => {
                         </div>
                         
                         <div className="space-y-2 text-sm">
-                          {contract.landlord_name && (
-                            <div>
-                              <span className="text-neutral-500">Компания:</span>
-                              <p className="font-medium">{contract.landlord_name}</p>
-                            </div>
+                          {/* Show dynamic placeholders from template if available */}
+                          {template && template.placeholders && contract.placeholder_values ? (
+                            <>
+                              {Object.entries(template.placeholders)
+                                .filter(([key, config]) => {
+                                  // Skip calculated fields
+                                  if (config.type === 'calculated') return false;
+                                  // Show only landlord placeholders
+                                  return config.owner === 'landlord';
+                                })
+                                .map(([key, config]) => {
+                                  const value = contract.placeholder_values[key];
+                                  return (
+                                    <div key={key}>
+                                      <span className="text-neutral-500">{config.label}:</span>
+                                      <p className="font-medium">{value || <span className="text-neutral-400">Не заполнено</span>}</p>
+                                    </div>
+                                  );
+                                })}
+                            </>
+                          ) : (
+                            // Fallback to old fields for contracts without template
+                            <>
+                              {contract.landlord_name && (
+                                <div>
+                                  <span className="text-neutral-500">Компания:</span>
+                                  <p className="font-medium">{contract.landlord_name}</p>
+                                </div>
+                              )}
+                              {contract.landlord_representative && (
+                                <div>
+                                  <span className="text-neutral-500">Представитель:</span>
+                                  <p className="font-medium">{contract.landlord_representative}</p>
+                                </div>
+                              )}
+                              {contract.landlord_iin_bin && (
+                                <div>
+                                  <span className="text-neutral-500">ИИН/БИН:</span>
+                                  <p className="font-medium">{contract.landlord_iin_bin}</p>
+                                </div>
+                              )}
+                              {creator && creator.email && (
+                                <div>
+                                  <span className="text-neutral-500">Email:</span>
+                                  <p className="font-medium">{creator.email}</p>
+                                </div>
+                              )}
+                              {creator && creator.phone && (
+                                <div>
+                                  <span className="text-neutral-500">Телефон:</span>
+                                  <p className="font-medium">{creator.phone}</p>
+                                </div>
+                              )}
+                              {creator && creator.legal_address && (
+                                <div>
+                                  <span className="text-neutral-500">Юр. адрес:</span>
+                                  <p className="font-medium">{creator.legal_address}</p>
+                                </div>
+                              )}
+                            </>
                           )}
-                          {contract.landlord_representative && (
-                            <div>
-                              <span className="text-neutral-500">Представитель:</span>
-                              <p className="font-medium">{contract.landlord_representative}</p>
-                            </div>
-                          )}
-                          {contract.landlord_iin_bin && (
-                            <div>
-                              <span className="text-neutral-500">ИИН/БИН:</span>
-                              <p className="font-medium">{contract.landlord_iin_bin}</p>
-                            </div>
-                          )}
-                          {creator && creator.email && (
-                            <div>
-                              <span className="text-neutral-500">Email:</span>
-                              <p className="font-medium">{creator.email}</p>
-                            </div>
-                          )}
-                          {creator && creator.phone && (
-                            <div>
-                              <span className="text-neutral-500">Телефон:</span>
-                              <p className="font-medium">{creator.phone}</p>
-                            </div>
-                          )}
-                          {creator && creator.legal_address && (
-                            <div>
-                              <span className="text-neutral-500">Юр. адрес:</span>
-                              <p className="font-medium">{creator.legal_address}</p>
-                            </div>
-                          )}
+                          
                           <div>
                             <span className="text-neutral-500">Статус:</span>
                             <p className="font-medium text-emerald-600">Утверждено</p>
