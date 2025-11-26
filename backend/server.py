@@ -3201,7 +3201,13 @@ async def approve_contract_for_signing(contract_id: str, current_user: dict = De
         
         # Temporarily update contract with approved values for PDF generation
         pdf_contract = {**contract, 'content': current_content, 'placeholder_values': current_placeholder_values}
-        pdf_bytes = generate_contract_pdf(pdf_contract, signature, None, landlord)
+        
+        # Get template if contract has one
+        template = None
+        if contract.get('template_id'):
+            template = await db.templates.find_one({"id": contract['template_id']}, {"_id": 0})
+        
+        pdf_bytes = generate_contract_pdf(pdf_contract, signature, None, landlord, template)
         
         subject = f"📄 Договор на подпись: {contract['title']}"
         body = f"""
