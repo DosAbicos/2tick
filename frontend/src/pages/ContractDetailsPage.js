@@ -176,19 +176,20 @@ const ContractDetailsPage = () => {
   };
 
   const handleApprove = async () => {
-    if (approving) return; // Prevent multiple clicks
     
     setApproving(true);
     try {
       const response = await axios.post(
-        `${API}/contracts/${id}/approve-for-signing`,
+        `${API}/contracts/${id}/approve`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
-      toast.success('Договор утвержден и отправлен клиенту на email');
-      fetchContract();
-      fetchSignature();
+      toast.success('Договор утвержден! Email отправлен нанимателю.');
+      
+      // Reload contract and signature to show updated status
+      await fetchContract();
+      await fetchSignature();
     } catch (error) {
       toast.error(error.response?.data?.detail || t('common.error'));
     } finally {
