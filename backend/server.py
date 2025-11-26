@@ -3252,15 +3252,21 @@ async def approve_contract_for_signing(contract_id: str, current_user: dict = De
 """
         
         try:
-            send_email(
-                to_email=contract['signer_email'],
-                subject=subject,
-                body=body,
-                attachment=pdf_bytes,
-                filename=f"Contract_{contract.get('contract_code', contract_id)}.pdf"
+            # Run email sending in background to avoid blocking
+            import asyncio
+            loop = asyncio.get_event_loop()
+            loop.run_in_executor(
+                None,
+                send_email,
+                contract['signer_email'],
+                subject,
+                body,
+                pdf_bytes,
+                f"Contract_{contract.get('contract_code', contract_id)}.pdf"
             )
+            print(f"📧 Email task queued for {contract['signer_email']}")
         except Exception as e:
-            print(f"Error sending email: {e}")
+            print(f"Error queueing email: {e}")
     
     return {
         "message": "Договор утвержден и отправлен клиенту",
