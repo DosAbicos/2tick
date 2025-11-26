@@ -565,6 +565,8 @@ const ContractDetailsPage = () => {
                                 .filter(([key, config]) => {
                                   // Skip calculated fields
                                   if (config.type === 'calculated') return false;
+                                  // Show only placeholders marked for Signature Info section
+                                  if (config.showInSignatureInfo === false) return false;
                                   // Show only landlord placeholders
                                   return config.owner === 'landlord';
                                 })
