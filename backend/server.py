@@ -826,7 +826,11 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             y_landlord -= 18
             
             # Show dynamic placeholders from template if available
+            print(f"🔥 PDF DEBUG - Landlord section: template={bool(template)}, placeholders={bool(template.get('placeholders') if template else False)}, placeholder_values={bool(contract.get('placeholder_values'))}")
+            if template:
+                print(f"🔥 PDF DEBUG - Template placeholders: {list(template.get('placeholders', {}).keys())}")
             if template and template.get('placeholders') and contract.get('placeholder_values'):
+                print(f"🔥 PDF DEBUG - Using dynamic placeholders for landlord")
                 for key, config in template['placeholders'].items():
                     # Skip calculated fields
                     if config.get('type') == 'calculated':
