@@ -476,7 +476,9 @@ const ContractDetailsPage = () => {
                       .filter(([key, config]) => {
                         // Skip calculated fields as they are computed
                         if (config.type === 'calculated') return false;
-                        // Show all tenant/signer placeholders in Contract Details
+                        // Show only placeholders marked for Contract Details section
+                        if (config.showInContractDetails === false) return false;
+                        // Show tenant/signer placeholders
                         return config.owner === 'tenant' || config.owner === 'signer';
                       })
                       .map(([key, config]) => {
