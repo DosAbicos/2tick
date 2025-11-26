@@ -3441,10 +3441,15 @@ async def download_contract_pdf(contract_id: str, current_user: dict = Depends(g
     if not landlord and contract.get('creator_id'):
         landlord = await db.users.find_one({"id": contract.get('creator_id')})
     
+    # Get template if contract has one
+    template = None
+    if contract.get('template_id'):
+        template = await db.templates.find_one({"id": contract['template_id']}, {"_id": 0})
+    
     # Generate PDF using centralized function
     try:
         print(f"🔥 Generating PDF...")
-        pdf_bytes = generate_contract_pdf(contract, signature, landlord_signature_hash, landlord)
+        pdf_bytes = generate_contract_pdf(contract, signature, landlord_signature_hash, landlord, template)
         print(f"✅ PDF generated: {len(pdf_bytes)} bytes")
         
         return Response(
