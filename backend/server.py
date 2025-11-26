@@ -940,45 +940,51 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             p.drawString(tenant_x, y_tenant, signature.get('signature_hash', 'N/A'))
             y_tenant -= 18
             
-            # ФИО нанимателя (aligned) - try placeholder_values first
-            p.drawString(tenant_x, y_tenant, "ФИО нанимателя:")
-            y_tenant -= 12
-            tenant_name = contract.get('signer_name', 'N/A')
-            # Try to find from placeholder_values if template exists
-            if contract.get('placeholder_values'):
-                for key, value in contract['placeholder_values'].items():
-                    if 'ФИО' in key.upper() and 'НАНИМАТЕЛЬ' in key.upper() and value:
-                        tenant_name = value
-                        break
-            p.drawString(tenant_x, y_tenant, tenant_name)
-            y_tenant -= 18
-            
-            # Представитель - skip for tenant to keep alignment
-            y_tenant -= 30  # Skip this section
-            
-            # Телефон (aligned) - try placeholder_values first
-            p.drawString(tenant_x, y_tenant, "Телефон:")
-            y_tenant -= 12
-            tenant_phone = contract.get('signer_phone', 'N/A')
-            if contract.get('placeholder_values'):
-                for key, value in contract['placeholder_values'].items():
-                    if 'НОМЕР' in key.upper() and 'КЛИЕНТ' in key.upper() and value:
-                        tenant_phone = value
-                        break
-            p.drawString(tenant_x, y_tenant, tenant_phone)
-            y_tenant -= 18
-            
-            # Email (aligned) - try placeholder_values first
-            p.drawString(tenant_x, y_tenant, "Email:")
-            y_tenant -= 12
-            tenant_email = contract.get('signer_email', 'Не указан')
-            if contract.get('placeholder_values'):
-                for key, value in contract['placeholder_values'].items():
-                    if 'EMAIL' in key.upper() and 'КЛИЕНТ' in key.upper() and value:
-                        tenant_email = value
-                        break
-            p.drawString(tenant_x, y_tenant, tenant_email if tenant_email else 'Не указан')
-            y_tenant -= 18
+            # Show dynamic placeholders from template if available
+            if template and template.get('placeholders') and contract.get('placeholder_values'):
+                for key, config in template['placeholders'].items():
+                    # Skip calculated fields
+                    if config.get('type') == 'calculated':
+                        continue
+                    # Show only placeholders marked for Signature Info section
+                    if config.get('showInSignatureInfo') == False:
+                        continue
+                    # Show only tenant/signer placeholders
+                    if config.get('owner') not in ['tenant', 'signer']:
+                        continue
+                    
+                    value = contract['placeholder_values'].get(key, 'Не заполнено')
+                    label = config.get('label', key)
+                    
+                    p.drawString(tenant_x, y_tenant, f"{label}:")
+                    y_tenant -= 12
+                    p.drawString(tenant_x, y_tenant, str(value))
+                    y_tenant -= 18
+            else:
+                # Fallback to old fields for contracts without template
+                # ФИО нанимателя
+                p.drawString(tenant_x, y_tenant, "ФИО нанимателя:")
+                y_tenant -= 12
+                tenant_name = contract.get('signer_name', 'N/A')
+                p.drawString(tenant_x, y_tenant, tenant_name)
+                y_tenant -= 18
+                
+                # Представитель - skip for tenant to keep alignment
+                y_tenant -= 30  # Skip this section
+                
+                # Телефон
+                p.drawString(tenant_x, y_tenant, "Телефон:")
+                y_tenant -= 12
+                tenant_phone = contract.get('signer_phone', 'N/A')
+                p.drawString(tenant_x, y_tenant, tenant_phone)
+                y_tenant -= 18
+                
+                # Email
+                p.drawString(tenant_x, y_tenant, "Email:")
+                y_tenant -= 12
+                tenant_email = contract.get('signer_email', 'Не указан')
+                p.drawString(tenant_x, y_tenant, tenant_email if tenant_email else 'Не указан')
+                y_tenant -= 18
             
             # Метод подписания (instead of IIN/BIN - aligned)
             p.drawString(tenant_x, y_tenant, "Метод подписания:")
