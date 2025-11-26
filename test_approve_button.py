@@ -99,7 +99,12 @@ class ApproveButtonTester:
                 "content_type": "plain",
                 "signer_name": "Иванов Иван Иванович",
                 "signer_phone": "+77071234567",
-                "signer_email": "test.client.approve@2tick.kz"
+                "signer_email": "test.client.approve@2tick.kz",
+                "placeholder_values": {
+                    "ФИО_НАНИМАТЕЛЯ": "Иванов Иван Иванович",
+                    "ТЕЛЕФОН": "+77071234567",
+                    "EMAIL": "test.client.approve@2tick.kz"
+                }
             }
             
             create_response = self.session.post(f"{BASE_URL}/contracts", json=contract_data)
