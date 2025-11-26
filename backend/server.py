@@ -3204,7 +3204,7 @@ async def approve_contract_for_signing(contract_id: str, current_user: dict = De
             <p>Договор "<strong>{contract['title']}</strong>" утвержден и готов к подписанию.</p>
             <p>Пожалуйста, ознакомьтесь с договором во вложении и перейдите по ссылке для подписания.</p>
             <p style="text-align: center;">
-                <a href="https://signflow-31.preview.emergentagent.com/sign/{contract_id}" class="button">
+                <a href="{APP_URL}/sign/{contract_id}" class="button">
                     ✍️ Подписать договор
                 </a>
             </p>
