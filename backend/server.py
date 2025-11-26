@@ -3218,12 +3218,12 @@ async def approve_contract_for_signing(contract_id: str, current_user: dict = De
 """
         
         try:
-            await send_email_with_attachment(
-                contract['signer_email'],
-                subject,
-                body,
-                pdf_bytes,
-                f"Contract_{contract.get('contract_code', contract_id)}.pdf"
+            send_email(
+                to_email=contract['signer_email'],
+                subject=subject,
+                body=body,
+                attachment=pdf_bytes,
+                filename=f"Contract_{contract.get('contract_code', contract_id)}.pdf"
             )
         except Exception as e:
             print(f"Error sending email: {e}")
