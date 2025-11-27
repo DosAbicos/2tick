@@ -15,7 +15,8 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import Header from '@/components/Header';
-import { ArrowLeft, Send, Download, Trash2, CheckCircle, Edit3 } from 'lucide-react';
+import Loader from '@/components/Loader';
+import { ArrowLeft, Send, Download, Trash2, CheckCircle, Edit3, Copy, CheckCheck } from 'lucide-react';
 import { format } from 'date-fns';
 import '../styles/neumorphism.css';
 
