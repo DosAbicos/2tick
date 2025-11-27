@@ -419,11 +419,11 @@ const ContractDetailsPage = () => {
                     <button
                       onClick={handleApprove}
                       disabled={approving}
-                      className="px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-green-600 to-green-500 rounded-lg hover:from-green-700 hover:to-green-600 transition-all shadow-lg shadow-green-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                      className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-green-600 to-green-500 rounded-lg hover:from-green-700 hover:to-green-600 transition-all shadow-lg shadow-green-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 sm:gap-2 flex-1 sm:flex-initial justify-center"
                       data-testid="approve-contract-button"
                     >
-                      <CheckCircle className="h-4 w-4" />
-                      {approving ? t('common.loading') : 'Утвердить'}
+                      <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <span>{approving ? t('common.loading') : 'Утвердить'}</span>
                     </button>
                   )}
                   
@@ -431,19 +431,20 @@ const ContractDetailsPage = () => {
                   {contract.status === 'signed' && (
                     <button
                       onClick={handleDownloadPDF}
-                      className="px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/20 flex items-center gap-2"
+                      className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/20 flex items-center gap-1.5 sm:gap-2 flex-1 sm:flex-initial justify-center"
                       data-testid="download-pdf-button"
                     >
-                      <Download className="h-4 w-4" />
-                      Скачать PDF
+                      <Download className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <span className="hidden sm:inline">Скачать PDF</span>
+                      <span className="sm:hidden">PDF</span>
                     </button>
                   )}
                   
                   {/* Удалить - всегда доступно */}
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <button className="px-3 py-2 text-sm font-medium text-white bg-gradient-to-r from-red-600 to-red-500 rounded-lg hover:from-red-700 hover:to-red-600 transition-all shadow-lg shadow-red-500/20" data-testid="delete-contract-button">
-                        <Trash2 className="h-4 w-4" />
+                      <button className="px-3 py-2 text-xs sm:text-sm font-medium text-white bg-gradient-to-r from-red-600 to-red-500 rounded-lg hover:from-red-700 hover:to-red-600 transition-all shadow-lg shadow-red-500/20 flex items-center justify-center" data-testid="delete-contract-button">
+                        <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
                       </button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
