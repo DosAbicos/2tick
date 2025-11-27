@@ -391,26 +391,24 @@ const ContractDetailsPage = () => {
                         }
                       }}
                       disabled={sendingContract}
-                      className={`px-4 py-2 text-sm font-semibold text-white rounded-lg transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 ${
+                      className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white rounded-lg transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 sm:gap-2 flex-1 sm:flex-initial justify-center ${
                         justCopied 
-                          ? 'bg-gradient-to-r from-green-600 to-green-500 shadow-green-500/30 scale-105' 
+                          ? 'bg-gradient-to-r from-green-600 to-green-500 shadow-green-500/30' 
                           : 'bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 shadow-blue-500/20'
                       }`}
                       data-testid="send-contract-button"
                     >
                       {justCopied ? (
                         <>
-                          <svg className="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                          Скопировано!
+                          <CheckCheck className="w-3 h-3 sm:w-4 sm:h-4" />
+                          <span className="hidden sm:inline">Скопировано!</span>
+                          <span className="sm:hidden">✓</span>
                         </>
                       ) : (
                         <>
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                          </svg>
-                          {sendingContract ? 'Генерация...' : (contract.signature_link ? 'Копировать ссылку' : 'Сгенерировать ссылку')}
+                          <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
+                          <span className="hidden sm:inline">{sendingContract ? 'Генерация...' : (contract.signature_link ? 'Копировать ссылку' : 'Сгенерировать ссылку')}</span>
+                          <span className="sm:hidden">{contract.signature_link ? 'Копия' : 'Ссылка'}</span>
                         </>
                       )}
                     </button>
