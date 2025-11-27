@@ -527,14 +527,14 @@ const ContractDetailsPage = () => {
             </div>
             
             {/* Content */}
-            <div>
-              <h3 className="text-lg font-semibold mb-2">Содержимое договора</h3>
-              <div className="bg-white p-6 rounded-lg border border-gray-200">
+            <div className="minimal-card p-4 sm:p-6">
+              <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-gray-900">📄 Содержимое договора</h3>
+              <div className="bg-gradient-to-br from-white to-gray-50 p-4 sm:p-6 rounded-xl border border-gray-100 shadow-inner">
                 <div 
-                  className="whitespace-pre-wrap text-sm leading-relaxed text-gray-800"
+                  className="whitespace-pre-wrap text-xs sm:text-sm leading-relaxed text-gray-800 break-words overflow-x-auto"
                   style={{
                     fontFamily: 'IBM Plex Sans, sans-serif',
-                    fontSize: '14px',
+                    fontSize: 'clamp(12px, 2.5vw, 14px)',
                     lineHeight: '1.6'
                   }}
                   dangerouslySetInnerHTML={{ __html: replacePlaceholders(contract.content) }}
