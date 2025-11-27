@@ -296,20 +296,23 @@ const ContractDetailsPage = () => {
                 </p>
               </div>
             )}
-            <div className="flex justify-between items-start flex-wrap gap-4">
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3" data-testid="contract-title">{contract.title}</h1>
-                <div className="flex gap-3 items-center flex-wrap">
+            <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4 lg:gap-6">
+              <div className="flex-1">
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-3 break-words" data-testid="contract-title">{contract.title}</h1>
+                <div className="flex gap-2 sm:gap-3 items-center flex-wrap">
                   {contract.contract_code && (
-                    <div className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-sm font-bold rounded-xl shadow-lg shadow-blue-500/20">
+                    <div className="px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-xs sm:text-sm font-bold rounded-lg sm:rounded-xl shadow-lg shadow-blue-500/20">
                       {contract.contract_code}
                     </div>
                   )}
                   {getStatusBadge(contract.status)}
-                  <span className="text-sm text-gray-500">
-                    Updated {format(new Date(contract.updated_at), 'dd MMM yyyy HH:mm')}
+                  <span className="text-xs sm:text-sm text-gray-500 hidden sm:inline">
+                    {format(new Date(contract.updated_at), 'dd MMM yyyy HH:mm')}
                   </span>
                 </div>
+                <span className="text-xs text-gray-500 mt-2 block sm:hidden">
+                  {format(new Date(contract.updated_at), 'dd MMM yyyy HH:mm')}
+                </span>
               </div>
               
               {isReadOnly ? (
