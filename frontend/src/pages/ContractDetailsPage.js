@@ -645,8 +645,8 @@ const ContractDetailsPage = () => {
                   </div>
                   
                   {/* Tenant Signature - RIGHT COLUMN */}
-                  <div className="minimal-card p-3 sm:p-4 bg-gradient-to-br from-green-50 to-blue-50">
-                    <h4 className="font-semibold mb-3 text-gray-900 text-sm sm:text-base">👤 Подпись Нанимателя</h4>
+                  <div className="bg-gradient-to-br from-green-50 to-blue-50 p-3 sm:p-4 rounded-xl border border-gray-200">
+                    <h4 className="font-semibold mb-3 text-gray-900 text-sm sm:text-base">👤 Подпись Стороны Б (Заказчик)</h4>
                     
                     {signature.signature_hash && (
                       <div className="bg-blue-50 p-3 rounded border border-blue-200 mb-3">
