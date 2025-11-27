@@ -273,20 +273,21 @@ const ContractDetailsPage = () => {
   if (!contract) return null;
 
   return (
-    <div className="min-h-screen gradient-bg">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
       <Header />
       
-      <div className="max-w-5xl mx-auto px-4 py-8">
+      <div className="max-w-6xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 lg:py-8">
         <button
           onClick={() => navigate('/dashboard')}
-          className="mb-6 px-4 py-2 text-sm font-medium text-gray-600 bg-white rounded-lg hover:bg-gray-50 transition-all border border-gray-200 flex items-center gap-2"
+          className="mb-4 sm:mb-6 px-3 sm:px-4 py-2 text-sm font-medium text-gray-700 minimal-card hover:shadow-lg transition-all flex items-center gap-2"
           data-testid="back-button"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Dashboard
+          <span className="hidden sm:inline">Back to Dashboard</span>
+          <span className="sm:hidden">Назад</span>
         </button>
         
-        <div className="minimal-card p-6 sm:p-8 animate-fade-in" data-testid="contract-details-card">
+        <div className="minimal-card p-4 sm:p-6 lg:p-8 animate-fade-in" data-testid="contract-details-card">
           <div className="mb-6">
             {isReadOnly && (
               <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
