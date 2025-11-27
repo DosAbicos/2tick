@@ -626,7 +626,9 @@ Email: ${templateData.tenant_email || '[Email]'}
         property_address: templateData.property_address,
         rent_amount: templateData.rent_amount,
         days_count: templateData.days_count,
-        amount: templateData.rent_amount ? `${parseInt(templateData.rent_amount) * parseInt(templateData.days_count || 1)} ${templateData.rent_currency}` : undefined
+        amount: templateData.rent_amount ? `${parseInt(templateData.rent_amount) * parseInt(templateData.days_count || 1)} ${templateData.rent_currency}` : undefined,
+        party_a_role: templateData.party_a_role || 'Сторона А',
+        party_b_role: templateData.party_b_role || 'Сторона Б'
       };
       
       const response = await axios.post(`${API}/contracts`, contractData, {
