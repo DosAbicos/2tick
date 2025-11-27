@@ -727,17 +727,18 @@ const ContractDetailsPage = () => {
                 {/* Document Photo */}
                 {signature.document_upload && (
                   <div className="mt-6">
-                    <h4 className="font-semibold mb-3">Документ подписанта:</h4>
-                    <div className="border rounded-lg p-4 bg-white">
+                    <h4 className="font-semibold mb-3 text-sm sm:text-base">📄 Документ подписанта:</h4>
+                    <div className="border rounded-lg p-2 sm:p-4 bg-white overflow-hidden">
                       <img 
                         src={`data:image/jpeg;base64,${signature.document_upload}`}
                         alt="ID Document"
-                        className="max-w-lg mx-auto rounded shadow-md cursor-pointer hover:shadow-lg transition-shadow"
+                        className="w-full max-w-full sm:max-w-lg mx-auto rounded shadow-md cursor-pointer hover:shadow-lg transition-shadow object-contain"
+                        style={{ maxHeight: '400px' }}
                         onClick={() => window.open(`data:image/jpeg;base64,${signature.document_upload}`, '_blank')}
                         data-testid="signature-document-image"
                       />
                       {signature.document_filename && (
-                        <p className="text-xs text-neutral-500 mt-2 text-center">{signature.document_filename}</p>
+                        <p className="text-xs text-neutral-500 mt-2 text-center break-all">{signature.document_filename}</p>
                       )}
                       <p className="text-xs text-neutral-400 mt-1 text-center">Нажмите для увеличения</p>
                     </div>
