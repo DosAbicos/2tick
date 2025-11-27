@@ -261,10 +261,10 @@ const ContractDetailsPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-neutral-50">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
         <Header />
-        <div className="max-w-5xl mx-auto px-4 py-8 text-center">
-          {t('common.loading')}
+        <div className="flex items-center justify-center min-h-[80vh]">
+          <Loader />
         </div>
       </div>
     );
