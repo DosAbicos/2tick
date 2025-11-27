@@ -547,13 +547,13 @@ const ContractDetailsPage = () => {
             
             {/* Signature Details (if signed) */}
             {signature && signature.verified && (
-              <div className="border-t pt-6">
-                <h3 className="text-lg font-semibold mb-4">Информация о подписании</h3>
+              <div className="minimal-card p-4 sm:p-6">
+                <h3 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-gray-900">✍️ Информация о подписании</h3>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   {/* Landlord Signature - LEFT COLUMN */}
-                  <div className="border rounded-lg p-4 bg-neutral-50">
-                    <h4 className="font-semibold mb-3 text-neutral-900">Подпись Наймодателя</h4>
+                  <div className="minimal-card p-3 sm:p-4 bg-gradient-to-br from-blue-50 to-purple-50">
+                    <h4 className="font-semibold mb-3 text-gray-900 text-sm sm:text-base">🏢 Подпись Наймодателя</h4>
                     
                     {contract.landlord_signature_hash ? (
                       <>
