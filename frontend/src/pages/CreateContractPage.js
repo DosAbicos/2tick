@@ -52,8 +52,24 @@ const CreateContractPage = () => {
     contract_date: new Date().toISOString().split('T')[0],
     
     // Contract type
-    contract_type: 'rent' // rent, service, purchase
+    contract_type: 'rent', // rent, service, purchase
+    
+    // Party roles
+    party_a_role: 'Сторона А',
+    party_b_role: 'Сторона Б'
   });
+  
+  // Role pairs
+  const rolePairs = [
+    { a: 'Сторона А', b: 'Сторона Б' },
+    { a: 'Арендодатель', b: 'Арендатор' },
+    { a: 'Заказчик', b: 'Исполнитель' },
+    { a: 'Продавец', b: 'Покупатель' },
+    { a: 'Кредитор', b: 'Должник' },
+    { a: 'Лицензиар', b: 'Лицензиат' },
+    { a: 'Работодатель', b: 'Работник' },
+    { a: 'Учредитель', b: 'Участник' }
+  ];
 
   // Calculate days automatically
   const calculateDays = (moveIn, moveOut) => {
