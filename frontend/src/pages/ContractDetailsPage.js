@@ -431,7 +431,7 @@ const ContractDetailsPage = () => {
                   {contract.status === 'signed' && (
                     <button
                       onClick={handleDownloadPDF}
-                      className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/20 flex items-center gap-1.5 sm:gap-2 flex-1 sm:flex-initial justify-center"
+                      className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/20 flex items-center gap-1.5 sm:gap-2 justify-center"
                       data-testid="download-pdf-button"
                     >
                       <Download className="h-3 w-3 sm:h-4 sm:w-4" />
