@@ -551,8 +551,8 @@ const ContractDetailsPage = () => {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   {/* Landlord Signature - LEFT COLUMN */}
-                  <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-3 sm:p-4 rounded-xl border border-gray-200">
-                    <h4 className="font-semibold mb-3 text-gray-900 text-sm sm:text-base">🏢 Подпись Стороны А (Исполнитель)</h4>
+                  <div className="bg-white p-3 sm:p-4 rounded-xl border border-gray-200">
+                    <h4 className="font-semibold mb-3 text-gray-900 text-sm sm:text-base">🏢 {contract.party_a_role || 'Подпись Стороны А'}</h4>
                     
                     {contract.landlord_signature_hash ? (
                       <>
