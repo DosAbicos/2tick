@@ -419,7 +419,7 @@ const ContractDetailsPage = () => {
                     <button
                       onClick={handleApprove}
                       disabled={approving}
-                      className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-green-600 to-green-500 rounded-lg hover:from-green-700 hover:to-green-600 transition-all shadow-lg shadow-green-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 sm:gap-2 flex-1 sm:flex-initial justify-center"
+                      className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-green-600 to-green-500 rounded-lg hover:from-green-700 hover:to-green-600 transition-all shadow-lg shadow-green-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 sm:gap-2 justify-center"
                       data-testid="approve-contract-button"
                     >
                       <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4" />
