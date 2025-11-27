@@ -349,16 +349,16 @@ const ContractDetailsPage = () => {
                   </button>
                 </div>
               ) : (
-                <div className="flex gap-2 flex-wrap">
+                <div className="flex gap-2 flex-wrap w-full lg:w-auto">
                   {/* Редактировать - только если ссылка еще не сгенерирована */}
                   {(contract.status === 'draft' || contract.status === 'sent') && !contract.signature_link && (
                     <button
                       onClick={() => navigate(`/contracts/edit/${id}`)}
-                      className="px-3 py-2 text-gray-700 bg-white border-2 border-gray-200 rounded-lg hover:bg-gray-50 hover:border-blue-300 transition-all"
+                      className="px-3 py-2 text-gray-700 minimal-card hover:shadow-xl transition-all"
                       data-testid="edit-contract-button"
                       title="Редактировать договор"
                     >
-                      <Edit3 className="h-5 w-5" />
+                      <Edit3 className="h-4 w-4 sm:h-5 sm:w-5" />
                     </button>
                   )}
                   
