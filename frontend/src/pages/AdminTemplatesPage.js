@@ -835,6 +835,37 @@ const AdminTemplatesPageNew = () => {
                 />
               </div>
 
+              {/* Party Roles Selection */}
+              <div className="p-4 bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 border-2 border-purple-200 rounded-lg">
+                <div className="flex items-center gap-2 mb-3">
+                  <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                  <Label className="text-sm font-semibold text-gray-900">Роли сторон договора *</Label>
+                </div>
+                <Select 
+                  value={`${formData.party_a_role}|${formData.party_b_role}`}
+                  onValueChange={(value) => {
+                    const [a, b] = value.split('|');
+                    setFormData({...formData, party_a_role: a, party_b_role: b});
+                  }}
+                >
+                  <SelectTrigger className="bg-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {rolePairs.map((pair, idx) => (
+                      <SelectItem key={idx} value={`${pair.a}|${pair.b}`}>
+                        {pair.a} / {pair.b}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-purple-700 mt-2">
+                  📝 Выбранные роли: <strong>{formData.party_a_role}</strong> и <strong>{formData.party_b_role}</strong>
+                </p>
+              </div>
+
               {/* Настройка требования документа нанимателя */}
               <div className="flex items-start space-x-3 p-4 border border-amber-200 rounded-lg bg-amber-50/30">
                 <Checkbox 
