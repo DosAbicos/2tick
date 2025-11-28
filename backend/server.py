@@ -1146,9 +1146,12 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
                     p.drawString(landlord_x, y_landlord, "Не указан")
                 y_landlord -= 18
             
-            # Дата утверждения (aligned)
-            p.drawString(landlord_x, y_landlord, "Дата утверждения:")
-            y_landlord -= 12
+            # Date with icon
+            p.setFillColor(HexColor('#64748b'))
+            p.drawString(landlord_x, y_landlord, "📅 Дата утверждения:")
+            y_landlord -= 13
+            
+            p.setFillColor(HexColor('#000000'))
             approved_at = contract.get('approved_at', 'N/A')
             if approved_at != 'N/A':
                 try:
