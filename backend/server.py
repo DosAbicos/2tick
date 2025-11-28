@@ -791,13 +791,72 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             p.showPage()
             y_position = height - 50
         
-        try:
-            p.setFont("DejaVu-Bold", 12)
-        except:
-            p.setFont("Helvetica-Bold", 12)
+        # ========== BEAUTIFUL SIGNATURE SECTION START ==========
+        # Add some spacing before signature section
+        y_position -= 20
         
-        p.drawString(50, y_position, "Подписи:")
-        y_position -= 30
+        # Draw outer rounded rectangle border (similar to OkiDoki)
+        from reportlab.lib.colors import HexColor
+        
+        # Main signature box dimensions
+        box_x = 40
+        box_y = y_position - 480  # Height of signature section
+        box_width = width - 80
+        box_height = 500
+        
+        # Draw outer border with light blue gradient effect
+        p.setStrokeColor(HexColor('#3b82f6'))  # Blue border
+        p.setLineWidth(2)
+        p.roundRect(box_x, box_y, box_width, box_height, 15, stroke=1, fill=0)
+        
+        # Draw inner light background
+        p.setFillColor(HexColor('#f8fafc'))  # Very light blue-gray
+        p.roundRect(box_x + 5, box_y + 5, box_width - 10, box_height - 10, 12, stroke=0, fill=1)
+        
+        # Reset fill color for text
+        p.setFillColor(HexColor('#000000'))
+        
+        # Add logo/branding area
+        try:
+            p.setFont("DejaVu-Bold", 16)
+        except:
+            p.setFont("Helvetica-Bold", 16)
+        
+        # Draw "2tick.kz" logo text in blue
+        p.setFillColor(HexColor('#3b82f6'))
+        logo_y = y_position - 30
+        p.drawString(width / 2 - 40, logo_y, "2tick.kz")
+        
+        # Reset to black for other text
+        p.setFillColor(HexColor('#000000'))
+        
+        # Add description text
+        try:
+            p.setFont("DejaVu", 10)
+        except:
+            p.setFont("Helvetica", 10)
+        
+        desc_text = "Документ подписан при помощи сервиса 2tick.kz"
+        desc_text2 = "с использованием простой электронной подписи (ПЭП)"
+        p.drawCentredString(width / 2, logo_y - 20, desc_text)
+        p.drawCentredString(width / 2, logo_y - 35, desc_text2)
+        
+        # Document identifier
+        try:
+            p.setFont("DejaVu-Bold", 10)
+        except:
+            p.setFont("Helvetica-Bold", 10)
+        
+        contract_code = contract.get('contract_code', 'N/A')
+        identifier_text = f"Идентификатор документа: {contract_code}"
+        p.drawCentredString(width / 2, logo_y - 60, identifier_text)
+        
+        # Draw separator line
+        p.setStrokeColor(HexColor('#e2e8f0'))
+        p.setLineWidth(1)
+        p.line(box_x + 30, logo_y - 75, width - 70, logo_y - 75)
+        
+        y_position = logo_y - 95
         
         try:
             p.setFont("DejaVu", 9)
