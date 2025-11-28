@@ -231,6 +231,8 @@ class Contract(BaseModel):
     signature: Optional[dict] = None  # Signature data (document_upload, verified status)
     tenant_document: Optional[str] = None  # Удостоверение нанимателя (base64 или путь)
     tenant_document_filename: Optional[str] = None  # Имя файла удостоверения
+    party_a_role: Optional[str] = 'Сторона А'  # Роль стороны А (из шаблона)
+    party_b_role: Optional[str] = 'Сторона Б'  # Роль стороны Б (из шаблона)
     deleted: bool = False  # Soft delete flag - для подписанных договоров
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
