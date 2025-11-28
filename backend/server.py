@@ -1188,10 +1188,29 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             except:
                 p.setFont("Helvetica", 9)
             
-            # Код-ключ подписи (aligned)
+            # Signature key with better styling
+            p.setFillColor(HexColor('#64748b'))
             p.drawString(tenant_x, y_tenant, "Код-ключ подписи:")
-            y_tenant -= 12
-            p.drawString(tenant_x, y_tenant, signature.get('signature_hash', 'N/A'))
+            y_tenant -= 13
+            
+            try:
+                p.setFont("DejaVu-Mono", 8)
+            except:
+                p.setFont("Courier", 8)
+            
+            p.setFillColor(HexColor('#0f172a'))
+            sig_hash = signature.get('signature_hash', 'N/A')
+            p.drawString(tenant_x, y_tenant, sig_hash[:35])
+            y_tenant -= 10
+            if len(sig_hash) > 35:
+                p.drawString(tenant_x, y_tenant, sig_hash[35:])
+            
+            try:
+                p.setFont("DejaVu", 9)
+            except:
+                p.setFont("Helvetica", 9)
+            
+            p.setFillColor(HexColor('#000000'))
             y_tenant -= 18
             
             # Show dynamic placeholders from template if available
