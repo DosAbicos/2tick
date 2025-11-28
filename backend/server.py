@@ -620,24 +620,84 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
     p = canvas.Canvas(pdf_buffer, pagesize=A4)
     width, height = A4
     
-    # Title
+    from reportlab.lib.colors import HexColor
+    
+    # ========== HEADER WITH LOGO AND DECORATIVE BORDER ==========
+    # Draw decorative top border (double line)
+    p.setStrokeColor(HexColor('#3b82f6'))  # Blue
+    p.setLineWidth(3)
+    p.line(30, height - 20, width - 30, height - 20)
+    p.setLineWidth(1)
+    p.line(30, height - 25, width - 30, height - 25)
+    
+    # Add company logo
+    logo_path = '/app/backend/logo.png'
+    if os.path.exists(logo_path):
+        try:
+            from PIL import Image as PILImage
+            logo = PILImage.open(logo_path)
+            logo_width = 60
+            logo_height = 60
+            
+            # Draw logo on the left
+            img_reader = ImageReader(logo_path)
+            p.drawImage(img_reader, 40, height - 95, width=logo_width, height=logo_height, mask='auto')
+        except Exception as e:
+            logging.error(f"Error loading logo: {str(e)}")
+    
+    # Company name and branding next to logo
     try:
-        p.setFont("DejaVu-Bold", 16)
+        p.setFont("DejaVu-Bold", 20)
     except:
-        p.setFont("Helvetica-Bold", 16)
+        p.setFont("Helvetica-Bold", 20)
     
-    title_text = contract['title']
-    p.drawString(50, height - 50, title_text[:60])
+    p.setFillColor(HexColor('#3b82f6'))
+    p.drawString(110, height - 55, "2tick.kz")
     
-    # Date
     try:
         p.setFont("DejaVu", 10)
     except:
         p.setFont("Helvetica", 10)
     
-    p.drawString(50, height - 80, f"Договор подписан {datetime.now().strftime('%d.%m.%Y')}")
+    p.setFillColor(HexColor('#64748b'))  # Slate gray
+    p.drawString(110, height - 72, "Электронная подпись договоров")
     
-    y_position = height - 120
+    # Reset color to black
+    p.setFillColor(HexColor('#000000'))
+    
+    # Document code on the right
+    try:
+        p.setFont("DejaVu", 9)
+    except:
+        p.setFont("Helvetica", 9)
+    
+    contract_code = contract.get('contract_code', 'N/A')
+    p.setFillColor(HexColor('#64748b'))
+    p.drawRightString(width - 40, height - 55, f"№ {contract_code}")
+    p.drawRightString(width - 40, height - 72, datetime.now().strftime('%d.%m.%Y'))
+    
+    # Reset color
+    p.setFillColor(HexColor('#000000'))
+    
+    # Draw separator line
+    p.setStrokeColor(HexColor('#e2e8f0'))
+    p.setLineWidth(1)
+    p.line(40, height - 105, width - 40, height - 105)
+    
+    # Title with better styling
+    y_position = height - 140
+    
+    try:
+        p.setFont("DejaVu-Bold", 18)
+    except:
+        p.setFont("Helvetica-Bold", 18)
+    
+    title_text = contract['title']
+    # Center the title
+    title_width = p.stringWidth(title_text[:60], "DejaVu-Bold" if "DejaVu-Bold" in pdfmetrics.getRegisteredFontNames() else "Helvetica-Bold", 18)
+    p.drawCentredString(width / 2, y_position, title_text[:60])
+    
+    y_position -= 40
     
     # Content with DejaVu font
     try:
