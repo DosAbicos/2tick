@@ -439,29 +439,7 @@ const ContractDetailsPage = () => {
                       <span className="sm:hidden">PDF</span>
                     </button>
                   )}
-                  
-                  {/* Удалить - всегда доступно */}
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <button className="px-3 py-2 text-xs sm:text-sm font-medium text-white bg-gradient-to-r from-red-600 to-red-500 rounded-lg hover:from-red-700 hover:to-red-600 transition-all shadow-lg shadow-red-500/20 flex items-center justify-center" data-testid="delete-contract-button">
-                        <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
-                      </button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Delete Contract</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This action cannot be undone. This will permanently delete the contract.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel data-testid="cancel-delete-button">{t('common.cancel')}</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDelete} data-testid="confirm-delete-button">
-                          {t('contract.delete')}
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                  {/* Delete button moved to the left side */}
                 </div>
               )}
             </div>
