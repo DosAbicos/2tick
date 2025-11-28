@@ -699,11 +699,14 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
     
     y_position -= 40
     
+    # Draw content box with light background
+    content_box_y = y_position
+    
     # Content with DejaVu font
     try:
-        p.setFont("DejaVu", 9)
+        p.setFont("DejaVu", 10)
     except:
-        p.setFont("Helvetica", 9)
+        p.setFont("Helvetica", 10)
     
     # Convert HTML to text if needed and replace placeholders
     try:
@@ -723,33 +726,49 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
     
     lines = content_text.split('\n')
     
+    # Add left margin for better readability
+    left_margin = 55
+    right_margin = width - 55
+    max_chars_per_line = 95
+    
     for line in lines:
-        if y_position < 100:
+        if y_position < 120:
             p.showPage()
+            # Redraw header on new page
+            p.setStrokeColor(HexColor('#3b82f6'))
+            p.setLineWidth(3)
+            p.line(30, height - 20, width - 30, height - 20)
+            p.setLineWidth(1)
+            p.line(30, height - 25, width - 30, height - 25)
+            
             try:
-                p.setFont("DejaVu", 9)
+                p.setFont("DejaVu", 10)
             except:
-                p.setFont("Helvetica", 9)
+                p.setFont("Helvetica", 10)
+            p.setFillColor(HexColor('#000000'))
             y_position = height - 50
         
-        if len(line) > 100:
+        if len(line) > max_chars_per_line:
             words = line.split()
             current_line = ""
             for word in words:
-                if len(current_line + word) < 100:
+                if len(current_line + word) < max_chars_per_line:
                     current_line += word + " "
                 else:
                     if current_line.strip():
-                        p.drawString(50, y_position, current_line.strip())
-                        y_position -= 12
+                        p.drawString(left_margin, y_position, current_line.strip())
+                        y_position -= 14
                     current_line = word + " "
             if current_line.strip():
-                p.drawString(50, y_position, current_line.strip())
-                y_position -= 12
+                p.drawString(left_margin, y_position, current_line.strip())
+                y_position -= 14
         else:
             if line.strip():
-                p.drawString(50, y_position, line.strip())
-                y_position -= 12
+                p.drawString(left_margin, y_position, line.strip())
+                y_position -= 14
+            else:
+                # Empty line - add small spacing
+                y_position -= 7
     
     # Add ID document photo if available
     if signature and signature.get('document_upload'):
