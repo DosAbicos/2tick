@@ -387,7 +387,7 @@ const ContractDetailsPage = () => {
                     )}
                   </div>
 
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 order-2 lg:order-none">
                   
                   {/* Генерировать/Копировать ссылку */}
                   {(contract.status === 'draft' || contract.status === 'sent') && (
