@@ -1116,7 +1116,7 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
         if signature and signature.get('verified'):
             y_tenant = start_y
             
-            # Draw role header with background
+            # Simple role header
             try:
                 p.setFont("DejaVu-Bold", 11)
             except:
@@ -1125,16 +1125,10 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             # Use dynamic role from contract or default
             party_b_role = contract.get('party_b_role', 'Подпись Нанимателя')
             
-            # Draw header background
-            p.setFillColor(HexColor('#dbeafe'))  # Light blue
-            p.roundRect(tenant_x - 5, y_tenant - 3, 200, 18, 4, stroke=0, fill=1)
-            
-            # Draw role text
-            p.setFillColor(HexColor('#1e40af'))  # Dark blue
+            # Draw role text (no background)
+            p.setFillColor(HexColor('#000000'))  # Black
             p.drawString(tenant_x, y_tenant, f"✓ {party_b_role}")
             
-            # Reset color
-            p.setFillColor(HexColor('#000000'))
             y_tenant -= 25
             
             try:
