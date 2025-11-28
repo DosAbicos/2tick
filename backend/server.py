@@ -852,7 +852,7 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             p.showPage()
             y_position = height - 50
         
-        # ========== PROFESSIONAL SIGNATURE SECTION ==========
+        # ========== MINIMALIST SIGNATURE SECTION ==========
         # Add spacing before signature section
         y_position -= 20
         
@@ -862,21 +862,11 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
         box_width = width - 70
         box_height = 520
         
-        # Draw decorative border with shadow effect
-        # Shadow
-        p.setFillColor(HexColor('#e2e8f0'))
-        p.roundRect(box_x + 3, box_y - 3, box_width, box_height, 12, stroke=0, fill=1)
-        
-        # Main border
-        p.setStrokeColor(HexColor('#3b82f6'))  # Blue border
-        p.setLineWidth(2.5)
-        p.setFillColor(HexColor('#ffffff'))  # White background
-        p.roundRect(box_x, box_y, box_width, box_height, 12, stroke=1, fill=1)
-        
-        # Inner decorative line
-        p.setStrokeColor(HexColor('#93c5fd'))  # Light blue
+        # Simple border (no decorative elements)
+        p.setStrokeColor(HexColor('#d1d5db'))  # Light gray border
         p.setLineWidth(1)
-        p.roundRect(box_x + 8, box_y + 8, box_width - 16, box_height - 16, 8, stroke=1, fill=0)
+        p.setFillColor(HexColor('#ffffff'))  # White background
+        p.roundRect(box_x, box_y, box_width, box_height, 8, stroke=1, fill=1)
         
         # Reset fill color for text
         p.setFillColor(HexColor('#000000'))
