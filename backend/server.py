@@ -936,10 +936,10 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
         tenant_x = (width / 2) + 20  # RIGHT position for Tenant
         start_y = y_position
         
-        # Draw vertical separator between columns
+        # Draw minimal vertical separator between columns
         separator_x = width / 2
-        p.setStrokeColor(HexColor('#e2e8f0'))
-        p.setLineWidth(1)
+        p.setStrokeColor(HexColor('#e5e7eb'))  # Very light gray
+        p.setLineWidth(0.5)
         p.line(separator_x, start_y + 10, separator_x, box_y + 20)
         
         # LEFT COLUMN - Landlord (Party A)
