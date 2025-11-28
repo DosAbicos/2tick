@@ -257,6 +257,8 @@ class ContractCreate(BaseModel):
     amount: Optional[str] = None
     landlord_name: Optional[str] = None
     landlord_representative: Optional[str] = None
+    party_a_role: Optional[str] = 'Сторона А'
+    party_b_role: Optional[str] = 'Сторона Б'
 
 class Signature(BaseModel):
     model_config = ConfigDict(extra="ignore")
