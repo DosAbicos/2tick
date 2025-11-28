@@ -817,7 +817,9 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
                 p.setFont("DejaVu-Bold", 10)
             except:
                 p.setFont("Helvetica-Bold", 10)
-            p.drawString(landlord_x, y_landlord, "Подпись Наймодателя:")
+            # Use dynamic role from contract or default
+            party_a_role = contract.get('party_a_role', 'Подпись Наймодателя')
+            p.drawString(landlord_x, y_landlord, f"{party_a_role}:")
             y_landlord -= 20
             
             try:
