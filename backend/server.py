@@ -672,11 +672,6 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
     # Reset color
     p.setFillColor(HexColor('#000000'))
     
-    # Draw separator line
-    p.setStrokeColor(HexColor('#e2e8f0'))
-    p.setLineWidth(1)
-    p.line(40, height - 105, width - 40, height - 105)
-    
     # Title with better styling
     y_position = height - 140
     
