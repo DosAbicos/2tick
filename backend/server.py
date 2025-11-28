@@ -2042,7 +2042,9 @@ async def create_contract(contract_data: ContractCreate, current_user: dict = De
         landlord_email=current_user.get('email'),  # Email наймодателя из current_user
         landlord_full_name=landlord_full_name,  # ФИО наймодателя из профиля
         landlord_representative=contract_data.landlord_representative,
-        landlord_iin_bin=landlord_iin_bin  # From user profile
+        landlord_iin_bin=landlord_iin_bin,  # From user profile
+        party_a_role=contract_data.party_a_role or 'Сторона А',  # Роли из шаблона
+        party_b_role=contract_data.party_b_role or 'Сторона Б'
     )
     
     doc = contract.model_dump()
