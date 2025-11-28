@@ -970,15 +970,20 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
         y_position = logo_y - 105
         
         try:
-            p.setFont("DejaVu", 9)
+            p.setFont("DejaVu", 10)
         except:
-            p.setFont("Helvetica", 9)
+            p.setFont("Helvetica", 10)
         
-        # Two columns layout
-        # SWAP: Landlord should be on LEFT visually, so use left coordinate for Landlord
-        landlord_x = 50      # LEFT position for Landlord (Наймодатель)
-        tenant_x = 300       # RIGHT position for Tenant (Наниматель)
+        # Two columns layout with better spacing
+        landlord_x = 60      # LEFT position for Landlord
+        tenant_x = (width / 2) + 20  # RIGHT position for Tenant
         start_y = y_position
+        
+        # Draw vertical separator between columns
+        separator_x = width / 2
+        p.setStrokeColor(HexColor('#e2e8f0'))
+        p.setLineWidth(1)
+        p.line(separator_x, start_y + 10, separator_x, box_y + 20)
         
         # LEFT COLUMN - Наймодатель (Landlord)
         if landlord_signature_hash:
