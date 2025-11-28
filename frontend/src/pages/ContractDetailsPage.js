@@ -731,9 +731,21 @@ const ContractDetailsPage = () => {
                       <img 
                         src={`data:image/jpeg;base64,${signature.document_upload}`}
                         alt="ID Document"
-                        className="w-full max-w-full sm:max-w-lg mx-auto rounded shadow-md cursor-pointer hover:shadow-lg transition-shadow object-contain"
-                        style={{ maxHeight: '400px' }}
-                        onClick={() => window.open(`data:image/jpeg;base64,${signature.document_upload}`, '_blank')}
+                        className="w-full max-w-md lg:max-w-2xl mx-auto rounded shadow-md cursor-pointer hover:shadow-xl hover:scale-[1.02] transition-all object-contain"
+                        style={{ maxHeight: '500px' }}
+                        onClick={() => {
+                          // Create modal overlay
+                          const overlay = document.createElement('div');
+                          overlay.className = 'fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4 cursor-zoom-out';
+                          overlay.onclick = () => overlay.remove();
+                          
+                          const img = document.createElement('img');
+                          img.src = `data:image/jpeg;base64,${signature.document_upload}`;
+                          img.className = 'max-w-full max-h-full object-contain';
+                          
+                          overlay.appendChild(img);
+                          document.body.appendChild(overlay);
+                        }}
                         data-testid="signature-document-image"
                       />
                       {signature.document_filename && (
