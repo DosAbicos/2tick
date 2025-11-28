@@ -1115,6 +1115,352 @@ class BackendTester:
         
         return all_tests_passed
     
+    def test_existing_contract_pdf(self):
+        """ТЕСТ 1: Тестирование существующего контракта test-contract-8159"""
+        try:
+            # Try to get the existing test contract
+            test_contract_id = "test-contract-8159"
+            self.log(f"   📋 Проверка существующего контракта: {test_contract_id}")
+            
+            # First try to get contract details
+            get_response = self.session.get(f"{BASE_URL}/contracts/{test_contract_id}")
+            if get_response.status_code == 200:
+                contract = get_response.json()
+                self.log(f"   ✅ Контракт найден: {contract.get('title', 'N/A')}")
+                self.log(f"   📋 Статус: {contract.get('status', 'N/A')}")
+                self.log(f"   📋 Код договора: {contract.get('contract_code', 'N/A')}")
+                
+                # Test PDF generation for existing contract
+                pdf_response = self.session.get(f"{BASE_URL}/contracts/{test_contract_id}/download-pdf")
+                if pdf_response.status_code == 200:
+                    pdf_content = pdf_response.content
+                    pdf_size = len(pdf_content)
+                    
+                    self.log(f"   ✅ PDF сгенерирован успешно. Размер: {pdf_size} bytes")
+                    
+                    # Check PDF header
+                    if pdf_content.startswith(b'%PDF'):
+                        self.log("   ✅ Валидный PDF header обнаружен")
+                    else:
+                        self.log("   ❌ Неверный PDF header")
+                        return False
+                    
+                    # Check minimum size for redesigned PDF (should be larger due to logo and styling)
+                    if pdf_size < 45000:  # Expect larger PDF due to logo and styling
+                        self.log(f"   ❌ PDF слишком маленький: {pdf_size} bytes (ожидается >45KB)")
+                        return False
+                    else:
+                        self.log(f"   ✅ PDF размер соответствует ожиданиям: {pdf_size} bytes")
+                    
+                    # Check Content-Type
+                    content_type = pdf_response.headers.get('Content-Type', '')
+                    if content_type == 'application/pdf':
+                        self.log(f"   ✅ Правильный Content-Type: {content_type}")
+                    else:
+                        self.log(f"   ❌ Неверный Content-Type: {content_type}")
+                        return False
+                    
+                    self.log("   ✅ ТЕСТ 1 ПРОЙДЕН: Существующий контракт генерирует PDF с новым дизайном")
+                    return True
+                else:
+                    self.log(f"   ❌ Генерация PDF не удалась: {pdf_response.status_code} - {pdf_response.text}")
+                    return False
+            else:
+                self.log(f"   ⚠️ Контракт {test_contract_id} не найден, создаем новый для тестирования...")
+                # If existing contract not found, create a new one for testing
+                return self.create_test_contract_for_pdf()
+                
+        except Exception as e:
+            self.log(f"   ❌ Исключение в тесте существующего контракта: {str(e)}")
+            return False
+    
+    def create_test_contract_for_pdf(self):
+        """Создать тестовый контракт для PDF тестирования"""
+        try:
+            contract_data = {
+                "title": "Договор аренды квартиры посуточно",
+                "content": "Договор аренды между наймодателем и нанимателем. Наниматель: [ФИО_НАНИМАТЕЛЯ]. Телефон: [НОМЕР_КЛИЕНТА]. Email: [ПОЧТА_КЛИЕНТА]. Адрес объекта: [АДРЕС]. Стоимость: [ЦЕНА] тенге в сутки. Количество человек: [КОЛИЧЕСТВО_ЧЕЛОВЕК].",
+                "content_type": "plain",
+                "signer_name": "Тестов Тест Тестович",
+                "signer_phone": "+77012345678",
+                "signer_email": "test@2tick.kz",
+                "placeholder_values": {
+                    "ФИО_НАЙМОДАТЕЛЯ": "Тестов Тест Тестович",
+                    "ДАТА_ЗАСЕЛЕНИЯ": "2025-12-01",
+                    "ИНН_КЛИЕНТА": "987654321098",
+                    "ПОЧТА_КЛИЕНТА": "client@test.kz",
+                    "НОМЕР_КЛИЕНТА": "+77012345678",
+                    "КОЛИЧЕСТВО_ЧЕЛОВЕК": "3",
+                    "АДРЕС": "г. Алматы, ул. Тестовая 1",
+                    "ЦЕНА": "15000"
+                }
+            }
+            
+            create_response = self.session.post(f"{BASE_URL}/contracts", json=contract_data)
+            if create_response.status_code == 200:
+                contract = create_response.json()
+                contract_id = contract["id"]
+                self.log(f"   ✅ Тестовый контракт создан: {contract_id}")
+                
+                # Test PDF generation
+                pdf_response = self.session.get(f"{BASE_URL}/contracts/{contract_id}/download-pdf")
+                if pdf_response.status_code == 200:
+                    pdf_size = len(pdf_response.content)
+                    self.log(f"   ✅ PDF сгенерирован для нового контракта. Размер: {pdf_size} bytes")
+                    return True
+                else:
+                    self.log(f"   ❌ Генерация PDF для нового контракта не удалась: {pdf_response.status_code}")
+                    return False
+            else:
+                self.log(f"   ❌ Создание тестового контракта не удалось: {create_response.status_code}")
+                return False
+                
+        except Exception as e:
+            self.log(f"   ❌ Исключение при создании тестового контракта: {str(e)}")
+            return False
+    
+    def test_new_contract_with_template_pdf(self):
+        """ТЕСТ 2: Создание нового контракта с шаблоном"""
+        try:
+            # Get available templates
+            templates_response = self.session.get(f"{BASE_URL}/templates")
+            if templates_response.status_code != 200:
+                self.log(f"   ❌ Не удалось получить шаблоны: {templates_response.status_code}")
+                return False
+                
+            templates = templates_response.json()
+            if not templates:
+                self.log("   ⚠️ Нет доступных шаблонов, создаем контракт без шаблона")
+                return self.create_test_contract_for_pdf()
+                
+            # Use first template
+            template = templates[0]
+            template_id = template["id"]
+            self.log(f"   📋 Используем шаблон: {template['title']} (ID: {template_id})")
+            
+            # Create contract from template
+            contract_data = {
+                "title": "Тест PDF редизайна с шаблоном",
+                "content": template.get("content", "Договор с плейсхолдерами"),
+                "content_type": "plain",
+                "template_id": template_id,
+                "signer_name": "Иванов Иван Иванович",
+                "signer_phone": "+77071234567",
+                "signer_email": "ivanov@2tick.kz",
+                "placeholder_values": {
+                    "ФИО_НАЙМОДАТЕЛЯ": "ТОО Тест Компания",
+                    "ФИО_НАНИМАТЕЛЯ": "Иванов Иван Иванович",
+                    "ДАТА_ЗАСЕЛЕНИЯ": "2025-01-15",
+                    "ДАТА_ВЫСЕЛЕНИЯ": "2025-01-20",
+                    "АДРЕС": "г. Алматы, ул. Абая 150",
+                    "ЦЕНА": "25000",
+                    "КОЛИЧЕСТВО_ЧЕЛОВЕК": "2",
+                    "ИИН_КЛИЕНТА": "123456789012",
+                    "ПОЧТА_КЛИЕНТА": "ivanov@2tick.kz",
+                    "НОМЕР_КЛИЕНТА": "+77071234567"
+                }
+            }
+            
+            create_response = self.session.post(f"{BASE_URL}/contracts", json=contract_data)
+            if create_response.status_code != 200:
+                self.log(f"   ❌ Создание контракта из шаблона не удалось: {create_response.status_code}")
+                return False
+                
+            contract = create_response.json()
+            contract_id = contract["id"]
+            self.log(f"   ✅ Контракт из шаблона создан: {contract_id}")
+            
+            # Test PDF generation with template
+            pdf_response = self.session.get(f"{BASE_URL}/contracts/{contract_id}/download-pdf")
+            if pdf_response.status_code == 200:
+                pdf_content = pdf_response.content
+                pdf_size = len(pdf_content)
+                
+                self.log(f"   ✅ PDF с шаблоном сгенерирован. Размер: {pdf_size} bytes")
+                
+                # Verify PDF quality
+                if pdf_content.startswith(b'%PDF') and pdf_size > 45000:
+                    self.log("   ✅ ТЕСТ 2 ПРОЙДЕН: PDF с шаблоном генерируется с новым дизайном")
+                    return True
+                else:
+                    self.log(f"   ❌ PDF с шаблоном не соответствует требованиям")
+                    return False
+            else:
+                self.log(f"   ❌ Генерация PDF с шаблоном не удалась: {pdf_response.status_code}")
+                return False
+                
+        except Exception as e:
+            self.log(f"   ❌ Исключение в тесте шаблона: {str(e)}")
+            return False
+    
+    def test_company_logo_exists(self):
+        """ТЕСТ 3: Проверка логотипа компании"""
+        try:
+            import os
+            logo_path = "/app/backend/logo.png"
+            
+            self.log(f"   🔍 Проверка существования логотипа: {logo_path}")
+            
+            if os.path.exists(logo_path):
+                file_size = os.path.getsize(logo_path)
+                self.log(f"   ✅ Логотип найден. Размер файла: {file_size} bytes")
+                
+                # Check if it's a reasonable size for a logo
+                if file_size > 100 and file_size < 100000:  # Between 100 bytes and 100KB
+                    self.log("   ✅ Размер логотипа в разумных пределах")
+                    
+                    # Try to verify it's a valid image
+                    try:
+                        from PIL import Image
+                        with Image.open(logo_path) as img:
+                            width, height = img.size
+                            self.log(f"   ✅ Логотип валидный: {width}x{height} пикселей, формат: {img.format}")
+                            
+                            # Check if dimensions are reasonable for a logo
+                            if 50 <= width <= 200 and 50 <= height <= 200:
+                                self.log("   ✅ ТЕСТ 3 ПРОЙДЕН: Логотип существует и имеет подходящие размеры")
+                                return True
+                            else:
+                                self.log(f"   ⚠️ Размеры логотипа необычные: {width}x{height}, но это не критично")
+                                return True
+                    except ImportError:
+                        self.log("   ⚠️ PIL не доступен для проверки изображения, но файл существует")
+                        return True
+                    except Exception as e:
+                        self.log(f"   ❌ Ошибка при проверке изображения: {str(e)}")
+                        return False
+                else:
+                    self.log(f"   ❌ Размер логотипа подозрительный: {file_size} bytes")
+                    return False
+            else:
+                self.log("   ❌ Логотип не найден по указанному пути")
+                return False
+                
+        except Exception as e:
+            self.log(f"   ❌ Исключение при проверке логотипа: {str(e)}")
+            return False
+    
+    def test_full_signing_and_pdf_generation(self):
+        """ТЕСТ 4: Полный E2E сценарий с подписанием"""
+        try:
+            # Create contract
+            contract_data = {
+                "title": "Полный E2E тест PDF редизайна",
+                "content": "Договор аренды. Наниматель: [ФИО_НАНИМАТЕЛЯ]. Телефон: [НОМЕР_КЛИЕНТА]. Email: [ПОЧТА_КЛИЕНТА]. Адрес: [АДРЕС]. Цена: [ЦЕНА] тенге в сутки.",
+                "content_type": "plain",
+                "signer_name": "",
+                "signer_phone": "",
+                "signer_email": "",
+                "placeholder_values": {
+                    "ФИО_НАЙМОДАТЕЛЯ": "ТОО Редизайн Тест",
+                    "ФИО_НАНИМАТЕЛЯ": "Петров Петр Петрович",
+                    "НОМЕР_КЛИЕНТА": "+77071234567",
+                    "ПОЧТА_КЛИЕНТА": "petrov@2tick.kz",
+                    "АДРЕС": "г. Алматы, ул. Редизайн 1",
+                    "ЦЕНА": "30000"
+                }
+            }
+            
+            create_response = self.session.post(f"{BASE_URL}/contracts", json=contract_data)
+            if create_response.status_code != 200:
+                self.log(f"   ❌ Создание контракта не удалось: {create_response.status_code}")
+                return False
+                
+            contract = create_response.json()
+            contract_id = contract["id"]
+            self.log(f"   ✅ E2E контракт создан: {contract_id}")
+            
+            # Update signer info
+            signer_data = {
+                "signer_name": "Петров Петр Петрович",
+                "signer_phone": "+77071234567",
+                "signer_email": "petrov@2tick.kz"
+            }
+            
+            update_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/update-signer-info", json=signer_data)
+            if update_response.status_code == 200:
+                self.log("   ✅ Данные нанимателя обновлены")
+            else:
+                self.log(f"   ⚠️ Обновление данных нанимателя не удалось: {update_response.status_code}")
+            
+            # Upload document (optional)
+            try:
+                from PIL import Image
+                from io import BytesIO
+                
+                img = Image.new('RGB', (200, 150), color='lightblue')
+                img_buffer = BytesIO()
+                img.save(img_buffer, format='JPEG')
+                img_buffer.seek(0)
+                
+                files = {'file': ('test_id.jpg', img_buffer, 'image/jpeg')}
+                upload_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/upload-document", files=files)
+                
+                if upload_response.status_code == 200:
+                    self.log("   ✅ Документ загружен")
+                else:
+                    self.log(f"   ⚠️ Загрузка документа не удалась: {upload_response.status_code}")
+                    
+            except ImportError:
+                self.log("   ⚠️ PIL не доступен, пропускаем загрузку документа")
+            
+            # Request OTP and verify (simulate signing)
+            otp_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/request-otp?method=sms")
+            if otp_response.status_code == 200:
+                otp_data = otp_response.json()
+                mock_otp = otp_data.get("mock_otp")
+                
+                if mock_otp:
+                    self.log(f"   📱 Mock OTP получен: {mock_otp}")
+                    
+                    # Verify OTP
+                    verify_data = {
+                        "contract_id": contract_id,
+                        "phone": "+77071234567",
+                        "otp_code": mock_otp
+                    }
+                    
+                    verify_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/verify-otp", json=verify_data)
+                    if verify_response.status_code == 200:
+                        self.log("   ✅ Контракт подписан клиентом")
+                    else:
+                        self.log(f"   ⚠️ Верификация OTP не удалась: {verify_response.status_code}")
+                else:
+                    self.log("   ⚠️ Mock OTP не получен")
+            else:
+                self.log(f"   ⚠️ Запрос OTP не удался: {otp_response.status_code}")
+            
+            # Approve contract (landlord approval)
+            approve_response = self.session.post(f"{BASE_URL}/contracts/{contract_id}/approve")
+            if approve_response.status_code == 200:
+                self.log("   ✅ Контракт утвержден наймодателем")
+                
+                # Generate final PDF with signatures
+                final_pdf_response = self.session.get(f"{BASE_URL}/contracts/{contract_id}/download-pdf")
+                if final_pdf_response.status_code == 200:
+                    pdf_content = final_pdf_response.content
+                    pdf_size = len(pdf_content)
+                    
+                    self.log(f"   ✅ Финальный PDF с подписями сгенерирован. Размер: {pdf_size} bytes")
+                    
+                    # Check final PDF quality
+                    if pdf_content.startswith(b'%PDF') and pdf_size > 50000:  # Should be larger with signatures
+                        self.log("   ✅ ТЕСТ 4 ПРОЙДЕН: Полный E2E сценарий с новым дизайном PDF работает")
+                        return True
+                    else:
+                        self.log(f"   ❌ Финальный PDF не соответствует требованиям")
+                        return False
+                else:
+                    self.log(f"   ❌ Генерация финального PDF не удалась: {final_pdf_response.status_code}")
+                    return False
+            else:
+                self.log(f"   ❌ Утверждение контракта не удалось: {approve_response.status_code}")
+                return False
+                
+        except Exception as e:
+            self.log(f"   ❌ Исключение в полном E2E тесте: {str(e)}")
+            return False
+
     def test_full_e2e_email_scenario(self):
         """ТЕСТ 1: Полный E2E сценарий"""
         try:
