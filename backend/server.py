@@ -722,13 +722,7 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
     for line in lines:
         if y_position < 120:
             p.showPage()
-            # Redraw header on new page
-            p.setStrokeColor(HexColor('#3b82f6'))
-            p.setLineWidth(3)
-            p.line(30, height - 20, width - 30, height - 20)
-            p.setLineWidth(1)
-            p.line(30, height - 25, width - 30, height - 25)
-            
+            # Minimal header on new page
             try:
                 p.setFont("DejaVu", 10)
             except:
