@@ -349,8 +349,8 @@ const ContractDetailsPage = () => {
                   </button>
                 </div>
               ) : (
-                <div className="flex gap-2 flex-wrap w-full lg:w-auto justify-between">
-                  <div className="flex gap-2">
+                <div className="flex gap-2 w-full lg:w-auto justify-between items-center">
+                  <div className="flex gap-2 order-1 lg:order-none">
                     {/* Удалить - всегда слева */}
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
