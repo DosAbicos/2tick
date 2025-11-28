@@ -1318,9 +1318,12 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
                 # Add placeholder space to keep alignment with landlord column
                 y_tenant -= 30
             
-            # Дата подписания (aligned)
-            p.drawString(tenant_x, y_tenant, "Дата подписания:")
-            y_tenant -= 12
+            # Date with icon
+            p.setFillColor(HexColor('#64748b'))
+            p.drawString(tenant_x, y_tenant, "📅 Дата подписания:")
+            y_tenant -= 13
+            
+            p.setFillColor(HexColor('#000000'))
             signed_at = signature.get('signed_at', 'N/A')
             if signed_at != 'N/A':
                 try:
