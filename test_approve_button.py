@@ -20,7 +20,7 @@ import os
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://signflow-31.preview.emergentagent.com/api"
+BASE_URL = "https://signdocs-pro.preview.emergentagent.com/api"
 
 class ApproveButtonTester:
     def __init__(self):

@@ -21,7 +21,7 @@ import time
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://signflow-31.preview.emergentagent.com/api"
+BASE_URL = "https://signdocs-pro.preview.emergentagent.com/api"
 TEST_USER_EMAIL = "test.creator.ux@example.com"
 TEST_USER_PASSWORD = "testpassword123"
 
