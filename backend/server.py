@@ -1336,6 +1336,44 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
         # Update y_position to continue below both columns
         y_position = min(y_landlord if landlord_signature_hash else start_y, 
                         y_tenant if (signature and signature.get('verified')) else start_y) - 20
+        
+        # Add footer with security information
+        footer_y = box_y + 35
+        
+        try:
+            p.setFont("DejaVu", 8)
+        except:
+            p.setFont("Helvetica", 8)
+        
+        p.setFillColor(HexColor('#94a3b8'))
+        
+        # Security notice
+        footer_text = "🔒 Документ защищен криптографической подписью"
+        p.drawCentredString(width / 2, footer_y, footer_text)
+        
+        footer_text2 = "Подлинность документа можно проверить на сайте 2tick.kz"
+        p.drawCentredString(width / 2, footer_y - 12, footer_text2)
+        
+        # Reset color
+        p.setFillColor(HexColor('#000000'))
+    
+    # Add page footer with page numbers
+    page_num = p.getPageNumber()
+    try:
+        p.setFont("DejaVu", 8)
+    except:
+        p.setFont("Helvetica", 8)
+    
+    p.setFillColor(HexColor('#94a3b8'))
+    
+    # Draw bottom decorative line
+    p.setStrokeColor(HexColor('#e2e8f0'))
+    p.setLineWidth(1)
+    p.line(40, 35, width - 40, 35)
+    
+    # Page number and website
+    p.drawString(40, 20, f"Страница {page_num}")
+    p.drawRightString(width - 40, 20, "2tick.kz - Электронная подпись")
     
     p.save()
     pdf_buffer.seek(0)
