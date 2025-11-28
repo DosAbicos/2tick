@@ -466,7 +466,7 @@ const ContractDetailsPage = () => {
                       <span className="sm:hidden">PDF</span>
                     </button>
                   )}
-                  {/* Delete button moved to the left side */}
+                  </div>
                 </div>
               )}
             </div>
