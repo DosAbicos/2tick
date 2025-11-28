@@ -622,14 +622,7 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
     
     from reportlab.lib.colors import HexColor
     
-    # ========== HEADER WITH LOGO AND DECORATIVE BORDER ==========
-    # Draw decorative top border (double line)
-    p.setStrokeColor(HexColor('#3b82f6'))  # Blue
-    p.setLineWidth(3)
-    p.line(30, height - 20, width - 30, height - 20)
-    p.setLineWidth(1)
-    p.line(30, height - 25, width - 30, height - 25)
-    
+    # ========== MINIMALIST HEADER WITH LOGO ==========
     # Add company logo
     logo_path = '/app/backend/logo.png'
     if os.path.exists(logo_path):
