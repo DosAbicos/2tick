@@ -885,61 +885,46 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             except Exception as e:
                 logging.error(f"Error loading logo in signature: {str(e)}")
         
-        # Company branding
+        # Company branding - minimalist
         try:
-            p.setFont("DejaVu-Bold", 18)
+            p.setFont("DejaVu-Bold", 16)
         except:
-            p.setFont("Helvetica-Bold", 18)
+            p.setFont("Helvetica-Bold", 16)
         
-        p.setFillColor(HexColor('#3b82f6'))
+        p.setFillColor(HexColor('#000000'))  # Black text
         logo_y = y_position - 75
         p.drawCentredString(width / 2, logo_y, "2tick.kz")
         
         # Description text
         try:
-            p.setFont("DejaVu", 10)
+            p.setFont("DejaVu", 9)
         except:
-            p.setFont("Helvetica", 10)
+            p.setFont("Helvetica", 9)
         
-        p.setFillColor(HexColor('#475569'))  # Slate gray
+        p.setFillColor(HexColor('#6b7280'))  # Gray
         desc_text = "Документ подписан при помощи сервиса электронной подписи 2tick.kz"
-        p.drawCentredString(width / 2, logo_y - 22, desc_text)
+        p.drawCentredString(width / 2, logo_y - 20, desc_text)
         
         desc_text2 = "с использованием простой электронной подписи (ПЭП)"
-        p.drawCentredString(width / 2, logo_y - 37, desc_text2)
+        p.drawCentredString(width / 2, logo_y - 33, desc_text2)
         
         # Reset to black
         p.setFillColor(HexColor('#000000'))
         
-        # Document identifier in a box
+        # Document identifier - simple text
         try:
             p.setFont("DejaVu-Bold", 10)
         except:
             p.setFont("Helvetica-Bold", 10)
         
         contract_code = contract.get('contract_code', 'N/A')
-        
-        # Draw small box for document ID
-        id_box_width = 250
-        id_box_x = (width - id_box_width) / 2
-        id_box_y = logo_y - 70
-        
-        p.setFillColor(HexColor('#eff6ff'))  # Very light blue
-        p.roundRect(id_box_x, id_box_y, id_box_width, 25, 5, stroke=0, fill=1)
-        
-        p.setFillColor(HexColor('#1e40af'))  # Dark blue
         identifier_text = f"№ {contract_code}"
-        p.drawCentredString(width / 2, id_box_y + 8, identifier_text)
+        p.drawCentredString(width / 2, logo_y - 55, identifier_text)
         
         # Reset to black
         p.setFillColor(HexColor('#000000'))
         
-        # Draw elegant separator line
-        p.setStrokeColor(HexColor('#cbd5e1'))
-        p.setLineWidth(1.5)
-        p.line(box_x + 40, logo_y - 85, width - (box_x + 40), logo_y - 85)
-        
-        y_position = logo_y - 105
+        y_position = logo_y - 80
         
         try:
             p.setFont("DejaVu", 10)
