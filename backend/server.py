@@ -182,6 +182,8 @@ class ContractTemplate(BaseModel):
     content_type: str = "plain"  # "plain" or "html"
     placeholders: Optional[dict] = None  # Конфигурация плейсхолдеров
     requires_tenant_document: bool = False  # Требуется ли удостоверение нанимателя
+    party_a_role: Optional[str] = 'Сторона А'  # Роль стороны А
+    party_b_role: Optional[str] = 'Сторона Б'  # Роль стороны Б
     is_active: bool = True
     created_by: str = "admin"
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
