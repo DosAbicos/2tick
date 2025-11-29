@@ -349,6 +349,23 @@ def hash_password(password: str) -> str:
 def verify_password(password: str, hashed: str) -> bool:
     return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
 
+# ===== MULTILANGUAGE HELPERS =====
+def get_content_by_language(obj: dict, field_base: str, language: str) -> str:
+    """Get content in specified language with fallback to Russian"""
+    if language == "kk" and obj.get(f"{field_base}_kk"):
+        return obj[f"{field_base}_kk"]
+    elif language == "en" and obj.get(f"{field_base}_en"):
+        return obj[f"{field_base}_en"]
+    return obj.get(field_base, "")
+
+def get_role_by_language(obj: dict, role_field: str, language: str) -> str:
+    """Get role name in specified language"""
+    if language == "kk" and obj.get(f"{role_field}_kk"):
+        return obj[f"{role_field}_kk"]
+    elif language == "en" and obj.get(f"{role_field}_en"):
+        return obj[f"{role_field}_en"]
+    return obj.get(role_field, "Сторона")
+
 def generate_otp() -> str:
     """Generate a 6-digit OTP code (mocked for fallback)"""
     return str(random.randint(100000, 999999))
