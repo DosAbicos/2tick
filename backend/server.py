@@ -2842,6 +2842,49 @@ async def update_signer_info(contract_id: str, data: SignerInfoUpdate):
         }
     }
 
+@api_router.post("/sign/{contract_id}/set-language")
+async def set_contract_language(contract_id: str, data: dict):
+    """Public endpoint to set signing language for contract"""
+    contract = await db.contracts.find_one({"id": contract_id})
+    if not contract:
+        raise HTTPException(status_code=404, detail="Contract not found")
+    
+    language = data.get('language', 'ru')
+    if language not in ['ru', 'kk', 'en']:
+        raise HTTPException(status_code=400, detail="Invalid language. Must be: ru, kk, or en")
+    
+    # Update contract with selected language
+    await db.contracts.update_one(
+        {"id": contract_id},
+        {"$set": {
+            "signing_language": language,
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    return {"message": "Language updated", "language": language}
+
+@api_router.post("/sign/{contract_id}/accept-english-disclaimer")
+async def accept_english_disclaimer(contract_id: str):
+    """Public endpoint to accept English disclaimer"""
+    contract = await db.contracts.find_one({"id": contract_id})
+    if not contract:
+        raise HTTPException(status_code=404, detail="Contract not found")
+    
+    if contract.get('signing_language') != 'en':
+        raise HTTPException(status_code=400, detail="Disclaimer only required for English language")
+    
+    # Mark that user accepted the English disclaimer
+    await db.contracts.update_one(
+        {"id": contract_id},
+        {"$set": {
+            "english_disclaimer_accepted": True,
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    return {"message": "English disclaimer accepted"}
+
 @api_router.post("/sign/{contract_id}/upload-document")
 async def upload_document(contract_id: str, file: UploadFile = File(...)):
     # Allow overwriting - client can replace document anytime
