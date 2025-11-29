@@ -997,8 +997,8 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             except:
                 p.setFont("Helvetica-Bold", 11)
             
-            # Use dynamic role from contract or default
-            party_a_role = contract.get('party_a_role', 'Подпись Наймодателя')
+            # Use dynamic role from contract in appropriate language
+            party_a_role = get_role_by_language(contract, 'party_a_role', language)
             
             # Draw role text (no background)
             p.setFillColor(HexColor('#000000'))  # Black
