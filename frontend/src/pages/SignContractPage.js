@@ -403,6 +403,27 @@ const SignContractPage = () => {
     }
   };
 
+  const handleLanguageChange = async (newLang) => {
+    if (newLang === 'en' && !showEnglishWarning) {
+      setShowEnglishWarning(true);
+      return;
+    }
+    
+    try {
+      await axios.post(`${API}/sign/${id}/set-language`, { language: newLang });
+      setLanguage(newLang);
+      toast.success(newLang === 'ru' ? 'Язык изменен на русский' : newLang === 'kk' ? 'Тіл қазақ тіліне өзгертілді' : 'Language changed to English');
+    } catch (error) {
+      console.error('Error changing language:', error);
+      toast.error('Failed to change language');
+    }
+  };
+  
+  const handleEnglishWarningAccept = () => {
+    setShowEnglishWarning(false);
+    handleLanguageChange('en');
+  };
+
   const validateEmail = (email) => {
     if (!email) return true; // Email is optional
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
