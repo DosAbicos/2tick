@@ -57,6 +57,11 @@ const SignContractPage = () => {
   const [mockOtp, setMockOtp] = useState('');
   const [signatureHash, setSignatureHash] = useState('');
   
+  // Language states
+  const [language, setLanguage] = useState('ru');
+  const [showEnglishWarning, setShowEnglishWarning] = useState(false);
+  const [englishDisclaimerAccepted, setEnglishDisclaimerAccepted] = useState(false);
+  
   // Call OTP states
   const [verificationMethod, setVerificationMethod] = useState(''); // 'sms', 'call', or 'telegram'
   const [callCode, setCallCode] = useState('');
