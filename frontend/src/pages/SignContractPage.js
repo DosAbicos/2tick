@@ -1266,7 +1266,11 @@ const SignContractPage = () => {
                         // Don't continue if save fails - user needs valid phone for verification
                       }
                     }}
-                    className="flex-1 py-4 text-base font-semibold text-white bg-gradient-to-r from-green-600 to-green-500 rounded-xl hover:from-green-700 hover:to-green-600 transition-all shadow-lg shadow-green-500/30"
+                    className={`flex-1 py-4 text-base font-semibold text-white rounded-xl transition-all shadow-lg ${
+                      language === 'en' && !englishDisclaimerAccepted
+                        ? 'bg-gray-400 cursor-not-allowed'
+                        : 'bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 shadow-green-500/30'
+                    }`}
                     data-testid="sign-button"
                   >
                     Всё верно, подписать договор →
