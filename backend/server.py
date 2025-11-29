@@ -176,14 +176,24 @@ class ContractTemplate(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     title: str
+    title_kk: Optional[str] = None  # Название на казахском
+    title_en: Optional[str] = None  # Название на английском
     description: str
+    description_kk: Optional[str] = None
+    description_en: Optional[str] = None
     category: str  # "real_estate", "services", "employment", "other"
-    content: str
+    content: str  # Русский контент
+    content_kk: Optional[str] = None  # Казахский контент
+    content_en: Optional[str] = None  # Английский контент
     content_type: str = "plain"  # "plain" or "html"
-    placeholders: Optional[dict] = None  # Конфигурация плейсхолдеров
+    placeholders: Optional[dict] = None  # Конфигурация плейсхолдеров (с labels на 3 языках)
     requires_tenant_document: bool = False  # Требуется ли удостоверение нанимателя
-    party_a_role: Optional[str] = 'Сторона А'  # Роль стороны А
-    party_b_role: Optional[str] = 'Сторона Б'  # Роль стороны Б
+    party_a_role: Optional[str] = 'Сторона А'  # Роль стороны А (русский)
+    party_a_role_kk: Optional[str] = 'А жағы'  # Роль стороны А (казахский)
+    party_a_role_en: Optional[str] = 'Party A'  # Роль стороны А (английский)
+    party_b_role: Optional[str] = 'Сторона Б'  # Роль стороны Б (русский)
+    party_b_role_kk: Optional[str] = 'Б жағы'  # Роль стороны Б (казахский)
+    party_b_role_en: Optional[str] = 'Party B'  # Роль стороны Б (английский)
     is_active: bool = True
     created_by: str = "admin"
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
