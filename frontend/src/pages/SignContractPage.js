@@ -1568,6 +1568,34 @@ const SignContractPage = () => {
           </div>
         </div>
       </div>
+      
+      {/* English Warning Popup */}
+      {showEnglishWarning && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl"
+          >
+            <div className="text-center">
+              <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-3xl">⚠️</span>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Внимание!</h3>
+              <p className="text-gray-700 mb-6 leading-relaxed">
+                Данный договор на английском языке является переводом.<br/><br/>
+                Юридическую силу имеет оригинал на русском или казахском языке.
+              </p>
+              <button
+                onClick={handleEnglishWarningAccept}
+                className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                OK
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 };
