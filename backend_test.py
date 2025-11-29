@@ -3573,17 +3573,30 @@ class BackendTester:
             # Тест 1.2: POST /api/sign/{contract_id}/accept-english-disclaimer
             self.log("   🔧 Тест 1.2: POST /api/sign/{contract_id}/accept-english-disclaimer")
             
+            # Сначала устанавливаем английский язык (требование для disclaimer)
+            set_en_for_disclaimer = self.session.post(f"{BASE_URL}/sign/{contract_id}/set-language", 
+                                                    json={"language": "en"})
+            if set_en_for_disclaimer.status_code != 200:
+                self.log(f"   ❌ Не удалось установить английский для disclaimer: {set_en_for_disclaimer.status_code}")
+                return False
+            
             disclaimer_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/accept-english-disclaimer")
             if disclaimer_response.status_code == 200:
                 result = disclaimer_response.json()
                 self.log("   ✅ Подтверждение английского языка успешно")
                 self.log(f"   📋 Ответ: {result.get('message', 'N/A')}")
                 
-                # Проверяем, что флаг установлен
-                if result.get('english_disclaimer_accepted') == True:
-                    self.log("   ✅ Флаг english_disclaimer_accepted установлен корректно")
+                # Проверяем, что флаг установлен в контракте
+                check_response = self.session.get(f"{BASE_URL}/sign/{contract_id}")
+                if check_response.status_code == 200:
+                    updated_contract = check_response.json()
+                    if updated_contract.get('english_disclaimer_accepted') == True:
+                        self.log("   ✅ Флаг english_disclaimer_accepted установлен корректно")
+                    else:
+                        self.log("   ❌ Флаг english_disclaimer_accepted не установлен в контракте")
+                        return False
                 else:
-                    self.log("   ❌ Флаг english_disclaimer_accepted не установлен")
+                    self.log(f"   ❌ Не удалось проверить обновленный контракт: {check_response.status_code}")
                     return False
             else:
                 self.log(f"   ❌ Подтверждение английского не удалось: {disclaimer_response.status_code}")
