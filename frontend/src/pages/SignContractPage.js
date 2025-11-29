@@ -1216,7 +1216,14 @@ const SignContractPage = () => {
                     ← Назад
                   </button>
                   <button
+                    disabled={language === 'en' && !englishDisclaimerAccepted}
                     onClick={async () => {
+                      // Check English disclaimer
+                      if (language === 'en' && !englishDisclaimerAccepted) {
+                        toast.error('Please accept the English disclaimer to continue');
+                        return;
+                      }
+                      
                       // Ensure placeholder values and signer info are saved before verification
                       try {
                         // Save placeholder values if we have any unfilled placeholders
