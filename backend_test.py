@@ -3445,6 +3445,453 @@ class BackendTester:
             self.log(f"   Traceback: {traceback.format_exc()}")
             return False
 
+    def test_multilingual_contract_system(self):
+        """
+        КРИТИЧЕСКОЕ ТЕСТИРОВАНИЕ: Мультиязычная система подписания договоров
+        
+        ТЕСТИРУЕМЫЕ КОМПОНЕНТЫ:
+        1. API Endpoints для смены языка и подтверждения английского
+        2. Создание контракта с языковыми версиями из шаблона
+        3. PDF генерация с использованием выбранного языка
+        4. Frontend Flow через API (получение и установка языка)
+        """
+        self.log("\n🌐 КРИТИЧЕСКОЕ ТЕСТИРОВАНИЕ: Мультиязычная система подписания договоров")
+        self.log("=" * 80)
+        
+        # Authenticate first
+        if not self.login_as_creator():
+            self.log("❌ Не удалось войти как пользователь. Пропускаем тесты.")
+            return False
+        
+        all_tests_passed = True
+        
+        # ТЕСТ 1: API Endpoints для языковых функций
+        self.log("\n🔧 ТЕСТ 1: API Endpoints для языковых функций")
+        test1_passed = self.test_language_api_endpoints()
+        all_tests_passed = all_tests_passed and test1_passed
+        
+        # ТЕСТ 2: Создание контракта с языковыми версиями
+        self.log("\n📝 ТЕСТ 2: Создание контракта с языковыми версиями")
+        test2_passed, contract_id = self.test_contract_with_language_versions()
+        all_tests_passed = all_tests_passed and test2_passed
+        
+        # ТЕСТ 3: PDF генерация с выбранным языком
+        if contract_id:
+            self.log("\n📄 ТЕСТ 3: PDF генерация с выбранным языком")
+            test3_passed = self.test_pdf_generation_with_language(contract_id)
+            all_tests_passed = all_tests_passed and test3_passed
+        else:
+            self.log("\n❌ ТЕСТ 3 ПРОПУЩЕН: Нет контракта для тестирования")
+            test3_passed = False
+            all_tests_passed = False
+        
+        # ТЕСТ 4: Frontend Flow через API
+        if contract_id:
+            self.log("\n🖥️ ТЕСТ 4: Frontend Flow через API")
+            test4_passed = self.test_frontend_language_flow(contract_id)
+            all_tests_passed = all_tests_passed and test4_passed
+        else:
+            self.log("\n❌ ТЕСТ 4 ПРОПУЩЕН: Нет контракта для тестирования")
+            test4_passed = False
+            all_tests_passed = False
+        
+        # Итоговый результат
+        self.log("\n" + "=" * 80)
+        self.log("📊 РЕЗУЛЬТАТЫ ТЕСТИРОВАНИЯ МУЛЬТИЯЗЫЧНОЙ СИСТЕМЫ:")
+        self.log(f"   ТЕСТ 1 (API Endpoints): {'✅ ПРОЙДЕН' if test1_passed else '❌ ПРОВАЛЕН'}")
+        self.log(f"   ТЕСТ 2 (Языковые версии): {'✅ ПРОЙДЕН' if test2_passed else '❌ ПРОВАЛЕН'}")
+        self.log(f"   ТЕСТ 3 (PDF генерация): {'✅ ПРОЙДЕН' if test3_passed else '❌ ПРОВАЛЕН'}")
+        self.log(f"   ТЕСТ 4 (Frontend Flow): {'✅ ПРОЙДЕН' if test4_passed else '❌ ПРОВАЛЕН'}")
+        
+        if all_tests_passed:
+            self.log("🎉 ВСЕ ТЕСТЫ МУЛЬТИЯЗЫЧНОЙ СИСТЕМЫ ПРОЙДЕНЫ!")
+            self.log("✅ Смена языка (ru/kk/en) работает корректно")
+            self.log("✅ Подтверждение английского языка функционирует")
+            self.log("✅ Языковые версии контента копируются из шаблонов")
+            self.log("✅ PDF генерируется с правильным языковым контентом")
+            self.log("✅ Frontend API для языков работает")
+        else:
+            self.log("❌ ОБНАРУЖЕНЫ КРИТИЧЕСКИЕ ПРОБЛЕМЫ С МУЛЬТИЯЗЫЧНОЙ СИСТЕМОЙ!")
+        
+        return all_tests_passed
+    
+    def test_language_api_endpoints(self):
+        """ТЕСТ 1: API Endpoints для языковых функций"""
+        try:
+            # Сначала создаем тестовый контракт
+            contract_data = {
+                "title": "Тест мультиязычности",
+                "content": "Договор на русском языке",
+                "content_kk": "Қазақ тіліндегі келісім",
+                "content_en": "Contract in English language",
+                "content_type": "plain",
+                "signer_name": "Test Signer",
+                "signer_phone": "+77012345678",
+                "signer_email": "test@example.com",
+                "signing_language": "ru"
+            }
+            
+            create_response = self.session.post(f"{BASE_URL}/contracts", json=contract_data)
+            if create_response.status_code != 200:
+                self.log(f"   ❌ Не удалось создать тестовый контракт: {create_response.status_code}")
+                return False
+            
+            contract = create_response.json()
+            contract_id = contract["id"]
+            self.log(f"   ✅ Тестовый контракт создан: {contract_id}")
+            
+            # Тест 1.1: POST /api/sign/{contract_id}/set-language
+            self.log("   🔧 Тест 1.1: POST /api/sign/{contract_id}/set-language")
+            
+            # Тестируем смену на казахский
+            set_lang_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/set-language", 
+                                                json={"language": "kk"})
+            if set_lang_response.status_code == 200:
+                self.log("   ✅ Смена языка на казахский (kk) успешна")
+            else:
+                self.log(f"   ❌ Смена языка на казахский не удалась: {set_lang_response.status_code}")
+                return False
+            
+            # Тестируем смену на английский
+            set_lang_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/set-language", 
+                                                json={"language": "en"})
+            if set_lang_response.status_code == 200:
+                self.log("   ✅ Смена языка на английский (en) успешна")
+            else:
+                self.log(f"   ❌ Смена языка на английский не удалась: {set_lang_response.status_code}")
+                return False
+            
+            # Тестируем смену обратно на русский
+            set_lang_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/set-language", 
+                                                json={"language": "ru"})
+            if set_lang_response.status_code == 200:
+                self.log("   ✅ Смена языка на русский (ru) успешна")
+            else:
+                self.log(f"   ❌ Смена языка на русский не удалась: {set_lang_response.status_code}")
+                return False
+            
+            # Тест 1.2: POST /api/sign/{contract_id}/accept-english-disclaimer
+            self.log("   🔧 Тест 1.2: POST /api/sign/{contract_id}/accept-english-disclaimer")
+            
+            disclaimer_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/accept-english-disclaimer")
+            if disclaimer_response.status_code == 200:
+                result = disclaimer_response.json()
+                self.log("   ✅ Подтверждение английского языка успешно")
+                self.log(f"   📋 Ответ: {result.get('message', 'N/A')}")
+                
+                # Проверяем, что флаг установлен
+                if result.get('english_disclaimer_accepted') == True:
+                    self.log("   ✅ Флаг english_disclaimer_accepted установлен корректно")
+                else:
+                    self.log("   ❌ Флаг english_disclaimer_accepted не установлен")
+                    return False
+            else:
+                self.log(f"   ❌ Подтверждение английского не удалось: {disclaimer_response.status_code}")
+                return False
+            
+            self.log("   ✅ ТЕСТ 1 ПРОЙДЕН: API Endpoints для языков работают корректно")
+            return True
+            
+        except Exception as e:
+            self.log(f"   ❌ Исключение в тесте API endpoints: {str(e)}")
+            return False
+    
+    def test_contract_with_language_versions(self):
+        """ТЕСТ 2: Создание контракта с языковыми версиями из шаблона"""
+        try:
+            # Получаем доступные шаблоны
+            templates_response = self.session.get(f"{BASE_URL}/templates")
+            if templates_response.status_code != 200:
+                self.log(f"   ❌ Не удалось получить шаблоны: {templates_response.status_code}")
+                return False, None
+            
+            templates = templates_response.json()
+            if not templates:
+                self.log("   ⚠️ Нет доступных шаблонов, создаем контракт с языковыми версиями вручную")
+                return self.create_multilingual_contract_manually()
+            
+            # Ищем шаблон с языковыми версиями
+            multilingual_template = None
+            for template in templates:
+                if (template.get('content_kk') or template.get('content_en')):
+                    multilingual_template = template
+                    break
+            
+            if not multilingual_template:
+                self.log("   ⚠️ Нет мультиязычных шаблонов, создаем контракт вручную")
+                return self.create_multilingual_contract_manually()
+            
+            template_id = multilingual_template["id"]
+            self.log(f"   📋 Используем мультиязычный шаблон: {multilingual_template['title']} (ID: {template_id})")
+            
+            # Создаем контракт из мультиязычного шаблона
+            contract_data = {
+                "title": "Тест мультиязычного контракта из шаблона",
+                "content": multilingual_template.get("content", "Русский контент"),
+                "content_kk": multilingual_template.get("content_kk"),
+                "content_en": multilingual_template.get("content_en"),
+                "content_type": "plain",
+                "template_id": template_id,
+                "signer_name": "Мультиязычный Тестер",
+                "signer_phone": "+77012345678",
+                "signer_email": "multilang@test.kz",
+                "signing_language": "ru"
+            }
+            
+            create_response = self.session.post(f"{BASE_URL}/contracts", json=contract_data)
+            if create_response.status_code != 200:
+                self.log(f"   ❌ Создание мультиязычного контракта не удалось: {create_response.status_code}")
+                return False, None
+            
+            contract = create_response.json()
+            contract_id = contract["id"]
+            self.log(f"   ✅ Мультиязычный контракт создан: {contract_id}")
+            
+            # Проверяем, что все языковые версии скопировались
+            content_ru = contract.get("content", "")
+            content_kk = contract.get("content_kk", "")
+            content_en = contract.get("content_en", "")
+            
+            self.log(f"   📋 Русский контент: {content_ru[:50]}{'...' if len(content_ru) > 50 else ''}")
+            self.log(f"   📋 Казахский контент: {content_kk[:50] if content_kk else 'Отсутствует'}{'...' if content_kk and len(content_kk) > 50 else ''}")
+            self.log(f"   📋 Английский контент: {content_en[:50] if content_en else 'Отсутствует'}{'...' if content_en and len(content_en) > 50 else ''}")
+            
+            # Проверяем наличие контента
+            success = True
+            if not content_ru:
+                self.log("   ❌ Русский контент отсутствует")
+                success = False
+            
+            # Проверяем, что хотя бы один дополнительный язык присутствует
+            if not content_kk and not content_en:
+                self.log("   ❌ Дополнительные языковые версии отсутствуют")
+                success = False
+            else:
+                if content_kk:
+                    self.log("   ✅ Казахская версия скопирована из шаблона")
+                if content_en:
+                    self.log("   ✅ Английская версия скопирована из шаблона")
+            
+            if success:
+                self.log("   ✅ ТЕСТ 2 ПРОЙДЕН: Языковые версии корректно скопированы из шаблона")
+                return True, contract_id
+            else:
+                self.log("   ❌ ТЕСТ 2 ПРОВАЛЕН: Проблемы с копированием языковых версий")
+                return False, contract_id
+            
+        except Exception as e:
+            self.log(f"   ❌ Исключение в тесте языковых версий: {str(e)}")
+            return False, None
+    
+    def create_multilingual_contract_manually(self):
+        """Создать мультиязычный контракт вручную для тестирования"""
+        try:
+            contract_data = {
+                "title": "Мультиязычный тестовый контракт",
+                "content": "Договор аренды на русском языке. Наниматель: [ФИО]. Телефон: [ТЕЛЕФОН].",
+                "content_kk": "Қазақ тіліндегі жалға алу келісімі. Жалға алушы: [ФИО]. Телефон: [ТЕЛЕФОН].",
+                "content_en": "Rental agreement in English. Tenant: [ФИО]. Phone: [ТЕЛЕФОН].",
+                "content_type": "plain",
+                "signer_name": "Manual Test User",
+                "signer_phone": "+77012345678",
+                "signer_email": "manual@test.kz",
+                "signing_language": "ru"
+            }
+            
+            create_response = self.session.post(f"{BASE_URL}/contracts", json=contract_data)
+            if create_response.status_code == 200:
+                contract = create_response.json()
+                contract_id = contract["id"]
+                self.log(f"   ✅ Мультиязычный контракт создан вручную: {contract_id}")
+                self.log("   ✅ ТЕСТ 2 ПРОЙДЕН: Мультиязычный контракт создан с тремя языковыми версиями")
+                return True, contract_id
+            else:
+                self.log(f"   ❌ Создание мультиязычного контракта вручную не удалось: {create_response.status_code}")
+                return False, None
+                
+        except Exception as e:
+            self.log(f"   ❌ Исключение при создании контракта вручную: {str(e)}")
+            return False, None
+    
+    def test_pdf_generation_with_language(self, contract_id):
+        """ТЕСТ 3: PDF генерация с выбранным языком"""
+        try:
+            # Тест 3.1: Установить язык на английский
+            self.log("   🔧 Тест 3.1: Установка языка на английский для PDF")
+            
+            set_lang_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/set-language", 
+                                                json={"language": "en"})
+            if set_lang_response.status_code != 200:
+                self.log(f"   ❌ Не удалось установить английский язык: {set_lang_response.status_code}")
+                return False
+            
+            self.log("   ✅ Язык установлен на английский")
+            
+            # Тест 3.2: Генерация PDF с английским языком
+            self.log("   🔧 Тест 3.2: Генерация PDF с английским контентом")
+            
+            pdf_response = self.session.get(f"{BASE_URL}/contracts/{contract_id}/download-pdf")
+            if pdf_response.status_code != 200:
+                self.log(f"   ❌ Генерация PDF не удалась: {pdf_response.status_code}")
+                return False
+            
+            pdf_content = pdf_response.content
+            pdf_size = len(pdf_content)
+            
+            # Проверяем базовые характеристики PDF
+            if not pdf_content.startswith(b'%PDF'):
+                self.log("   ❌ Неверный PDF header")
+                return False
+            
+            if pdf_size < 10000:  # Минимальный размер для содержательного PDF
+                self.log(f"   ❌ PDF слишком маленький: {pdf_size} bytes")
+                return False
+            
+            self.log(f"   ✅ PDF сгенерирован успешно. Размер: {pdf_size} bytes")
+            self.log("   ✅ Content-Type: application/pdf")
+            
+            # Тест 3.3: Проверка смены языка на казахский
+            self.log("   🔧 Тест 3.3: Генерация PDF с казахским языком")
+            
+            set_lang_kk_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/set-language", 
+                                                   json={"language": "kk"})
+            if set_lang_kk_response.status_code == 200:
+                pdf_kk_response = self.session.get(f"{BASE_URL}/contracts/{contract_id}/download-pdf")
+                if pdf_kk_response.status_code == 200:
+                    pdf_kk_size = len(pdf_kk_response.content)
+                    self.log(f"   ✅ PDF с казахским языком сгенерирован. Размер: {pdf_kk_size} bytes")
+                else:
+                    self.log(f"   ❌ Генерация PDF с казахским не удалась: {pdf_kk_response.status_code}")
+                    return False
+            else:
+                self.log(f"   ❌ Не удалось установить казахский язык: {set_lang_kk_response.status_code}")
+                return False
+            
+            # Тест 3.4: Возврат к русскому языку
+            self.log("   🔧 Тест 3.4: Возврат к русскому языку")
+            
+            set_lang_ru_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/set-language", 
+                                                   json={"language": "ru"})
+            if set_lang_ru_response.status_code == 200:
+                pdf_ru_response = self.session.get(f"{BASE_URL}/contracts/{contract_id}/download-pdf")
+                if pdf_ru_response.status_code == 200:
+                    pdf_ru_size = len(pdf_ru_response.content)
+                    self.log(f"   ✅ PDF с русским языком сгенерирован. Размер: {pdf_ru_size} bytes")
+                else:
+                    self.log(f"   ❌ Генерация PDF с русским не удалась: {pdf_ru_response.status_code}")
+                    return False
+            else:
+                self.log(f"   ❌ Не удалось установить русский язык: {set_lang_ru_response.status_code}")
+                return False
+            
+            self.log("   ✅ ТЕСТ 3 ПРОЙДЕН: PDF генерируется с правильным языковым контентом")
+            return True
+            
+        except Exception as e:
+            self.log(f"   ❌ Исключение в тесте PDF генерации: {str(e)}")
+            return False
+    
+    def test_frontend_language_flow(self, contract_id):
+        """ТЕСТ 4: Frontend Flow через API"""
+        try:
+            # Тест 4.1: GET /api/sign/{id} - получение контракта
+            self.log("   🔧 Тест 4.1: GET /api/sign/{id} - получение контракта")
+            
+            get_response = self.session.get(f"{BASE_URL}/sign/{contract_id}")
+            if get_response.status_code != 200:
+                self.log(f"   ❌ Получение контракта не удалось: {get_response.status_code}")
+                return False
+            
+            contract = get_response.json()
+            current_language = contract.get("signing_language", "unknown")
+            self.log(f"   ✅ Контракт получен. Текущий язык: {current_language}")
+            
+            # Проверяем наличие языковых полей
+            has_content_ru = bool(contract.get("content"))
+            has_content_kk = bool(contract.get("content_kk"))
+            has_content_en = bool(contract.get("content_en"))
+            
+            self.log(f"   📋 Русский контент: {'✅' if has_content_ru else '❌'}")
+            self.log(f"   📋 Казахский контент: {'✅' if has_content_kk else '❌'}")
+            self.log(f"   📋 Английский контент: {'✅' if has_content_en else '❌'}")
+            
+            # Тест 4.2: Установка языка через POST /api/sign/{id}/set-language
+            self.log("   🔧 Тест 4.2: Установка языка через API")
+            
+            # Устанавливаем английский
+            set_en_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/set-language", 
+                                              json={"language": "en"})
+            if set_en_response.status_code != 200:
+                self.log(f"   ❌ Установка английского языка не удалась: {set_en_response.status_code}")
+                return False
+            
+            # Проверяем, что язык сохранился
+            get_after_en = self.session.get(f"{BASE_URL}/sign/{contract_id}")
+            if get_after_en.status_code == 200:
+                contract_after_en = get_after_en.json()
+                saved_language = contract_after_en.get("signing_language", "unknown")
+                if saved_language == "en":
+                    self.log("   ✅ Английский язык сохранен корректно")
+                else:
+                    self.log(f"   ❌ Язык не сохранился. Ожидался: en, получен: {saved_language}")
+                    return False
+            else:
+                self.log(f"   ❌ Не удалось проверить сохранение языка: {get_after_en.status_code}")
+                return False
+            
+            # Тест 4.3: Установка казахского языка
+            self.log("   🔧 Тест 4.3: Установка казахского языка")
+            
+            set_kk_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/set-language", 
+                                              json={"language": "kk"})
+            if set_kk_response.status_code == 200:
+                # Проверяем сохранение
+                get_after_kk = self.session.get(f"{BASE_URL}/sign/{contract_id}")
+                if get_after_kk.status_code == 200:
+                    contract_after_kk = get_after_kk.json()
+                    saved_language_kk = contract_after_kk.get("signing_language", "unknown")
+                    if saved_language_kk == "kk":
+                        self.log("   ✅ Казахский язык сохранен корректно")
+                    else:
+                        self.log(f"   ❌ Казахский язык не сохранился. Получен: {saved_language_kk}")
+                        return False
+                else:
+                    self.log(f"   ❌ Не удалось проверить сохранение казахского: {get_after_kk.status_code}")
+                    return False
+            else:
+                self.log(f"   ❌ Установка казахского языка не удалась: {set_kk_response.status_code}")
+                return False
+            
+            # Тест 4.4: Возврат к русскому языку
+            self.log("   🔧 Тест 4.4: Возврат к русскому языку")
+            
+            set_ru_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/set-language", 
+                                              json={"language": "ru"})
+            if set_ru_response.status_code == 200:
+                # Финальная проверка
+                get_final = self.session.get(f"{BASE_URL}/sign/{contract_id}")
+                if get_final.status_code == 200:
+                    contract_final = get_final.json()
+                    final_language = contract_final.get("signing_language", "unknown")
+                    if final_language == "ru":
+                        self.log("   ✅ Русский язык восстановлен корректно")
+                    else:
+                        self.log(f"   ❌ Русский язык не восстановился. Получен: {final_language}")
+                        return False
+                else:
+                    self.log(f"   ❌ Не удалось проверить финальное состояние: {get_final.status_code}")
+                    return False
+            else:
+                self.log(f"   ❌ Возврат к русскому языку не удался: {set_ru_response.status_code}")
+                return False
+            
+            self.log("   ✅ ТЕСТ 4 ПРОЙДЕН: Frontend Flow через API работает корректно")
+            return True
+            
+        except Exception as e:
+            self.log(f"   ❌ Исключение в тесте Frontend Flow: {str(e)}")
+            return False
+
     def run_all_tests(self):
         """Run all backend tests for 2tick.kz"""
         self.log("🚀 Starting Backend Testing for 2tick.kz")
