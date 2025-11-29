@@ -204,6 +204,8 @@ class Contract(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     title: str
     content: str
+    content_kk: Optional[str] = None  # Казахская версия
+    content_en: Optional[str] = None  # Английская версия
     content_type: str = "plain"  # "plain" or "html"
     creator_id: Optional[str] = None  # ИСПРАВЛЕНО: сделано опциональным для совместимости
     landlord_id: Optional[str] = None  # Добавлено для совместимости с existing data
