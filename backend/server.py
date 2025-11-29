@@ -742,7 +742,8 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
     
     # Convert HTML to text if needed and replace placeholders
     try:
-        content_text = contract['content']
+        # Get content in appropriate language
+        content_text = get_content_by_language(contract, 'content', language)
         
         # Graceful fallback for missing content_type
         content_type = contract.get('content_type', 'plain')
