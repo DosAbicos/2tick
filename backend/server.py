@@ -258,6 +258,8 @@ class Contract(BaseModel):
 class ContractCreate(BaseModel):
     title: str
     content: str
+    content_kk: Optional[str] = None  # Казахская версия
+    content_en: Optional[str] = None  # Английская версия
     content_type: str = "plain"  # "plain" or "html"
     template_id: Optional[str] = None  # ID шаблона, если создан из шаблона
     placeholder_values: Optional[dict] = None  # Значения placeholders {key: value}
@@ -274,7 +276,11 @@ class ContractCreate(BaseModel):
     landlord_name: Optional[str] = None
     landlord_representative: Optional[str] = None
     party_a_role: Optional[str] = 'Сторона А'
+    party_a_role_kk: Optional[str] = 'А жағы'
+    party_a_role_en: Optional[str] = 'Party A'
     party_b_role: Optional[str] = 'Сторона Б'
+    party_b_role_kk: Optional[str] = 'Б жағы'
+    party_b_role_en: Optional[str] = 'Party B'
 
 class Signature(BaseModel):
     model_config = ConfigDict(extra="ignore")
