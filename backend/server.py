@@ -2290,6 +2290,8 @@ async def create_contract(contract_data: ContractCreate, current_user: dict = De
     contract = Contract(
         title=contract_data.title,
         content=contract_data.content,
+        content_kk=contract_data.content_kk,  # Казахская версия
+        content_en=contract_data.content_en,  # Английская версия
         content_type=contract_data.content_type,
         creator_id=current_user['user_id'],
         template_id=contract_data.template_id,  # Template ID if created from template
@@ -2311,7 +2313,11 @@ async def create_contract(contract_data: ContractCreate, current_user: dict = De
         landlord_representative=contract_data.landlord_representative,
         landlord_iin_bin=landlord_iin_bin,  # From user profile
         party_a_role=contract_data.party_a_role or 'Сторона А',  # Роли из шаблона
-        party_b_role=contract_data.party_b_role or 'Сторона Б'
+        party_a_role_kk=contract_data.party_a_role_kk or 'А жағы',
+        party_a_role_en=contract_data.party_a_role_en or 'Party A',
+        party_b_role=contract_data.party_b_role or 'Сторона Б',
+        party_b_role_kk=contract_data.party_b_role_kk or 'Б жағы',
+        party_b_role_en=contract_data.party_b_role_en or 'Party B'
     )
     
     doc = contract.model_dump()
