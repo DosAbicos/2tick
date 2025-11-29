@@ -244,7 +244,13 @@ class Contract(BaseModel):
     tenant_document: Optional[str] = None  # Удостоверение нанимателя (base64 или путь)
     tenant_document_filename: Optional[str] = None  # Имя файла удостоверения
     party_a_role: Optional[str] = 'Сторона А'  # Роль стороны А (из шаблона)
+    party_a_role_kk: Optional[str] = 'А жағы'
+    party_a_role_en: Optional[str] = 'Party A'
     party_b_role: Optional[str] = 'Сторона Б'  # Роль стороны Б (из шаблона)
+    party_b_role_kk: Optional[str] = 'Б жағы'
+    party_b_role_en: Optional[str] = 'Party B'
+    signing_language: str = "ru"  # Язык подписания: ru, kk, en
+    english_disclaimer_accepted: bool = False  # Подтверждение для английского
     deleted: bool = False  # Soft delete flag - для подписанных договоров
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
