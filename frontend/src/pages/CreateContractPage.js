@@ -42,6 +42,18 @@ const CreateContractPage = () => {
   // Preview language
   const [previewLang, setPreviewLang] = useState('ru');
   
+  // Get placeholder label based on current UI language
+  const getPlaceholderLabel = (config) => {
+    const uiLang = i18n.language;
+    if (uiLang === 'kk' && config.label_kk) {
+      return config.label_kk;
+    }
+    if (uiLang === 'en' && config.label_en) {
+      return config.label_en;
+    }
+    return config.label;
+  };
+  
   // Optional fields visibility
   const [showOptionalFields, setShowOptionalFields] = useState(false);
   
