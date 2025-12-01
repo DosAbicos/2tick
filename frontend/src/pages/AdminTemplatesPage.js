@@ -963,21 +963,98 @@ const AdminTemplatesPageNew = () => {
                 )}
               </div>
 
-              <div>
-                <Label htmlFor="content">Содержание договора *</Label>
-                <Textarea
-                  ref={contentTextareaRef}
-                  id="content"
-                  name="content"
-                  value={formData.content}
-                  onChange={handleChange}
-                  placeholder="Текст договора с плейсхолдерами: {{LANDLORD_NAME}}, {{SIGNER_NAME}} и т.д."
-                  rows={12}
-                  required
-                  className="mt-1 font-mono text-sm"
-                />
-                <p className="text-xs text-neutral-500 mt-1">
-                  Нажмите "Вставить" на плейсхолдере выше для добавления в текст
+              {/* Language Tabs for Content */}
+              <div className="border-2 border-blue-200 rounded-xl p-4 bg-blue-50/30">
+                <div className="flex gap-2 mb-4">
+                  <button
+                    type="button"
+                    onClick={() => setCurrentLang('ru')}
+                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                      currentLang === 'ru'
+                        ? 'bg-blue-600 text-white shadow-lg'
+                        : 'bg-white text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    🇷🇺 Русский
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCurrentLang('kk')}
+                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                      currentLang === 'kk'
+                        ? 'bg-blue-600 text-white shadow-lg'
+                        : 'bg-white text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    🇰🇿 Казахский
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCurrentLang('en')}
+                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                      currentLang === 'en'
+                        ? 'bg-blue-600 text-white shadow-lg'
+                        : 'bg-white text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    🇬🇧 Английский
+                  </button>
+                </div>
+
+                {/* Russian Content */}
+                {currentLang === 'ru' && (
+                  <div>
+                    <Label htmlFor="content">Содержание договора (Русский) *</Label>
+                    <Textarea
+                      ref={contentTextareaRef}
+                      id="content"
+                      name="content"
+                      value={formData.content}
+                      onChange={handleChange}
+                      placeholder="Текст договора с плейсхолдерами: {{LANDLORD_NAME}}, {{SIGNER_NAME}} и т.д."
+                      rows={12}
+                      required
+                      className="mt-1 font-mono text-sm"
+                    />
+                  </div>
+                )}
+
+                {/* Kazakh Content */}
+                {currentLang === 'kk' && (
+                  <div>
+                    <Label htmlFor="content_kk">Содержание договора (Қазақша) *</Label>
+                    <Textarea
+                      id="content_kk"
+                      name="content_kk"
+                      value={formData.content_kk}
+                      onChange={handleChange}
+                      placeholder="Шарттың мәтіні {{LANDLORD_NAME}}, {{SIGNER_NAME}} сияқты плейсхолдерлермен"
+                      rows={12}
+                      required
+                      className="mt-1 font-mono text-sm"
+                    />
+                  </div>
+                )}
+
+                {/* English Content */}
+                {currentLang === 'en' && (
+                  <div>
+                    <Label htmlFor="content_en">Contract Content (English) *</Label>
+                    <Textarea
+                      id="content_en"
+                      name="content_en"
+                      value={formData.content_en}
+                      onChange={handleChange}
+                      placeholder="Contract text with placeholders: {{LANDLORD_NAME}}, {{SIGNER_NAME}}, etc."
+                      rows={12}
+                      required
+                      className="mt-1 font-mono text-sm"
+                    />
+                  </div>
+                )}
+
+                <p className="text-xs text-blue-700 mt-2 font-medium">
+                  ⚠️ Все три языка обязательны для публикации в маркет
                 </p>
               </div>
 
