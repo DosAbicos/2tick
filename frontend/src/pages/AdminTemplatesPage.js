@@ -406,6 +406,7 @@ const AdminTemplatesPageNew = () => {
   };
 
   const [showPublishConfirm, setShowPublishConfirm] = useState(false);
+  const [pendingTemplateData, setPendingTemplateData] = useState(null);
   
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -421,16 +422,24 @@ const AdminTemplatesPageNew = () => {
       return;
     }
 
+    // Save data before showing popup
+    setPendingTemplateData({...formData});
+    
     // Show confirmation popup
     setShowPublishConfirm(true);
   };
   
   const confirmPublish = async () => {
+    if (!pendingTemplateData) {
+      toast.error('Данные не найдены');
+      return;
+    }
+    
     try {
       if (editingTemplate) {
         await axios.put(
           `${API}/admin/templates/${editingTemplate.id}`,
-          formData,
+          pendingTemplateData,
           {
             headers: { Authorization: `Bearer ${token}` }
           }
@@ -439,7 +448,7 @@ const AdminTemplatesPageNew = () => {
       } else {
         await axios.post(
           `${API}/admin/templates`,
-          formData,
+          pendingTemplateData,
           {
             headers: { Authorization: `Bearer ${token}` }
           }
@@ -449,6 +458,7 @@ const AdminTemplatesPageNew = () => {
 
       setShowDialog(false);
       setShowPublishConfirm(false);
+      setPendingTemplateData(null);
       resetForm();
       fetchTemplates();
     } catch (error) {
