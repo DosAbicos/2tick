@@ -423,6 +423,16 @@ const SignContractPage = () => {
     setShowEnglishWarning(false);
     handleLanguageChange('en');
   };
+  
+  const getPlaceholderLabel = (config) => {
+    if (language === 'kk' && config.label_kk) {
+      return config.label_kk;
+    }
+    if (language === 'en' && config.label_en) {
+      return config.label_en;
+    }
+    return config.label;
+  };
 
   const validateEmail = (email) => {
     if (!email) return true; // Email is optional
