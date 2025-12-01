@@ -1669,11 +1669,17 @@ const AdminTemplatesPageNew = () => {
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">Подтверждение публикации</h3>
                 <p className="text-gray-700 mb-6 leading-relaxed">
-                  Вы уверены, что хотите {editingTemplate ? 'обновить' : 'разместить'} данный договор в маркет?
+                  Вы уверены, что хотите {pendingIsEdit ? 'обновить' : 'разместить'} данный договор в маркет?
                 </p>
                 <div className="flex gap-3">
                   <button
-                    onClick={() => setShowPublishConfirm(false)}
+                    onClick={() => {
+                      setShowPublishConfirm(false);
+                      setPendingTemplateData(null);
+                      setPendingIsEdit(false);
+                      setPendingTemplateId(null);
+                      setShowDialog(true); // Reopen the main dialog
+                    }}
                     className="flex-1 py-3 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition-colors"
                   >
                     Назад
