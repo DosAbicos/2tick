@@ -304,15 +304,27 @@ const AdminTemplatesPageNew = () => {
   const [editingTemplate, setEditingTemplate] = useState(null);
   const [formData, setFormData] = useState({
     title: '',
+    title_kk: '',
+    title_en: '',
     description: '',
+    description_kk: '',
+    description_en: '',
     category: 'real_estate',
     content: '',
+    content_kk: '',
+    content_en: '',
     content_type: 'plain',
     placeholders: {},
     requires_tenant_document: false,
     party_a_role: 'Сторона А',
-    party_b_role: 'Сторона Б'
+    party_a_role_kk: 'А жағы',
+    party_a_role_en: 'Party A',
+    party_b_role: 'Сторона Б',
+    party_b_role_kk: 'Б жағы',
+    party_b_role_en: 'Party B'
   });
+  
+  const [currentLang, setCurrentLang] = useState('ru');
   
   // Role pairs
   const rolePairs = [
