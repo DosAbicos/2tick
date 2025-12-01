@@ -548,6 +548,12 @@ const AdminTemplatesPageNew = () => {
       return;
     }
 
+    // Validate multilingual labels
+    if (!currentPlaceholder.label_kk || !currentPlaceholder.label_en) {
+      toast.error('Укажите метки на всех трех языках (Русский, Казахский, Английский)');
+      return;
+    }
+
     // Validation for calculated fields
     if (currentPlaceholder.type === 'calculated') {
       if (!currentPlaceholder.formula.operand1 || !currentPlaceholder.formula.operand2) {
@@ -560,6 +566,8 @@ const AdminTemplatesPageNew = () => {
     
     const placeholderConfig = {
       label: currentPlaceholder.label,
+      label_kk: currentPlaceholder.label_kk,
+      label_en: currentPlaceholder.label_en,
       type: currentPlaceholder.type,
       owner: currentPlaceholder.owner,
       required: currentPlaceholder.required,
