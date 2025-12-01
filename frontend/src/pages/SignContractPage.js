@@ -812,40 +812,6 @@ const SignContractPage = () => {
               <p className="text-gray-600 font-medium">{contract.title}</p>
             </div>
           </div>
-          {/* Language Switcher */}
-          <div className="flex justify-center gap-2 mb-6">
-            <button
-              onClick={() => handleLanguageChange('ru')}
-              className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                language === 'ru' 
-                  ? 'bg-blue-600 text-white shadow-lg' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              🇷🇺 RU
-            </button>
-            <button
-              onClick={() => handleLanguageChange('kk')}
-              className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                language === 'kk' 
-                  ? 'bg-blue-600 text-white shadow-lg' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              🇰🇿 KK
-            </button>
-            <button
-              onClick={() => handleLanguageChange('en')}
-              className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                language === 'en' 
-                  ? 'bg-blue-600 text-white shadow-lg' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              🇬🇧 EN
-            </button>
-          </div>
-          
           <div className="space-y-6">
             {/* Step 1: View Contract */}
             {step === 1 && (
