@@ -4266,7 +4266,12 @@ async def create_template(
         raise HTTPException(status_code=403, detail="Admin access required")
     
     template_dict = template.model_dump()
-    await db.contract_templates.insert_one(template_dict)
+    logging.info(f"🔍 Creating template: {template.title}, ID: {template.id}")
+    logging.info(f"📝 Template dict keys: {list(template_dict.keys())}")
+    logging.info(f"📏 Content lengths: RU={len(template_dict.get('content',''))}, KK={len(template_dict.get('content_kk',''))}, EN={len(template_dict.get('content_en',''))}")
+    
+    result = await db.contract_templates.insert_one(template_dict)
+    logging.info(f"✅ Template inserted with _id: {result.inserted_id}")
     
     await log_audit("template_created", user_id=current_user['user_id'], 
                    details=f"Created template: {template.title}")
