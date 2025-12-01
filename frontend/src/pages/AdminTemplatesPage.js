@@ -1540,6 +1540,37 @@ const AdminTemplatesPageNew = () => {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Publish Confirmation Popup */}
+        {showPublishConfirm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-3xl">📢</span>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">Подтверждение публикации</h3>
+                <p className="text-gray-700 mb-6 leading-relaxed">
+                  Вы уверены, что хотите {editingTemplate ? 'обновить' : 'разместить'} данный договор в маркет?
+                </p>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setShowPublishConfirm(false)}
+                    className="flex-1 py-3 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition-colors"
+                  >
+                    Назад
+                  </button>
+                  <button
+                    onClick={confirmPublish}
+                    className="flex-1 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Да, проверено!
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
