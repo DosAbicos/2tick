@@ -502,9 +502,15 @@ const AdminTemplatesPageNew = () => {
   const resetForm = () => {
     setFormData({
       title: '',
+      title_kk: '',
+      title_en: '',
       description: '',
+      description_kk: '',
+      description_en: '',
       category: 'real_estate',
       content: '',
+      content_kk: '',
+      content_en: '',
       content_type: 'plain',
       placeholders: {}
     });
