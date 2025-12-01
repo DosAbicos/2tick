@@ -405,6 +405,8 @@ const AdminTemplatesPageNew = () => {
     });
   };
 
+  const [showPublishConfirm, setShowPublishConfirm] = useState(false);
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -413,6 +415,17 @@ const AdminTemplatesPageNew = () => {
       return;
     }
 
+    // Validate all languages are filled
+    if (!formData.content_kk || !formData.content_en) {
+      toast.error('Заполните содержание договора на всех трех языках (Русский, Казахский, Английский)');
+      return;
+    }
+
+    // Show confirmation popup
+    setShowPublishConfirm(true);
+  };
+  
+  const confirmPublish = async () => {
     try {
       if (editingTemplate) {
         await axios.put(
@@ -435,6 +448,7 @@ const AdminTemplatesPageNew = () => {
       }
 
       setShowDialog(false);
+      setShowPublishConfirm(false);
       resetForm();
       fetchTemplates();
     } catch (error) {
