@@ -460,11 +460,24 @@ const AdminTemplatesPageNew = () => {
     setEditingTemplate(template);
     setFormData({
       title: template.title,
+      title_kk: template.title_kk || '',
+      title_en: template.title_en || '',
       description: template.description,
+      description_kk: template.description_kk || '',
+      description_en: template.description_en || '',
       category: template.category,
       content: template.content,
+      content_kk: template.content_kk || '',
+      content_en: template.content_en || '',
       content_type: template.content_type || 'plain',
-      placeholders: template.placeholders || {}
+      placeholders: template.placeholders || {},
+      requires_tenant_document: template.requires_tenant_document || false,
+      party_a_role: template.party_a_role || 'Сторона А',
+      party_a_role_kk: template.party_a_role_kk || 'А жағы',
+      party_a_role_en: template.party_a_role_en || 'Party A',
+      party_b_role: template.party_b_role || 'Сторона Б',
+      party_b_role_kk: template.party_b_role_kk || 'Б жағы',
+      party_b_role_en: template.party_b_role_en || 'Party B'
     });
     setPlaceholderOrder(Object.keys(template.placeholders || {}));
     setShowDialog(true);
