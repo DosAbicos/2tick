@@ -512,7 +512,14 @@ const AdminTemplatesPageNew = () => {
       content_kk: '',
       content_en: '',
       content_type: 'plain',
-      placeholders: {}
+      placeholders: {},
+      requires_tenant_document: false,
+      party_a_role: 'Сторона А',
+      party_a_role_kk: 'А жағы',
+      party_a_role_en: 'Party A',
+      party_b_role: 'Сторона Б',
+      party_b_role_kk: 'Б жағы',
+      party_b_role_en: 'Party B'
     });
     setPlaceholderOrder([]);
     setEditingTemplate(null);
