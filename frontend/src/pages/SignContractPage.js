@@ -900,7 +900,7 @@ const SignContractPage = () => {
                     {unfilledPlaceholders.map(({ key, config }) => (
                       <div key={key} className={config.type === 'text' && config.label.length > 20 ? 'md:col-span-2' : ''}>
                         <label htmlFor={`placeholder_${key}`} className="text-sm font-medium text-gray-700 block mb-2">
-                          {config.label} {config.required && <span className="text-red-500">*</span>}
+                          {getPlaceholderLabel(config)} {config.required && <span className="text-red-500">*</span>}
                         </label>
                         
                         {config.type === 'text' && (
