@@ -299,7 +299,19 @@ const CreateContractPage = () => {
   const generatePreviewContent = () => {
     // Use edited content if available, otherwise use template content
     if (selectedTemplate) {
-      let content = isContentSaved ? manualContent : selectedTemplate.content;
+      // Get content based on preview language
+      let content;
+      if (isContentSaved) {
+        content = manualContent;
+      } else {
+        if (previewLang === 'kk' && selectedTemplate.content_kk) {
+          content = selectedTemplate.content_kk;
+        } else if (previewLang === 'en' && selectedTemplate.content_en) {
+          content = selectedTemplate.content_en;
+        } else {
+          content = selectedTemplate.content;
+        }
+      }
       
       // IMPORTANT: Convert newlines to <br> for HTML display to preserve formatting
       if (!isContentSaved) {
