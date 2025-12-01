@@ -630,6 +630,8 @@ const AdminTemplatesPageNew = () => {
     setCurrentPlaceholder({
       name: '',
       label: '',
+      label_kk: '',
+      label_en: '',
       type: 'text',
       owner: 'signer',
       required: true,
