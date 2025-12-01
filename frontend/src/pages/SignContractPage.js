@@ -909,7 +909,7 @@ const SignContractPage = () => {
                             value={placeholderValues[key] || ''}
                             onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
                             className="minimal-input w-full mt-1"
-                            placeholder={`Введите ${config.label.toLowerCase()}`}
+                            placeholder={`${language === 'ru' ? 'Введите' : language === 'kk' ? 'Енгізіңіз' : 'Enter'} ${getPlaceholderLabel(config).toLowerCase()}`}
                             required={config.required}
                             readOnly={contract?.approved}
                             disabled={contract?.approved}
@@ -923,7 +923,7 @@ const SignContractPage = () => {
                             value={placeholderValues[key] || ''}
                             onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
                             className="minimal-input w-full mt-1"
-                            placeholder={`Введите ${config.label.toLowerCase()}`}
+                            placeholder={`${language === 'ru' ? 'Введите' : language === 'kk' ? 'Енгізіңіз' : 'Enter'} ${getPlaceholderLabel(config).toLowerCase()}`}
                             required={config.required}
                             readOnly={contract?.approved}
                             disabled={contract?.approved}
