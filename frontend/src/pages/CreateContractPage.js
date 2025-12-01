@@ -746,6 +746,46 @@ Email: ${templateData.tenant_email || '[Email]'}
                     </button>
                   )}
                 </div>
+                </div>
+                
+                {/* Language buttons for preview */}
+                {!manualEditMode && selectedTemplate && (
+                  <div className="flex gap-2 justify-center">
+                    <button
+                      type="button"
+                      onClick={() => setPreviewLang('ru')}
+                      className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all ${
+                        previewLang === 'ru'
+                          ? 'bg-blue-600 text-white shadow-md'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      🇷🇺 Русский
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPreviewLang('kk')}
+                      className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all ${
+                        previewLang === 'kk'
+                          ? 'bg-blue-600 text-white shadow-md'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      🇰🇿 Қазақша
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setPreviewLang('en')}
+                      className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all ${
+                        previewLang === 'en'
+                          ? 'bg-blue-600 text-white shadow-md'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      🇬🇧 English
+                    </button>
+                  </div>
+                )}
               </div>
               <div className="p-6 bg-white max-h-[800px] overflow-y-auto rounded-b-xl">
                 {manualEditMode ? (
