@@ -1162,8 +1162,35 @@ const AdminTemplatesPageNew = () => {
                   className="mt-1"
                 />
                 <p className="text-xs text-neutral-500 mt-1">
-                  Будет показано пользователю в форме
+                  Будет показано пользователю в форме (Русский)
                 </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label>Метка (Қазақша) *</Label>
+                  <Input
+                    value={currentPlaceholder.label_kk}
+                    onChange={(e) => setCurrentPlaceholder({
+                      ...currentPlaceholder,
+                      label_kk: e.target.value
+                    })}
+                    placeholder="Жалдау сомасы"
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label>Label (English) *</Label>
+                  <Input
+                    value={currentPlaceholder.label_en}
+                    onChange={(e) => setCurrentPlaceholder({
+                      ...currentPlaceholder,
+                      label_en: e.target.value
+                    })}
+                    placeholder="Rent amount"
+                    className="mt-1"
+                  />
+                </div>
               </div>
 
               <div>
