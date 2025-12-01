@@ -58,9 +58,30 @@ const SignContractPage = () => {
   const [signatureHash, setSignatureHash] = useState('');
   
   // Language states
-  const [language, setLanguage] = useState('ru');
+  const { i18n } = useTranslation();
+  const [language, setLanguage] = useState(i18n.language || 'ru');
   const [showEnglishWarning, setShowEnglishWarning] = useState(false);
   const [englishDisclaimerAccepted, setEnglishDisclaimerAccepted] = useState(false);
+  
+  // Listen to language changes from Header
+  useEffect(() => {
+    const handleLanguageChange = () => {
+      const newLang = i18n.language;
+      if (newLang !== language) {
+        setLanguage(newLang);
+        if (newLang === 'en' && !englishDisclaimerAccepted) {
+          setShowEnglishWarning(true);
+        }
+        // Update contract language in backend
+        if (id) {
+          axios.post(`${API}/sign/${id}/set-language`, { language: newLang }).catch(console.error);
+        }
+      }
+    };
+    
+    i18n.on('languageChanged', handleLanguageChange);
+    return () => i18n.off('languageChanged', handleLanguageChange);
+  }, [i18n, language, englishDisclaimerAccepted, id]);
   
   // Call OTP states
   const [verificationMethod, setVerificationMethod] = useState(''); // 'sms', 'call', or 'telegram'
