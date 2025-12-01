@@ -39,6 +39,9 @@ const CreateContractPage = () => {
   const [manualContent, setManualContent] = useState('');
   const [isContentSaved, setIsContentSaved] = useState(false);
   
+  // Preview language
+  const [previewLang, setPreviewLang] = useState('ru');
+  
   // Optional fields visibility
   const [showOptionalFields, setShowOptionalFields] = useState(false);
   
