@@ -988,7 +988,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                         return (
                           <div key={key} className={config.type === 'text' ? 'md:col-span-2' : ''}>
                             <label htmlFor={`placeholder_${key}`} className="block text-sm font-medium text-gray-700 mb-2">
-                              {config.label} {config.required && <span className="text-red-500">*</span>}
+                              {getPlaceholderLabel(config)} {config.required && <span className="text-red-500">*</span>}
                             </label>
                             
                             {config.type === 'text' && (
@@ -998,7 +998,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                                 onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
                                 required={config.required}
                                 className="minimal-input w-full"
-                                placeholder={`Введите ${config.label.toLowerCase()}`}
+                                placeholder={`${t('common.enter')} ${getPlaceholderLabel(config).toLowerCase()}`}
                               />
                             )}
                             
