@@ -333,7 +333,7 @@ const CreateContractPage = () => {
       // Replace placeholders with actual values
       if (selectedTemplate.placeholders) {
         Object.entries(selectedTemplate.placeholders).forEach(([key, config]) => {
-          let value = placeholderValues[key] || `[${config.label}]`;
+          let value = placeholderValues[key] || `[${getPlaceholderLabel(config)}]`;
           let isFilled = !!placeholderValues[key];
           
           // Format dates to DD.MM.YYYY
