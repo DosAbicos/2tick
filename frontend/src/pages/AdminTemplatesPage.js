@@ -410,6 +410,8 @@ const AdminTemplatesPageNew = () => {
 
   const [showPublishConfirm, setShowPublishConfirm] = useState(false);
   const [pendingTemplateData, setPendingTemplateData] = useState(null);
+  const [pendingIsEdit, setPendingIsEdit] = useState(false);
+  const [pendingTemplateId, setPendingTemplateId] = useState(null);
   
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -425,8 +427,13 @@ const AdminTemplatesPageNew = () => {
       return;
     }
 
-    // Save data before showing popup
+    // Save data and context before showing popup
     setPendingTemplateData({...formData});
+    setPendingIsEdit(!!editingTemplate);
+    setPendingTemplateId(editingTemplate?.id || null);
+    
+    // Close main dialog first
+    setShowDialog(false);
     
     // Show confirmation popup
     setShowPublishConfirm(true);
@@ -439,9 +446,9 @@ const AdminTemplatesPageNew = () => {
     }
     
     try {
-      if (editingTemplate) {
+      if (pendingIsEdit && pendingTemplateId) {
         await axios.put(
-          `${API}/admin/templates/${editingTemplate.id}`,
+          `${API}/admin/templates/${pendingTemplateId}`,
           pendingTemplateData,
           {
             headers: { Authorization: `Bearer ${token}` }
@@ -459,13 +466,15 @@ const AdminTemplatesPageNew = () => {
         toast.success('Шаблон создан');
       }
 
-      setShowDialog(false);
       setShowPublishConfirm(false);
       setPendingTemplateData(null);
+      setPendingIsEdit(false);
+      setPendingTemplateId(null);
       resetForm();
       fetchTemplates();
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Ошибка при сохранении');
+      setShowPublishConfirm(false);
     }
   };
 
