@@ -1161,47 +1161,99 @@ const AdminTemplatesPageNew = () => {
                 </p>
               </div>
 
-              <div>
-                <Label>Метка (Label) *</Label>
-                <Input
-                  value={currentPlaceholder.label}
-                  onChange={(e) => setCurrentPlaceholder({
-                    ...currentPlaceholder,
-                    label: e.target.value
-                  })}
-                  placeholder="Сумма аренды"
-                  className="mt-1"
-                />
-                <p className="text-xs text-neutral-500 mt-1">
-                  Будет показано пользователю в форме (Русский)
-                </p>
-              </div>
+              {/* Language Tabs for Labels */}
+              <div className="border-2 border-blue-200 rounded-xl p-4 bg-blue-50/30">
+                <Label className="mb-3 block font-semibold">Метка плейсхолдера (на 3 языках) *</Label>
+                
+                <div className="flex gap-2 mb-4">
+                  <button
+                    type="button"
+                    onClick={() => setPlaceholderLabelLang('ru')}
+                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                      placeholderLabelLang === 'ru'
+                        ? 'bg-blue-600 text-white shadow-lg'
+                        : 'bg-white text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    🇷🇺 Русский
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPlaceholderLabelLang('kk')}
+                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                      placeholderLabelLang === 'kk'
+                        ? 'bg-blue-600 text-white shadow-lg'
+                        : 'bg-white text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    🇰🇿 Қазақша
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPlaceholderLabelLang('en')}
+                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                      placeholderLabelLang === 'en'
+                        ? 'bg-blue-600 text-white shadow-lg'
+                        : 'bg-white text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    🇬🇧 English
+                  </button>
+                </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <Label>Метка (Қазақша) *</Label>
-                  <Input
-                    value={currentPlaceholder.label_kk}
-                    onChange={(e) => setCurrentPlaceholder({
-                      ...currentPlaceholder,
-                      label_kk: e.target.value
-                    })}
-                    placeholder="Жалдау сомасы"
-                    className="mt-1"
-                  />
-                </div>
-                <div>
-                  <Label>Label (English) *</Label>
-                  <Input
-                    value={currentPlaceholder.label_en}
-                    onChange={(e) => setCurrentPlaceholder({
-                      ...currentPlaceholder,
-                      label_en: e.target.value
-                    })}
-                    placeholder="Rent amount"
-                    className="mt-1"
-                  />
-                </div>
+                {/* Russian Label */}
+                {placeholderLabelLang === 'ru' && (
+                  <div>
+                    <Input
+                      value={currentPlaceholder.label}
+                      onChange={(e) => setCurrentPlaceholder({
+                        ...currentPlaceholder,
+                        label: e.target.value
+                      })}
+                      placeholder="Сумма аренды"
+                      className="mt-1"
+                    />
+                    <p className="text-xs text-blue-700 mt-2">
+                      Будет показано пользователю в форме
+                    </p>
+                  </div>
+                )}
+
+                {/* Kazakh Label */}
+                {placeholderLabelLang === 'kk' && (
+                  <div>
+                    <Input
+                      value={currentPlaceholder.label_kk}
+                      onChange={(e) => setCurrentPlaceholder({
+                        ...currentPlaceholder,
+                        label_kk: e.target.value
+                      })}
+                      placeholder="Жалдау сомасы"
+                      className="mt-1"
+                    />
+                    <p className="text-xs text-blue-700 mt-2">
+                      Пайдаланушыға пішінде көрсетіледі
+                    </p>
+                  </div>
+                )}
+
+                {/* English Label */}
+                {placeholderLabelLang === 'en' && (
+                  <div>
+                    <Input
+                      value={currentPlaceholder.label_en}
+                      onChange={(e) => setCurrentPlaceholder({
+                        ...currentPlaceholder,
+                        label_en: e.target.value
+                      })}
+                      placeholder="Rent amount"
+                      className="mt-1"
+                    />
+                    <p className="text-xs text-blue-700 mt-2">
+                      Will be shown to user in the form
+                    </p>
+                  </div>
+                )}
               </div>
 
               <div>
