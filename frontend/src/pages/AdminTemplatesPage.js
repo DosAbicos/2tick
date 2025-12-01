@@ -345,6 +345,8 @@ const AdminTemplatesPageNew = () => {
   const [currentPlaceholder, setCurrentPlaceholder] = useState({
     name: '',
     label: '',
+    label_kk: '',
+    label_en: '',
     type: 'text',
     owner: 'signer',
     required: true,
