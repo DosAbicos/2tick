@@ -12,7 +12,7 @@ import {
 import { ChevronDown, LogOut, User, Menu, X } from 'lucide-react';
 import styles from './Header.module.css';
 
-const Header = ({ showAuth = false }) => {
+const Header = ({ showAuth = false, hideLanguageSelector = false }) => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
