@@ -2874,27 +2874,41 @@ async def update_signer_info(contract_id: str, data: SignerInfoUpdate):
         }
     }
 
-@api_router.post("/sign/{contract_id}/set-language")
+@api_router.post("/sign/{contract_id}/set-contract-language")
 async def set_contract_language(contract_id: str, data: dict):
-    """Public endpoint to set signing language for contract"""
+    """Public endpoint to set FIXED contract language (one-time only)"""
     contract = await db.contracts.find_one({"id": contract_id})
     if not contract:
         raise HTTPException(status_code=404, detail="Contract not found")
+    
+    # Check if contract language is already set
+    if contract.get('contract_language'):
+        return {
+            "message": "Contract language already set", 
+            "contract_language": contract['contract_language'],
+            "locked": True
+        }
     
     language = data.get('language', 'ru')
     if language not in ['ru', 'kk', 'en']:
         raise HTTPException(status_code=400, detail="Invalid language. Must be: ru, kk, or en")
     
-    # Update contract with selected language
+    # Set contract language PERMANENTLY
     await db.contracts.update_one(
         {"id": contract_id},
         {"$set": {
-            "signing_language": language,
+            "contract_language": language,
             "updated_at": datetime.now(timezone.utc).isoformat()
         }}
     )
     
-    return {"message": "Language updated", "language": language}
+    logging.info(f"✅ Contract {contract_id} language LOCKED to: {language}")
+    
+    return {
+        "message": "Contract language set permanently", 
+        "contract_language": language,
+        "locked": True
+    }
 
 @api_router.post("/sign/{contract_id}/accept-english-disclaimer")
 async def accept_english_disclaimer(contract_id: str):
