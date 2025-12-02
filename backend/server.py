@@ -1336,6 +1336,20 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
                 except:
                     pass
             p.drawString(tenant_x, y_tenant, signed_at)
+            y_tenant -= 18
+            
+            # Signing language
+            p.setFillColor(HexColor('#64748b'))
+            p.drawString(tenant_x, y_tenant, "Язык подписания:")
+            y_tenant -= 13
+            
+            p.setFillColor(HexColor('#000000'))
+            lang_display = {
+                'ru': 'Русский',
+                'kk': 'Қазақша',
+                'en': 'English'
+            }.get(contract.get('signing_language', 'ru'), 'Русский')
+            p.drawString(tenant_x, y_tenant, lang_display)
         
         # Update y_position to continue below both columns
         y_position = min(y_landlord if landlord_signature_hash else start_y, 
