@@ -717,7 +717,9 @@ const AdminTemplatesPageNew = () => {
     setEditingPlaceholderName(name);
     setCurrentPlaceholder({
       name: name,
-      label: config.label,
+      label: config.label || '',
+      label_kk: config.label_kk || '',
+      label_en: config.label_en || '',
       type: config.type,
       owner: config.owner,
       required: config.required,
