@@ -426,25 +426,42 @@ const SignContractPage = () => {
     }
   };
 
-  const handleLanguageChange = async (newLang) => {
-    if (newLang === 'en' && !showEnglishWarning) {
+  const handleContractLanguageSelect = async (lang) => {
+    if (lang === 'en') {
       setShowEnglishWarning(true);
       return;
     }
     
-    try {
-      await axios.post(`${API}/sign/${id}/set-language`, { language: newLang });
-      setLanguage(newLang);
-      toast.success(newLang === 'ru' ? 'Язык изменен на русский' : newLang === 'kk' ? 'Тіл қазақ тіліне өзгертілді' : 'Language changed to English');
-    } catch (error) {
-      console.error('Error changing language:', error);
-      toast.error('Failed to change language');
-    }
+    await setContractLanguageFinal(lang);
   };
   
-  const handleEnglishWarningAccept = () => {
+  const handleEnglishWarningAccept = async () => {
     setShowEnglishWarning(false);
-    handleLanguageChange('en');
+    await setContractLanguageFinal('en');
+  };
+  
+  const setContractLanguageFinal = async (lang) => {
+    try {
+      const response = await axios.post(`${API}/sign/${id}/set-contract-language`, { language: lang });
+      
+      if (response.data.locked) {
+        setContractLanguage(lang);
+        setContractLanguageLocked(true);
+        setShowLanguageSelector(false);
+        
+        // Refetch contract to get updated data
+        await fetchContract();
+        
+        toast.success(
+          lang === 'ru' ? 'Язык договора установлен: Русский' :
+          lang === 'kk' ? 'Шарт тілі орнатылды: Қазақша' :
+          'Contract language set: English'
+        );
+      }
+    } catch (error) {
+      console.error('Error setting contract language:', error);
+      toast.error('Failed to set contract language');
+    }
   };
   
   const getPlaceholderLabel = (config) => {
