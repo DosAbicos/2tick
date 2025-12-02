@@ -647,8 +647,9 @@ def html_to_text_for_pdf(html_content: str) -> str:
 def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signature_hash: str = None, landlord: dict = None, template: dict = None) -> bytes:
     """Generate full PDF for contract with all content and signatures"""
     
-    # Get contract language
-    language = contract.get('signing_language', 'ru')
+    # Get FIXED contract language (not UI language)
+    language = contract.get('contract_language') or contract.get('signing_language', 'ru')
+    logging.info(f"📄 Generating PDF in contract language: {language}")
     
     # Register fonts
     try:
