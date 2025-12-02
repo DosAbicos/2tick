@@ -735,11 +735,11 @@ const ContractDetailsPage = () => {
                       </div>
                       <div>
                         <span className="text-neutral-500">Язык подписания:</span>
-                        <p className="font-medium flex items-center gap-2">
-                          {contract.signing_language === 'ru' && '🇷🇺 Русский'}
-                          {contract.signing_language === 'kk' && '🇰🇿 Қазақша'}
-                          {contract.signing_language === 'en' && '🇬🇧 English'}
-                          {!contract.signing_language && '🇷🇺 Русский (по умолчанию)'}
+                        <p className="font-medium">
+                          {contract.signing_language === 'ru' && 'Русский'}
+                          {contract.signing_language === 'kk' && 'Қазақша'}
+                          {contract.signing_language === 'en' && 'English'}
+                          {!contract.signing_language && 'Русский (по умолчанию)'}
                         </p>
                       </div>
                     </div>
