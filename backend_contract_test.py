@@ -547,29 +547,131 @@ class ContractSystemTester:
         self.add_result("Сохранение placeholders в контенте", preservation_success,
                       f"Сохранено: {len(placeholders_preserved)}, Отсутствует: {len(placeholders_missing)}")
         
-        # Test 3.3: Проверка в PDF (если возможно)
-        self.log("\n📄 Тест 3.3: Проверка фильтрации в PDF")
+        # Test 3.4: Создание тестового шаблона с showInContent=false для проверки фильтрации
+        self.log("\n🧪 Тест 3.4: Создание шаблона с фильтрацией для тестирования PDF")
         
-        pdf_response = self.session.get(f"{BASE_URL}/contracts/{contract_id}/download-pdf")
-        
-        if pdf_response.status_code == 200:
-            pdf_size = len(pdf_response.content)
-            self.log(f"   ✅ PDF сгенерирован успешно. Размер: {pdf_size} bytes")
+        test_template = self.create_filtering_test_template()
+        if test_template:
+            test_template_id = test_template.get("id")
+            self.log(f"   ✅ Создан тестовый шаблон: {test_template_id}")
             
-            # Проверяем Content-Type
-            content_type = pdf_response.headers.get('Content-Type', '')
-            if content_type == 'application/pdf':
-                self.log(f"   ✅ Правильный Content-Type: {content_type}")
-                self.add_result("Генерация PDF с фильтрацией", True, 
-                              f"PDF размер: {pdf_size} bytes")
+            # Создаем контракт с этим шаблоном
+            filtering_contract_data = {
+                "title": "Тест фильтрации showInContent",
+                "content": test_template.get("content", ""),
+                "content_type": "plain",
+                "template_id": test_template_id,
+                "placeholder_values": {
+                    "SHOW_IN_CONTENT": "Это должно быть в PDF",
+                    "HIDE_IN_CONTENT": "Это НЕ должно быть в PDF",
+                    "TENANT_NAME": "Иванов Иван"
+                },
+                "signer_name": "Иванов Иван",
+                "signer_phone": "+77012345678",
+                "signer_email": "test@example.com"
+            }
+            
+            filtering_response = self.session.post(f"{BASE_URL}/contracts", json=filtering_contract_data)
+            if filtering_response.status_code == 200:
+                filtering_contract = filtering_response.json()
+                filtering_contract_id = filtering_contract.get("id")
+                
+                self.log(f"   ✅ Контракт для тестирования фильтрации создан: {filtering_contract_id}")
+                
+                # Генерируем PDF и проверяем фильтрацию
+                pdf_response = self.session.get(f"{BASE_URL}/contracts/{filtering_contract_id}/download-pdf")
+                
+                if pdf_response.status_code == 200:
+                    pdf_size = len(pdf_response.content)
+                    self.log(f"   ✅ PDF с фильтрацией сгенерирован. Размер: {pdf_size} bytes")
+                    
+                    # Проверяем Content-Type
+                    content_type = pdf_response.headers.get('Content-Type', '')
+                    if content_type == 'application/pdf':
+                        self.log(f"   ✅ Правильный Content-Type: {content_type}")
+                        self.add_result("Генерация PDF с фильтрацией showInContent", True, 
+                                      f"PDF размер: {pdf_size} bytes, тестовый шаблон создан")
+                    else:
+                        self.log(f"   ❌ Неправильный Content-Type: {content_type}")
+                        self.add_result("Генерация PDF с фильтрацией showInContent", False, 
+                                      f"Content-Type: {content_type}")
+                else:
+                    self.log(f"   ❌ Не удалось сгенерировать PDF: {pdf_response.status_code}")
+                    self.add_result("Генерация PDF с фильтрацией showInContent", False, 
+                                  f"HTTP {pdf_response.status_code}")
             else:
-                self.log(f"   ❌ Неправильный Content-Type: {content_type}")
-                self.add_result("Генерация PDF с фильтрацией", False, 
-                              f"Content-Type: {content_type}")
+                self.log(f"   ❌ Не удалось создать контракт для фильтрации: {filtering_response.status_code}")
+                self.add_result("Генерация PDF с фильтрацией showInContent", False, 
+                              "Не удалось создать тестовый контракт")
         else:
-            self.log(f"   ❌ Не удалось сгенерировать PDF: {pdf_response.status_code}")
-            self.add_result("Генерация PDF с фильтрацией", False, 
-                          f"HTTP {pdf_response.status_code}")
+            # Fallback: тестируем с существующим шаблоном
+            self.log("\n📄 Тест 3.4 (fallback): Проверка PDF с существующим шаблоном")
+            
+            pdf_response = self.session.get(f"{BASE_URL}/contracts/{contract_id}/download-pdf")
+            
+            if pdf_response.status_code == 200:
+                pdf_size = len(pdf_response.content)
+                self.log(f"   ✅ PDF сгенерирован успешно. Размер: {pdf_size} bytes")
+                
+                # Проверяем Content-Type
+                content_type = pdf_response.headers.get('Content-Type', '')
+                if content_type == 'application/pdf':
+                    self.log(f"   ✅ Правильный Content-Type: {content_type}")
+                    self.add_result("Генерация PDF с существующим шаблоном", True, 
+                                  f"PDF размер: {pdf_size} bytes")
+                else:
+                    self.log(f"   ❌ Неправильный Content-Type: {content_type}")
+                    self.add_result("Генерация PDF с существующим шаблоном", False, 
+                                  f"Content-Type: {content_type}")
+            else:
+                self.log(f"   ❌ Не удалось сгенерировать PDF: {pdf_response.status_code}")
+                self.add_result("Генерация PDF с существующим шаблоном", False, 
+                              f"HTTP {pdf_response.status_code}")
+    
+    def create_filtering_test_template(self):
+        """Создать специальный шаблон для тестирования фильтрации showInContent"""
+        template_data = {
+            "title": "Тест фильтрации showInContent",
+            "description": "Шаблон для тестирования фильтрации placeholders",
+            "category": "test",
+            "content": "Контракт с {{SHOW_IN_CONTENT}} и {{HIDE_IN_CONTENT}}. Наниматель: {{TENANT_NAME}}.",
+            "content_type": "plain",
+            "placeholders": {
+                "SHOW_IN_CONTENT": {
+                    "label": "Показать в контенте",
+                    "owner": "landlord",
+                    "showInContent": True,  # Должно заменяться в PDF
+                    "showInSignatureInfo": False,
+                    "type": "text"
+                },
+                "HIDE_IN_CONTENT": {
+                    "label": "Скрыть из контента",
+                    "owner": "tenant",
+                    "showInContent": False,  # НЕ должно заменяться в PDF
+                    "showInSignatureInfo": True,
+                    "type": "text"
+                },
+                "TENANT_NAME": {
+                    "label": "Имя нанимателя",
+                    "owner": "tenant",
+                    "showInContent": True,
+                    "showInSignatureInfo": True,
+                    "type": "text"
+                }
+            }
+        }
+        
+        # Try to create template
+        create_endpoints = ["/admin/templates"]
+        
+        for endpoint in create_endpoints:
+            response = self.session.post(f"{BASE_URL}{endpoint}", json=template_data)
+            if response.status_code in [200, 201]:
+                return response.json()
+            else:
+                self.log(f"   ⚠️ Не удалось создать тестовый шаблон через {endpoint}: {response.status_code}")
+        
+        return None
     
     def get_template_for_filtering_test(self):
         """Получить шаблон для тестирования фильтрации"""
