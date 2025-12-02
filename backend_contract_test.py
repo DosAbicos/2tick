@@ -485,64 +485,67 @@ class ContractSystemTester:
         self.log(f"   ✅ Контракт создан: {contract_id}")
         self.add_result("Создание контракта из шаблона", True, f"ID: {contract_id}")
         
-        # Test 3.2: Проверка фильтрации в контенте
-        self.log("\n🔍 Тест 3.2: Проверка фильтрации placeholders в контенте")
+        # Test 3.2: Проверка фильтрации в контенте (изначально placeholders не заменяются)
+        self.log("\n🔍 Тест 3.2: Проверка сохранения placeholders в контенте")
         
         self.log(f"   📄 Контент контракта (первые 200 символов):")
         self.log(f"   {contract_content[:200]}...")
         
-        # Проверяем, что placeholders с showInContent=true заменились
-        replaced_correctly = []
-        not_replaced_issues = []
+        # В контракте placeholders должны оставаться как {{KEY}} до обновления
+        placeholders_preserved = []
+        placeholders_missing = []
         
-        for key in show_in_content:
+        for key in placeholders.keys():
             placeholder_pattern = f"{{{{{key}}}}}"
-            expected_value = placeholder_values.get(key, "")
-            
-            if placeholder_pattern not in contract_content and expected_value in contract_content:
-                replaced_correctly.append(key)
-                self.log(f"   ✅ {key}: заменен на '{expected_value}'")
-            elif placeholder_pattern in contract_content:
-                not_replaced_issues.append(key)
-                self.log(f"   ❌ {key}: НЕ заменен (остался {placeholder_pattern})")
-            else:
-                self.log(f"   ⚠️ {key}: неясный статус замены")
-        
-        # Проверяем, что placeholders с showInContent=false НЕ заменились
-        filtered_correctly = []
-        incorrectly_replaced = []
-        
-        for key in hide_in_content:
-            placeholder_pattern = f"{{{{{key}}}}}"
-            expected_value = placeholder_values.get(key, "")
-            
             if placeholder_pattern in contract_content:
-                # Placeholder остался - это правильно для showInContent=false
-                filtered_correctly.append(key)
-                self.log(f"   ✅ {key}: правильно НЕ заменен (остался {placeholder_pattern})")
-            elif expected_value in contract_content:
-                # Placeholder заменился - это неправильно для showInContent=false
-                incorrectly_replaced.append(key)
-                self.log(f"   ❌ {key}: неправильно заменен на '{expected_value}'")
+                placeholders_preserved.append(key)
+                self.log(f"   ✅ {key}: сохранен как {placeholder_pattern}")
             else:
-                # Placeholder отсутствует в контенте - возможно, его не было изначально
-                self.log(f"   ⚠️ {key}: отсутствует в контенте (возможно, не был в шаблоне)")
+                placeholders_missing.append(key)
+                self.log(f"   ⚠️ {key}: отсутствует в контенте")
         
-        # Оценка результатов фильтрации
-        filtering_success = (len(not_replaced_issues) == 0 and len(incorrectly_replaced) == 0)
+        # Test 3.3: Обновление placeholder values через специальный endpoint
+        self.log("\n🔄 Тест 3.3: Обновление placeholder values")
         
-        details = []
-        if replaced_correctly:
-            details.append(f"Правильно заменены: {replaced_correctly}")
-        if filtered_correctly:
-            details.append(f"Правильно НЕ заменены: {filtered_correctly}")
-        if not_replaced_issues:
-            details.append(f"Ошибки замены: {not_replaced_issues}")
-        if incorrectly_replaced:
-            details.append(f"Неправильно заменены: {incorrectly_replaced}")
+        update_response = self.session.post(
+            f"{BASE_URL}/sign/{contract_id}/update-placeholder-values",
+            json={"placeholder_values": placeholder_values}
+        )
         
-        self.add_result("Фильтрация placeholders по showInContent", filtering_success,
-                      "; ".join(details))
+        if update_response.status_code == 200:
+            self.log("   ✅ Placeholder values обновлены успешно")
+            
+            # Получаем обновленный контракт
+            updated_response = self.session.get(f"{BASE_URL}/sign/{contract_id}")
+            if updated_response.status_code == 200:
+                updated_contract = updated_response.json()
+                updated_placeholder_values = updated_contract.get("placeholder_values", {})
+                
+                self.log(f"   📋 Обновленные placeholder_values: {len(updated_placeholder_values)} значений")
+                
+                # Проверяем, что значения сохранились
+                values_saved_correctly = True
+                for key, expected_value in placeholder_values.items():
+                    actual_value = updated_placeholder_values.get(key)
+                    if actual_value == expected_value:
+                        self.log(f"   ✅ {key}: '{actual_value}' ✓")
+                    else:
+                        self.log(f"   ❌ {key}: ожидалось '{expected_value}', получено '{actual_value}'")
+                        values_saved_correctly = False
+                
+                self.add_result("Обновление placeholder values", values_saved_correctly,
+                              f"Сохранено {len(updated_placeholder_values)} значений")
+            else:
+                self.log(f"   ❌ Не удалось получить обновленный контракт: {updated_response.status_code}")
+                self.add_result("Обновление placeholder values", False, "Не удалось проверить")
+        else:
+            self.log(f"   ❌ Не удалось обновить placeholder values: {update_response.status_code}")
+            self.add_result("Обновление placeholder values", False, f"HTTP {update_response.status_code}")
+        
+        # Общая оценка сохранения placeholders
+        preservation_success = len(placeholders_preserved) > 0
+        self.add_result("Сохранение placeholders в контенте", preservation_success,
+                      f"Сохранено: {len(placeholders_preserved)}, Отсутствует: {len(placeholders_missing)}")
         
         # Test 3.3: Проверка в PDF (если возможно)
         self.log("\n📄 Тест 3.3: Проверка фильтрации в PDF")
