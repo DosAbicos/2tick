@@ -465,10 +465,12 @@ const SignContractPage = () => {
   };
   
   const getPlaceholderLabel = (config) => {
-    if (language === 'kk' && config.label_kk) {
+    // Use UI language for labels (not contract language)
+    const uiLang = i18n.language;
+    if (uiLang === 'kk' && config.label_kk) {
       return config.label_kk;
     }
-    if (language === 'en' && config.label_en) {
+    if (uiLang === 'en' && config.label_en) {
       return config.label_en;
     }
     return config.label;
