@@ -839,6 +839,48 @@ const SignContractPage = () => {
     <div className="min-h-screen gradient-bg">
       <Header />
       
+      {/* Language Selector Modal - показывается только один раз */}
+      {showLanguageSelector && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl"
+          >
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-3xl">🌐</span>
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Выберите язык договора</h3>
+              <p className="text-gray-600 text-sm">
+                Язык договора устанавливается один раз и не может быть изменен
+              </p>
+            </div>
+            
+            <div className="space-y-3">
+              <button
+                onClick={() => handleContractLanguageSelect('ru')}
+                className="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg flex items-center justify-center gap-3"
+              >
+                🇷🇺 Русский
+              </button>
+              <button
+                onClick={() => handleContractLanguageSelect('kk')}
+                className="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg flex items-center justify-center gap-3"
+              >
+                🇰🇿 Қазақша
+              </button>
+              <button
+                onClick={() => handleContractLanguageSelect('en')}
+                className="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg flex items-center justify-center gap-3"
+              >
+                🇬🇧 English
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+      
       <div className="max-w-3xl mx-auto px-4 py-8">
         <div className="minimal-card p-6 sm:p-8 animate-fade-in" data-testid="sign-contract-card">
           <div className="mb-6">
