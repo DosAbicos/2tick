@@ -1159,17 +1159,18 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             p.drawString(landlord_x, y_landlord, approved_at)
             y_landlord -= 18
             
-            # Signing language
+            # Contract language
             p.setFillColor(HexColor('#64748b'))
-            p.drawString(landlord_x, y_landlord, "Язык подписания:")
+            p.drawString(landlord_x, y_landlord, "Язык договора:")
             y_landlord -= 13
             
             p.setFillColor(HexColor('#000000'))
+            contract_lang = contract.get('contract_language') or contract.get('signing_language', 'ru')
             lang_display = {
                 'ru': 'Русский',
                 'kk': 'Қазақша', 
                 'en': 'English'
-            }.get(contract.get('signing_language', 'ru'), 'Русский')
+            }.get(contract_lang, 'Русский')
             p.drawString(landlord_x, y_landlord, lang_display)
         
         # RIGHT COLUMN - Tenant (Party B)
