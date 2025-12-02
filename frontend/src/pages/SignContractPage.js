@@ -911,8 +911,8 @@ const SignContractPage = () => {
                       lineHeight: '1.6'
                     }}
                     dangerouslySetInnerHTML={{ __html: highlightPlaceholders(
-                      language === 'kk' && contract.content_kk ? contract.content_kk :
-                      language === 'en' && contract.content_en ? contract.content_en :
+                      contractLanguage === 'kk' && contract.content_kk ? contract.content_kk :
+                      contractLanguage === 'en' && contract.content_en ? contract.content_en :
                       contract.content
                     ) }}
                     data-testid="contract-preview"
