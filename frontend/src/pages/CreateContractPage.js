@@ -1094,7 +1094,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                                 return (
                                   <div key={key} className={config.type === 'text' ? 'md:col-span-2' : ''}>
                                     <label htmlFor={`placeholder_${key}`} className="text-sm font-medium text-gray-700 block mb-2">
-                                      {config.label} {config.required && <span className="text-amber-500">*</span>}
+                                      {getPlaceholderLabel(config)} {config.required && <span className="text-amber-500">*</span>}
                                     </label>
                                     
                                     {config.type === 'text' && (
@@ -1103,7 +1103,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                                         value={placeholderValues[key] || ''}
                                         onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
                                         className="minimal-input w-full"
-                                        placeholder={`Клиент заполнит: ${config.label.toLowerCase()}`}
+                                        placeholder={`${t('common.client_will_fill')}: ${getPlaceholderLabel(config).toLowerCase()}`}
                                       />
                                     )}
                                     
@@ -1114,7 +1114,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                                         value={placeholderValues[key] || ''}
                                         onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
                                         className="minimal-input w-full"
-                                        placeholder={`Клиент заполнит`}
+                                        placeholder={t('common.client_will_fill')}
                                       />
                                     )}
                                     
