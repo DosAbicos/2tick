@@ -753,7 +753,7 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             content_text = html_to_text_for_pdf(content_text)
         
         # Replace placeholders with actual values
-        content_text = replace_placeholders_in_content(content_text, contract)
+        content_text = replace_placeholders_in_content(content_text, contract, template)
     except Exception as e:
         logging.error(f"Error processing content: {str(e)}")
         content_text = contract.get('content', 'Error loading content')
