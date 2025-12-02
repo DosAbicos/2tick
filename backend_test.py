@@ -36,7 +36,7 @@ import socket
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://signdocs-pro.preview.emergentagent.com/api"
+BASE_URL = "https://i18n-signing.preview.emergentagent.com/api"
 ADMIN_EMAIL = "test.admin@2tick.kz"
 ADMIN_PASSWORD = "testadmin123"
 

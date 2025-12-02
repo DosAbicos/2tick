@@ -1,83 +1,135 @@
-<analysis>
-The trajectory documents an extensive and highly iterative development process focused on creating a new multi-step user registration flow. All communication with the user is in Russian.
+<analysis>**original_problem_statement:** The user's initial request was to redesign the generated contract PDF to be more professional, including adding a company logo and adopting a minimalist style.
 
-The initial task was to refactor the  page into a three-step data collection process (Personal, Legal, Password) followed by a fourth phone verification step. The AI engineer first discovered that the backend already had all the necessary API endpoints for this flow, which significantly simplified the task.
+This quickly evolved into a major feature request for a comprehensive multilingual contract system. The core requirements are:
+-   **Three Languages:** The system must support Russian (RU), Kazakh (KZ), and English (EN).
+-   **Unified Language Choice:** When a user opens a signing link, a modal window appears where they select a language. This choice sets both the immutable **contract language** and the initial **UI language**. The language switcher in the header is to be hidden on this page.
+-   **Content Switching:** The chosen language dictates the version of the contract content, placeholder labels, and role names displayed.
+-   **Admin Multilingual Support:** The admin panel for template creation must have separate input fields/tabs for the title, content, roles, and placeholder labels for all three languages.
+-   **Special English Flow:**
+    -   When English is chosen, a popup must warn the user that it's a translation and the RU/KZ versions are legally binding.
+    -   On the final review page for English contracts, a mandatory checkbox is required for the user to agree to this disclaimer.
+    -   A dropdown showing the RU and KZ versions of the contract must be available for comparison.
+-   **PDF & Email Language:** All generated PDFs and notification emails must use the fixed **contract language**.
+-   **Database Cleanup:** The user requested a full database wipe, which revealed the application was using an undocumented database (). The database was cleaned, and a single admin user was created.
 
-The engineer then refactored the  component to implement the four-step structure. This process was hindered by a persistent frontend build cache issue, which the engineer cleverly solved by making a trivial code change to force a webpack cache invalidation, demonstrating strong debugging skills.
+**User's preferred language**: russian
 
-The majority of the work involved meticulous, user-directed UI/UX refinement of the verification step. This included:
-1.  Unifying the verification UI with another section of the app (), adopting a complex Neumorphism design using .
-2.  Refactoring the code input from a simple input to separate OTP-style boxes based on a user-provided image.
-3.  Solving cross-platform browser issues related to opening the Telegram app (desktop vs. iOS).
-4.  Implementing a sophisticated, progressive cooldown mechanism to prevent SMS/call spam, where the resend delay increases with each attempt.
-5.  Refining the UX so that the first verification attempt is automatic, while subsequent attempts require a manual resend click.
+**what currently exists?**
+The application is a contract management system with a newly implemented, but not fully user-verified, multilingual feature.
+-   **Backend:** The database models (, ) and API endpoints in  have been updated to store and serve content, titles, roles, and placeholder labels in RU, KZ, and EN. A  field has been added to contracts to store the immutable language choice. PDF generation logic has been updated to use the correct language.
+-   **Frontend:**
+    -    has been heavily modified to include UI tabs for creating and editing templates in three languages.
+    -    now features a modal window for language selection upon page load. This choice sets both the contract language and the UI language. The special workflow for English (popup warning, final review disclaimer) has been implemented.
+    -    allows admins to preview template content in different languages.
+    -    now displays the language in which the contract was signed.
+-   The PDF has been redesigned to a minimalist style with the user's latest logo.
 
-The final action was an attempt to implement this last UX refinement, but a minor bug was discovered where a prompt for the user to manually resend the code was not appearing correctly on the second attempt. The agent has correctly hypothesized the cause of this bug.
+**Last working item**:
+-   **Last item agent was working:** The agent implemented the user's final simplification for language selection. Instead of a persistent language switcher in the header on the signing page, a single modal now appears on page load for the user to choose their language. This choice sets both the contract language and the UI language for their session. The header's language dropdown is now conditionally hidden on this page.
+-   **Status:** IN PROGRESS
+-   **Agent Testing Done:** N
+-   **Which testing method agent to use?** Manual testing by the user is required. The user explicitly stated they will check the flow themselves.
+-   **User Testing Done:** N
 
-**Instruction for the next agent: The user communicates exclusively in Russian. All future responses must be in Russian.**
-</analysis>
+**All Pending/In progress Issue list**:
+-   **Issue 1:** Potential authentication bug (P1)
+-   **Issue 2:** Full multilingual feature flow is pending user verification (P0)
 
-<product_requirements>
-The goal is to implement a secure and user-friendly multi-step registration flow for the 2tick.kz application.
+**Issues Detail:**
+-   **Issue 1:** Potential authentication bug
+    -   **Attempted fixes:** The agent repeatedly failed to log in via  to the  endpoint, receiving Invalid credentials despite verifying the password hash in the database. The agent used workarounds (direct DB manipulation, direct function calls) to proceed with testing other features.
+    -   **Next debug checklist:**
+        -   In , add detailed logging inside the  function to inspect the  object received and the  object retrieved from the database.
+        -   Verify the  function is behaving as expected with the exact password and hash.
+        -   Attempt a login via a frontend form and inspect the browser's network request payload to ensure it matches the  Pydantic model.
+    -   **Why fix this issue and what will be achieved with the fix?** A non-functional login endpoint is a critical flaw that prevents normal user interaction and makes end-to-end testing impossible. Fixing it is essential for application stability.
+    -   **Status:** NOT STARTED
+    -   **Is recurring issue?** Y
+    -   **Should Test frontend/backend/both after fix?** Backend.
+    -   **Blocked on other issue:** None.
 
-**Completed Implementation:**
-*   A four-step registration page () has been created:
-    *   Step 1: Personal Data (Full Name, Email, Phone).
-    *   Step 2: Legal Data (Company Name, IIN/BIN, Legal Address).
-    *   Step 3: Password Creation.
-    *   Step 4: Phone Number Verification.
-*   The phone verification UI has been completely redesigned to match the , featuring a modern Neumorphism style with separate OTP input boxes.
-*   Three verification methods are supported: SMS, Phone Call, and Telegram.
-*   A progressive cooldown system is implemented for SMS and Call methods to prevent abuse. The first request is instant, the second requires a 1-minute wait, the third a 2.5-minute wait, and so on.
-*   The UX logic has been refined: the first time a user selects SMS/Call, the code is sent automatically. If they navigate away and back, they must manually click a Resend Code button.
-*   The Telegram button now works with a single click, pre-loading the necessary link for a smooth user experience.
-*   Minor UI fixes, such as styling the login button on the landing page, have been completed.
-</product_requirements>
+**In progress Task List**:
+-   **Task 1:** Complete and verify the multilingual contract feature (P0)
+    -   **Where to resume:** The user needs to perform a full end-to-end test of the entire multilingual workflow.
+        1.  Log in as admin ().
+        2.  Create a new template in , filling out all fields for all three languages (RU, KZ, EN), including placeholder labels.
+        3.  Create a contract from this template.
+        4.  Open the signing link in a new browser/incognito window.
+        5.  Verify the language selection modal appears.
+        6.  Test the signing flow for each language, paying special attention to the English flow (popup, checkbox, dropdown).
+        7.  Verify the final PDF and the  reflect the correct, fixed contract language.
+    -   **What will be achieved with this?** This will validate the completion of the main feature request from this session.
+    -   **Status:** USER VERIFICATION PENDING
+    -   **Should Test frontend/backend/both after fix?** Both.
+    -   **Blocked on something:** None.
 
-<key_technical_concepts>
-- **Frontend:** React (Hooks: , ),  for animations.
-- **Backend:** Python (FastAPI), Pydantic for data models.
-- **Styling:** Tailwind CSS, direct CSS for Neumorphism design, and custom component styling ().
-- **State Management:** Complex client-side state to manage the 4-step flow, verification methods, cooldown timers, request counters, and UX flags ().
-- **Build Process:** Debugging and forcing cache invalidation in  (Webpack).
-- **API Integration:** Interaction with pre-existing backend endpoints for registration and OTP verification.
-</key_technical_concepts>
+**Upcoming and Future Tasks**
+-   **Upcoming Tasks:**
+    -   **Task 1:** Implement Edit Placeholder functionality (P1).
+        -   The UI for editing placeholders in  is incomplete. The logic to populate the form with an existing placeholder's data (including the new multilingual labels) and save the changes needs to be implemented.
+-   **Future Tasks:**
+    -   **Task 1:** Verify placeholder filtering in PDF content (P2).
+        -   It's unconfirmed if placeholders in the main contract body () are correctly filtered based on the  flag during PDF generation in .
 
-<code_architecture>
-The application follows a client-server model with a React frontend and a FastAPI backend.
+**Completed work in this session**
+-   **Multilingual System Implemented:**
+    -   Backend models updated for RU/KZ/EN content, roles, and labels.
+    -   Admin UI created for managing multilingual templates.
+    -   Signing page refactored with a language selection modal and a special flow for English contracts.
+    -   Logic to separate immutable  from  was implemented and refined.
+    -   PDF and Contract Details page now display the correct signing language.
+-   **PDF Redesign:** The contract PDF was redesigned with a minimalist aesthetic and a new company logo, per user feedback.
+-   **Critical DB Issue Resolved:** Discovered the application was using the wrong database (). Wiped the correct database and created a new admin user as requested.
+-   **Bug Fix:** Fixed a critical bug where creating a new template resulted in an empty entry because the form state was cleared prematurely.
 
-- ****
-    - **Importance:** This is the core file for the entire feature. It contains all the logic and UI for the multi-step registration and verification flow.
-    - **Summary of Changes:** This file has undergone massive and iterative changes. It was restructured into a 4-step wizard. The state management became highly complex to handle step progression, form data, multiple verification methods, API loading states, progressive cooldown timers (, ), request counters (), and UX flags (). The entire verification UI (Step 4) was replaced twice: first to match the  style, and second to use separate OTP input boxes. The logic for handling Telegram link generation and opening was refactored multiple times to improve UX and fix cross-platform bugs.
+**Earlier issues found/mentioned but not fixed**
+-   **Issue 1:** The  endpoint is unreliable. The agent failed to get a successful response via  multiple times, indicating a potential bug in the authentication logic in .
 
-- ****
-    - **Importance:** Contains all backend API logic.
-    - **Summary of Changes:** A critical bug was fixed in the  Pydantic model, which was missing fields for , , and , causing initial registration attempts to fail. No other backend changes were required as all necessary endpoints were already present.
+**Code Architecture**
 
-- ****
-    - **Importance:** A separate page for handling user verification, likely linked from an email.
-    - **Summary of Changes:** This page was refactored to use the same modern Neumorphism and OTP box UI as the main  to ensure a consistent user experience.
 
-- ****
-    - **Importance:** The site's main navigation header.
-    - **Summary of Changes:** The Войти (Login) link was styled with Tailwind CSS classes to give it a proper button-like appearance with a border, improving the UI on the landing page.
-</code_architecture>
+**Key Technical Concepts**
+-   **Internationalization (i18n):** Using  for UI translation.
+-   **State Management:** Separation of immutable  from the general UI language state.
+-   **Backend:** FastAPI with Pydantic models extended to support multilingual fields (, , etc.).
+-   **PDF Generation:**  logic in  updated to dynamically select content based on the contract's language.
+-   **Database Discovery:** Identifying and correcting the application's connection to the wrong MongoDB database.
 
-<pending_tasks>
-- Fix the bug in the verification flow where the prompt to manually click Send Code does not appear on the second visit to the SMS/Call verification screen.
-- The user requested that the verification flow on  be identical to the one for client verification. While the UI is now identical, a full functional audit should be performed to ensure all edge cases match.
-</pending_tasks>
+**key DB schema**
+-   ****: Now includes fields like , , , , , etc. The  object contains multilingual labels: .
+-   ****: Now includes a  field to store the immutable language ('ru', 'kk', 'en') chosen at the time of signing.
 
-<current_work>
-The AI engineer was finalizing the user-requested verification logic. The goal is a flow where the first selection of SMS or Call sends a code automatically, but if the user leaves and returns to that method, they must manually click a Send Code button. A progressive cooldown (1 min, 2.5 min) applies to these manual requests.
+**All files of reference**
+-   ****: Heavily modified to add multilingual support to models, API endpoints (, ), and the  function. Added  field.
+-   ****: Completely overhauled to implement the language selection modal, the separation of contract/UI language, and the special logic for English contracts.
+-   ****: Heavily modified to add UI tabs and logic for creating/editing templates with multilingual content and placeholder labels. Fixed a major bug related to saving templates.
+-   ****: Updated to allow admins to preview templates in different languages and to correctly display translated placeholder labels.
+-   ****: Updated to display the language the contract was signed in.
+-   ****: Modified to conditionally hide the language switcher.
+-   ****: Created to manage language state, although  is also used.
 
-To achieve this, the engineer added new state variables like  and  to . The  function was refactored to check these flags.
+**Critical Info for New Agent**
+-   **DATABASE NAME:** The application uses the **** database. The  file or initial setup might be misleading. All database operations must target this DB.
+-   **LANGUAGE LOGIC:** The  is immutable and set once when the signer first opens the link. It dictates the language of the legal document (PDF, email). The UI language can be changed independently (though the current flow ties them together at the start).
+-   **LOGIN ENDPOINT:** The  endpoint is highly suspect. The previous agent could not get it to work via . Be prepared to debug this if authentication issues arise. Do not assume it works.
 
-**Immediate Problem:** The last test () revealed a bug. When a user enters the SMS verification screen for the *second* time, the UI is supposed to display a message like Нажмите кнопку ниже для получения кода (Click the button below to get the code). This message did not appear.
+**Last 10 User Messages and any pending user messages**
+1.  **User (msg 675):** Requested to simplify the language choice to a single modal on page load, which sets both UI and contract language, and to remove the header language switcher on that page. (Status: **Implemented, pending verification**)
+2.  **User (msg 640):** Provided critical clarification to separate the immutable  from the changeable . (Status: **Implemented**)
+3.  **User (msg 619):** Requested signing language to be shown for both parties on the details page and in the PDF. (Status: **Completed**)
+4.  **User (msg 602):** Requested Russian be the default language and that the signing language be visible on the contract details page. (Status: **Completed**)
+5.  **User (msg 585):** Reported that placeholder labels in the Client Data section were not translating. (Status: **Completed**)
+6.  **User (msg 579, 575):** Reported that the database cleanup did not work. (Status: **Resolved**, agent found and cleaned the correct database).
+7.  **User (msg 571, 567):** Requested to wipe the database and create a specific user. (Status: **Completed**)
+8.  **User (msg 552):** Reported bugs in the admin panel: the edit dialog didn't close, and editing a template created a new one. (Status: **Completed**)
+9.  **User (msg 539):** Requested language tabs for placeholder labels in the admin panel. (Status: **Completed**)
+10. **User (msg 531):** Reported a Javascript runtime error . (Status: **Completed**)
 
-**Hypothesis:** The engineer correctly deduced () that the conditional logic is likely flawed. It probably checks if  is 0, but after the first automatic send, the count is already 1. The condition needs to be adjusted to correctly identify a repeat visit scenario.
-</current_work>
+**Project Health Check:**
+-   **Broken:** The core  endpoint is likely broken or unreliable.
+-   **Mocked/Workaround:** The agent had to bypass login to test other functionality.
 
-<optional_next_step>
-Исправить логику условного рендеринга в , чтобы сообщение Нажмите кнопку ниже для получения кода отображалось при повторном входе в метод верификации (SMS или Звонок).
-</optional_next_step>
+**Credentials to test flow:**
+-   **Email:** 
+-   **Password:** 
+-   **Role:** </analysis>
