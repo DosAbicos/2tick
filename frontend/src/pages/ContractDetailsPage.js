@@ -724,6 +724,15 @@ const ContractDetailsPage = () => {
                         <span className="text-neutral-500">Время подписания:</span>
                         <p className="font-medium">{signature.signed_at ? format(new Date(signature.signed_at), 'dd MMM yyyy HH:mm') : 'N/A'}</p>
                       </div>
+                      <div>
+                        <span className="text-neutral-500">Язык подписания:</span>
+                        <p className="font-medium flex items-center gap-2">
+                          {contract.signing_language === 'ru' && '🇷🇺 Русский'}
+                          {contract.signing_language === 'kk' && '🇰🇿 Қазақша'}
+                          {contract.signing_language === 'en' && '🇬🇧 English'}
+                          {!contract.signing_language && '🇷🇺 Русский (по умолчанию)'}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
