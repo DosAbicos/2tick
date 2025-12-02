@@ -1395,8 +1395,29 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
     pdf_buffer.seek(0)
     return pdf_buffer.getvalue()
 
-def replace_placeholders_in_content(content: str, contract: dict) -> str:
-    """Replace placeholders in contract content with actual values"""
+def replace_placeholders_in_content(content: str, contract: dict, template: dict = None) -> str:
+    """Replace placeholders in contract content with actual values, respecting showInContent flag"""
+    import re
+    
+    # Ensure content is string
+    if not isinstance(content, str):
+        content = str(content)
+    
+    # Handle new {{placeholder}} format with template
+    if template and template.get('placeholders') and contract.get('placeholder_values'):
+        for key, config in template['placeholders'].items():
+            # Skip placeholders that should NOT appear in content
+            if config.get('showInContent') == False:
+                continue
+            
+            # Get value from contract
+            value = contract.get('placeholder_values', {}).get(key, '')
+            if value:
+                # Replace {{key}} with value
+                pattern = re.compile(f'{{{{\\s*{key}\\s*}}}}')
+                content = pattern.sub(str(value), content)
+    
+    # Handle old [Placeholder] format for backward compatibility
     # Get values from contract or use placeholders, ensure all are strings
     signer_name = str(contract.get('signer_name', '')) if contract.get('signer_name') else '[ФИО Нанимателя]'
     signer_phone = str(contract.get('signer_phone', '')) if contract.get('signer_phone') else '[Телефон]'
@@ -1406,10 +1427,6 @@ def replace_placeholders_in_content(content: str, contract: dict) -> str:
     property_address = str(contract.get('property_address', '')) if contract.get('property_address') else '[Адрес квартиры]'
     rent_amount = str(contract.get('rent_amount', '')) if contract.get('rent_amount') else '[Цена в сутки]'
     days_count = str(contract.get('days_count', '')) if contract.get('days_count') else '[Количество суток]'
-    
-    # Ensure content is string
-    if not isinstance(content, str):
-        content = str(content)
     
     # Replace placeholders only if we have actual values (not empty strings)
     if signer_name and signer_name != '[ФИО Нанимателя]':
