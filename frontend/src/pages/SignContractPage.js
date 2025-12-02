@@ -65,25 +65,25 @@ const SignContractPage = () => {
   const [showEnglishWarning, setShowEnglishWarning] = useState(false);
   const [englishDisclaimerAccepted, setEnglishDisclaimerAccepted] = useState(false);
   
-  // Listen to language changes from Header
+  // Check if contract language is already set
   useEffect(() => {
-    const handleLanguageChange = () => {
-      const newLang = i18n.language;
-      if (newLang !== language) {
-        setLanguage(newLang);
-        if (newLang === 'en' && !englishDisclaimerAccepted) {
-          setShowEnglishWarning(true);
-        }
-        // Update contract language in backend
-        if (id) {
-          axios.post(`${API}/sign/${id}/set-language`, { language: newLang }).catch(console.error);
-        }
+    const checkContractLanguage = async () => {
+      if (!contract) return;
+      
+      const lang = contract.contract_language;
+      if (lang) {
+        // Contract language already locked
+        setContractLanguage(lang);
+        setContractLanguageLocked(true);
+        setShowLanguageSelector(false);
+      } else {
+        // Need to select contract language
+        setShowLanguageSelector(true);
       }
     };
     
-    i18n.on('languageChanged', handleLanguageChange);
-    return () => i18n.off('languageChanged', handleLanguageChange);
-  }, [i18n, language, englishDisclaimerAccepted, id]);
+    checkContractLanguage();
+  }, [contract]);
   
   // Call OTP states
   const [verificationMethod, setVerificationMethod] = useState(''); // 'sms', 'call', or 'telegram'
