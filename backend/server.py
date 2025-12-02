@@ -251,7 +251,7 @@ class Contract(BaseModel):
     party_b_role: Optional[str] = 'Сторона Б'  # Роль стороны Б (из шаблона)
     party_b_role_kk: Optional[str] = 'Б жағы'
     party_b_role_en: Optional[str] = 'Party B'
-    signing_language: str = "ru"  # Язык подписания: ru, kk, en
+    contract_language: Optional[str] = None  # ФИКСИРОВАННЫЙ язык договора (ru/kk/en), устанавливается один раз
     english_disclaimer_accepted: bool = False  # Подтверждение для английского
     deleted: bool = False  # Soft delete flag - для подписанных договоров
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
