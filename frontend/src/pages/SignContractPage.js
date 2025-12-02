@@ -59,21 +59,11 @@ const SignContractPage = () => {
   
   // Language states
   const { i18n } = useTranslation();
-  const [language, setLanguage] = useState('ru');
+  const [contractLanguage, setContractLanguage] = useState(null); // ФИКСИРОВАННЫЙ язык договора
+  const [contractLanguageLocked, setContractLanguageLocked] = useState(false);
+  const [showLanguageSelector, setShowLanguageSelector] = useState(false);
   const [showEnglishWarning, setShowEnglishWarning] = useState(false);
   const [englishDisclaimerAccepted, setEnglishDisclaimerAccepted] = useState(false);
-  
-  // Set default language to Russian on mount
-  useEffect(() => {
-    if (i18n.language !== 'ru') {
-      i18n.changeLanguage('ru');
-    }
-    setLanguage('ru');
-    // Set contract language to Russian on backend
-    if (id) {
-      axios.post(`${API}/sign/${id}/set-language`, { language: 'ru' }).catch(console.error);
-    }
-  }, [id]);
   
   // Listen to language changes from Header
   useEffect(() => {
