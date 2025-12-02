@@ -1147,7 +1147,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                                         value={placeholderValues[key] || ''}
                                         onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
                                         className="minimal-input w-full"
-                                        placeholder={`Клиент заполнит`}
+                                        placeholder={t('common.client_will_fill')}
                                       />
                                     )}
                                   </div>
