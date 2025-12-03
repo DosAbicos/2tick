@@ -544,34 +544,34 @@ const AdminPage = () => {
                   <Search className="h-5 w-5 text-blue-500" />
                 </div>
               </div>
-              <div>
+              <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
-                    <TableRow>
-                      <TableHead>ID</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Имя</TableHead>
-                      <TableHead>Роль</TableHead>
-                      <TableHead>Лимит договоров</TableHead>
-                      <TableHead>Дата регистрации</TableHead>
-                      <TableHead className="text-right">Действия</TableHead>
+                    <TableRow className="bg-gradient-to-r from-blue-50 to-blue-100 border-b-2 border-blue-200">
+                      <TableHead className="font-bold text-gray-900">ID</TableHead>
+                      <TableHead className="font-bold text-gray-900">Email</TableHead>
+                      <TableHead className="font-bold text-gray-900">Имя</TableHead>
+                      <TableHead className="font-bold text-gray-900">Роль</TableHead>
+                      <TableHead className="font-bold text-gray-900">Лимит договоров</TableHead>
+                      <TableHead className="font-bold text-gray-900">Дата регистрации</TableHead>
+                      <TableHead className="text-right font-bold text-gray-900">Действия</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {filteredUsers.map((user) => (
-                      <TableRow key={user.id}>
+                      <TableRow key={user.id} className="hover:bg-blue-50 transition-colors border-b border-gray-200">
                         <TableCell>
-                          <code className="text-xs text-neutral-500">{user.id.substring(0, 8)}...</code>
+                          <code className="text-xs font-mono bg-gray-100 px-2 py-1 rounded text-gray-700">{user.id.substring(0, 8)}...</code>
                         </TableCell>
-                        <TableCell className="font-medium">{user.email}</TableCell>
-                        <TableCell>{user.full_name}</TableCell>
+                        <TableCell className="font-medium text-gray-900">{user.email}</TableCell>
+                        <TableCell className="text-gray-700">{user.full_name}</TableCell>
                         <TableCell>
-                          <Badge variant={user.role === 'admin' ? 'destructive' : 'default'}>
+                          <Badge variant={user.role === 'admin' ? 'destructive' : 'default'} className="font-medium">
                             {user.role}
                           </Badge>
                         </TableCell>
-                        <TableCell>{user.contract_limit || 10}</TableCell>
-                        <TableCell>{new Date(user.created_at).toLocaleDateString('ru-RU')}</TableCell>
+                        <TableCell className="text-gray-700">{user.contract_limit || 10}</TableCell>
+                        <TableCell className="text-gray-600">{new Date(user.created_at).toLocaleDateString('ru-RU')}</TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-2">
                             <button
