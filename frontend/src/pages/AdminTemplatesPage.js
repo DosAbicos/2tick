@@ -812,56 +812,59 @@ const AdminTemplatesPageNew = () => {
             <Loader size="medium" />
           </div>
         ) : templates.length === 0 ? (
-          <Card className="shadow-lg">
-            <CardContent className="py-12 text-center">
-              <p className="text-neutral-600 mb-4">Шаблоны еще не созданы</p>
-              <Button onClick={() => setShowDialog(true)}>
-                <Plus className="mr-2 h-4 w-4" />
-                Создать первый шаблон
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="minimal-card p-12 text-center">
+            <FileText className="h-16 w-16 text-blue-300 mx-auto mb-4" />
+            <p className="text-gray-600 mb-6 text-lg">Шаблоны еще не созданы</p>
+            <button 
+              onClick={() => setShowDialog(true)}
+              className="neuro-button-primary flex items-center gap-2 px-6 py-3 text-white mx-auto"
+            >
+              <Plus className="h-5 w-5" />
+              Создать первый шаблон
+            </button>
+          </div>
         ) : (
-          <div className="grid grid-cols-1 gap-4">
+          <div className="grid grid-cols-1 gap-6">
             {templates.map((template) => (
-              <Card key={template.id} className={`shadow-md hover:shadow-lg transition-shadow ${!template.is_active ? 'opacity-50' : ''}`}>
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <CardTitle className="flex items-center gap-2">
-                        {template.title}
-                        {!template.is_active && (
-                          <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">
-                            Неактивен
-                          </span>
-                        )}
-                      </CardTitle>
-                      <CardDescription className="mt-2">
-                        {template.description}
-                      </CardDescription>
-                      <div className="mt-2 text-xs text-neutral-500">
-                        Категория: {CATEGORIES.find(c => c.value === template.category)?.label}
-                      </div>
+              <div 
+                key={template.id} 
+                className={`minimal-card p-6 transition-all duration-300 ${!template.is_active ? 'opacity-50' : ''}`}
+              >
+                <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <h3 className="text-xl font-bold text-gray-900">{template.title}</h3>
+                      {!template.is_active && (
+                        <span className="text-xs bg-red-100 text-red-700 px-3 py-1 rounded-full font-medium">
+                          Неактивен
+                        </span>
+                      )}
                     </div>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleEdit(template)}
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDelete(template.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                    <p className="text-gray-600 mt-2">
+                      {template.description}
+                    </p>
+                    <div className="mt-3 inline-block px-3 py-1 bg-blue-50 text-blue-700 text-sm rounded-lg font-medium">
+                      {CATEGORIES.find(c => c.value === template.category)?.label}
                     </div>
                   </div>
-                </CardHeader>
-              </Card>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleEdit(template)}
+                      className="neuro-button flex items-center gap-2 px-4 py-2"
+                    >
+                      <Edit className="h-4 w-4" />
+                      <span className="hidden sm:inline">Редактировать</span>
+                    </button>
+                    <button
+                      onClick={() => handleDelete(template.id)}
+                      className="p-2 hover:bg-red-50 rounded-lg transition-colors"
+                      title="Удалить"
+                    >
+                      <Trash2 className="h-4 w-4 text-red-600" />
+                    </button>
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         )}
