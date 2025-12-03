@@ -873,10 +873,10 @@ const AdminTemplatesPageNew = () => {
         <Dialog open={showDialog} onOpenChange={handleDialogClose}>
           <DialogContent className="max-w-5xl max-h-[90vh] overflow-auto">
             <DialogHeader>
-              <DialogTitle className="text-2xl">
+              <DialogTitle className="text-3xl font-bold text-gray-900">
                 {editingTemplate ? '✏️ Редактировать шаблон' : '✨ Создать новый шаблон'}
               </DialogTitle>
-              <DialogDescription>
+              <DialogDescription className="text-gray-600 text-base mt-2">
                 Заполните информацию о шаблоне договора и настройте плейсхолдеры
               </DialogDescription>
             </DialogHeader>
@@ -884,7 +884,7 @@ const AdminTemplatesPageNew = () => {
             <form onSubmit={handleSubmit} className="space-y-6 mt-6">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="title">Название *</Label>
+                  <Label htmlFor="title" className="text-sm font-semibold text-gray-700">Название *</Label>
                   <Input
                     id="title"
                     name="title"
@@ -892,14 +892,14 @@ const AdminTemplatesPageNew = () => {
                     onChange={handleChange}
                     placeholder="Договор аренды квартиры"
                     required
-                    className="mt-1"
+                    className="mt-1 minimal-input"
                   />
                 </div>
 
                 <div>
-                  <Label>Категория *</Label>
+                  <Label className="text-sm font-semibold text-gray-700">Категория *</Label>
                   <Select value={formData.category} onValueChange={handleCategoryChange}>
-                    <SelectTrigger className="mt-1">
+                    <SelectTrigger className="mt-1 minimal-input">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -914,7 +914,7 @@ const AdminTemplatesPageNew = () => {
               </div>
 
               <div>
-                <Label htmlFor="description">Описание *</Label>
+                <Label htmlFor="description" className="text-sm font-semibold text-gray-700">Описание *</Label>
                 <Textarea
                   id="description"
                   name="description"
@@ -923,12 +923,12 @@ const AdminTemplatesPageNew = () => {
                   placeholder="Краткое описание шаблона..."
                   rows={2}
                   required
-                  className="mt-1"
+                  className="mt-1 minimal-input"
                 />
               </div>
 
               {/* Party Roles Selection */}
-              <div className="p-4 bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 border-2 border-purple-200 rounded-lg">
+              <div className="minimal-card p-5 bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
                 <div className="flex items-center gap-2 mb-3">
                   <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
