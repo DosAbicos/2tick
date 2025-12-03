@@ -417,13 +417,13 @@ const AdminPage = () => {
       )}
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-8 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-neutral-900">Панель администратора</h1>
-            <p className="text-neutral-600 mt-1">Управление пользователями и договорами</p>
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">Панель администратора</h1>
+            <p className="text-gray-600 text-lg">Управление пользователями и договорами</p>
           </div>
           
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
             <div className="flex items-center gap-2">
               <Input
                 type="text"
@@ -431,29 +431,32 @@ const AdminPage = () => {
                 value={contractSearch}
                 onChange={(e) => setContractSearch(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && searchContract()}
-                className="w-64"
+                className="w-full sm:w-64 minimal-input"
               />
-              <Button onClick={searchContract} variant="outline">
-                <Search className="h-4 w-4 mr-2" />
-                Найти договор
-              </Button>
+              <button 
+                onClick={searchContract} 
+                className="neuro-button whitespace-nowrap px-4 py-2"
+              >
+                <Search className="h-4 w-4 mr-2 inline" />
+                Найти
+              </button>
             </div>
             
             <div className="flex gap-2">
-              <Button
+              <button
                 onClick={() => navigate('/admin/notifications')}
-                variant="outline"
+                className="neuro-button flex items-center gap-2 px-4 py-2"
               >
-                <Bell className="mr-2 h-4 w-4" />
-                Оповещения
-              </Button>
-              <Button
+                <Bell className="h-4 w-4" />
+                <span className="hidden sm:inline">Оповещения</span>
+              </button>
+              <button
                 onClick={() => navigate('/admin/templates')}
-                variant="outline"
+                className="neuro-button-primary flex items-center gap-2 px-4 py-2 text-white"
               >
-                <FileText className="mr-2 h-4 w-4" />
-                Управление шаблонами
-              </Button>
+                <FileText className="h-4 w-4" />
+                <span className="hidden sm:inline">Шаблоны</span>
+              </button>
             </div>
           </div>
         </div>
