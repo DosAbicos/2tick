@@ -498,11 +498,10 @@ const AdminPage = () => {
                 <Activity className="h-6 w-6 text-amber-600" />
               </div>
             </div>
-            <CardContent>
-              <div className="text-2xl font-bold text-amber-600">{stats?.pending_contracts || 0}</div>
-              <p className="text-xs text-neutral-500 mt-1">Ожидают подписи</p>
-            </CardContent>
-          </Card>
+            <div className="text-3xl font-bold text-amber-600 mb-1">{stats?.pending_contracts || 0}</div>
+            <div className="text-sm font-medium text-gray-900">В ожидании</div>
+            <p className="text-xs text-gray-500 mt-1">Ожидают подписи</p>
+          </div>
         </div>
 
         <Tabs value={activeMainTab} onValueChange={setActiveMainTab} className="space-y-4">
