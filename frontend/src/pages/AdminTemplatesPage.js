@@ -1044,15 +1044,15 @@ const AdminTemplatesPageNew = () => {
               </div>
 
               {/* Language Tabs for Content */}
-              <div className="border-2 border-blue-200 rounded-xl p-4 bg-blue-50/30">
+              <div className="minimal-card p-5 bg-gradient-to-r from-blue-50 to-blue-100">
                 <div className="flex gap-2 mb-4">
                   <button
                     type="button"
                     onClick={() => setCurrentLang('ru')}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                    className={`px-4 py-2 rounded-lg font-semibold transition-all ${
                       currentLang === 'ru'
-                        ? 'bg-blue-600 text-white shadow-lg'
-                        : 'bg-white text-gray-700 hover:bg-gray-100'
+                        ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg'
+                        : 'neuro-button'
                     }`}
                   >
                     🇷🇺 Русский
@@ -1060,10 +1060,10 @@ const AdminTemplatesPageNew = () => {
                   <button
                     type="button"
                     onClick={() => setCurrentLang('kk')}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                    className={`px-4 py-2 rounded-lg font-semibold transition-all ${
                       currentLang === 'kk'
-                        ? 'bg-blue-600 text-white shadow-lg'
-                        : 'bg-white text-gray-700 hover:bg-gray-100'
+                        ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg'
+                        : 'neuro-button'
                     }`}
                   >
                     🇰🇿 Казахский
@@ -1071,10 +1071,10 @@ const AdminTemplatesPageNew = () => {
                   <button
                     type="button"
                     onClick={() => setCurrentLang('en')}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                    className={`px-4 py-2 rounded-lg font-semibold transition-all ${
                       currentLang === 'en'
-                        ? 'bg-blue-600 text-white shadow-lg'
-                        : 'bg-white text-gray-700 hover:bg-gray-100'
+                        ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg'
+                        : 'neuro-button'
                     }`}
                   >
                     🇬🇧 Английский
@@ -1084,7 +1084,7 @@ const AdminTemplatesPageNew = () => {
                 {/* Russian Content */}
                 {currentLang === 'ru' && (
                   <div>
-                    <Label htmlFor="content">Содержание договора (Русский) *</Label>
+                    <Label htmlFor="content" className="text-sm font-semibold text-gray-700">Содержание договора (Русский) *</Label>
                     <Textarea
                       ref={contentTextareaRef}
                       id="content"
@@ -1094,7 +1094,7 @@ const AdminTemplatesPageNew = () => {
                       placeholder="Текст договора с плейсхолдерами: {{LANDLORD_NAME}}, {{SIGNER_NAME}} и т.д."
                       rows={12}
                       required
-                      className="mt-1 font-mono text-sm"
+                      className="mt-1 font-mono text-sm minimal-input"
                     />
                   </div>
                 )}
@@ -1102,7 +1102,7 @@ const AdminTemplatesPageNew = () => {
                 {/* Kazakh Content */}
                 {currentLang === 'kk' && (
                   <div>
-                    <Label htmlFor="content_kk">Содержание договора (Қазақша) *</Label>
+                    <Label htmlFor="content_kk" className="text-sm font-semibold text-gray-700">Содержание договора (Қазақша) *</Label>
                     <Textarea
                       id="content_kk"
                       name="content_kk"
@@ -1111,7 +1111,7 @@ const AdminTemplatesPageNew = () => {
                       placeholder="Шарттың мәтіні {{LANDLORD_NAME}}, {{SIGNER_NAME}} сияқты плейсхолдерлермен"
                       rows={12}
                       required
-                      className="mt-1 font-mono text-sm"
+                      className="mt-1 font-mono text-sm minimal-input"
                     />
                   </div>
                 )}
@@ -1119,7 +1119,7 @@ const AdminTemplatesPageNew = () => {
                 {/* English Content */}
                 {currentLang === 'en' && (
                   <div>
-                    <Label htmlFor="content_en">Contract Content (English) *</Label>
+                    <Label htmlFor="content_en" className="text-sm font-semibold text-gray-700">Contract Content (English) *</Label>
                     <Textarea
                       id="content_en"
                       name="content_en"
@@ -1128,24 +1128,25 @@ const AdminTemplatesPageNew = () => {
                       placeholder="Contract text with placeholders: {{LANDLORD_NAME}}, {{SIGNER_NAME}}, etc."
                       rows={12}
                       required
-                      className="mt-1 font-mono text-sm"
+                      className="mt-1 font-mono text-sm minimal-input"
                     />
                   </div>
                 )}
 
-                <p className="text-xs text-blue-700 mt-2 font-medium">
-                  ⚠️ Все три языка обязательны для публикации в маркет
+                <p className="text-sm text-blue-700 mt-3 font-medium flex items-center gap-2">
+                  <span>⚠️</span>
+                  <span>Все три языка обязательны для публикации в маркет</span>
                 </p>
               </div>
 
               <div className="flex gap-3 pt-4 border-t">
-                <Button type="submit" className="flex-1 shadow-md">
-                  <Save className="mr-2 h-4 w-4" />
+                <button type="submit" className="flex-1 neuro-button-primary text-white py-3 flex items-center justify-center gap-2">
+                  <Save className="h-5 w-5" />
                   {editingTemplate ? 'Сохранить изменения' : 'Создать шаблон'}
-                </Button>
-                <Button type="button" variant="outline" onClick={handleDialogClose}>
+                </button>
+                <button type="button" onClick={handleDialogClose} className="neuro-button px-6 py-3">
                   Отмена
-                </Button>
+                </button>
               </div>
             </form>
           </DialogContent>
