@@ -611,14 +611,14 @@ const AdminPage = () => {
                     ))}
                   </TableBody>
                 </Table>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </TabsContent>
 
           <TabsContent value="activity" className="space-y-4">
-            <div className="mb-4">
-              <h3 className="text-lg font-semibold mb-1">Системные метрики</h3>
-              <p className="text-sm text-neutral-600">Показатели производительности системы в реальном времени (обновление каждые 10 сек)</p>
+            <div className="minimal-card p-6 mb-4">
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Системные метрики</h3>
+              <p className="text-gray-600">Показатели производительности системы в реальном времени (обновление каждые 10 сек)</p>
             </div>
             <SystemMetricsWidget 
               onErrorsClick={(errors) => {
