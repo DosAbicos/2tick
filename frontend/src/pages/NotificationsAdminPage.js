@@ -221,36 +221,42 @@ const NotificationsAdminPage = () => {
         </div>
 
         {/* List of notifications */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Все оповещения</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {!notifications || notifications.length === 0 ? (
-              <p className="text-neutral-600 text-center py-8">Нет оповещений</p>
-            ) : (
-              <div className="space-y-3">
-                {notifications.map((notif) => (
-                  <div key={notif.id} className="border rounded-lg p-4 flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-semibold">{notif.title}</h3>
-                        {notif.is_active && <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Активно</span>}
-                      </div>
-                      <p className="text-sm text-neutral-600 mt-1">{notif.message}</p>
-                      <p className="text-xs text-neutral-500 mt-2">
-                        Создано: {new Date(notif.created_at).toLocaleString('ru-RU')}
-                      </p>
+        <div className="minimal-card p-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Все оповещения</h2>
+          {!notifications || notifications.length === 0 ? (
+            <div className="text-center py-12">
+              <Bell className="h-16 w-16 text-blue-300 mx-auto mb-4" />
+              <p className="text-gray-600 text-lg">Нет оповещений</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {notifications.map((notif) => (
+                <div key={notif.id} className="minimal-card p-5 flex items-start justify-between hover:shadow-lg transition-all">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="font-bold text-gray-900 text-lg">{notif.title}</h3>
+                      {notif.is_active && (
+                        <span className="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-medium">
+                          Активно
+                        </span>
+                      )}
                     </div>
-                    <Button variant="ghost" size="sm" onClick={() => handleDelete(notif.id)}>
-                      <Trash2 className="h-4 w-4 text-red-600" />
-                    </Button>
+                    <p className="text-sm text-gray-700 mt-2">{notif.message}</p>
+                    <p className="text-xs text-gray-500 mt-3">
+                      Создано: {new Date(notif.created_at).toLocaleString('ru-RU')}
+                    </p>
                   </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                  <button 
+                    onClick={() => handleDelete(notif.id)}
+                    className="p-2 hover:bg-red-50 rounded-lg transition-colors ml-4"
+                  >
+                    <Trash2 className="h-5 w-5 text-red-600" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
