@@ -458,45 +458,46 @@ const AdminPage = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Пользователей онлайн</CardTitle>
-              <Users className="h-4 w-4 text-green-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-600">{stats?.online_users || 0}</div>
-              <p className="text-xs text-neutral-500 mt-1">Активны последние 15 минут</p>
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="minimal-card p-6 hover:shadow-lg transition-all duration-300">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-green-50 rounded-xl">
+                <Users className="h-6 w-6 text-green-600" />
+              </div>
+            </div>
+            <div className="text-3xl font-bold text-green-600 mb-1">{stats?.online_users || 0}</div>
+            <div className="text-sm font-medium text-gray-900">Пользователей онлайн</div>
+            <p className="text-xs text-gray-500 mt-1">Активны последние 15 минут</p>
+          </div>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Всего договоров</CardTitle>
-              <FileText className="h-4 w-4 text-purple-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats?.total_contracts || 0}</div>
-              <p className="text-xs text-neutral-500 mt-1">Создано договоров</p>
-            </CardContent>
-          </Card>
+          <div className="minimal-card p-6 hover:shadow-lg transition-all duration-300">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-blue-50 rounded-xl">
+                <FileText className="h-6 w-6 text-blue-600" />
+              </div>
+            </div>
+            <div className="text-3xl font-bold text-blue-600 mb-1">{stats?.total_contracts || 0}</div>
+            <div className="text-sm font-medium text-gray-900">Всего договоров</div>
+            <p className="text-xs text-gray-500 mt-1">Создано договоров</p>
+          </div>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Подписано</CardTitle>
-              <CheckCircle className="h-4 w-4 text-green-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-600">{stats?.signed_contracts || 0}</div>
-              <p className="text-xs text-neutral-500 mt-1">Успешно завершено</p>
-            </CardContent>
-          </Card>
+          <div className="minimal-card p-6 hover:shadow-lg transition-all duration-300">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-green-50 rounded-xl">
+                <CheckCircle className="h-6 w-6 text-green-600" />
+              </div>
+            </div>
+            <div className="text-3xl font-bold text-green-600 mb-1">{stats?.signed_contracts || 0}</div>
+            <div className="text-sm font-medium text-gray-900">Подписано</div>
+            <p className="text-xs text-gray-500 mt-1">Успешно завершено</p>
+          </div>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">В ожидании</CardTitle>
-              <Activity className="h-4 w-4 text-amber-600" />
-            </CardHeader>
+          <div className="minimal-card p-6 hover:shadow-lg transition-all duration-300">
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-amber-50 rounded-xl">
+                <Activity className="h-6 w-6 text-amber-600" />
+              </div>
+            </div>
             <CardContent>
               <div className="text-2xl font-bold text-amber-600">{stats?.pending_contracts || 0}</div>
               <p className="text-xs text-neutral-500 mt-1">Ожидают подписи</p>
