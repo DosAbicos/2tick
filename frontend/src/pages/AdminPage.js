@@ -652,35 +652,35 @@ const AdminPage = () => {
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-sm font-medium">Email</Label>
-                  <p className="text-sm text-neutral-600">{selectedUser.email}</p>
+                <div className="minimal-card p-4">
+                  <Label className="text-sm font-semibold text-gray-700">Email</Label>
+                  <p className="text-sm text-gray-900 mt-1">{selectedUser.email}</p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">ФИО</Label>
-                  <p className="text-sm text-neutral-600">{selectedUser.full_name}</p>
+                <div className="minimal-card p-4">
+                  <Label className="text-sm font-semibold text-gray-700">ФИО</Label>
+                  <p className="text-sm text-gray-900 mt-1">{selectedUser.full_name}</p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">Телефон</Label>
-                  <p className="text-sm text-neutral-600">{selectedUser.phone}</p>
+                <div className="minimal-card p-4">
+                  <Label className="text-sm font-semibold text-gray-700">Телефон</Label>
+                  <p className="text-sm text-gray-900 mt-1">{selectedUser.phone}</p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">Роль</Label>
-                  <Badge variant={selectedUser.role === 'admin' ? 'destructive' : 'default'}>
+                <div className="minimal-card p-4">
+                  <Label className="text-sm font-semibold text-gray-700">Роль</Label>
+                  <Badge variant={selectedUser.role === 'admin' ? 'destructive' : 'default'} className="mt-1">
                     {selectedUser.role}
                   </Badge>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">Компания</Label>
-                  <p className="text-sm text-neutral-600">{selectedUser.company_name || 'Не указана'}</p>
+                <div className="minimal-card p-4">
+                  <Label className="text-sm font-semibold text-gray-700">Компания</Label>
+                  <p className="text-sm text-gray-900 mt-1">{selectedUser.company_name || 'Не указана'}</p>
                 </div>
-                <div>
-                  <Label className="text-sm font-medium">ИИН/БИН</Label>
-                  <p className="text-sm text-neutral-600">{selectedUser.iin || 'Не указан'}</p>
+                <div className="minimal-card p-4">
+                  <Label className="text-sm font-semibold text-gray-700">ИИН/БИН</Label>
+                  <p className="text-sm text-gray-900 mt-1">{selectedUser.iin || 'Не указан'}</p>
                 </div>
-                <div className="col-span-2">
-                  <Label className="text-sm font-medium">Юридический адрес</Label>
-                  <p className="text-sm text-neutral-600">{selectedUser.legal_address || 'Не указан'}</p>
+                <div className="minimal-card p-4 col-span-2">
+                  <Label className="text-sm font-semibold text-gray-700">Юридический адрес</Label>
+                  <p className="text-sm text-gray-900 mt-1">{selectedUser.legal_address || 'Не указан'}</p>
                 </div>
               </div>
               
