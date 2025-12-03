@@ -712,12 +712,18 @@ const AdminPage = () => {
               {/* User Details Tabs */}
               <div className="pt-4 border-t">
                 <Tabs value={activeUserTab} onValueChange={setActiveUserTab} className="w-full">
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="activity" className="flex items-center gap-2">
+                  <TabsList className="grid w-full grid-cols-2 minimal-card p-1 h-auto gap-1">
+                    <TabsTrigger 
+                      value="activity" 
+                      className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-blue-500 data-[state=active]:text-white transition-all duration-300 rounded-lg py-2"
+                    >
                       <Activity className="h-4 w-4" />
                       История действий
                     </TabsTrigger>
-                    <TabsTrigger value="contracts" className="flex items-center gap-2">
+                    <TabsTrigger 
+                      value="contracts" 
+                      className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-blue-500 data-[state=active]:text-white transition-all duration-300 rounded-lg py-2"
+                    >
                       <FileText className="h-4 w-4" />
                       Договоры ({userContracts.length})
                     </TabsTrigger>
