@@ -785,22 +785,25 @@ const AdminTemplatesPageNew = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100">
+    <div className="min-h-screen gradient-bg">
       <Header />
       
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-neutral-900 mb-2">⚙️ Управление Шаблонами</h1>
-            <p className="text-neutral-600">
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">⚙️ Управление Шаблонами</h1>
+            <p className="text-gray-600 text-lg">
               Создавайте и редактируйте шаблоны договоров с конструктором плейсхолдеров
             </p>
           </div>
-          <Button onClick={() => setShowDialog(true)} className="shadow-lg">
-            <Plus className="mr-2 h-4 w-4" />
+          <button 
+            onClick={() => setShowDialog(true)} 
+            className="neuro-button-primary flex items-center gap-2 px-6 py-3 text-white whitespace-nowrap"
+          >
+            <Plus className="h-5 w-5" />
             Создать шаблон
-          </Button>
+          </button>
         </div>
 
         {/* Templates List */}
