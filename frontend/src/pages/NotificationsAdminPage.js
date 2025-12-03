@@ -157,59 +157,68 @@ const NotificationsAdminPage = () => {
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Создать новое оповещение</h2>
           <div className="space-y-4">
             <div>
-              <Label htmlFor="title">Заголовок *</Label>
+              <Label htmlFor="title" className="text-sm font-semibold text-gray-700">Заголовок *</Label>
               <Input
                 id="title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Важное объявление"
-                className="mt-1"
+                className="mt-1 minimal-input"
               />
             </div>
             
             <div>
-              <Label htmlFor="message">Сообщение *</Label>
+              <Label htmlFor="message" className="text-sm font-semibold text-gray-700">Сообщение *</Label>
               <Textarea
                 id="message"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Текст оповещения..."
                 rows={4}
-                className="mt-1"
+                className="mt-1 minimal-input"
               />
             </div>
             
-            <div className="flex gap-2">
+            <div className="flex gap-3 pt-2">
               <Dialog open={showPreview} onOpenChange={setShowPreview}>
                 <DialogTrigger asChild>
-                  <Button variant="outline" disabled={!title || !message}>
-                    <Eye className="mr-2 h-4 w-4" />
+                  <button 
+                    disabled={!title || !message}
+                    className="neuro-button flex items-center gap-2 px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <Eye className="h-4 w-4" />
                     Предпросмотр
-                  </Button>
+                  </button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl">
                   <DialogHeader>
-                    <DialogTitle>Предпросмотр оповещения</DialogTitle>
+                    <DialogTitle className="text-2xl font-bold text-gray-900">Предпросмотр оповещения</DialogTitle>
                   </DialogHeader>
-                  <div className="border rounded-lg p-4 bg-blue-50 border-blue-200">
+                  <div className="minimal-card p-6 bg-gradient-to-r from-blue-50 to-blue-100">
                     <div className="flex items-start gap-3">
-                      <Bell className="h-5 w-5 text-blue-600 mt-1" />
+                      <div className="p-2 bg-blue-200 rounded-lg">
+                        <Bell className="h-5 w-5 text-blue-700" />
+                      </div>
                       <div className="flex-1">
-                        <h3 className="font-semibold text-blue-900">{title}</h3>
-                        <p className="text-sm text-blue-800 mt-1 whitespace-pre-wrap">{message}</p>
+                        <h3 className="font-bold text-blue-900 text-lg">{title}</h3>
+                        <p className="text-sm text-blue-800 mt-2 whitespace-pre-wrap leading-relaxed">{message}</p>
                       </div>
                     </div>
                   </div>
                 </DialogContent>
               </Dialog>
               
-              <Button onClick={handleCreate} disabled={creating || !title || !message} className="ml-auto">
-                <Bell className="mr-2 h-4 w-4" />
+              <button 
+                onClick={handleCreate} 
+                disabled={creating || !title || !message} 
+                className="neuro-button-primary flex items-center gap-2 px-6 py-2 text-white ml-auto disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Bell className="h-4 w-4" />
                 {creating ? 'Создание...' : 'Создать оповещение'}
-              </Button>
+              </button>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         {/* List of notifications */}
         <Card>
