@@ -686,29 +686,23 @@ const AdminPage = () => {
               
               {selectedUser.stats && (
                 <div className="pt-4 border-t">
-                  <Label className="text-sm font-medium mb-3 block">Статистика по договорам</Label>
+                  <Label className="text-lg font-bold text-gray-900 mb-4 block">Статистика по договорам</Label>
                   <div className="grid grid-cols-3 gap-4">
-                    <Card>
-                      <CardContent className="pt-6">
-                        <div className="text-2xl font-bold text-center">{selectedUser.stats.total_contracts}</div>
-                        <p className="text-xs text-neutral-500 text-center mt-1">Всего</p>
-                      </CardContent>
-                    </Card>
-                    <Card>
-                      <CardContent className="pt-6">
-                        <div className="text-2xl font-bold text-center text-green-600">{selectedUser.stats.signed_contracts}</div>
-                        <p className="text-xs text-neutral-500 text-center mt-1">Подписано</p>
-                      </CardContent>
-                    </Card>
-                    <Card>
-                      <CardContent className="pt-6">
-                        <div className="text-2xl font-bold text-center text-amber-600">{selectedUser.stats.pending_contracts}</div>
-                        <p className="text-xs text-neutral-500 text-center mt-1">В ожидании</p>
-                      </CardContent>
-                    </Card>
+                    <div className="minimal-card p-6 text-center hover:shadow-lg transition-all">
+                      <div className="text-3xl font-bold text-blue-600">{selectedUser.stats.total_contracts}</div>
+                      <p className="text-sm text-gray-600 mt-2">Всего</p>
+                    </div>
+                    <div className="minimal-card p-6 text-center bg-green-50 hover:shadow-lg transition-all">
+                      <div className="text-3xl font-bold text-green-600">{selectedUser.stats.signed_contracts}</div>
+                      <p className="text-sm text-gray-600 mt-2">Подписано</p>
+                    </div>
+                    <div className="minimal-card p-6 text-center bg-amber-50 hover:shadow-lg transition-all">
+                      <div className="text-3xl font-bold text-amber-600">{selectedUser.stats.pending_contracts}</div>
+                      <p className="text-sm text-gray-600 mt-2">В ожидании</p>
+                    </div>
                   </div>
-                  <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                    <p className="text-sm text-blue-900">
+                  <div className="mt-4 minimal-card p-4 bg-gradient-to-r from-blue-50 to-blue-100">
+                    <p className="text-sm text-blue-900 font-medium">
                       <strong>Лимит договоров:</strong> {selectedUser.stats.contract_limit}
                     </p>
                   </div>
