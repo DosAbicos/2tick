@@ -37,138 +37,126 @@ const SystemMetricsWidget = ({ onErrorsClick }) => {
 
   if (loading || !metrics) {
     return (
-      <Card>
-        <CardContent className="p-6">
-          <div className="text-center text-neutral-500">Загрузка метрик...</div>
-        </CardContent>
-      </Card>
+      <div className="minimal-card p-6">
+        <div className="text-center text-gray-500">Загрузка метрик...</div>
+      </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {/* CPU */}
-      <Card className={`border-2 ${getColorClass(metrics.cpu_percent)}`}>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <Cpu className="h-4 w-4" />
-            CPU
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-3xl font-bold">{metrics.cpu_percent.toFixed(1)}%</div>
-          <div className="w-full bg-neutral-200 rounded-full h-2 mt-2">
-            <div
-              className={`h-2 rounded-full transition-all ${
-                metrics.cpu_percent < 50 ? 'bg-green-500' :
-                metrics.cpu_percent < 80 ? 'bg-yellow-500' : 'bg-red-500'
-              }`}
-              style={{ width: `${metrics.cpu_percent}%` }}
-            />
+      <div className={`minimal-card p-6 ${getColorClass(metrics.cpu_percent)} transition-all duration-300`}>
+        <div className="flex items-center gap-2 mb-4">
+          <div className="p-2 bg-white rounded-lg">
+            <Cpu className="h-5 w-5" />
           </div>
-        </CardContent>
-      </Card>
+          <h3 className="text-sm font-semibold">CPU</h3>
+        </div>
+        <div className="text-4xl font-bold mb-3">{metrics.cpu_percent.toFixed(1)}%</div>
+        <div className="w-full bg-gray-200 rounded-full h-3">
+          <div
+            className={`h-3 rounded-full transition-all duration-500 ${
+              metrics.cpu_percent < 50 ? 'bg-green-500' :
+              metrics.cpu_percent < 80 ? 'bg-yellow-500' : 'bg-red-500'
+            }`}
+            style={{ width: `${metrics.cpu_percent}%` }}
+          />
+        </div>
+      </div>
 
       {/* Memory */}
-      <Card className={`border-2 ${getColorClass(metrics.memory.percent)}`}>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <Activity className="h-4 w-4" />
-            Память
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-3xl font-bold">{metrics.memory.percent.toFixed(1)}%</div>
-          <div className="text-xs text-neutral-600 mt-1">
-            {metrics.memory.used_gb} / {metrics.memory.total_gb} GB
+      <div className={`minimal-card p-6 ${getColorClass(metrics.memory.percent)} transition-all duration-300`}>
+        <div className="flex items-center gap-2 mb-4">
+          <div className="p-2 bg-white rounded-lg">
+            <Activity className="h-5 w-5" />
           </div>
-          <div className="w-full bg-neutral-200 rounded-full h-2 mt-2">
-            <div
-              className={`h-2 rounded-full transition-all ${
-                metrics.memory.percent < 50 ? 'bg-green-500' :
-                metrics.memory.percent < 80 ? 'bg-yellow-500' : 'bg-red-500'
-              }`}
-              style={{ width: `${metrics.memory.percent}%` }}
-            />
-          </div>
-        </CardContent>
-      </Card>
+          <h3 className="text-sm font-semibold">Память</h3>
+        </div>
+        <div className="text-4xl font-bold mb-1">{metrics.memory.percent.toFixed(1)}%</div>
+        <div className="text-sm mb-3">
+          {metrics.memory.used_gb} / {metrics.memory.total_gb} GB
+        </div>
+        <div className="w-full bg-gray-200 rounded-full h-3">
+          <div
+            className={`h-3 rounded-full transition-all duration-500 ${
+              metrics.memory.percent < 50 ? 'bg-green-500' :
+              metrics.memory.percent < 80 ? 'bg-yellow-500' : 'bg-red-500'
+            }`}
+            style={{ width: `${metrics.memory.percent}%` }}
+          />
+        </div>
+      </div>
 
       {/* Disk */}
-      <Card className={`border-2 ${getColorClass(metrics.disk.percent)}`}>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <HardDrive className="h-4 w-4" />
-            Диск
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-3xl font-bold">{metrics.disk.percent.toFixed(1)}%</div>
-          <div className="text-xs text-neutral-600 mt-1">
-            {metrics.disk.used_gb} / {metrics.disk.total_gb} GB
+      <div className={`minimal-card p-6 ${getColorClass(metrics.disk.percent)} transition-all duration-300`}>
+        <div className="flex items-center gap-2 mb-4">
+          <div className="p-2 bg-white rounded-lg">
+            <HardDrive className="h-5 w-5" />
           </div>
-          <div className="w-full bg-neutral-200 rounded-full h-2 mt-2">
-            <div
-              className={`h-2 rounded-full transition-all ${
-                metrics.disk.percent < 50 ? 'bg-green-500' :
-                metrics.disk.percent < 80 ? 'bg-yellow-500' : 'bg-red-500'
-              }`}
-              style={{ width: `${metrics.disk.percent}%` }}
-            />
-          </div>
-        </CardContent>
-      </Card>
+          <h3 className="text-sm font-semibold">Диск</h3>
+        </div>
+        <div className="text-4xl font-bold mb-1">{metrics.disk.percent.toFixed(1)}%</div>
+        <div className="text-sm mb-3">
+          {metrics.disk.used_gb} / {metrics.disk.total_gb} GB
+        </div>
+        <div className="w-full bg-gray-200 rounded-full h-3">
+          <div
+            className={`h-3 rounded-full transition-all duration-500 ${
+              metrics.disk.percent < 50 ? 'bg-green-500' :
+              metrics.disk.percent < 80 ? 'bg-yellow-500' : 'bg-red-500'
+            }`}
+            style={{ width: `${metrics.disk.percent}%` }}
+          />
+        </div>
+      </div>
 
       {/* Active Users */}
-      <Card className="border-2 border-blue-200 bg-blue-50">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-medium flex items-center gap-2 text-blue-900">
-            <Users className="h-4 w-4" />
-            Активные пользователи
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-3xl font-bold text-blue-900">{metrics.active_users_24h}</div>
-          <div className="text-xs text-blue-700 mt-1">За последние 24 часа</div>
-        </CardContent>
-      </Card>
+      <div className="minimal-card p-6 bg-blue-50 border-blue-100 transition-all duration-300 hover:shadow-lg">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="p-2 bg-blue-100 rounded-lg">
+            <Users className="h-5 w-5 text-blue-600" />
+          </div>
+          <h3 className="text-sm font-semibold text-blue-900">Активные пользователи</h3>
+        </div>
+        <div className="text-4xl font-bold text-blue-900">{metrics.active_users_24h}</div>
+        <div className="text-sm text-blue-700 mt-2">За последние 24 часа</div>
+      </div>
 
       {/* Uptime */}
-      <Card className="border-2 border-purple-200 bg-purple-50">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-medium flex items-center gap-2 text-purple-900">
-            <Clock className="h-4 w-4" />
-            Uptime
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold text-purple-900">
-            {metrics.uptime.days}д {metrics.uptime.hours}ч
+      <div className="minimal-card p-6 bg-purple-50 border-purple-100 transition-all duration-300 hover:shadow-lg">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="p-2 bg-purple-100 rounded-lg">
+            <Clock className="h-5 w-5 text-purple-600" />
           </div>
-          <div className="text-xs text-purple-700 mt-1">Без перезагрузок</div>
-        </CardContent>
-      </Card>
+          <h3 className="text-sm font-semibold text-purple-900">Uptime</h3>
+        </div>
+        <div className="text-3xl font-bold text-purple-900">
+          {metrics.uptime.days}д {metrics.uptime.hours}ч
+        </div>
+        <div className="text-sm text-purple-700 mt-2">Без перезагрузок</div>
+      </div>
 
       {/* Errors */}
-      <Card 
-        className={`border-2 ${metrics.recent_errors.length > 0 ? 'border-red-200 bg-red-50 cursor-pointer hover:shadow-md' : 'border-green-200 bg-green-50'} transition-all`}
+      <div 
+        className={`minimal-card p-6 ${metrics.recent_errors.length > 0 ? 'bg-red-50 border-red-100 cursor-pointer hover:shadow-xl' : 'bg-green-50 border-green-100'} transition-all duration-300`}
         onClick={() => metrics.recent_errors.length > 0 && onErrorsClick && onErrorsClick(metrics.recent_errors)}
       >
-        <CardHeader className="pb-3">
-          <CardTitle className={`text-sm font-medium flex items-center gap-2 ${metrics.recent_errors.length > 0 ? 'text-red-900' : 'text-green-900'}`}>
-            <AlertCircle className="h-4 w-4" />
+        <div className="flex items-center gap-2 mb-4">
+          <div className={`p-2 rounded-lg ${metrics.recent_errors.length > 0 ? 'bg-red-100' : 'bg-green-100'}`}>
+            <AlertCircle className={`h-5 w-5 ${metrics.recent_errors.length > 0 ? 'text-red-600' : 'text-green-600'}`} />
+          </div>
+          <h3 className={`text-sm font-semibold ${metrics.recent_errors.length > 0 ? 'text-red-900' : 'text-green-900'}`}>
             Ошибки
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className={`text-3xl font-bold ${metrics.recent_errors.length > 0 ? 'text-red-900' : 'text-green-900'}`}>
-            {metrics.recent_errors.length}
-          </div>
-          <div className={`text-xs mt-1 ${metrics.recent_errors.length > 0 ? 'text-red-700' : 'text-green-700'}`}>
-            {metrics.recent_errors.length > 0 ? 'Нажмите для просмотра' : 'Нет ошибок'}
-          </div>
-        </CardContent>
-      </Card>
+          </h3>
+        </div>
+        <div className={`text-4xl font-bold ${metrics.recent_errors.length > 0 ? 'text-red-900' : 'text-green-900'}`}>
+          {metrics.recent_errors.length}
+        </div>
+        <div className={`text-sm mt-2 ${metrics.recent_errors.length > 0 ? 'text-red-700' : 'text-green-700'}`}>
+          {metrics.recent_errors.length > 0 ? 'Нажмите для просмотра' : 'Нет ошибок'}
+        </div>
+      </div>
     </div>
   );
 };
