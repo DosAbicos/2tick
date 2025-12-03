@@ -631,26 +631,24 @@ const AdminPage = () => {
       <Dialog open={userDetailsOpen} onOpenChange={setUserDetailsOpen}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Профиль пользователя</DialogTitle>
-            <DialogDescription>Подробная информация о пользователе</DialogDescription>
+            <DialogTitle className="text-2xl font-bold text-gray-900">Профиль пользователя</DialogTitle>
+            <DialogDescription className="text-gray-600">Подробная информация о пользователе</DialogDescription>
           </DialogHeader>
           {selectedUser && (
-            <div className="space-y-4">
-              <div className="p-3 bg-blue-50 rounded-lg border border-blue-200 mb-4">
-                <Label className="text-xs text-blue-600 font-semibold">ID пользователя</Label>
-                <div className="flex items-center justify-between mt-1">
-                  <code className="text-sm font-mono text-blue-900">{selectedUser.id}</code>
-                  <Button
-                    size="sm"
-                    variant="ghost"
+            <div className="space-y-6">
+              <div className="minimal-card p-4 bg-gradient-to-r from-blue-50 to-blue-100">
+                <Label className="text-xs text-blue-700 font-semibold">ID пользователя</Label>
+                <div className="flex items-center justify-between mt-2">
+                  <code className="text-sm font-mono text-blue-900 font-semibold">{selectedUser.id}</code>
+                  <button
                     onClick={() => {
                       navigator.clipboard.writeText(selectedUser.id);
                       toast.success('ID скопирован в буфер обмена');
                     }}
-                    className="h-6 text-xs"
+                    className="neuro-button px-3 py-1 text-xs"
                   >
                     Копировать
-                  </Button>
+                  </button>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
