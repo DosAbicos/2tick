@@ -134,27 +134,28 @@ const NotificationsAdminPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <div className="min-h-screen gradient-bg">
       <Header />
       
       <div className="max-w-5xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <Button variant="ghost" onClick={() => navigate('/admin')} className="mb-2">
-              <ArrowLeft className="mr-2 h-4 w-4" />
+            <button 
+              onClick={() => navigate('/admin')} 
+              className="neuro-button flex items-center gap-2 px-4 py-2 mb-4"
+            >
+              <ArrowLeft className="h-4 w-4" />
               Назад
-            </Button>
-            <h1 className="text-3xl font-bold text-neutral-900">Управление оповещениями</h1>
-            <p className="text-neutral-600 mt-1">Создавайте оповещения для всех пользователей</p>
+            </button>
+            <h1 className="text-4xl font-bold text-gray-900">Управление оповещениями</h1>
+            <p className="text-gray-600 text-lg mt-2">Создавайте оповещения для всех пользователей</p>
           </div>
         </div>
 
         {/* Create notification form */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>Создать новое оповещение</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
+        <div className="minimal-card p-6 mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Создать новое оповещение</h2>
+          <div className="space-y-4">
             <div>
               <Label htmlFor="title">Заголовок *</Label>
               <Input
