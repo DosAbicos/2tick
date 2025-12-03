@@ -507,40 +507,44 @@ const AdminPage = () => {
           </div>
         </div>
 
-        <Tabs value={activeMainTab} onValueChange={setActiveMainTab} className="space-y-4">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="activity">
+        <Tabs value={activeMainTab} onValueChange={setActiveMainTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-2 minimal-card p-1 h-auto gap-1">
+            <TabsTrigger 
+              value="activity"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-blue-500 data-[state=active]:text-white transition-all duration-300 rounded-lg py-3"
+            >
               <Activity className="h-4 w-4 mr-2" />
               Активность
             </TabsTrigger>
-            <TabsTrigger value="users">
+            <TabsTrigger 
+              value="users"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-blue-500 data-[state=active]:text-white transition-all duration-300 rounded-lg py-3"
+            >
               <Users className="h-4 w-4 mr-2" />
               Пользователи ({stats?.total_users || 0})
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="users" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle>Список пользователей</CardTitle>
-                    <CardDescription>Все зарегистрированные наймодатели</CardDescription>
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <Input
-                      type="text"
-                      placeholder="Поиск по ФИО, ID, email"
-                      value={userSearch}
-                      onChange={(e) => setUserSearch(e.target.value)}
-                      className="w-64"
-                    />
-                    <Search className="h-4 w-4 text-neutral-400" />
-                  </div>
+            <div className="minimal-card p-6">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">Список пользователей</h2>
+                  <p className="text-gray-600 mt-1">Все зарегистрированные наймодатели</p>
                 </div>
-              </CardHeader>
-              <CardContent>
+                
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <Input
+                    type="text"
+                    placeholder="Поиск по ФИО, ID, email"
+                    value={userSearch}
+                    onChange={(e) => setUserSearch(e.target.value)}
+                    className="w-full sm:w-64 minimal-input"
+                  />
+                  <Search className="h-5 w-5 text-blue-500" />
+                </div>
+              </div>
+              <div>
                 <Table>
                   <TableHeader>
                     <TableRow>
