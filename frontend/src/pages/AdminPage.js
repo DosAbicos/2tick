@@ -574,37 +574,34 @@ const AdminPage = () => {
                         <TableCell>{new Date(user.created_at).toLocaleDateString('ru-RU')}</TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-2">
-                            <Button
-                              size="sm"
-                              variant="ghost"
+                            <button
                               onClick={() => fetchUserDetails(user.id)}
                               title="Просмотр профиля"
+                              className="p-2 hover:bg-blue-50 rounded-lg transition-colors"
                             >
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="ghost"
+                              <Eye className="h-4 w-4 text-blue-600" />
+                            </button>
+                            <button
                               onClick={() => {
                                 setSelectedUser(user);
                                 setResetPasswordOpen(true);
                               }}
                               title="Сбросить пароль"
+                              className="p-2 hover:bg-amber-50 rounded-lg transition-colors"
                             >
-                              <Key className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="ghost"
+                              <Key className="h-4 w-4 text-amber-600" />
+                            </button>
+                            <button
                               onClick={() => {
                                 setSelectedUser(user);
                                 setContractsToAdd(1);
                                 setAddContractsOpen(true);
                               }}
                               title="Добавить договоры"
+                              className="p-2 hover:bg-green-50 rounded-lg transition-colors"
                             >
                               <Plus className="h-4 w-4 text-green-600" />
-                            </Button>
+                            </button>
                           </div>
                         </TableCell>
                       </TableRow>
