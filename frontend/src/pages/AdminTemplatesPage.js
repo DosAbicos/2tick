@@ -976,43 +976,42 @@ const AdminTemplatesPageNew = () => {
               </div>
 
               {/* Beautiful Placeholder Constructor */}
-              <div className="border-2 border-dashed border-neutral-200 rounded-xl p-6 bg-gradient-to-br from-blue-50/50 to-purple-50/50">
-                <div className="flex items-center justify-between mb-4">
+              <div className="minimal-card p-6 bg-gradient-to-r from-pink-50 to-purple-50">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
                   <div>
-                    <Label className="text-lg font-bold text-neutral-900 flex items-center gap-2">
+                    <Label className="text-xl font-bold text-gray-900 flex items-center gap-2">
                       🎨 Конструктор плейсхолдеров
                     </Label>
-                    <p className="text-sm text-neutral-600 mt-1">
+                    <p className="text-sm text-gray-600 mt-1">
                       Перетаскивайте для изменения порядка
                     </p>
                   </div>
                   <div className="flex gap-2">
-                    <Button
+                    <button
                       type="button"
                       onClick={() => setShowPlaceholderDialog(true)}
-                      className="shadow-md"
+                      className="neuro-button-primary text-white px-4 py-2 flex items-center gap-2"
                     >
-                      <Plus className="mr-2 h-4 w-4" />
+                      <Plus className="h-4 w-4" />
                       Добавить плейсхолдер
-                    </Button>
-                    <Button
+                    </button>
+                    <button
                       type="button"
-                      variant="outline"
                       onClick={() => setShowPresetDialog(true)}
-                      className="shadow-md"
+                      className="neuro-button px-4 py-2"
                     >
                       ⚡ Быстрая вставка
-                    </Button>
+                    </button>
                   </div>
                 </div>
 
                 {placeholderOrder.length === 0 ? (
-                  <div className="text-center py-12 bg-white/50 rounded-lg border-2 border-dashed border-neutral-200">
+                  <div className="text-center py-12 minimal-card">
                     <div className="text-6xl mb-4">🎯</div>
-                    <p className="text-neutral-500 mb-2 font-medium">
+                    <p className="text-gray-600 mb-2 font-semibold text-lg">
                       Нет плейсхолдеров
                     </p>
-                    <p className="text-sm text-neutral-400">
+                    <p className="text-sm text-gray-500">
                       Добавьте плейсхолдеры для создания динамических форм
                     </p>
                   </div>
