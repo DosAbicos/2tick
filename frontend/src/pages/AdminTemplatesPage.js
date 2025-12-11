@@ -1155,15 +1155,15 @@ const AdminTemplatesPageNew = () => {
         <Dialog open={showPlaceholderDialog} onOpenChange={setShowPlaceholderDialog}>
           <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle className="text-xl">✨ Добавить плейсхолдер</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className="text-2xl font-bold text-gray-900">✨ Добавить плейсхолдер</DialogTitle>
+              <DialogDescription className="text-gray-600">
                 Создайте новый плейсхолдер для формы заполнения
               </DialogDescription>
             </DialogHeader>
 
             <div className="space-y-4 mt-4">
               <div>
-                <Label>Имя плейсхолдера *</Label>
+                <Label className="text-sm font-semibold text-gray-700">Имя плейсхолдера *</Label>
                 <Input
                   value={currentPlaceholder.name}
                   onChange={(e) => setCurrentPlaceholder({
@@ -1171,25 +1171,25 @@ const AdminTemplatesPageNew = () => {
                     name: e.target.value.toUpperCase().replace(/\s+/g, '_')
                   })}
                   placeholder="RENT_AMOUNT"
-                  className="mt-1 font-mono"
+                  className="mt-1 font-mono minimal-input"
                 />
-                <p className="text-xs text-neutral-500 mt-1">
+                <p className="text-xs text-gray-500 mt-1">
                   Будет использоваться как {'{{'}{currentPlaceholder.name || 'ИМЯ'}{'}}'}
                 </p>
               </div>
 
               {/* Language Tabs for Labels */}
-              <div className="border-2 border-blue-200 rounded-xl p-4 bg-blue-50/30">
-                <Label className="mb-3 block font-semibold">Метка плейсхолдера (на 3 языках) *</Label>
+              <div className="minimal-card p-4 bg-gradient-to-r from-blue-50 to-blue-100">
+                <Label className="mb-3 block font-semibold text-gray-900">Метка плейсхолдера (на 3 языках) *</Label>
                 
                 <div className="flex gap-2 mb-4">
                   <button
                     type="button"
                     onClick={() => setPlaceholderLabelLang('ru')}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                    className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
                       placeholderLabelLang === 'ru'
-                        ? 'bg-blue-600 text-white shadow-lg'
-                        : 'bg-white text-gray-700 hover:bg-gray-100'
+                        ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg'
+                        : 'neuro-button'
                     }`}
                   >
                     🇷🇺 Русский
@@ -1197,10 +1197,10 @@ const AdminTemplatesPageNew = () => {
                   <button
                     type="button"
                     onClick={() => setPlaceholderLabelLang('kk')}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                    className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
                       placeholderLabelLang === 'kk'
-                        ? 'bg-blue-600 text-white shadow-lg'
-                        : 'bg-white text-gray-700 hover:bg-gray-100'
+                        ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg'
+                        : 'neuro-button'
                     }`}
                   >
                     🇰🇿 Қазақша
@@ -1208,10 +1208,10 @@ const AdminTemplatesPageNew = () => {
                   <button
                     type="button"
                     onClick={() => setPlaceholderLabelLang('en')}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                    className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all ${
                       placeholderLabelLang === 'en'
-                        ? 'bg-blue-600 text-white shadow-lg'
-                        : 'bg-white text-gray-700 hover:bg-gray-100'
+                        ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg'
+                        : 'neuro-button'
                     }`}
                   >
                     🇬🇧 English
@@ -1228,9 +1228,9 @@ const AdminTemplatesPageNew = () => {
                         label: e.target.value
                       })}
                       placeholder="Сумма аренды"
-                      className="mt-1"
+                      className="mt-1 minimal-input"
                     />
-                    <p className="text-xs text-blue-700 mt-2">
+                    <p className="text-xs text-blue-700 mt-2 font-medium">
                       Будет показано пользователю в форме
                     </p>
                   </div>
@@ -1246,7 +1246,7 @@ const AdminTemplatesPageNew = () => {
                         label_kk: e.target.value
                       })}
                       placeholder="Жалдау сомасы"
-                      className="mt-1"
+                      className="mt-1 minimal-input"
                     />
                     <p className="text-xs text-blue-700 mt-2">
                       Пайдаланушыға пішінде көрсетіледі
