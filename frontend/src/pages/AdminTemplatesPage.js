@@ -1540,20 +1540,20 @@ const AdminTemplatesPageNew = () => {
                 </div>
               </div>
 
-              <div className="flex gap-3 pt-2">
-                <Button
+              <div className="flex gap-3 pt-4 border-t">
+                <button
                   onClick={handleAddPlaceholder}
-                  className="flex-1"
+                  className="flex-1 neuro-button-primary text-white py-3 flex items-center justify-center gap-2"
                 >
-                  <Plus className="mr-2 h-4 w-4" />
+                  <Plus className="h-5 w-5" />
                   Добавить
-                </Button>
-                <Button
-                  variant="outline"
+                </button>
+                <button
                   onClick={() => setShowPlaceholderDialog(false)}
+                  className="neuro-button px-6 py-3"
                 >
                   Отмена
-                </Button>
+                </button>
               </div>
             </div>
           </DialogContent>
