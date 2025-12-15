@@ -1201,7 +1201,11 @@ const SignContractPage = () => {
                       fontSize: '14px',
                       lineHeight: '1.6'
                     }}
-                    dangerouslySetInnerHTML={{ __html: highlightPlaceholders(contract.content) }}
+                    dangerouslySetInnerHTML={{ __html: highlightPlaceholders(
+                      contractLanguage === 'kk' && contract.content_kk ? contract.content_kk :
+                      contractLanguage === 'en' && contract.content_en ? contract.content_en :
+                      contract.content
+                    ) }}
                   />
                 </div>
 
