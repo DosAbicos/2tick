@@ -529,6 +529,16 @@ const resources = {
       "contract.downloadSuccess": "Келісімшарт сәтті жүктелді",
       "contract.downloadError": "Келісімшартты жүктеу қатесі",
       "contract.sent": "Келісімшарт жіберілді!",
+      "contract.templateLoaded": "\"{{title}}\" үлгісі жүктелді",
+      "contract.templateLoadError": "Үлгіні жүктеу қатесі",
+      "contract.changesSaved": "Өзгерістер сақталды!",
+      "contract.clientDocSelected": "Клиент құжаты таңдалды",
+      "contract.createdWithDoc": "Келісімшарт және клиент құжаты сәтті құрылды",
+      "contract.createdNoDoc": "Келісімшарт құрылды, бірақ клиент құжаты жүктелмеді",
+      "contract.loadingTemplate": "Үлгі жүктелуде...",
+      "contract.fillDataHint": "Оң жақта деректерді толтырыңыз, келісімшарт сол жақта жаңартылады",
+      "contract.fillData": "Деректерді толтырыңыз",
+      "contract.docSelected": "Құжат таңдалды",
       
       // ===== CONTRACT DETAILS =====
       "contractDetails.title": "Келісімшарт мәліметтері",
