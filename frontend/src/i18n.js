@@ -707,6 +707,7 @@ const resources = {
       "dashboard.stats.active": "Active Contracts",
       "dashboard.stats.pending": "Pending Signatures",
       "dashboard.stats.signed": "Signed This Week",
+      "dashboard.table.code": "Code",
       "dashboard.table.title": "Title",
       "dashboard.table.counterparty": "Counterparty",
       "dashboard.table.amount": "Amount",
