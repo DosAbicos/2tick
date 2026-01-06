@@ -145,7 +145,7 @@ const ProfilePage = () => {
                       <FileText className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">Всего договоров</p>
+                      <p className="text-sm text-gray-600">{t('profile.totalContracts')}</p>
                       <p className="text-2xl font-bold text-gray-900">{stats?.total_contracts || 0}</p>
                     </div>
                   </div>
@@ -157,7 +157,7 @@ const ProfilePage = () => {
                       <CheckCircle className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">Подписано</p>
+                      <p className="text-sm text-gray-600">{t('profile.signed')}</p>
                       <p className="text-2xl font-bold text-gray-900">{stats?.signed_contracts || 0}</p>
                     </div>
                   </div>
@@ -169,7 +169,7 @@ const ProfilePage = () => {
                       <Clock className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">В ожидании</p>
+                      <p className="text-sm text-gray-600">{t('profile.pending')}</p>
                       <p className="text-2xl font-bold text-gray-900">{stats?.pending_contracts || 0}</p>
                     </div>
                   </div>
@@ -179,7 +179,7 @@ const ProfilePage = () => {
 
             {/* Лимит договоров */}
             <div className="bg-white rounded-lg sm:shadow-md sm:border sm:border-gray-200 p-4 sm:p-6">
-              <h3 className="text-sm font-medium text-gray-700 mb-2">Лимит договоров</h3>
+              <h3 className="text-sm font-medium text-gray-700 mb-2">{t('profile.contractLimit')}</h3>
               <div className="flex items-center justify-between mb-2">
                 <span className={`text-2xl font-bold ${
                   Math.max((user?.contract_limit || 10) - (stats?.contracts_used || 0), 0) === 0 
@@ -211,7 +211,7 @@ const ProfilePage = () => {
                   : 'text-gray-500'
               }`}>
                 {Math.max((user?.contract_limit || 10) - (stats?.contracts_used || 0), 0) === 0 
-                  ? '⚠️ Лимит исчерпан! Обратитесь к администратору.' 
+                  ? t('profile.limitExhausted') 
                   : Math.max((user?.contract_limit || 10) - (stats?.contracts_used || 0), 0) <= 2 
                   ? `⚠️ Осталось всего ${Math.max((user?.contract_limit || 10) - (stats?.contracts_used || 0), 0)} договоров!` 
                   : `Осталось ${Math.max((user?.contract_limit || 10) - (stats?.contracts_used || 0), 0)} договоров`
@@ -225,7 +225,7 @@ const ProfilePage = () => {
             {/* Основная информация */}
             <div className="bg-white rounded-lg sm:shadow-md sm:border sm:border-gray-200 p-4 sm:p-8 relative">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-base sm:text-xl font-bold text-gray-900">Основная информация</h2>
+                <h2 className="text-base sm:text-xl font-bold text-gray-900">{t('profile.personalInfo')}</h2>
                 {!editing ? (
                   <button
                     onClick={() => setEditing(true)}
@@ -350,7 +350,7 @@ const ProfilePage = () => {
                       <CreditCard className="w-5 h-5 text-blue-600" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <label className="text-sm font-medium text-gray-500 mb-1 block">ИИН/БИН</label>
+                      <label className="text-sm font-medium text-gray-500 mb-1 block">{t('profile.iin')}</label>
                       {editing ? (
                         <input
                           type="text"
@@ -373,7 +373,7 @@ const ProfilePage = () => {
                       <MapPin className="w-5 h-5 text-blue-600" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <label className="text-sm font-medium text-gray-500 mb-1 block">Юридический адрес</label>
+                      <label className="text-sm font-medium text-gray-500 mb-1 block">{t('profile.address')}</label>
                       {editing ? (
                         <input
                           type="text"
