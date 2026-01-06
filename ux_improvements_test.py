@@ -21,7 +21,7 @@ import time
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://multilang-contracts.preview.emergentagent.com/api"
+BASE_URL = "https://contract-signing.preview.emergentagent.com/api"
 TEST_USER_EMAIL = "test.creator.ux@example.com"
 TEST_USER_PASSWORD = "testpassword123"
 
