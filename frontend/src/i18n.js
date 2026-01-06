@@ -304,8 +304,12 @@ const resources = {
       "templates.preview": "Предпросмотр",
       "templates.addToFavorites": "Добавить в избранное",
       "templates.removeFromFavorites": "Удалить из избранного",
+      "templates.addedToFavorites": "Добавлено в избранное",
+      "templates.removedFromFavorites": "Удалено из избранного",
       "templates.noTemplates": "Шаблоны не найдены",
+      "templates.noTemplatesYet": "Шаблоны ещё не добавлены",
       "templates.loading": "Загрузка шаблонов...",
+      "templates.loadError": "Ошибка загрузки шаблонов",
       
       // ===== ADMIN =====
       "admin.title": "Панель администратора",
