@@ -2794,46 +2794,73 @@ async def update_signer_info(contract_id: str, data: SignerInfoUpdate):
                     existing_values = contract.get('placeholder_values', {})
                     print(f"🔧 Existing values: {existing_values}")
                     
-                    # Replace values in content by finding old values and replacing with new ones
-                    for key, config in template['placeholders'].items():
-                        if key in placeholder_values:
-                            new_value = placeholder_values[key]
-                            old_value = existing_values.get(key)
-                            
-                            if new_value and old_value != new_value:  # Only replace if value changed
-                                # Format dates to DD.MM.YYYY
-                                if config.get('type') == 'date':
-                                    try:
-                                        from datetime import datetime as dt
-                                        date_obj = dt.fromisoformat(new_value.replace('Z', '+00:00'))
-                                        new_value = date_obj.strftime('%d.%m.%Y')
-                                    except:
-                                        pass
-                                
-                                old_content = updated_content
-                                
-                                # Strategy 1: Replace {{key}} if still exists
-                                import re
-                                pattern = re.compile(f'{{{{\\s*{key}\\s*}}}}')
-                                updated_content = pattern.sub(str(new_value), updated_content)
-                                
-                                # Strategy 2: Replace [label] if still exists
-                                label = config.get('label', key)
-                                updated_content = updated_content.replace(f'[{label}]', str(new_value))
-                                
-                                # Strategy 3: Direct value replacement (НОВОЕ!)
-                                if old_value and str(old_value) in updated_content:
-                                    # Replace old value with new value in content
-                                    updated_content = updated_content.replace(str(old_value), str(new_value))
-                                    print(f"🔧 ✅ Replaced OLD VALUE '{old_value}' with NEW VALUE '{new_value}' for {key}")
-                                elif old_content != updated_content:
-                                    print(f"🔧 ✅ Replaced placeholder {key} ({label}) with value: {new_value}")
-                                else:
-                                    print(f"🔧 ❌ Could not replace {key} - old_value='{old_value}', new_value='{new_value}'")
+                    # Update ALL content versions (RU, KK, EN)
+                    content_fields = [
+                        ('content', updated_content),
+                        ('content_kk', contract.get('content_kk', '')),
+                        ('content_en', contract.get('content_en', ''))
+                    ]
                     
+                    updated_contents = {}
+                    
+                    for field_name, field_content in content_fields:
+                        if not field_content:
+                            continue
+                            
+                        current_content = field_content
+                        
+                        # Replace values in content by finding old values and replacing with new ones
+                        for key, config in template['placeholders'].items():
+                            if key in placeholder_values:
+                                new_value = placeholder_values[key]
+                                old_value = existing_values.get(key)
+                                
+                                if new_value:  # Replace if we have a new value
+                                    # Format dates to DD.MM.YYYY
+                                    if config.get('type') == 'date':
+                                        try:
+                                            from datetime import datetime as dt
+                                            date_obj = dt.fromisoformat(new_value.replace('Z', '+00:00'))
+                                            new_value = date_obj.strftime('%d.%m.%Y')
+                                        except:
+                                            pass
+                                    
+                                    old_content = current_content
+                                    
+                                    # Strategy 1: Replace {{key}} if still exists
+                                    import re
+                                    pattern = re.compile(f'{{{{\\s*{key}\\s*}}}}')
+                                    current_content = pattern.sub(str(new_value), current_content)
+                                    
+                                    # Strategy 2: Replace [label] with all language variants
+                                    labels = [
+                                        config.get('label', key),
+                                        config.get('label_kk', ''),
+                                        config.get('label_en', '')
+                                    ]
+                                    for label in labels:
+                                        if label:
+                                            current_content = current_content.replace(f'[{label}]', str(new_value))
+                                    
+                                    # Strategy 3: Direct value replacement
+                                    if old_value and old_value != new_value and str(old_value) in current_content:
+                                        current_content = current_content.replace(str(old_value), str(new_value))
+                                        print(f"🔧 ✅ [{field_name}] Replaced OLD VALUE '{old_value}' with NEW VALUE '{new_value}' for {key}")
+                                    elif old_content != current_content:
+                                        print(f"🔧 ✅ [{field_name}] Replaced placeholder {key} with value: {new_value}")
+                        
+                        updated_contents[field_name] = current_content
+                    
+                    # Apply updated contents
+                    if 'content' in updated_contents:
+                        updated_content = updated_contents['content']
+                    if 'content_kk' in updated_contents:
+                        update_data['content_kk'] = updated_contents['content_kk']
+                    if 'content_en' in updated_contents:
+                        update_data['content_en'] = updated_contents['content_en']
                     
                     print(f"🔧 Final content preview: {updated_content[:200]}...")
-                    print(f"🔧 ✅ Placeholders replacement completed")
+                    print(f"🔧 ✅ Placeholders replacement completed for all language versions")
                     
             except Exception as e:
                 logging.error(f"Error replacing placeholders: {e}")
