@@ -382,7 +382,7 @@ const ContractDetailsPage = () => {
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
-                          <AlertDialogTitle>Delete Contract</AlertDialogTitle>
+                          <AlertDialogTitle>{t('contract.deleteTitle')}</AlertDialogTitle>
                           <AlertDialogDescription>
                             This action cannot be undone. This will permanently delete the contract.
                           </AlertDialogDescription>
@@ -472,7 +472,7 @@ const ContractDetailsPage = () => {
                       data-testid="approve-contract-button"
                     >
                       <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4" />
-                      <span>{approving ? t('common.loading') : 'Утвердить'}</span>
+                      <span>{approving ? t('common.loading') : t('contract.approve')}</span>
                     </button>
                   )}
                   
@@ -484,7 +484,7 @@ const ContractDetailsPage = () => {
                       data-testid="download-pdf-button"
                     >
                       <Download className="h-3 w-3 sm:h-4 sm:w-4" />
-                      <span className="hidden sm:inline">Скачать PDF</span>
+                      <span className="hidden sm:inline">{t('contract.download')}</span>
                       <span className="sm:hidden">PDF</span>
                     </button>
                   )}
