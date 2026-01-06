@@ -47,6 +47,7 @@ const resources = {
       "dashboard.stats.active": "Активные контракты",
       "dashboard.stats.pending": "Ожидают подписи",
       "dashboard.stats.signed": "Подписано за неделю",
+      "dashboard.table.code": "Код",
       "dashboard.table.title": "Название",
       "dashboard.table.counterparty": "Контрагент",
       "dashboard.table.amount": "Сумма",
