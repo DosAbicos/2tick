@@ -603,7 +603,7 @@ const RegisterPage = () => {
                 <div className="space-y-2">
                   <label htmlFor="iin" className="text-gray-700 text-sm font-medium flex items-center gap-2">
                     <CreditCard className="w-4 h-4 text-blue-500" />
-                    ИИН/БИН *
+                    {t('auth.register.iin')} *
                   </label>
                   <input
                     id="iin"
@@ -621,7 +621,7 @@ const RegisterPage = () => {
                 <div className="space-y-2">
                   <label htmlFor="legal_address" className="text-gray-700 text-sm font-medium flex items-center gap-2">
                     <MapPin className="w-4 h-4 text-blue-500" />
-                    Юридический адрес *
+                    {t('auth.register.legalAddress')} *
                   </label>
                   <input
                     id="legal_address"
@@ -641,14 +641,14 @@ const RegisterPage = () => {
                     onClick={() => setStep(1)}
                     className="flex-1 py-4 px-4 text-base font-medium text-gray-600 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all"
                   >
-                    Назад
+                    {t('auth.register.back')}
                   </button>
                   <button
                     type="button"
                     onClick={handleNextStep}
                     className="flex-1 py-4 px-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30"
                   >
-                    Продолжить
+                    {t('auth.register.next')}
                   </button>
                 </div>
               </>
@@ -660,7 +660,7 @@ const RegisterPage = () => {
                 <div className="space-y-2">
                   <label htmlFor="password" className="text-gray-700 text-sm font-medium flex items-center gap-2">
                     <Lock className="w-4 h-4 text-blue-500" />
-                    Пароль *
+                    {t('auth.login.password')} *
                   </label>
                   <input
                     id="password"
