@@ -367,7 +367,7 @@ const ContractDetailsPage = () => {
                     data-testid="admin-download-pdf-button"
                   >
                     <Download className="h-4 w-4" />
-                    Скачать договор
+                    {t('contract.download')}
                   </button>
                 </div>
               ) : (
