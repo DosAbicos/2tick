@@ -146,14 +146,14 @@ const DashboardPage = () => {
       <Dialog open={showTemplateModal} onOpenChange={setShowTemplateModal}>
         <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold">Создать договор</DialogTitle>
+            <DialogTitle className="text-2xl font-bold">{t('dashboard.new_contract')}</DialogTitle>
             <DialogDescription>
-              Выберите шаблон из избранных или загрузите готовый PDF
+              {t('dashboard.selectTemplate')}
             </DialogDescription>
           </DialogHeader>
           
           {loadingFavorites ? (
-            <div className="py-8 text-center text-gray-600">Загрузка шаблонов...</div>
+            <div className="py-8 text-center text-gray-600">{t('dashboard.loadingTemplates')}</div>
           ) : (
             <>
               {/* Кнопка загрузить PDF вверху */}
@@ -166,18 +166,18 @@ const DashboardPage = () => {
                   className="w-full px-4 py-3 text-sm font-medium text-blue-700 bg-white rounded-lg hover:bg-blue-50 transition-all shadow-sm border border-blue-300 flex items-center justify-center gap-2"
                 >
                   <Upload className="w-4 h-4" />
-                  Загрузить готовый PDF договор
+                  {t('dashboard.uploadPdf')}
                 </button>
                 <p className="text-xs text-gray-600 mt-2 text-center">
-                  Или выберите шаблон ниже
+                  {t('dashboard.orSelectTemplate')}
                 </p>
               </div>
 
               {favoriteTemplates.length === 0 ? (
                 <div className="py-8 text-center">
-                  <p className="text-gray-600 mb-4">У вас нет избранных шаблонов</p>
+                  <p className="text-gray-600 mb-4">{t('dashboard.noFavoriteTemplates')}</p>
                   <p className="text-sm text-gray-500 mb-6">
-                    Перейдите в маркет шаблонов и добавьте шаблоны в избранное
+                    {t('dashboard.goToTemplatesMarket')}
                   </p>
                   <Button 
                     onClick={() => {
@@ -186,13 +186,13 @@ const DashboardPage = () => {
                     }}
                     className="bg-gradient-to-r from-blue-600 to-blue-500"
                   >
-                    Перейти в маркет шаблонов
+                    {t('dashboard.goToMarket')}
                   </Button>
                 </div>
               ) : (
                 <>
                   <div className="border-t border-gray-200 pt-4">
-                    <h3 className="text-sm font-semibold text-gray-700 mb-3">❤️ Избранные шаблоны</h3>
+                    <h3 className="text-sm font-semibold text-gray-700 mb-3">❤️ {t('dashboard.favoriteTemplates')}</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {favoriteTemplates.map((template) => (
                         <div 
