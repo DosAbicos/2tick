@@ -836,7 +836,7 @@ def draw_signature_block(p, y_position, width, height, contract, signature, land
     except:
         p.setFont("Helvetica-Bold", 11)
     p.setFillColor(HexColor('#1f2937'))
-    p.drawString(left_col_x, y_position, f"🏢  {party_a_role}")
+    p.drawString(left_col_x, y_position, party_a_role)
     
     y_position -= 20
     
@@ -989,7 +989,7 @@ def draw_signature_block(p, y_position, width, height, contract, signature, land
     except:
         p.setFont("Helvetica-Bold", 11)
     p.setFillColor(HexColor('#1f2937'))
-    p.drawString(right_col_x, y_position, f"👤  {party_b_role}")
+    p.drawString(right_col_x, y_position, party_b_role)
     
     y_position -= 20
     
