@@ -124,12 +124,14 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Contract Placeholder Replacement"
+    - "Bilingual/Trilingual PDF Generation and Placeholder Separation"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
 agent_communication:
+  - agent: "testing"
+    message: "🎉 BILINGUAL/TRILINGUAL PDF GENERATION TESTS COMPLETED SUCCESSFULLY! Tested all requirements from review request: 1) Placeholder owner separation works perfectly - landlord placeholders (1NAME) remain unchanged while tenant placeholders (NAME2, PHONE_NUM, EMAIL, ID_CARD) are correctly filled by client. 2) Bilingual PDF (RU selected) contains RUSSIAN + KAZAKH sections with legal notice, NO English section. 3) Trilingual PDF (EN selected) contains RUSSIAN + KAZAKH + ENGLISH sections with proper translation notice. 4) Specific contract IDs 1b8b8c69-cc57-4f50-8649-750e22759bda (RU) and 935abfcc-4c37-41cd-a6d4-2a18332f39c9 (EN) both generate PDFs successfully with correct language content. PDF analysis using pdfplumber confirms all language sections and legal notices are present as expected. Backend implementation fully satisfies review requirements."
   - agent: "testing"
     message: "✅ ALL CRITICAL MULTI-LANGUAGE BACKEND TESTS PASSED! Successfully tested contract creation and signing flow with multi-language support. Admin login works with specified credentials (asl@asl.kz/142314231423). Multi-language templates found and used correctly. Contract creation preserves content_kk and content_en fields. Signing page language switching works for all languages (ru/kk/en). Set contract language endpoint functions properly. All requested API endpoints tested and working: POST /api/auth/login, GET /api/templates, POST /api/contracts, GET /api/sign/{id}, POST /api/sign/{id}/set-contract-language. Backend is ready for multi-language contract functionality."
   - agent: "testing"
