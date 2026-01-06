@@ -1329,7 +1329,7 @@ const SignContractPage = () => {
                         setStep(5);
                       } catch (error) {
                         console.error('Error saving data before verification:', error);
-                        toast.error('Ошибка сохранения данных. Попробуйте снова.');
+                        toast.error(t('common.error'));
                         // Don't continue if save fails - user needs valid phone for verification
                       }
                     }}
