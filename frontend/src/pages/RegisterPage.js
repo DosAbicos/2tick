@@ -125,7 +125,7 @@ const RegisterPage = () => {
     if (step === 1) {
       // Валидация личных данных
       if (!formData.full_name || !formData.email || !formData.phone) {
-        toast.error('Заполните все обязательные поля');
+        toast.error(t('auth.register.fillRequired'));
         return;
       }
       if (!validateEmail(formData.email)) {
@@ -162,13 +162,13 @@ const RegisterPage = () => {
         setStep(2);
       } catch (error) {
         setLoading(false);
-        toast.error('Ошибка проверки данных');
+        toast.error(t('auth.register.validationError'));
         return;
       }
     } else if (step === 2) {
       // Валидация юридических данных
       if (!formData.company_name || !formData.iin || !formData.legal_address) {
-        toast.error('Заполните все юридические данные');
+        toast.error(t('auth.register.fillLegalData'));
         return;
       }
       setStep(3);
@@ -179,13 +179,13 @@ const RegisterPage = () => {
     e.preventDefault();
     
     if (formData.password !== formData.confirmPassword) {
-      toast.error('Пароли не совпадают');
+      toast.error(t('auth.register.password_mismatch'));
       setPasswordMatch(false);
       return;
     }
     
     if (formData.password.length < 6) {
-      toast.error('Пароль должен содержать минимум 6 символов');
+      toast.error(t('auth.register.passwordTooShort'));
       return;
     }
 
@@ -199,7 +199,7 @@ const RegisterPage = () => {
       if (response.data.registration_id) {
         const regId = response.data.registration_id;
         setRegistrationId(regId);
-        toast.success('Данные сохранены. Теперь подтвердите телефон');
+        toast.success(t('auth.register.dataSaved'));
         setStep(4); // Переход к верификации
         
         // Предварительно загружаем Telegram deep link
@@ -211,17 +211,17 @@ const RegisterPage = () => {
             console.error('Failed to pre-fetch Telegram link:', err);
           });
       } else {
-        toast.error(response.data.message || 'Ошибка регистрации');
+        toast.error(response.data.message || t('auth.register.error'));
       }
     } catch (error) {
       console.error('Registration error:', error);
       
       if (error.response?.status === 400 && error.response?.data?.detail?.includes('already registered')) {
-        toast.error('Пользователь с таким email уже зарегистрирован');
+        toast.error(t('auth.register.emailExists'));
         setUserExists(true);
         setStep(1);
       } else {
-        toast.error(error.response?.data?.detail || 'Ошибка регистрации. Попробуйте снова.');
+        toast.error(error.response?.data?.detail || t('auth.register.error'));
       }
     } finally {
       setLoading(false);
