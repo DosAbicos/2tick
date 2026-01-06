@@ -1098,9 +1098,9 @@ def draw_signature_block(p, y_position, width, height, contract, signature, land
         y_position -= 12
         p.setFillColor(HexColor('#1f2937'))
         method_display = {
-            'sms': f"📱 {t['sms']}",
-            'call': f"☎️ {t['call']}",
-            'telegram': f"💬 {t['telegram']}"
+            'sms': t['sms'],
+            'call': t['call'],
+            'telegram': t['telegram']
         }.get(verification_method, verification_method)
         p.drawString(right_col_x, y_position, method_display)
         y_position -= 15
