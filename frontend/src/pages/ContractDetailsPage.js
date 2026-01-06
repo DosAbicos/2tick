@@ -574,12 +574,12 @@ const ContractDetailsPage = () => {
             {/* Signature Details (if signed) */}
             {signature && signature.verified && (
               <div className="minimal-card p-4 sm:p-6">
-                <h3 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-gray-900">✍️ Информация о подписании</h3>
+                <h3 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-gray-900">Информация о подписании</h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   {/* Landlord Signature - LEFT COLUMN */}
                   <div className="bg-white p-3 sm:p-4 rounded-xl border border-gray-200">
-                    <h4 className="font-semibold mb-3 text-gray-900 text-sm sm:text-base">🏢 {contract.party_a_role || 'Подпись Стороны А'}</h4>
+                    <h4 className="font-semibold mb-3 text-gray-900 text-sm sm:text-base">{contract.party_a_role || 'Сторона А'}</h4>
                     
                     {contract.landlord_signature_hash ? (
                       <>
@@ -681,7 +681,7 @@ const ContractDetailsPage = () => {
                   
                   {/* Tenant Signature - RIGHT COLUMN */}
                   <div className="bg-white p-3 sm:p-4 rounded-xl border border-gray-200">
-                    <h4 className="font-semibold mb-3 text-gray-900 text-sm sm:text-base">👤 {contract.party_b_role || 'Подпись Стороны Б'}</h4>
+                    <h4 className="font-semibold mb-3 text-gray-900 text-sm sm:text-base">{contract.party_b_role || 'Сторона Б'}</h4>
                     
                     {signature.signature_hash && (
                       <div className="bg-blue-50 p-3 rounded border border-blue-200 mb-3">
