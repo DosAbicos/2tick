@@ -377,6 +377,7 @@ const resources = {
       "dashboard.stats.active": "Белсенді келісімшарттар",
       "dashboard.stats.pending": "Қол қоюды күтуде",
       "dashboard.stats.signed": "Аптада қол қойылды",
+      "dashboard.table.code": "Код",
       "dashboard.table.title": "Атауы",
       "dashboard.table.counterparty": "Контрагент",
       "dashboard.table.amount": "Сома",
