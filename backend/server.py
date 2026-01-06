@@ -804,10 +804,24 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
     title_width = p.stringWidth(title_text[:60], "DejaVu-Bold" if "DejaVu-Bold" in pdfmetrics.getRegisteredFontNames() else "Helvetica-Bold", 18)
     p.drawCentredString(width / 2, y_position, title_text[:60])
     
-    y_position -= 40
+    y_position -= 30
     
-    # Draw content box with light background
-    content_box_y = y_position
+    # Add bilingual notice
+    try:
+        p.setFont("DejaVu", 9)
+    except:
+        p.setFont("Helvetica", 9)
+    p.setFillColor(HexColor('#64748b'))
+    
+    if include_english:
+        notice_text = "Договор составлен на русском и казахском языках (имеют равную юридическую силу). Английская версия — перевод."
+    else:
+        notice_text = "Договор составлен на русском и казахском языках, оба текста имеют равную юридическую силу."
+    
+    p.drawCentredString(width / 2, y_position, notice_text)
+    p.setFillColor(HexColor('#000000'))
+    
+    y_position -= 30
     
     # Content with DejaVu font
     try:
@@ -815,62 +829,62 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
     except:
         p.setFont("Helvetica", 10)
     
-    # Convert HTML to text if needed and replace placeholders
+    # Graceful fallback for missing content_type
+    content_type = contract.get('content_type', 'plain')
+    
+    # ========== RUSSIAN VERSION ==========
     try:
-        # Get content in appropriate language
-        content_text = get_content_by_language(contract, 'content', language)
-        
-        # Graceful fallback for missing content_type
-        content_type = contract.get('content_type', 'plain')
-        
+        content_ru = contract.get('content', '')
         if content_type == 'html':
-            content_text = html_to_text_for_pdf(content_text)
-        
-        # Replace placeholders with actual values
-        content_text = replace_placeholders_in_content(content_text, contract, template)
+            content_ru = html_to_text_for_pdf(content_ru)
+        content_ru = replace_placeholders_in_content(content_ru, contract, template)
     except Exception as e:
-        logging.error(f"Error processing content: {str(e)}")
-        content_text = contract.get('content', 'Error loading content')
+        logging.error(f"Error processing RU content: {str(e)}")
+        content_ru = contract.get('content', 'Error loading content')
     
-    lines = content_text.split('\n')
+    y_position = draw_content_section(p, content_ru, y_position, width, height, "РУССКИЙ / RUSSIAN")
     
-    # Add left margin for better readability
-    left_margin = 55
-    right_margin = width - 55
-    max_chars_per_line = 95
+    # ========== KAZAKH VERSION ==========
+    y_position -= 30  # Space between versions
     
-    for line in lines:
-        if y_position < 120:
+    # Check if we need new page
+    if y_position < 200:
+        p.showPage()
+        y_position = height - 50
+    
+    try:
+        content_kk = contract.get('content_kk', '')
+        if not content_kk:
+            content_kk = contract.get('content', '')  # Fallback to Russian if no Kazakh
+        if content_type == 'html':
+            content_kk = html_to_text_for_pdf(content_kk)
+        content_kk = replace_placeholders_in_content(content_kk, contract, template)
+    except Exception as e:
+        logging.error(f"Error processing KK content: {str(e)}")
+        content_kk = contract.get('content_kk', contract.get('content', ''))
+    
+    y_position = draw_content_section(p, content_kk, y_position, width, height, "ҚАЗАҚША / KAZAKH")
+    
+    # ========== ENGLISH VERSION (only if selected) ==========
+    if include_english:
+        y_position -= 30
+        
+        if y_position < 200:
             p.showPage()
-            # Minimal header on new page
-            try:
-                p.setFont("DejaVu", 10)
-            except:
-                p.setFont("Helvetica", 10)
-            p.setFillColor(HexColor('#000000'))
             y_position = height - 50
         
-        if len(line) > max_chars_per_line:
-            words = line.split()
-            current_line = ""
-            for word in words:
-                if len(current_line + word) < max_chars_per_line:
-                    current_line += word + " "
-                else:
-                    if current_line.strip():
-                        p.drawString(left_margin, y_position, current_line.strip())
-                        y_position -= 14
-                    current_line = word + " "
-            if current_line.strip():
-                p.drawString(left_margin, y_position, current_line.strip())
-                y_position -= 14
-        else:
-            if line.strip():
-                p.drawString(left_margin, y_position, line.strip())
-                y_position -= 14
-            else:
-                # Empty line - add small spacing
-                y_position -= 7
+        try:
+            content_en = contract.get('content_en', '')
+            if not content_en:
+                content_en = contract.get('content', '')  # Fallback
+            if content_type == 'html':
+                content_en = html_to_text_for_pdf(content_en)
+            content_en = replace_placeholders_in_content(content_en, contract, template)
+        except Exception as e:
+            logging.error(f"Error processing EN content: {str(e)}")
+            content_en = contract.get('content_en', contract.get('content', ''))
+        
+        y_position = draw_content_section(p, content_en, y_position, width, height, "ENGLISH", is_translation=True)
     
     # Add ID document photo if available
     if signature and signature.get('document_upload'):
