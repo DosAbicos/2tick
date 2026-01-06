@@ -1502,15 +1502,15 @@ const SignContractPage = () => {
                     className="space-y-8"
                   >
                     <div className="text-center">
-                      <h3 className="text-2xl font-bold text-gray-900 mb-2">Введите код верификации</h3>
+                      <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('signing.enterVerificationCode')}</h3>
                       <p className="text-sm text-gray-500">
-                        {!smsFirstEntry && !mockOtp ? 'Нажмите кнопку ниже для получения кода' : 'Мы отправили 6-значный код на ваш номер'}
+                        {!smsFirstEntry && !mockOtp ? t('signing.enterCallCodeHint') : t('signing.enterSmsCode')}
                       </p>
                     </div>
                     
                     {mockOtp && (
                       <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-200">
-                        <p className="text-sm text-blue-900 font-medium text-center">🔐 Тестовый режим: <strong className="text-lg">{mockOtp}</strong></p>
+                        <p className="text-sm text-blue-900 font-medium text-center">🔐 Test: <strong className="text-lg">{mockOtp}</strong></p>
                       </div>
                     )}
                     
@@ -1533,7 +1533,7 @@ const SignContractPage = () => {
                       disabled={smsCooldown > 0 || sendingCode}
                       className="block w-full text-center py-2 text-sm text-gray-500 hover:text-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {sendingCode ? 'Отправка...' : smsCooldown > 0 ? `Отправить через ${Math.floor(smsCooldown / 60)}:${(smsCooldown % 60).toString().padStart(2, '0')}` : 'Не пришел SMS? Отправить повторно'}
+                      {sendingCode ? t('signing.verifying') : smsCooldown > 0 ? `${t('signing.resendSms')} ${Math.floor(smsCooldown / 60)}:${(smsCooldown % 60).toString().padStart(2, '0')}` : t('signing.resendSms')}
                     </button>
                     
                     <div className="flex gap-3">
@@ -1546,7 +1546,7 @@ const SignContractPage = () => {
                         }}
                         className="flex-1 py-3 px-6 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all font-medium"
                       >
-                        Назад
+                        {t('signing.back')}
                       </button>
                       <button
                         type="button"
@@ -1554,7 +1554,7 @@ const SignContractPage = () => {
                         disabled={verifying || verificationCode.length !== 6}
                         className="flex-1 py-3 px-6 text-white bg-gradient-to-r from-green-600 to-green-500 rounded-xl hover:from-green-700 hover:to-green-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-lg shadow-green-500/20"
                       >
-                        {verifying ? 'Проверяем...' : 'Подписать договор'}
+                        {verifying ? t('signing.verifying') : t('signing.signContract')}
                       </button>
                     </div>
                   </motion.div>
@@ -1566,15 +1566,15 @@ const SignContractPage = () => {
                     className="space-y-8"
                   >
                     <div className="text-center">
-                      <h3 className="text-2xl font-bold text-gray-900 mb-2">Введите код верификации</h3>
+                      <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('signing.enterVerificationCode')}</h3>
                       <p className="text-sm text-gray-500">
-                        {!callFirstEntry && !callHint ? 'Нажмите кнопку ниже для инициации звонка' : 'Введите последние 4 цифры номера входящего звонка'}
+                        {!callFirstEntry && !callHint ? t('signing.enterCallCodeHint') : t('signing.enterCallCode')}
                       </p>
                     </div>
                     
                     {callHint && (
                       <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-200">
-                        <p className="text-sm text-blue-900 font-medium text-center">📞 Подсказка: {callHint}</p>
+                        <p className="text-sm text-blue-900 font-medium text-center">📞 Hint: {callHint}</p>
                       </div>
                     )}
                     
@@ -1595,7 +1595,7 @@ const SignContractPage = () => {
                       disabled={callCooldown > 0 || sendingCode}
                       className="block w-full text-center py-2 text-sm text-gray-500 hover:text-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {sendingCode ? 'Инициация звонка...' : callCooldown > 0 ? `Позвонить через ${Math.floor(callCooldown / 60)}:${(callCooldown % 60).toString().padStart(2, '0')}` : 'Позвонить повторно'}
+                      {sendingCode ? t('signing.verifying') : callCooldown > 0 ? `${t('signing.requestCall')} ${Math.floor(callCooldown / 60)}:${(callCooldown % 60).toString().padStart(2, '0')}` : t('signing.requestCall')}
                     </button>
                     
                     <div className="flex gap-3">
