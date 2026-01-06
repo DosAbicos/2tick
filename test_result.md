@@ -175,9 +175,10 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Specific Contract PDF Signature Verification (2759caed-d2d8-415b-81f1-2f2b30ca22e9) - COMPLETED"
-    - "Complete contract signing flow with PDF generation and email sending - COMPLETED"
-  stuck_tasks: []
+    - "Profile Page Multilingual Support - CRITICAL ISSUE FOUND"
+    - "Multilingual Dashboard Interface - COMPLETED SUCCESSFULLY"
+  stuck_tasks: 
+    - "Profile Page Multilingual Support - hardcoded Russian text instead of i18n"
   test_all: false
   test_priority: "high_first"
 
@@ -194,3 +195,5 @@ agent_communication:
     message: "🎉 COMPLETE CONTRACT SIGNING FLOW WITH PDF GENERATION AND EMAIL SENDING TESTS COMPLETED SUCCESSFULLY! All 4 test scenarios from review request passed: 1) PDF Download Test - Admin login successful (asl@asl.kz/142314231423), signed contract retrieved and PDF downloaded (259KB, valid PDF format). 2) PDF Content Verification - pdfplumber analysis confirmed bilingual structure with RUSSIAN/KAZAKH headers, signature blocks, QR code (2tick.kz), and page numbers. 3) Template Contract Test - Contract with template_id found and PDF generated with correctly filled placeholders. 4) Email Configuration Verification - Contract approval triggers email flow in 0.10s, backend logs show email DEBUG messages, SMTP system (mail.2tick.kz) working correctly. Email delivery cannot be tested directly but flow verification confirms system is properly configured and functional. All backend components for contract signing, PDF generation, and email sending are working as expected."
   - agent: "testing"
     message: "🎯 SPECIFIC CONTRACT PDF SIGNATURE VERIFICATION COMPLETED SUCCESSFULLY! Tested exact contract 2759caed-d2d8-415b-81f1-2f2b30ca22e9 from review request with PERFECT RESULTS: ✅ Admin login with asl@asl.kz/142314231423 successful ✅ Contract details retrieved (status=signed, language=en) ✅ All placeholder values present and correct ✅ PDF downloaded successfully (269KB, valid format) ✅ Bilingual PDF structure confirmed (4 pages: RU+KK+EN+ID document) ✅ ALL PARTY A (LANDLORD) SIGNATURE INFO FOUND: Code-key C55A10AB1EC56D15, Name Адилет, Address Микрорайон Таугуль 13, Phone +7 777 000 0001, Email asl@asl.kz, Status Утверждено ✅ ALL PARTY B (TENANT) SIGNATURE INFO FOUND: Code-key EAFE38972FFF1C70, Name Bun d I, Phone +7 (707) 400-32-01, IIN 040825501172, Email nurgozhaadilet75@gmail.com, Signing method Telegram, Username @ngzadl ✅ Russian signature block header 'Информация о подписании' found ✅ Kazakh signature block header 'Қол қою туралы ақпарат' found ✅ QR code link (2tick.kz) present ✅ Page numbers format 'Страница X из Y' verified ✅ Recent signed contract test also passed (267KB PDF). ALL REVIEW REQUEST REQUIREMENTS FULLY SATISFIED!"
+  - agent: "testing"
+    message: "🔍 MULTILINGUAL INTERFACE TESTING COMPLETED! DASHBOARD PERFECT ✅: All three languages (Russian/Kazakh/English) work flawlessly - translations verified for headers, stats, buttons, table headers, status badges. Language switching via header selector functions correctly. No mixed languages detected. CRITICAL ISSUE FOUND ❌: Profile page (ProfilePage.js) contains hardcoded Russian text instead of using i18n translation system. Missing t() function calls for: 'Мой профиль', 'Основная информация', 'ФИО', 'Телефон', 'Компания', 'Изменить', 'Смена пароля', etc. The translations exist in i18n.js but ProfilePage.js doesn't use them. This breaks multilingual experience when users switch languages. CONTRACT DETAILS: Could not test signature information section (no signed contracts available). URGENT ACTION REQUIRED: Replace all hardcoded Russian strings in ProfilePage.js with proper t() function calls to enable full multilingual support."
