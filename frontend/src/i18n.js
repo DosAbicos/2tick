@@ -562,6 +562,8 @@ const resources = {
       
       // ===== PROFILE =====
       "profile.title": "Профиль",
+      "profile.statistics": "Статистика",
+      "profile.emailCannotChange": "Email-ді өзгерту мүмкін емес",
       "profile.personalInfo": "Жеке ақпарат",
       "profile.fullName": "Толық аты",
       "profile.email": "Email",
