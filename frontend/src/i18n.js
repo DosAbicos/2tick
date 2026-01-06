@@ -715,6 +715,7 @@ const resources = {
       "dashboard.table.actions": "Actions",
       "dashboard.contractLimit": "Contract Limit",
       "dashboard.contractsRemaining": "{{count}} contracts remaining",
+      "dashboard.limitAlmostReached": "Limit almost reached",
       "dashboard.contractsList": "Contracts List",
       "dashboard.totalContracts": "Total contracts: {{count}}",
       "dashboard.noContracts": "No contracts",
