@@ -1239,21 +1239,20 @@ const SignContractPage = () => {
                         className="mt-1 w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                       />
                       <label htmlFor="english-disclaimer" className="text-sm text-gray-900 font-medium">
-                        Я согласен, что данный договор на английском языке является переводом. 
-                        Юридическую силу имеет русская или казахская версия.
+                        {t('signing.englishDisclaimer')}
                       </label>
                     </div>
                     
                     {/* Dropdown to view original versions */}
                     <details className="mt-4">
                       <summary className="cursor-pointer text-blue-600 font-medium text-sm hover:text-blue-700">
-                        📄 Посмотреть оригинальные версии договора
+                        📄 {t('signing.viewOriginalVersions')}
                       </summary>
                       <div className="mt-4 space-y-4">
                         {/* Russian version */}
                         {contract.content && (
                           <div className="border border-gray-300 rounded-lg p-4 bg-white">
-                            <h5 className="font-semibold text-gray-900 mb-2">🇷🇺 Русская версия:</h5>
+                            <h5 className="font-semibold text-gray-900 mb-2">🇷🇺 {t('signing.russianVersion')}:</h5>
                             <div 
                               className="whitespace-pre-wrap text-xs leading-relaxed text-gray-700 max-h-60 overflow-y-auto"
                               dangerouslySetInnerHTML={{ __html: highlightPlaceholders(contract.content) }}
@@ -1264,7 +1263,7 @@ const SignContractPage = () => {
                         {/* Kazakh version */}
                         {contract.content_kk && (
                           <div className="border border-gray-300 rounded-lg p-4 bg-white">
-                            <h5 className="font-semibold text-gray-900 mb-2">🇰🇿 Қазақша нұсқасы:</h5>
+                            <h5 className="font-semibold text-gray-900 mb-2">🇰🇿 {t('signing.kazakhVersion')}:</h5>
                             <div 
                               className="whitespace-pre-wrap text-xs leading-relaxed text-gray-700 max-h-60 overflow-y-auto"
                               dangerouslySetInnerHTML={{ __html: highlightPlaceholders(contract.content_kk) }}
@@ -1281,14 +1280,14 @@ const SignContractPage = () => {
                     onClick={() => setStep(2)}
                     className="flex-1 py-3 px-4 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all"
                   >
-                    ← Назад
+                    ← {t('signing.back')}
                   </button>
                   <button
-                    disabled={language === 'en' && !englishDisclaimerAccepted}
+                    disabled={contractLanguage === 'en' && !englishDisclaimerAccepted}
                     onClick={async () => {
                       // Check English disclaimer
-                      if (language === 'en' && !englishDisclaimerAccepted) {
-                        toast.error('Please accept the English disclaimer to continue');
+                      if (contractLanguage === 'en' && !englishDisclaimerAccepted) {
+                        toast.error(t('signing.englishDisclaimer'));
                         return;
                       }
                       
