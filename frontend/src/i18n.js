@@ -137,6 +137,16 @@ const resources = {
       "contract.downloadSuccess": "Договор успешно скачан",
       "contract.downloadError": "Ошибка скачивания договора",
       "contract.sent": "Договор отправлен!",
+      "contract.templateLoaded": "Шаблон \"{{title}}\" загружен",
+      "contract.templateLoadError": "Ошибка загрузки шаблона",
+      "contract.changesSaved": "Изменения сохранены!",
+      "contract.clientDocSelected": "Документ клиента выбран",
+      "contract.createdWithDoc": "Договор и документ клиента успешно созданы",
+      "contract.createdNoDoc": "Договор создан, но документ клиента не загружен",
+      "contract.loadingTemplate": "Загрузка шаблона...",
+      "contract.fillDataHint": "Заполните данные справа, договор обновится слева",
+      "contract.fillData": "Заполните данные",
+      "contract.docSelected": "Документ выбран",
       
       // ===== CONTRACT DETAILS =====
       "contractDetails.title": "Детали договора",
