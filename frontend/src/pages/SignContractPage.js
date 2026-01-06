@@ -857,10 +857,9 @@ const SignContractPage = () => {
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-3xl">🌐</span>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Выберите язык</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('signing.selectLanguage')}</h3>
               <p className="text-gray-600 text-sm">
-                Язык договора и интерфейса<br/>
-                Выбирается один раз и не может быть изменен
+                {t('signing.languageDescription')}
               </p>
             </div>
             
