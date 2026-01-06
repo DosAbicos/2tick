@@ -651,6 +651,8 @@ Email: ${templateData.tenant_email || '[Email]'}
       const contractData = {
         title: selectedTemplate ? selectedTemplate.title : `Договор от ${templateData.contract_date}`,
         content: contentToSave,
+        content_kk: contentKkToSave,  // Казахская версия контента
+        content_en: contentEnToSave,  // Английская версия контента
         content_type: selectedTemplate ? selectedTemplate.content_type : (isHtmlContent ? 'html' : 'plain'),
         source_type: selectedTemplate ? 'template' : 'manual',
         template_id: selectedTemplate ? selectedTemplate.id : undefined,
@@ -665,7 +667,11 @@ Email: ${templateData.tenant_email || '[Email]'}
         days_count: templateData.days_count,
         amount: templateData.rent_amount ? `${parseInt(templateData.rent_amount) * parseInt(templateData.days_count || 1)} ${templateData.rent_currency}` : undefined,
         party_a_role: selectedTemplate?.party_a_role || 'Сторона А',
-        party_b_role: selectedTemplate?.party_b_role || 'Сторона Б'
+        party_a_role_kk: selectedTemplate?.party_a_role_kk || 'А жағы',
+        party_a_role_en: selectedTemplate?.party_a_role_en || 'Party A',
+        party_b_role: selectedTemplate?.party_b_role || 'Сторона Б',
+        party_b_role_kk: selectedTemplate?.party_b_role_kk || 'Б жағы',
+        party_b_role_en: selectedTemplate?.party_b_role_en || 'Party B'
       };
       
       const response = await axios.post(`${API}/contracts`, contractData, {
