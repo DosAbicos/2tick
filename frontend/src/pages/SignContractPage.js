@@ -1713,10 +1713,9 @@ const SignContractPage = () => {
               <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-3xl">⚠️</span>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Внимание!</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">{t('signing.englishWarning')}</h3>
               <p className="text-gray-700 mb-6 leading-relaxed">
-                Данный договор на английском языке является переводом.<br/><br/>
-                Юридическую силу имеет оригинал на русском или казахском языке.
+                {t('signing.englishWarningText')}
               </p>
               <button
                 onClick={handleEnglishWarningAccept}
