@@ -1042,8 +1042,9 @@ def draw_signature_block(p, y_position, width, height, contract, signature, land
                 p.drawString(right_col_x, y_position, str(value)[:40])
                 y_position -= 15
     else:
-        # Fallback to old fields
-        signer_name = contract.get('signer_name', '')
+        # Fallback to placeholder_values or old fields
+        # Try to get name from placeholder_values
+        signer_name = placeholder_values.get('NAME2', '') or contract.get('signer_name', '')
         if signer_name:
             p.setFillColor(HexColor('#6b7280'))
             p.drawString(right_col_x, y_position, f"{t['name']}:")
@@ -1052,7 +1053,8 @@ def draw_signature_block(p, y_position, width, height, contract, signature, land
             p.drawString(right_col_x, y_position, signer_name[:40])
             y_position -= 15
         
-        signer_phone = contract.get('signer_phone', '')
+        # Phone from placeholder_values or contract
+        signer_phone = placeholder_values.get('PHONE_NUM', '') or contract.get('signer_phone', '')
         if signer_phone:
             p.setFillColor(HexColor('#6b7280'))
             p.drawString(right_col_x, y_position, f"{t['phone']}:")
@@ -1061,7 +1063,18 @@ def draw_signature_block(p, y_position, width, height, contract, signature, land
             p.drawString(right_col_x, y_position, signer_phone)
             y_position -= 15
         
-        signer_email = contract.get('signer_email', '')
+        # IIN from placeholder_values
+        signer_iin = placeholder_values.get('ID_CARD', '') or placeholder_values.get('IIN', '')
+        if signer_iin:
+            p.setFillColor(HexColor('#6b7280'))
+            p.drawString(right_col_x, y_position, f"{t['iin']}:")
+            y_position -= 12
+            p.setFillColor(HexColor('#1f2937'))
+            p.drawString(right_col_x, y_position, signer_iin)
+            y_position -= 15
+        
+        # Email from placeholder_values or contract
+        signer_email = placeholder_values.get('EMAIL', '') or contract.get('signer_email', '')
         if signer_email:
             p.setFillColor(HexColor('#6b7280'))
             p.drawString(right_col_x, y_position, f"{t['email']}:")
