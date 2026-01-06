@@ -245,6 +245,7 @@ const resources = {
       "profile.smsNotifications": "SMS уведомления",
       
       // ===== TEMPLATES =====
+      "templates.noDescription": "Нет описания",
       "templates.title": "Маркет шаблонов",
       "templates.search": "Поиск шаблонов...",
       "templates.all": "Все",
