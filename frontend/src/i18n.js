@@ -225,6 +225,8 @@ const resources = {
       
       // ===== PROFILE =====
       "profile.title": "Профиль",
+      "profile.statistics": "Статистика",
+      "profile.emailCannotChange": "Email нельзя изменить",
       "profile.personalInfo": "Личная информация",
       "profile.fullName": "Полное имя",
       "profile.email": "Email",
