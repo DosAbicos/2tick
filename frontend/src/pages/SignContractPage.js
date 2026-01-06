@@ -1334,13 +1334,13 @@ const SignContractPage = () => {
                       }
                     }}
                     className={`flex-1 py-4 text-base font-semibold text-white rounded-xl transition-all shadow-lg ${
-                      language === 'en' && !englishDisclaimerAccepted
+                      contractLanguage === 'en' && !englishDisclaimerAccepted
                         ? 'bg-gray-400 cursor-not-allowed'
                         : 'bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 shadow-green-500/30'
                     }`}
                     data-testid="sign-button"
                   >
-                    Всё верно, подписать договор →
+                    {t('signing.allCorrectSign')} →
                   </button>
                 </div>
               </motion.div>
@@ -1375,7 +1375,7 @@ const SignContractPage = () => {
                       transition={{ delay: 0.3 }}
                       className="text-2xl font-bold text-gray-900 mb-2"
                     >
-                      Подтверждение подписи
+                      {t('signing.confirmSignature')}
                     </motion.h3>
                     
                     <motion.p
@@ -1384,7 +1384,7 @@ const SignContractPage = () => {
                       transition={{ delay: 0.4 }}
                       className="text-gray-600 text-sm mb-8"
                     >
-                      Выберите удобный способ верификации
+                      {t('signing.selectVerificationMethod')}
                     </motion.p>
                     
                     <div className="space-y-4 max-w-md mx-auto">
