@@ -814,7 +814,7 @@ def draw_signature_block(p, y_position, width, height, contract, signature, land
         p.setFont("Helvetica-Bold", 14)
     
     p.setFillColor(HexColor('#1f2937'))  # Dark gray like website
-    p.drawString(55, y_position, f"✍️  {t['title']}")
+    p.drawString(55, y_position, t['title'])
     
     y_position -= 25
     
