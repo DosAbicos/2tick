@@ -576,16 +576,16 @@ const SignContractPage = () => {
       document.body.appendChild(link);
       link.click();
       link.remove();
-      toast.success('Договор скачан');
+      toast.success(t('signing.downloadPdf'));
     } catch (error) {
-      toast.error('Ошибка скачивания договора');
+      toast.error(t('common.error'));
     }
   };
 
   const handleDownloadDocument = () => {
     try {
       if (!contract.signature?.document_upload) {
-        toast.error('Документ не загружен');
+        toast.error(t('common.error'));
         return;
       }
       
@@ -596,9 +596,9 @@ const SignContractPage = () => {
       document.body.appendChild(link);
       link.click();
       link.remove();
-      toast.success('Документ скачан');
+      toast.success(t('signing.downloadPdf'));
     } catch (error) {
-      toast.error('Ошибка скачивания документа');
+      toast.error(t('common.error'));
     }
   };
 
