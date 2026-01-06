@@ -141,9 +141,9 @@ const LoginPage = () => {
         {/* Ссылка на регистрацию */}
         <div className="text-center mt-6">
           <p className="text-sm text-gray-600">
-            Нет аккаунта?{' '}
+            {t('auth.login.noAccount')}{' '}
             <Link to="/register" className="text-blue-600 hover:text-blue-700 font-semibold">
-              Зарегистрироваться
+              {t('auth.login.registerHere')}
             </Link>
           </p>
         </div>
