@@ -313,7 +313,7 @@ const DashboardPage = () => {
           <div className="minimal-card p-4 sm:p-6 mb-6 sm:mb-8">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div className="flex-1">
-                <h3 className="text-sm font-medium text-gray-700 mb-2">Лимит договоров</h3>
+                <h3 className="text-sm font-medium text-gray-700 mb-2">{t('dashboard.contractLimit')}</h3>
                 <div className="flex items-center gap-3 mb-2">
                   <span className="text-2xl font-bold text-blue-600">{limitInfo.used}</span>
                   <span className="text-gray-400">/</span>
@@ -326,13 +326,13 @@ const DashboardPage = () => {
                   ></div>
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
-                  Осталось {limitInfo.remaining} договоров
+                  {t('dashboard.contractsRemaining', { count: limitInfo.remaining })}
                 </p>
               </div>
               {limitInfo.remaining <= 2 && (
                 <div className="flex items-center gap-2 px-4 py-2 bg-amber-50 rounded-lg border border-amber-200">
                   <AlertCircle className="w-4 h-4 text-amber-600 flex-shrink-0" />
-                  <span className="text-xs sm:text-sm text-amber-700">Лимит почти исчерпан</span>
+                  <span className="text-xs sm:text-sm text-amber-700">{t('dashboard.limitAlmostReached')}</span>
                 </div>
               )}
             </div>
@@ -342,21 +342,21 @@ const DashboardPage = () => {
         {/* Список договоров */}
         <div className="minimal-card overflow-hidden">
           <div className="p-4 sm:p-6 border-b border-gray-100">
-            <h2 className="text-lg font-bold text-gray-900">Список договоров</h2>
-            <p className="text-sm text-gray-600 mt-1">Всего договоров: {contracts.length}</p>
+            <h2 className="text-lg font-bold text-gray-900">{t('dashboard.contractsList')}</h2>
+            <p className="text-sm text-gray-600 mt-1">{t('dashboard.totalContracts', { count: contracts.length })}</p>
           </div>
 
           {contracts.length === 0 ? (
             <div className="p-8 sm:p-12 text-center">
               <FileText className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Нет договоров</h3>
-              <p className="text-sm text-gray-600 mb-6">Создайте свой первый договор</p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">{t('dashboard.noContracts')}</h3>
+              <p className="text-sm text-gray-600 mb-6">{t('dashboard.createFirstContract')}</p>
               <button
                 onClick={handleCreateContract}
                 className="px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all inline-flex items-center gap-2"
               >
                 <Plus className="w-4 h-4" />
-                Создать договор
+                {t('dashboard.new_contract')}
               </button>
             </div>
           ) : (
@@ -366,8 +366,8 @@ const DashboardPage = () => {
                 <table className="w-full">
                   <thead className="bg-gray-50 border-b border-gray-100">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Код</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Название</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('dashboard.table.code')}</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('dashboard.table.title')}</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Статус</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Дата</th>
                       <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Действия</th>
