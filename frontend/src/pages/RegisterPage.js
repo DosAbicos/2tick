@@ -251,7 +251,7 @@ const RegisterPage = () => {
     setSendingCode(true);
     try {
       const response = await axios.post(`${API}/auth/registration/${registrationId}/request-otp?method=sms`);
-      toast.success('Код отправлен на ваш телефон');
+      toast.success(t('signing.codeSentToPhone'));
       
       // Увеличиваем счетчик запросов
       const newCount = smsRequestCount + 1;
@@ -268,7 +268,7 @@ const RegisterPage = () => {
         setMockOtp(response.data.mock_otp);
       }
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Ошибка отправки SMS');
+      toast.error(error.response?.data?.detail || t('auth.register.smsError'));
     } finally {
       setSendingCode(false);
     }
@@ -302,7 +302,7 @@ const RegisterPage = () => {
     setSendingCode(true);
     try {
       const response = await axios.post(`${API}/auth/registration/${registrationId}/request-call-otp`);
-      toast.success('Вам поступит звонок. Введите последние 4 цифры номера');
+      toast.success(t('signing.callInitiated'));
       setCallHint(response.data.hint || '');
       
       // Увеличиваем счетчик запросов
@@ -315,7 +315,7 @@ const RegisterPage = () => {
         setCallCooldown(cooldownTime);
       }
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Ошибка инициации звонка');
+      toast.error(error.response?.data?.detail || t('auth.register.callError'));
     } finally {
       setSendingCode(false);
     }
@@ -338,7 +338,7 @@ const RegisterPage = () => {
       setVerificationMethod('telegram');
       setTelegramCooldown(60);
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Ошибка Telegram');
+      toast.error(error.response?.data?.detail || t('auth.register.telegramError'));
     } finally {
       setRequestingTelegram(false);
     }
@@ -346,7 +346,7 @@ const RegisterPage = () => {
 
   const handleVerifyTelegramOTP = async () => {
     if (telegramCode.length !== 6) {
-      toast.error('Введите 6-значный код');
+      toast.error(t('signing.enter6DigitCode'));
       return;
     }
     
@@ -357,11 +357,11 @@ const RegisterPage = () => {
       });
       
       if (response.data.verified) {
-        toast.success('Регистрация завершена успешно!');
+        toast.success(t('auth.register.success'));
         navigate('/login');
       }
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Неверный код');
+      toast.error(error.response?.data?.detail || t('signing.invalidCode'));
     } finally {
       setVerifying(false);
     }
@@ -369,7 +369,7 @@ const RegisterPage = () => {
 
   const handleVerifyCallOTP = async () => {
     if (callCode.length !== 4) {
-      toast.error('Введите 4 цифры');
+      toast.error(t('signing.enter4DigitCode'));
       return;
     }
     
@@ -380,11 +380,11 @@ const RegisterPage = () => {
       });
       
       if (response.data.verified) {
-        toast.success('Регистрация завершена успешно!');
+        toast.success(t('auth.register.success'));
         navigate('/login');
       }
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Неверный код');
+      toast.error(error.response?.data?.detail || t('signing.invalidCode'));
     } finally {
       setVerifying(false);
     }
@@ -394,7 +394,7 @@ const RegisterPage = () => {
   const handleVerifyOTP = async () => {
     const codeToVerify = verificationCode || otpValue;
     if (codeToVerify.length !== 6 && codeToVerify.length !== 4) {
-      toast.error('Введите корректный код');
+      toast.error(t('signing.enterCorrectCode'));
       return;
     }
     
@@ -418,11 +418,11 @@ const RegisterPage = () => {
       }
       
       if (response.data.verified) {
-        toast.success('Регистрация завершена успешно!');
+        toast.success(t('auth.register.success'));
         navigate('/login');
       }
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Неверный код');
+      toast.error(error.response?.data?.detail || t('signing.invalidCode'));
     } finally {
       setVerifying(false);
     }
