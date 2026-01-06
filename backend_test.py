@@ -5176,37 +5176,20 @@ if __name__ == "__main__":
     
     tester = BackendTester()
     
-    # Check if multilingual testing is requested
-    if len(sys.argv) > 1 and sys.argv[1] == "--multilingual":
-        # Run multilingual contract system tests
-        success = tester.test_multilingual_contract_system()
-        
-        if success:
-            print("\n🎉 КРИТИЧЕСКОЕ ТЕСТИРОВАНИЕ МУЛЬТИЯЗЫЧНОЙ СИСТЕМЫ ЗАВЕРШЕНО УСПЕШНО!")
-            print("✅ API Endpoints для смены языка (ru/kk/en) работают корректно")
-            print("✅ Подтверждение английского языка функционирует")
-            print("✅ Языковые версии контента копируются из шаблонов")
-            print("✅ PDF генерируется с правильным языковым контентом")
-            print("✅ Frontend API для языков работает")
-        else:
-            print("\n❌ КРИТИЧЕСКОЕ ТЕСТИРОВАНИЕ МУЛЬТИЯЗЫЧНОЙ СИСТЕМЫ ПРОВАЛЕНО!")
-            print("❌ Обнаружены проблемы с мультиязычной системой - проверьте логи выше")
-    else:
-        # Run the critical PDF redesign functionality test (default)
-        success = tester.test_pdf_redesign_functionality()
-        
-        if success:
-            print("\n🎉 КРИТИЧЕСКОЕ ТЕСТИРОВАНИЕ PDF РЕДИЗАЙНА ЗАВЕРШЕНО УСПЕШНО!")
-            print("✅ Логотип компании (2tick.kz) отображается корректно")
-            print("✅ Декоративный header с двойной линией работает")
-            print("✅ Улучшенное форматирование контента с центрированным заголовком")
-            print("✅ Профессиональная секция подписей с элегантной рамкой")
-            print("✅ Footer с информацией о безопасности и нумерацией страниц")
-            print("✅ Динамические роли (Арендодатель/Арендатор) отображаются правильно")
-            print("✅ Плейсхолдеры заменяются корректно")
-            print("✅ PDF генерируется с новым профессиональным дизайном")
-        else:
-            print("\n❌ КРИТИЧЕСКОЕ ТЕСТИРОВАНИЕ PDF РЕДИЗАЙНА ПРОВАЛЕНО!")
-            print("❌ Обнаружены проблемы с новым дизайном PDF - проверьте логи выше")
+    print("🚀 Starting Backend Testing for 2tick.kz Contract Management System")
+    print("=" * 80)
     
-    sys.exit(0 if success else 1)
+    # Run the critical multi-language tests as requested in review_request
+    tester.log("🌍 RUNNING CRITICAL MULTI-LANGUAGE TESTS")
+    multilang_success = tester.test_multilang_contract_creation_and_signing()
+    
+    if multilang_success:
+        tester.log("\n🎉 ALL CRITICAL MULTI-LANGUAGE TESTS PASSED!")
+        tester.log("✅ Contract creation with multi-language support works")
+        tester.log("✅ Signing page language switching works")
+        tester.log("✅ Set contract language endpoint works")
+    else:
+        tester.log("\n❌ CRITICAL MULTI-LANGUAGE TESTS FAILED!")
+        tester.log("Please check the logs above for specific failures.")
+    
+    sys.exit(0 if multilang_success else 1)
