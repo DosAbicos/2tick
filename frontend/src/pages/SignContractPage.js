@@ -821,11 +821,11 @@ const SignContractPage = () => {
       }
       
       if (response.data.verified) {
-        toast.success('Договор успешно подписан!');
+        toast.success(t('signing.successSigned'));
         setStep(6);
       }
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Неверный код');
+      toast.error(error.response?.data?.detail || t('signing.enterCorrectCode'));
     } finally {
       setVerifying(false);
     }
