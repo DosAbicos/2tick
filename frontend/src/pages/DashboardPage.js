@@ -76,7 +76,7 @@ const DashboardPage = () => {
       setStats(stats);
     } catch (error) {
       console.error('Error fetching contracts:', error);
-      toast.error('Ошибка загрузки договоров');
+      toast.error(t('dashboard.errorLoadingContracts'));
     } finally {
       setLoading(false);
     }
@@ -102,12 +102,12 @@ const DashboardPage = () => {
       await axios.delete(`${API}/contracts/${contractId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Договор удален');
+      toast.success(t('contract.deleted'));
       fetchContracts();
       fetchLimitInfo();
     } catch (error) {
       console.error('Error deleting contract:', error);
-      toast.error('Ошибка удаления договора');
+      toast.error(t('dashboard.errorDeletingContract'));
     }
   };
 
