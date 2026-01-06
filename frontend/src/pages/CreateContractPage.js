@@ -163,10 +163,10 @@ const CreateContractPage = () => {
       }
       setPlaceholderValues(initialValues);
       
-      toast.success(`Шаблон "${template.title}" загружен`);
+      toast.success(t('contract.templateLoaded', { title: template.title }));
     } catch (error) {
       console.error('Error loading template:', error);
-      toast.error('Ошибка загрузки шаблона');
+      toast.error(t('contract.templateLoadError'));
     } finally {
       setLoadingTemplate(false);
       loadingTemplateRef.current = false;
@@ -265,7 +265,7 @@ const CreateContractPage = () => {
       setManualContent(savedContent);
       setIsContentSaved(true);
       setManualEditMode(false);
-      toast.success('Изменения сохранены! Плейсхолдеры продолжают работать.');
+      toast.success(t('contract.changesSaved'));
     }
   };
 
@@ -295,7 +295,7 @@ const CreateContractPage = () => {
     };
     reader.readAsDataURL(file);
     
-    toast.success('Документ клиента выбран');
+    toast.success(t('contract.clientDocSelected'));
   };
 
 
@@ -714,10 +714,10 @@ Email: ${templateData.tenant_email || '[Email]'}
         
         try {
           await axios.post(`${API}/sign/${contractId}/upload-document`, formData);
-          toast.success('Договор и документ клиента успешно созданы');
+          toast.success(t('contract.createdWithDoc'));
         } catch (docError) {
           console.error('Document upload error:', docError);
-          toast.warning('Договор создан, но документ клиента не загружен');
+          toast.warning(t('contract.createdNoDoc'));
         } finally {
           setUploadingDoc(false);
         }
@@ -758,7 +758,7 @@ Email: ${templateData.tenant_email || '[Email]'}
               {selectedTemplate ? selectedTemplate.title : 'Создать договор'}
             </h1>
             <p className="text-sm text-gray-500">
-              {loadingTemplate ? 'Загрузка шаблона...' : 'Заполните данные справа, договор обновится слева'}
+              {loadingTemplate ? t('contract.loadingTemplate') : t('contract.fillDataHint')}
             </p>
           </div>
         </div>
@@ -798,7 +798,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                       onClick={handleSaveContent}
                       className="px-3 py-1.5 text-sm font-semibold text-white bg-gradient-to-r from-green-600 to-green-500 rounded-lg hover:from-green-700 hover:to-green-600 transition-all shadow-md"
                     >
-                      Сохранить
+                      {t('common.save')}
                     </button>
                   )}
                 </div>
@@ -904,7 +904,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                   <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
-                  Заполните данные
+                  {t('contract.fillData')}
                 </h3>
               </div>
               <div className="p-6">
@@ -1210,7 +1210,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                                           const reader = new FileReader();
                                           reader.onload = () => setTenantDocPreview(reader.result);
                                           reader.readAsDataURL(file);
-                                          toast.success('Документ выбран');
+                                          toast.success(t('contract.docSelected'));
                                         }
                                       }}
                                       className="flex-1 minimal-input"
