@@ -94,7 +94,7 @@ const DashboardPage = () => {
   };
 
   const handleDeleteContract = async (contractId) => {
-    if (!window.confirm('Вы уверены что хотите удалить этот договор?')) {
+    if (!window.confirm(t('dashboard.confirmDelete'))) {
       return;
     }
 
