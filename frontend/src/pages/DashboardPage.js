@@ -113,10 +113,10 @@ const DashboardPage = () => {
 
   const getStatusBadge = (status) => {
     const statusConfig = {
-      'signed': { label: 'Подписан', icon: CheckCircle, bg: 'bg-green-50', text: 'text-green-700', border: 'border-green-200' },
-      'pending-signature': { label: 'На подписи', icon: Clock, bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
-      'sent': { label: 'Отправлен', icon: Clock, bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' },
-      'draft': { label: 'Черновик', icon: FileText, bg: 'bg-gray-50', text: 'text-gray-700', border: 'border-gray-200' }
+      'signed': { label: t('status.signed'), icon: CheckCircle, bg: 'bg-green-50', text: 'text-green-700', border: 'border-green-200' },
+      'pending-signature': { label: t('status.pending-signature'), icon: Clock, bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200' },
+      'sent': { label: t('status.sent'), icon: Clock, bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200' },
+      'draft': { label: t('status.draft'), icon: FileText, bg: 'bg-gray-50', text: 'text-gray-700', border: 'border-gray-200' }
     };
     
     const config = statusConfig[status] || statusConfig.draft;
