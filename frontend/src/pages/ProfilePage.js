@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import Header from '@/components/Header';
 import Loader from '@/components/Loader';
 import { User, Mail, Phone, Building, CreditCard, MapPin, Lock, Save, Edit2, FileText, CheckCircle, Clock, XCircle } from 'lucide-react';
@@ -12,6 +13,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const ProfilePage = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
   const [user, setUser] = useState(null);
