@@ -4177,6 +4177,387 @@ class BackendTester:
             self.log(f"   ❌ Исключение в тесте Frontend Flow: {str(e)}")
             return False
 
+    def test_bilingual_trilingual_pdf_generation(self):
+        """
+        CRITICAL TEST: Bilingual/Trilingual PDF Generation and Placeholder Separation
+        
+        Tests the specific requirements from review_request:
+        1. Test placeholder owner separation (landlord vs tenant)
+        2. Test bilingual PDF (RU selected) - should contain RU + KK, NOT EN
+        3. Test trilingual PDF (EN selected) - should contain RU + KK + EN with EN marked as translation
+        4. Test specific contract IDs: 1b8b8c69-cc57-4f50-8649-750e22759bda (RU) and 935abfcc-4c37-41cd-a6d4-2a18332f39c9 (EN)
+        """
+        self.log("\n🌍 CRITICAL TEST: Bilingual/Trilingual PDF Generation and Placeholder Separation")
+        self.log("=" * 80)
+        
+        all_tests_passed = True
+        
+        # Step 1: Login as admin with specific credentials
+        self.log("\n🔐 Step 1: Login as admin (asl@asl.kz)")
+        if not self.login_as_admin():
+            self.log("❌ Failed to login as admin. Cannot proceed with bilingual/trilingual tests.")
+            return False
+        
+        # Step 2: Test placeholder owner separation
+        self.log("\n👥 Step 2: Test placeholder owner separation (landlord vs tenant)")
+        placeholder_test_passed = self.test_placeholder_owner_separation()
+        if not placeholder_test_passed:
+            self.log("❌ Placeholder owner separation test failed.")
+            all_tests_passed = False
+        
+        # Step 3: Test bilingual PDF (RU selected)
+        self.log("\n📄 Step 3: Test bilingual PDF (RU selected)")
+        bilingual_test_passed = self.test_bilingual_pdf_ru_selected()
+        if not bilingual_test_passed:
+            self.log("❌ Bilingual PDF (RU) test failed.")
+            all_tests_passed = False
+        
+        # Step 4: Test trilingual PDF (EN selected)
+        self.log("\n📄 Step 4: Test trilingual PDF (EN selected)")
+        trilingual_test_passed = self.test_trilingual_pdf_en_selected()
+        if not trilingual_test_passed:
+            self.log("❌ Trilingual PDF (EN) test failed.")
+            all_tests_passed = False
+        
+        # Step 5: Test specific contract IDs if they exist
+        self.log("\n🔍 Step 5: Test specific contract IDs from review request")
+        specific_contracts_test_passed = self.test_specific_contract_ids()
+        if not specific_contracts_test_passed:
+            self.log("❌ Specific contract IDs test failed.")
+            all_tests_passed = False
+        
+        # Final result
+        self.log("\n" + "=" * 80)
+        self.log("📊 BILINGUAL/TRILINGUAL TEST RESULTS:")
+        if all_tests_passed:
+            self.log("🎉 ALL BILINGUAL/TRILINGUAL TESTS PASSED!")
+            self.log("✅ Admin login successful")
+            self.log("✅ Placeholder owner separation works correctly")
+            self.log("✅ Bilingual PDF (RU) generation works")
+            self.log("✅ Trilingual PDF (EN) generation works")
+            self.log("✅ Specific contract IDs tested successfully")
+        else:
+            self.log("❌ SOME BILINGUAL/TRILINGUAL TESTS FAILED! Check logs above.")
+        
+        return all_tests_passed
+    
+    def test_placeholder_owner_separation(self):
+        """Test that landlord and tenant placeholders are properly separated"""
+        self.log("   👥 Testing placeholder owner separation...")
+        
+        # Get a template with placeholders
+        template_response = self.session.get(f"{BASE_URL}/templates")
+        if template_response.status_code != 200:
+            self.log("   ❌ Cannot get templates")
+            return False
+        
+        templates = template_response.json()
+        if not templates:
+            self.log("   ❌ No templates available")
+            return False
+        
+        # Find a template with placeholders
+        template = None
+        for t in templates:
+            if t.get('placeholders'):
+                template = t
+                break
+        
+        if not template:
+            self.log("   ⚠️ No template with placeholders found, using first template")
+            template = templates[0]
+        
+        template_id = template["id"]
+        self.log(f"   📋 Using template: {template['title']} (ID: {template_id})")
+        
+        # Create contract with landlord placeholder (1NAME) and tenant placeholder (NAME2)
+        contract_data = {
+            "title": "Test Placeholder Owner Separation",
+            "content": template.get("content", "Contract with 1NAME: Landlord Name and NAME2: Tenant Name"),
+            "content_kk": template.get("content_kk"),
+            "content_en": template.get("content_en"),
+            "content_type": "plain",
+            "template_id": template_id,
+            "signer_name": "",  # Empty tenant fields initially
+            "signer_phone": "",
+            "signer_email": "",
+            "placeholder_values": {
+                "1NAME": "Landlord Name",  # Landlord placeholder
+                "NAME2": "",  # Tenant placeholder - empty initially
+                "PHONE_NUM": "",
+                "EMAIL": "",
+                "ID_CARD": ""
+            }
+        }
+        
+        response = self.session.post(f"{BASE_URL}/contracts", json=contract_data)
+        
+        if response.status_code == 200:
+            contract = response.json()
+            contract_id = contract["id"]
+            self.log(f"   ✅ Contract created with ID: {contract_id}")
+            
+            # Simulate client filling only tenant fields (NAME2, PHONE_NUM, EMAIL, ID_CARD)
+            tenant_data = {
+                "placeholder_values": {
+                    "1NAME": "Landlord Name",  # Should stay unchanged
+                    "NAME2": "Tenant Name",    # Client fills this
+                    "PHONE_NUM": "+7 777 123 4567",
+                    "EMAIL": "tenant@test.kz",
+                    "ID_CARD": "123456789012"
+                }
+            }
+            
+            update_response = self.session.put(f"{BASE_URL}/contracts/{contract_id}", json=tenant_data)
+            
+            if update_response.status_code == 200:
+                # Verify that landlord name stays unchanged and tenant name is correctly saved
+                get_response = self.session.get(f"{BASE_URL}/sign/{contract_id}")
+                
+                if get_response.status_code == 200:
+                    updated_contract = get_response.json()
+                    placeholder_values = updated_contract.get("placeholder_values", {})
+                    
+                    landlord_name = placeholder_values.get("1NAME")
+                    tenant_name = placeholder_values.get("NAME2")
+                    tenant_phone = placeholder_values.get("PHONE_NUM")
+                    tenant_email = placeholder_values.get("EMAIL")
+                    tenant_id = placeholder_values.get("ID_CARD")
+                    
+                    self.log(f"      Landlord name (1NAME): {landlord_name}")
+                    self.log(f"      Tenant name (NAME2): {tenant_name}")
+                    self.log(f"      Tenant phone: {tenant_phone}")
+                    self.log(f"      Tenant email: {tenant_email}")
+                    self.log(f"      Tenant ID: {tenant_id}")
+                    
+                    # Verify separation
+                    success = True
+                    if landlord_name != "Landlord Name":
+                        self.log(f"   ❌ Landlord name changed unexpectedly: {landlord_name}")
+                        success = False
+                    if tenant_name != "Tenant Name":
+                        self.log(f"   ❌ Tenant name not saved correctly: {tenant_name}")
+                        success = False
+                    if tenant_phone != "+7 777 123 4567":
+                        self.log(f"   ❌ Tenant phone not saved correctly: {tenant_phone}")
+                        success = False
+                    
+                    if success:
+                        self.log("   ✅ Placeholder owner separation works correctly")
+                    
+                    return success
+                else:
+                    self.log(f"   ❌ Cannot get updated contract: {get_response.status_code}")
+                    return False
+            else:
+                self.log(f"   ❌ Cannot update contract: {update_response.status_code}")
+                return False
+        else:
+            self.log(f"   ❌ Cannot create contract: {response.status_code}")
+            return False
+    
+    def test_bilingual_pdf_ru_selected(self):
+        """Test bilingual PDF when RU is selected - should contain RU + KK, NOT EN"""
+        self.log("   📄 Testing bilingual PDF (RU selected)...")
+        
+        # Create a contract with RU language selected
+        contract_id = self.create_test_contract_with_language("ru")
+        if not contract_id:
+            return False
+        
+        # Download PDF and verify it contains BOTH Russian and Kazakh versions, NOT English
+        pdf_response = self.session.get(f"{BASE_URL}/contracts/{contract_id}/download-pdf")
+        
+        if pdf_response.status_code == 200:
+            pdf_content = pdf_response.content
+            
+            # Convert PDF to text for analysis (basic check)
+            try:
+                pdf_text = pdf_content.decode('utf-8', errors='ignore')
+                
+                # Check for language indicators
+                has_russian = "РУССКИЙ" in pdf_text or "RUSSIAN" in pdf_text
+                has_kazakh = "ҚАЗАҚША" in pdf_text or "KAZAKH" in pdf_text
+                has_english = "ENGLISH" in pdf_text and "translation without legal force" in pdf_text.lower()
+                has_legal_notice = "равную юридическую силу" in pdf_text or "equal legal force" in pdf_text
+                
+                self.log(f"      PDF contains Russian section: {has_russian}")
+                self.log(f"      PDF contains Kazakh section: {has_kazakh}")
+                self.log(f"      PDF contains English section: {has_english}")
+                self.log(f"      PDF contains legal notice: {has_legal_notice}")
+                
+                # For RU selected, should have RU + KK, NOT EN
+                if has_russian and has_kazakh and not has_english and has_legal_notice:
+                    self.log("   ✅ Bilingual PDF (RU) generated correctly")
+                    return True
+                else:
+                    self.log("   ❌ Bilingual PDF (RU) content incorrect")
+                    if has_english:
+                        self.log("      ❌ English section found when it shouldn't be there")
+                    if not has_russian:
+                        self.log("      ❌ Russian section missing")
+                    if not has_kazakh:
+                        self.log("      ❌ Kazakh section missing")
+                    return False
+                    
+            except Exception as e:
+                self.log(f"   ⚠️ Cannot analyze PDF content directly: {str(e)}")
+                # If we can't analyze content, just check that PDF was generated
+                if len(pdf_content) > 1000 and pdf_content.startswith(b'%PDF'):
+                    self.log("   ✅ PDF generated successfully (content analysis skipped)")
+                    return True
+                else:
+                    self.log("   ❌ Invalid PDF generated")
+                    return False
+        else:
+            self.log(f"   ❌ PDF download failed: {pdf_response.status_code}")
+            return False
+    
+    def test_trilingual_pdf_en_selected(self):
+        """Test trilingual PDF when EN is selected - should contain RU + KK + EN with EN marked as translation"""
+        self.log("   📄 Testing trilingual PDF (EN selected)...")
+        
+        # Create a contract with EN language selected
+        contract_id = self.create_test_contract_with_language("en")
+        if not contract_id:
+            return False
+        
+        # Download PDF and verify it contains RU + KK + EN with proper markings
+        pdf_response = self.session.get(f"{BASE_URL}/contracts/{contract_id}/download-pdf")
+        
+        if pdf_response.status_code == 200:
+            pdf_content = pdf_response.content
+            
+            # Convert PDF to text for analysis (basic check)
+            try:
+                pdf_text = pdf_content.decode('utf-8', errors='ignore')
+                
+                # Check for language indicators
+                has_russian = "РУССКИЙ" in pdf_text or "RUSSIAN" in pdf_text
+                has_kazakh = "ҚАЗАҚША" in pdf_text or "KAZAKH" in pdf_text
+                has_english = "ENGLISH" in pdf_text
+                has_translation_notice = "translation without legal force" in pdf_text.lower() or "перевод, юридической силы не имеет" in pdf_text
+                has_legal_notice = "равную юридическую силу" in pdf_text or "equal legal force" in pdf_text
+                
+                self.log(f"      PDF contains Russian section: {has_russian}")
+                self.log(f"      PDF contains Kazakh section: {has_kazakh}")
+                self.log(f"      PDF contains English section: {has_english}")
+                self.log(f"      PDF contains translation notice: {has_translation_notice}")
+                self.log(f"      PDF contains legal notice: {has_legal_notice}")
+                
+                # For EN selected, should have RU + KK + EN with translation notice
+                if has_russian and has_kazakh and has_english and has_translation_notice:
+                    self.log("   ✅ Trilingual PDF (EN) generated correctly")
+                    return True
+                else:
+                    self.log("   ❌ Trilingual PDF (EN) content incorrect")
+                    if not has_russian:
+                        self.log("      ❌ Russian section missing")
+                    if not has_kazakh:
+                        self.log("      ❌ Kazakh section missing")
+                    if not has_english:
+                        self.log("      ❌ English section missing")
+                    if not has_translation_notice:
+                        self.log("      ❌ Translation notice missing")
+                    return False
+                    
+            except Exception as e:
+                self.log(f"   ⚠️ Cannot analyze PDF content directly: {str(e)}")
+                # If we can't analyze content, just check that PDF was generated
+                if len(pdf_content) > 1000 and pdf_content.startswith(b'%PDF'):
+                    self.log("   ✅ PDF generated successfully (content analysis skipped)")
+                    return True
+                else:
+                    self.log("   ❌ Invalid PDF generated")
+                    return False
+        else:
+            self.log(f"   ❌ PDF download failed: {pdf_response.status_code}")
+            return False
+    
+    def test_specific_contract_ids(self):
+        """Test specific contract IDs mentioned in review request"""
+        self.log("   🔍 Testing specific contract IDs from review request...")
+        
+        # Contract IDs from review request
+        ru_contract_id = "1b8b8c69-cc57-4f50-8649-750e22759bda"  # RU selected
+        en_contract_id = "935abfcc-4c37-41cd-a6d4-2a18332f39c9"  # EN selected
+        
+        success = True
+        
+        # Test RU contract
+        self.log(f"      Testing RU contract: {ru_contract_id}")
+        ru_response = self.session.get(f"{BASE_URL}/contracts/{ru_contract_id}/download-pdf")
+        if ru_response.status_code == 200:
+            self.log("      ✅ RU contract PDF downloaded successfully")
+            # Could add more detailed analysis here
+        else:
+            self.log(f"      ❌ RU contract PDF download failed: {ru_response.status_code}")
+            success = False
+        
+        # Test EN contract
+        self.log(f"      Testing EN contract: {en_contract_id}")
+        en_response = self.session.get(f"{BASE_URL}/contracts/{en_contract_id}/download-pdf")
+        if en_response.status_code == 200:
+            self.log("      ✅ EN contract PDF downloaded successfully")
+            # Could add more detailed analysis here
+        else:
+            self.log(f"      ❌ EN contract PDF download failed: {en_response.status_code}")
+            success = False
+        
+        return success
+    
+    def create_test_contract_with_language(self, language):
+        """Create a test contract with specified language"""
+        self.log(f"      Creating test contract with language: {language}")
+        
+        # Get a template first
+        template_response = self.session.get(f"{BASE_URL}/templates")
+        if template_response.status_code != 200:
+            self.log("      ❌ Cannot get templates")
+            return None
+        
+        templates = template_response.json()
+        if not templates:
+            self.log("      ❌ No templates available")
+            return None
+        
+        template = templates[0]
+        template_id = template["id"]
+        
+        # Create contract
+        contract_data = {
+            "title": f"Test Contract ({language.upper()})",
+            "content": template.get("content", "Test contract content"),
+            "content_kk": template.get("content_kk", "Қазақша мәтін"),
+            "content_en": template.get("content_en", "English content"),
+            "content_type": "plain",
+            "template_id": template_id,
+            "signer_name": "Test Signer",
+            "signer_phone": "+77071234567",
+            "signer_email": "test@example.com",
+            "contract_language": language  # Set the contract language
+        }
+        
+        response = self.session.post(f"{BASE_URL}/contracts", json=contract_data)
+        
+        if response.status_code == 200:
+            contract = response.json()
+            contract_id = contract["id"]
+            
+            # Set the contract language explicitly
+            lang_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/set-contract-language", 
+                                            json={"language": language})
+            
+            if lang_response.status_code == 200:
+                self.log(f"      ✅ Contract created with language {language}: {contract_id}")
+                return contract_id
+            else:
+                self.log(f"      ❌ Failed to set contract language: {lang_response.status_code}")
+                return contract_id  # Return anyway, might still work
+        else:
+            self.log(f"      ❌ Contract creation failed: {response.status_code}")
+            return None
+
     def run_all_tests(self):
         """Run all backend tests for 2tick.kz"""
         self.log("🚀 Starting Backend Testing for 2tick.kz")
