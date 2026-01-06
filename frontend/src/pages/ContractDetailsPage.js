@@ -816,8 +816,8 @@ const ContractDetailsPage = () => {
             {contract.status === 'pending-signature' && (
               <div className="border-t pt-6">
                 <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-4">
-                  <p className="text-blue-900 font-semibold mb-2">Требуется ваше утверждение</p>
-                  <p className="text-sm text-blue-800">Наниматель подписал договор. Проверьте документы и нажмите "Утвердить" для завершения.</p>
+                  <p className="text-blue-900 font-semibold mb-2">{t('contractDetails.approvalRequired')}</p>
+                  <p className="text-sm text-blue-800">{t('contractDetails.tenantSignedMessage')}</p>
                 </div>
               </div>
             )}
