@@ -1108,8 +1108,8 @@ const SignContractPage = () => {
                   <div className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-600 to-blue-500 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/30">
                     <FileUp className="h-8 w-8 text-white" />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Загрузите документ</h3>
-                  <p className="text-gray-600 text-sm">Удостоверение личности или паспорт для верификации</p>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('signing.uploadDoc')}</h3>
+                  <p className="text-gray-600 text-sm">{t('signing.uploadDocDescription')}</p>
                 </div>
                 
                 {/* Show uploaded document status */}
@@ -1121,10 +1121,10 @@ const SignContractPage = () => {
                       </div>
                       <div className="flex-1">
                         <p className="font-semibold text-green-900">
-                          Документ успешно загружен!
+                          {t('signing.docUploaded')}
                         </p>
                         <p className="text-sm text-green-700">
-                          Вы можете загрузить другой файл при необходимости
+                          {t('signing.docUploadedHint')}
                         </p>
                       </div>
                     </div>
@@ -1147,7 +1147,7 @@ const SignContractPage = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                       </svg>
                       <p className="text-base font-medium text-gray-900 mb-1">
-                        {uploading ? 'Загрузка...' : (documentUploaded ? 'Нажмите для замены документа' : 'Нажмите для загрузки')}
+                        {uploading ? t('signing.uploading') : (documentUploaded ? t('signing.clickToReplace') : t('signing.clickToUpload'))}
                       </p>
                       <p className="text-sm text-gray-500">
                         JPEG, PNG, PDF до 10MB
@@ -1162,14 +1162,14 @@ const SignContractPage = () => {
                     className="flex-1 py-3 px-4 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all"
                     data-testid="back-to-info-button"
                   >
-                    ← Назад
+                    ← {t('signing.back')}
                   </button>
                   {documentUploaded && (
                     <button
                       onClick={() => setStep(4)}
                       className="flex-1 py-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/20"
                     >
-                      Ознакомиться с договором →
+                      {t('signing.reviewContract')} →
                     </button>
                   )}
                 </div>
