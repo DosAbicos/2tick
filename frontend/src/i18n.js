@@ -905,6 +905,7 @@ const resources = {
       "profile.smsNotifications": "SMS notifications",
       
       // ===== TEMPLATES =====
+      "templates.noDescription": "No description",
       "templates.title": "Templates Market",
       "templates.search": "Search templates...",
       "templates.all": "All",
