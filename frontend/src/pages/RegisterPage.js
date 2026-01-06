@@ -540,7 +540,7 @@ const RegisterPage = () => {
                 <div className="space-y-2">
                   <label htmlFor="phone" className="text-gray-700 text-sm font-medium flex items-center gap-2">
                     <Phone className="w-4 h-4 text-blue-500" />
-                    Телефон *
+                    {t('auth.register.phone')} *
                   </label>
                   <IMaskInput
                     mask="+7 (000) 000-00-00"
@@ -563,7 +563,7 @@ const RegisterPage = () => {
                       exit={{ opacity: 0 }}
                       className="text-sm text-red-500 font-medium"
                     >
-                      Пользователь с таким номером телефона уже зарегистрирован
+                      {t('auth.register.phoneExists')}
                     </motion.p>
                   )}
                 </div>
@@ -574,7 +574,7 @@ const RegisterPage = () => {
                   disabled={loading}
                   className="w-full py-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {loading ? 'Проверка...' : 'Продолжить'}
+                  {loading ? t('common.loading') : t('auth.register.next')}
                 </button>
               </>
             )}
@@ -585,7 +585,7 @@ const RegisterPage = () => {
                 <div className="space-y-2">
                   <label htmlFor="company_name" className="text-gray-700 text-sm font-medium flex items-center gap-2">
                     <Building className="w-4 h-4 text-blue-500" />
-                    Название компании *
+                    {t('auth.register.companyName')} *
                   </label>
                   <input
                     id="company_name"
