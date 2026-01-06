@@ -195,33 +195,34 @@ const SignContractPage = () => {
     result = result.replace(labelPlaceholderRegex, (match, label) => {
       let isFilled = false;
       let value = match;
+      const labelLower = label.toLowerCase();
       
-      // Use signerInfo state if available, otherwise use contract data
-      if (label.includes('ФИО') || label.includes('Нанимателя') || label.includes('Имя') || label.includes('Атыңыз') || label.includes('Name')) {
+      // Use signerInfo state if available, otherwise use contract data (case-insensitive)
+      if (labelLower.includes('фио') || labelLower.includes('нанимателя') || labelLower.includes('имя') || labelLower.includes('атыңыз') || labelLower.includes('name') || labelLower.includes('аты')) {
         value = signerInfo.name || contract?.signer_name || allPlaceholderValues['NAME2'] || allPlaceholderValues['SIGNER_NAME'] || match;
         isFilled = !!(signerInfo.name || contract?.signer_name || allPlaceholderValues['NAME2'] || allPlaceholderValues['SIGNER_NAME']);
-      } else if (label.includes('Телефон') || label.includes('Phone') || label.includes('Нөмір')) {
+      } else if (labelLower.includes('телефон') || labelLower.includes('phone') || labelLower.includes('нөмір')) {
         value = signerInfo.phone || contract?.signer_phone || allPlaceholderValues['PHONE_NUM'] || allPlaceholderValues['PHONE'] || match;
         isFilled = !!(signerInfo.phone || contract?.signer_phone || allPlaceholderValues['PHONE_NUM'] || allPlaceholderValues['PHONE']);
-      } else if (label.includes('Email') || label.includes('Почта') || label.includes('Пошта')) {
+      } else if (labelLower.includes('email') || labelLower.includes('почта') || labelLower.includes('пошта')) {
         value = signerInfo.email || contract?.signer_email || allPlaceholderValues['EMAIL'] || match;
         isFilled = !!(signerInfo.email || contract?.signer_email || allPlaceholderValues['EMAIL']);
-      } else if (label.includes('ИИН') || label.includes('IIN')) {
+      } else if (labelLower.includes('иин') || labelLower.includes('iin')) {
         value = allPlaceholderValues['ID_CARD'] || allPlaceholderValues['IIN'] || match;
         isFilled = !!(allPlaceholderValues['ID_CARD'] || allPlaceholderValues['IIN']);
-      } else if (label.includes('Дата заселения')) {
+      } else if (labelLower.includes('дата заселения')) {
         isFilled = !!contract?.move_in_date;
         value = contract?.move_in_date || match;
-      } else if (label.includes('Дата выселения')) {
+      } else if (labelLower.includes('дата выселения')) {
         isFilled = !!contract?.move_out_date;
         value = contract?.move_out_date || match;
-      } else if (label.includes('Адрес') || label.includes('Мекенжай') || label.includes('Address')) {
+      } else if (labelLower.includes('адрес') || labelLower.includes('мекенжай') || labelLower.includes('address')) {
         value = contract?.property_address || allPlaceholderValues['ADDRESS'] || match;
         isFilled = !!(contract?.property_address || allPlaceholderValues['ADDRESS']);
-      } else if (label.includes('Цена') || label.includes('сутки')) {
+      } else if (labelLower.includes('цена') || labelLower.includes('сутки')) {
         isFilled = !!contract?.rent_amount;
         value = contract?.rent_amount || match;
-      } else if (label.includes('суток') || label.includes('Количество')) {
+      } else if (labelLower.includes('суток') || labelLower.includes('количество')) {
         isFilled = !!contract?.days_count;
         value = contract?.days_count || match;
       }
