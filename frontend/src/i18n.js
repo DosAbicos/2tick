@@ -894,6 +894,8 @@ const resources = {
       "signing.waitingDescription": "The landlord will review your application and approve the contract",
       
       // ===== PROFILE =====
+      "profile.statistics": "Statistics",
+      "profile.emailCannotChange": "Email cannot be changed",
       "profile.title": "Profile",
       "profile.personalInfo": "Personal Information",
       "profile.fullName": "Full Name",
