@@ -76,15 +76,18 @@ backend:
 frontend:
   - task: "Interface Localization"
     implemented: true
-    working: "NA"
+    working: false
     file: "frontend/src/pages/SignContractPage.js"
-    stuck_count: 0
-    priority: "medium"
+    stuck_count: 1
+    priority: "high"
     needs_retesting: false
     status_history:
       - working: "NA"
         agent: "testing"
         comment: "Frontend testing not performed as per system limitations. Backend API endpoints support multi-language functionality"
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL ISSUE: Language selection modal not appearing for new users. Contract 65acebb4-f3bd-4553-b3b6-e53eaa709584 has contract_language='ru' already set, preventing language selection. The showLanguageSelector logic in useEffect (lines 69-86) correctly checks if contract.contract_language exists and hides modal if set. However, this means users cannot select language on first visit. Russian interface works correctly with proper translations. Manual language switching via i18n works for UI but contract content remains in backend-locked language. Need to investigate why contract language gets set before user selection."
 
 metadata:
   created_by: "testing_agent"
