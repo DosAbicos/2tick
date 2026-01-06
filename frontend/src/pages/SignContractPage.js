@@ -1608,7 +1608,7 @@ const SignContractPage = () => {
                         }}
                         className="flex-1 py-3 px-6 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all font-medium"
                       >
-                        Назад
+                        {t('signing.back')}
                       </button>
                       <button
                         type="button"
@@ -1616,7 +1616,7 @@ const SignContractPage = () => {
                         disabled={verifying || verificationCode.length !== 4}
                         className="flex-1 py-3 px-6 text-white bg-gradient-to-r from-green-600 to-green-500 rounded-xl hover:from-green-700 hover:to-green-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-lg shadow-green-500/20"
                       >
-                        {verifying ? 'Проверяем...' : 'Подписать договор'}
+                        {verifying ? t('signing.verifying') : t('signing.signContract')}
                       </button>
                     </div>
                   </motion.div>
@@ -1628,9 +1628,9 @@ const SignContractPage = () => {
                     className="space-y-8"
                   >
                     <div className="text-center">
-                      <h3 className="text-2xl font-bold text-gray-900 mb-2">Введите код верификации</h3>
+                      <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('signing.enterVerificationCode')}</h3>
                       <p className="text-sm text-gray-500">
-                        Код отправлен в чат с ботом <span className="font-semibold text-[#0088cc]">@twotick_bot</span>
+                        {t('signing.telegramCodeSent')} <span className="font-semibold text-[#0088cc]">@twotick_bot</span>
                       </p>
                     </div>
                     
@@ -1657,7 +1657,7 @@ const SignContractPage = () => {
                         }}
                         className="flex-1 py-3 px-6 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all font-medium"
                       >
-                        Назад
+                        {t('signing.back')}
                       </button>
                       <button
                         type="button"
@@ -1665,7 +1665,7 @@ const SignContractPage = () => {
                         disabled={verifying || verificationCode.length !== 6}
                         className="flex-1 py-3 px-6 text-white bg-gradient-to-r from-green-600 to-green-500 rounded-xl hover:from-green-700 hover:to-green-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-lg shadow-green-500/20"
                       >
-                        {verifying ? 'Проверяем...' : 'Подписать договор'}
+                        {verifying ? t('signing.verifying') : t('signing.signContract')}
                       </button>
                     </div>
                     
@@ -1675,7 +1675,7 @@ const SignContractPage = () => {
                       rel="noopener noreferrer"
                       className="block w-full text-center py-2 text-sm text-gray-500 hover:text-gray-700 transition-colors"
                     >
-                      Не получили код? Открыть Telegram снова
+                      {t('signing.telegram')} ↗
                     </a>
                   </motion.div>
                 ) : null}
@@ -1693,8 +1693,8 @@ const SignContractPage = () => {
                 <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <CheckCircle className="h-10 w-10 text-emerald-600" />
                 </div>
-                <h3 className="text-2xl font-bold text-neutral-900 mb-2">{t('signing.success')}</h3>
-                <p className="text-neutral-600">Создатель договора получит уведомление и проверит вашу подпись.</p>
+                <h3 className="text-2xl font-bold text-neutral-900 mb-2">{t('signing.successSigned')}</h3>
+                <p className="text-neutral-600">{t('signing.successDescription')}</p>
               </motion.div>
             )}
           </div>
