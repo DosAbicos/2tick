@@ -1,6 +1,18 @@
 # Test Results
 
 backend:
+  - task: "Bilingual/Trilingual PDF Generation and Placeholder Separation"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ BILINGUAL/TRILINGUAL PDF GENERATION FULLY FUNCTIONAL! Tested specific contract IDs from review request: 1b8b8c69-cc57-4f50-8649-750e22759bda (RU) and 935abfcc-4c37-41cd-a6d4-2a18332f39c9 (EN). RU contract PDF contains RUSSIAN + KAZAKH sections with legal notice 'равную юридическую силу', NO English section (correct). EN contract PDF contains RUSSIAN + KAZAKH + ENGLISH sections with translation notice 'ENGLISH (перевод, юридической силы не имеет)' (correct). Placeholder owner separation works perfectly: landlord placeholders (1NAME) stay unchanged, tenant placeholders (NAME2, PHONE_NUM, EMAIL, ID_CARD) correctly filled by client. PDF generation logic correctly implements: RU/KK selection = bilingual PDF (RU+KK), EN selection = trilingual PDF (RU+KK+EN with translation notice). All requirements from review request satisfied."
+
   - task: "Multi-language contract creation and signing flow"
     implemented: true
     working: true
