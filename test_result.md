@@ -97,13 +97,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Multi-language contract creation and signing flow"
-    - "Admin authentication with specific credentials"
-    - "Template retrieval with multi-language content"
-    - "Contract creation from multi-language template"
-    - "Signing page language switching"
-    - "Set contract language endpoint"
-  stuck_tasks: []
+    - "Interface Localization"
+  stuck_tasks:
+    - "Interface Localization"
   test_all: false
   test_priority: "high_first"
 
