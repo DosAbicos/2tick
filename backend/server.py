@@ -2809,11 +2809,11 @@ async def update_signer_info(contract_id: str, data: SignerInfoUpdate):
                             
                         current_content = field_content
                         
-                        # Replace values in content by finding old values and replacing with new ones
+                        # Replace values in content using ONLY {{KEY}} pattern
+                        # This prevents confusion when multiple placeholders have the same label
                         for key, config in template['placeholders'].items():
                             if key in placeholder_values:
                                 new_value = placeholder_values[key]
-                                old_value = existing_values.get(key)
                                 
                                 if new_value:  # Replace if we have a new value
                                     # Format dates to DD.MM.YYYY
@@ -2827,27 +2827,14 @@ async def update_signer_info(contract_id: str, data: SignerInfoUpdate):
                                     
                                     old_content = current_content
                                     
-                                    # Strategy 1: Replace {{key}} if still exists
+                                    # ONLY use exact {{KEY}} replacement to avoid confusion
+                                    # between placeholders with same labels (e.g., landlord and tenant both have "Name")
                                     import re
                                     pattern = re.compile(f'{{{{\\s*{key}\\s*}}}}')
                                     current_content = pattern.sub(str(new_value), current_content)
                                     
-                                    # Strategy 2: Replace [label] with all language variants
-                                    labels = [
-                                        config.get('label', key),
-                                        config.get('label_kk', ''),
-                                        config.get('label_en', '')
-                                    ]
-                                    for label in labels:
-                                        if label:
-                                            current_content = current_content.replace(f'[{label}]', str(new_value))
-                                    
-                                    # Strategy 3: Direct value replacement
-                                    if old_value and old_value != new_value and str(old_value) in current_content:
-                                        current_content = current_content.replace(str(old_value), str(new_value))
-                                        print(f"🔧 ✅ [{field_name}] Replaced OLD VALUE '{old_value}' with NEW VALUE '{new_value}' for {key}")
-                                    elif old_content != current_content:
-                                        print(f"🔧 ✅ [{field_name}] Replaced placeholder {key} with value: {new_value}")
+                                    if old_content != current_content:
+                                        print(f"🔧 ✅ [{field_name}] Replaced {{{{{key}}}}} with value: {new_value}")
                         
                         updated_contents[field_name] = current_content
                     
