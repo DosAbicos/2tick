@@ -930,7 +930,7 @@ const SignContractPage = () => {
                   className="w-full py-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30"
                   data-testid="proceed-button"
                 >
-                  Продолжить →
+                  {t('signing.continue')} →
                 </button>
               </motion.div>
             )}
@@ -944,8 +944,8 @@ const SignContractPage = () => {
                 data-testid="step-fill-info"
               >
                 <div className="text-center mb-4">
-                  <h3 className="text-lg font-semibold mb-2">Заполните ваши данные</h3>
-                  <p className="text-neutral-600 text-sm">Для подписания договора необходима дополнительная информация</p>
+                  <h3 className="text-lg font-semibold mb-2">{t('signing.fillInfo')}</h3>
+                  <p className="text-neutral-600 text-sm">{t('signing.fillInfoDescription')}</p>
                 </div>
                 
                 {/* If contract has template with unfilled placeholders, show them */}
