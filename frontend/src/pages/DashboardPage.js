@@ -210,10 +210,10 @@ const DashboardPage = () => {
                             </span>
                           </div>
                           <p className="text-sm text-gray-600 mb-4 line-clamp-3">
-                            {template.description || 'Нет описания'}
+                            {template.description || t('templates.noDescription')}
                           </p>
                           <div className="text-xs text-blue-600 font-medium">
-                            Нажмите для выбора →
+                            {t('dashboard.useTemplate')} →
                           </div>
                         </div>
                       ))}
@@ -232,8 +232,8 @@ const DashboardPage = () => {
           <div className="minimal-card p-6 mb-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">Мои договоры</h1>
-                <p className="text-sm text-gray-500">Управляйте своими договорами</p>
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">{t('dashboard.myContracts')}</h1>
+                <p className="text-sm text-gray-500">{t('dashboard.manageContracts')}</p>
               </div>
               
               {/* Кнопки действий справа */}
@@ -243,14 +243,14 @@ const DashboardPage = () => {
                   className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-md shadow-blue-500/20 flex items-center gap-2"
                 >
                   <FileText className="w-4 h-4" />
-                  Маркет шаблонов
+                  {t('dashboard.templatesMarket')}
                 </button>
                 <button
                   onClick={handleCreateContract}
                   className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-blue-400 transition-all shadow-sm flex items-center gap-2"
                 >
                   <Plus className="w-4 h-4" />
-                  Создать договор
+                  {t('dashboard.new_contract')}
                 </button>
               </div>
             </div>
