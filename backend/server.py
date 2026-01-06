@@ -1491,55 +1491,123 @@ def replace_placeholders_in_content(content: str, contract: dict, template: dict
     if not isinstance(content, str):
         content = str(content)
     
+    # Get placeholder values from contract
+    pv = contract.get('placeholder_values', {})
+    
     # Handle new {{placeholder}} format with template
-    if template and template.get('placeholders') and contract.get('placeholder_values'):
+    if template and template.get('placeholders'):
         for key, config in template['placeholders'].items():
             # Skip placeholders that should NOT appear in content
             if config.get('showInContent') == False:
                 continue
             
-            # Get value from contract
-            value = contract.get('placeholder_values', {}).get(key, '')
+            # Get value from contract placeholder_values
+            value = pv.get(key, '')
             if value:
                 # Replace {{key}} with value
                 pattern = re.compile(f'{{{{\\s*{key}\\s*}}}}')
                 content = pattern.sub(str(value), content)
+                
+                # Also replace [label] format if label exists
+                label = config.get('label', '')
+                label_kk = config.get('label_kk', '')
+                label_en = config.get('label_en', '')
+                
+                if label:
+                    content = content.replace(f'[{label}]', str(value))
+                if label_kk:
+                    content = content.replace(f'[{label_kk}]', str(value))
+                if label_en:
+                    content = content.replace(f'[{label_en}]', str(value))
     
-    # Handle old [Placeholder] format for backward compatibility
-    # Get values from contract or use placeholders, ensure all are strings
-    signer_name = str(contract.get('signer_name', '')) if contract.get('signer_name') else '[ФИО Нанимателя]'
-    signer_phone = str(contract.get('signer_phone', '')) if contract.get('signer_phone') else '[Телефон]'
-    signer_email = str(contract.get('signer_email', '')) if contract.get('signer_email') else '[Email]'
-    move_in_date = str(contract.get('move_in_date', '')) if contract.get('move_in_date') else '[Дата заселения]'
-    move_out_date = str(contract.get('move_out_date', '')) if contract.get('move_out_date') else '[Дата выселения]'
-    property_address = str(contract.get('property_address', '')) if contract.get('property_address') else '[Адрес квартиры]'
-    rent_amount = str(contract.get('rent_amount', '')) if contract.get('rent_amount') else '[Цена в сутки]'
-    days_count = str(contract.get('days_count', '')) if contract.get('days_count') else '[Количество суток]'
+    # Handle [Label] format placeholders using placeholder_values mapping
+    # Map common labels to their placeholder keys
+    label_to_key_map = {
+        # Russian labels
+        'имя': ['NAME2', 'SIGNER_NAME', '1NAME'],
+        'фио': ['NAME2', 'SIGNER_NAME'],
+        'фио нанимателя': ['NAME2', 'SIGNER_NAME'],
+        'телефон': ['PHONE_NUM', 'PHONE'],
+        'номер телефона': ['PHONE_NUM', 'PHONE'],
+        'почта': ['EMAIL'],
+        'email': ['EMAIL'],
+        'иин': ['ID_CARD', 'IIN'],
+        'адрес': ['ADDRESS'],
+        # Kazakh labels
+        'аты': ['NAME2', 'SIGNER_NAME'],
+        'атыңыз': ['NAME2', 'SIGNER_NAME'],
+        'нөмір': ['PHONE_NUM', 'PHONE'],
+        'пошта': ['EMAIL'],
+        'мекенжай': ['ADDRESS'],
+        # English labels
+        'name': ['NAME2', 'SIGNER_NAME'],
+        'phone': ['PHONE_NUM', 'PHONE'],
+        'address': ['ADDRESS'],
+    }
     
-    # Replace placeholders only if we have actual values (not empty strings)
-    if signer_name and signer_name != '[ФИО Нанимателя]':
+    # Find and replace all [Label] format placeholders
+    placeholder_regex = re.compile(r'\[([^\]]+)\]')
+    
+    def replace_label(match):
+        label = match.group(1)
+        label_lower = label.lower()
+        
+        # Try to find value by label
+        for label_pattern, keys in label_to_key_map.items():
+            if label_pattern in label_lower:
+                for key in keys:
+                    if pv.get(key):
+                        return str(pv[key])
+        
+        # Also try signer fields from contract
+        if 'имя' in label_lower or 'фио' in label_lower or 'name' in label_lower or 'аты' in label_lower:
+            if contract.get('signer_name'):
+                return str(contract['signer_name'])
+        if 'телефон' in label_lower or 'phone' in label_lower or 'нөмір' in label_lower:
+            if contract.get('signer_phone'):
+                return str(contract['signer_phone'])
+        if 'почта' in label_lower or 'email' in label_lower or 'пошта' in label_lower:
+            if contract.get('signer_email'):
+                return str(contract['signer_email'])
+        
+        # Keep original if no value found
+        return match.group(0)
+    
+    content = placeholder_regex.sub(replace_label, content)
+    
+    # Legacy replacements for old contracts
+    signer_name = str(contract.get('signer_name', '')) if contract.get('signer_name') else ''
+    signer_phone = str(contract.get('signer_phone', '')) if contract.get('signer_phone') else ''
+    signer_email = str(contract.get('signer_email', '')) if contract.get('signer_email') else ''
+    move_in_date = str(contract.get('move_in_date', '')) if contract.get('move_in_date') else ''
+    move_out_date = str(contract.get('move_out_date', '')) if contract.get('move_out_date') else ''
+    property_address = str(contract.get('property_address', '')) if contract.get('property_address') else ''
+    rent_amount = str(contract.get('rent_amount', '')) if contract.get('rent_amount') else ''
+    days_count = str(contract.get('days_count', '')) if contract.get('days_count') else ''
+    
+    if signer_name:
         content = content.replace('[ФИО Нанимателя]', signer_name)
         content = content.replace('[ФИО]', signer_name)
     
-    if signer_phone and signer_phone != '[Телефон]':
+    if signer_phone:
         content = content.replace('[Телефон]', signer_phone)
     
-    if signer_email and signer_email != '[Email]':
+    if signer_email:
         content = content.replace('[Email]', signer_email)
     
-    if move_in_date and move_in_date != '[Дата заселения]':
+    if move_in_date:
         content = content.replace('[Дата заселения]', move_in_date)
     
-    if move_out_date and move_out_date != '[Дата выселения]':
+    if move_out_date:
         content = content.replace('[Дата выселения]', move_out_date)
     
-    if property_address and property_address != '[Адрес квартиры]':
+    if property_address:
         content = content.replace('[Адрес квартиры]', property_address)
     
-    if rent_amount and rent_amount != '[Цена в сутки]':
+    if rent_amount:
         content = content.replace('[Цена в сутки]', rent_amount)
     
-    if days_count and days_count != '[Количество суток]':
+    if days_count:
         content = content.replace('[Количество суток]', days_count)
     
     return content
