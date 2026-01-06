@@ -128,6 +128,7 @@ const resources = {
       "contractDetails.signingTime": "Время подписания",
       "contractDetails.signingMethod": "Метод подписания",
       "contractDetails.contractLanguage": "Язык договора",
+      "contractDetails.tenantSignedMessage": "Наниматель подписал договор. Проверьте документы и нажмите \"Утвердить\" для завершения.",
       "contractDetails.actions": "Действия",
       "contractDetails.sendForSigning": "Отправить на подписание",
       "contractDetails.approveContract": "Утвердить договор",
