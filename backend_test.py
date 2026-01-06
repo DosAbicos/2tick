@@ -37,8 +37,8 @@ from datetime import datetime
 
 # Configuration
 BASE_URL = "https://multilang-contracts.preview.emergentagent.com/api"
-ADMIN_EMAIL = "test.admin@2tick.kz"
-ADMIN_PASSWORD = "testadmin123"
+ADMIN_EMAIL = "asl@asl.kz"
+ADMIN_PASSWORD = "142314231423"
 
 class BackendTester:
     def __init__(self):
