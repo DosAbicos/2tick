@@ -914,6 +914,13 @@ const resources = {
       // ===== PROFILE =====
       "profile.statistics": "Statistics",
       "profile.emailCannotChange": "Email cannot be changed",
+      "profile.totalContracts": "Total Contracts",
+      "profile.signed": "Signed",
+      "profile.pending": "Pending",
+      "profile.contractLimit": "Contract Limit",
+      "profile.limitExhausted": "⚠️ Limit exhausted! Contact administrator.",
+      "profile.iin": "IIN/BIN",
+      "profile.address": "Legal Address",
       "profile.title": "Profile",
       "profile.personalInfo": "Personal Information",
       "profile.fullName": "Full Name",
