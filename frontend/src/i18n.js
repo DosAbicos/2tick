@@ -575,6 +575,7 @@ const resources = {
       "profile.smsNotifications": "SMS хабарландырулар",
       
       // ===== TEMPLATES =====
+      "templates.noDescription": "Сипаттама жоқ",
       "templates.title": "Үлгілер нарығы",
       "templates.search": "Үлгілерді іздеу...",
       "templates.all": "Барлығы",
