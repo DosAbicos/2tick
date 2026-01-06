@@ -1014,9 +1014,17 @@ def draw_content_section(p, content_text, y_position, width, height, language_la
 def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signature_hash: str = None, landlord: dict = None, template: dict = None) -> bytes:
     """Generate full PDF for contract with all content and signatures
     
-    PDF Language Logic:
-    - If user selected RU or KK: PDF contains both RU and KK versions (both have legal force)
-    - If user selected EN: PDF contains RU + KK + EN (EN marked as translation without legal force)
+    PDF Structure:
+    - Page 1: Russian version + signature block (RU)
+    - Page 2: Kazakh version + signature block (KK)
+    - Page 3 (if EN selected): English version + signature block (EN)
+    - Last page: ID document photo (if available)
+    
+    Features:
+    - QR code on every page
+    - Page numbers
+    - Header with logo
+    - Footer with contract info
     """
     
     # Get FIXED contract language (not UI language)
@@ -1025,6 +1033,9 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
     
     # Determine which languages to include
     include_english = (selected_language == 'en')
+    total_pages = 3 if include_english else 2
+    if signature and signature.get('document_upload'):
+        total_pages += 1
     
     # Register fonts
     try:
@@ -1042,21 +1053,172 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
     
     from reportlab.lib.colors import HexColor
     
-    # ========== MINIMALIST HEADER WITH LOGO ==========
-    # Add company logo
+    contract_code = contract.get('contract_code', 'N/A')
     logo_path = '/app/backend/logo.png'
-    if os.path.exists(logo_path):
+    
+    # QR code data - link to verify contract
+    qr_data = f"https://2tick.kz/verify/{contract.get('id', '')}"
+    
+    # ========== PAGE 1: RUSSIAN VERSION ==========
+    current_page = 1
+    
+    # Draw header/footer
+    draw_page_header_footer(p, width, height, current_page, total_pages, contract_code, logo_path, qr_data)
+    
+    # Title
+    y_position = height - 140
+    
+    try:
+        p.setFont("DejaVu-Bold", 16)
+    except:
+        p.setFont("Helvetica-Bold", 16)
+    
+    title_text = contract['title']
+    p.drawCentredString(width / 2, y_position, title_text[:60])
+    
+    y_position -= 25
+    
+    # Notice
+    try:
+        p.setFont("DejaVu", 8)
+    except:
+        p.setFont("Helvetica", 8)
+    p.setFillColor(HexColor('#64748b'))
+    notice_text = "Договор составлен на русском и казахском языках, оба текста имеют равную юридическую силу."
+    p.drawCentredString(width / 2, y_position, notice_text)
+    p.setFillColor(HexColor('#000000'))
+    
+    y_position -= 30
+    
+    # Russian content
+    content_type = contract.get('content_type', 'plain')
+    
+    try:
+        content_ru = contract.get('content', '')
+        if content_type == 'html':
+            content_ru = html_to_text_for_pdf(content_ru)
+        content_ru = replace_placeholders_in_content(content_ru, contract, template)
+    except Exception as e:
+        logging.error(f"Error processing RU content: {str(e)}")
+        content_ru = contract.get('content', 'Error loading content')
+    
+    y_position = draw_content_section(p, content_ru, y_position, width, height, "РУССКИЙ / RUSSIAN", start_new_page=False)
+    
+    # Russian signature block
+    y_position = draw_signature_block(p, y_position, width, height, contract, signature, landlord, template, 'ru')
+    
+    # ========== PAGE 2: KAZAKH VERSION ==========
+    p.showPage()
+    current_page = 2
+    draw_page_header_footer(p, width, height, current_page, total_pages, contract_code, logo_path, qr_data)
+    
+    y_position = height - 120
+    
+    try:
+        content_kk = contract.get('content_kk', '')
+        if not content_kk:
+            content_kk = contract.get('content', '')
+        if content_type == 'html':
+            content_kk = html_to_text_for_pdf(content_kk)
+        content_kk = replace_placeholders_in_content(content_kk, contract, template)
+    except Exception as e:
+        logging.error(f"Error processing KK content: {str(e)}")
+        content_kk = contract.get('content_kk', contract.get('content', ''))
+    
+    y_position = draw_content_section(p, content_kk, y_position, width, height, "ҚАЗАҚША / KAZAKH", start_new_page=False)
+    
+    # Kazakh signature block
+    y_position = draw_signature_block(p, y_position, width, height, contract, signature, landlord, template, 'kk')
+    
+    # ========== PAGE 3: ENGLISH VERSION (if selected) ==========
+    if include_english:
+        p.showPage()
+        current_page = 3
+        draw_page_header_footer(p, width, height, current_page, total_pages, contract_code, logo_path, qr_data)
+        
+        y_position = height - 120
+        
         try:
-            from PIL import Image as PILImage
-            logo = PILImage.open(logo_path)
-            logo_width = 60
-            logo_height = 60
-            
-            # Draw logo on the left
-            img_reader = ImageReader(logo_path)
-            p.drawImage(img_reader, 40, height - 95, width=logo_width, height=logo_height, mask='auto')
+            content_en = contract.get('content_en', '')
+            if not content_en:
+                content_en = contract.get('content', '')
+            if content_type == 'html':
+                content_en = html_to_text_for_pdf(content_en)
+            content_en = replace_placeholders_in_content(content_en, contract, template)
         except Exception as e:
-            logging.error(f"Error loading logo: {str(e)}")
+            logging.error(f"Error processing EN content: {str(e)}")
+            content_en = contract.get('content_en', contract.get('content', ''))
+        
+        y_position = draw_content_section(p, content_en, y_position, width, height, "ENGLISH", is_translation=True, start_new_page=False)
+        
+        # English signature block
+        y_position = draw_signature_block(p, y_position, width, height, contract, signature, landlord, template, 'en')
+    
+    # ========== LAST PAGE: ID DOCUMENT (if available) ==========
+    if signature and signature.get('document_upload'):
+        p.showPage()
+        current_page = total_pages
+        draw_page_header_footer(p, width, height, current_page, total_pages, contract_code, logo_path, qr_data)
+        
+        y_position = height - 120
+        
+        try:
+            p.setFont("DejaVu-Bold", 14)
+        except:
+            p.setFont("Helvetica-Bold", 14)
+        
+        p.setFillColor(HexColor('#1e40af'))
+        p.drawCentredString(width / 2, y_position, "═══ УДОСТОВЕРЕНИЕ ЛИЧНОСТИ / ID DOCUMENT ═══")
+        p.setFillColor(HexColor('#000000'))
+        
+        y_position -= 40
+        
+        try:
+            import base64
+            from PIL import Image as PILImage
+            
+            img_data = base64.b64decode(signature['document_upload'])
+            img_buffer = BytesIO(img_data)
+            img = PILImage.open(img_buffer)
+            
+            # Resize to fit
+            max_width = 400
+            max_height = 500
+            img_ratio = img.width / img.height
+            
+            if img.width > max_width:
+                new_width = max_width
+                new_height = int(new_width / img_ratio)
+            else:
+                new_width = img.width
+                new_height = img.height
+            
+            if new_height > max_height:
+                new_height = max_height
+                new_width = int(new_height * img_ratio)
+            
+            # Convert to RGB
+            if img.mode in ('RGBA', 'P'):
+                img = img.convert('RGB')
+            
+            # Save to buffer
+            rgb_buffer = BytesIO()
+            img.save(rgb_buffer, format='JPEG', quality=85)
+            rgb_buffer.seek(0)
+            
+            # Draw image centered
+            img_reader = ImageReader(rgb_buffer)
+            x_pos = (width - new_width) / 2
+            p.drawImage(img_reader, x_pos, y_position - new_height, width=new_width, height=new_height)
+            
+        except Exception as e:
+            logging.error(f"Error adding ID document: {str(e)}")
+            p.drawString(50, y_position, "Ошибка загрузки документа")
+    
+    # Save PDF
+    p.save()
+    pdf_buffer.seek(0)
+    return pdf_buffer.getvalue()
     
     # Company name and branding next to logo
     try:
