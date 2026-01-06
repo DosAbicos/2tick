@@ -4790,12 +4790,16 @@ class BackendTester:
         self.log("🚀 Starting Backend Testing for 2tick.kz")
         self.log("=" * 60)
         
-        # Login as admin first
-        if not self.login_as_admin():
-            self.log("❌ Cannot proceed without admin login")
-            return False
-        
         all_passed = True
+        
+        # PRIORITY TEST: Specific contract PDF signature verification (from review request)
+        specific_test_passed = self.test_specific_contract_pdf_signature_verification()
+        all_passed = all_passed and specific_test_passed
+        
+        # Login as admin first for other tests
+        if not self.login_as_admin():
+            self.log("❌ Cannot proceed without admin login for remaining tests")
+            return specific_test_passed  # Return result of priority test only
         
         # NEW CRITICAL TEST: Bilingual/Trilingual PDF Generation and Placeholder Separation
         bilingual_test_passed = self.test_bilingual_trilingual_pdf_generation()
