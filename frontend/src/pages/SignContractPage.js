@@ -1031,7 +1031,7 @@ const SignContractPage = () => {
                   // For old contracts without template, show old fields (always editable)
                   <>
                     <div>
-                      <label htmlFor="signer_name" className="text-sm font-medium text-gray-700 block mb-2">ФИО *</label>
+                      <label htmlFor="signer_name" className="text-sm font-medium text-gray-700 block mb-2">{t('signing.fullName')} *</label>
                       <input
                         id="signer_name"
                         value={signerInfo.name}
@@ -1044,7 +1044,7 @@ const SignContractPage = () => {
                     </div>
                     
                     <div>
-                      <label htmlFor="signer_phone" className="text-sm font-medium text-gray-700 block mb-2">Номер телефона *</label>
+                      <label htmlFor="signer_phone" className="text-sm font-medium text-gray-700 block mb-2">{t('signing.phone')} *</label>
                       <IMaskInput
                           mask="+7 (000) 000-00-00"
                           value={signerInfo.phone}
@@ -1059,7 +1059,7 @@ const SignContractPage = () => {
                     </div>
                     
                     <div>
-                      <label htmlFor="signer_email" className="text-sm font-medium text-gray-700 block mb-2">Email</label>
+                      <label htmlFor="signer_email" className="text-sm font-medium text-gray-700 block mb-2">{t('signing.email')}</label>
                       <input
                           id="signer_email"
                           type="email"
@@ -1070,7 +1070,7 @@ const SignContractPage = () => {
                           placeholder="example@mail.com"
                         />
                       {signerInfo.email && !validateEmail(signerInfo.email) && (
-                        <p className="text-xs text-red-500 mt-1">Введите корректный email</p>
+                        <p className="text-xs text-red-500 mt-1">{t('signing.enterValidEmail')}</p>
                       )}
                     </div>
                   </>
@@ -1083,14 +1083,14 @@ const SignContractPage = () => {
                     className="flex-1 py-3 px-4 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all"
                     data-testid="back-to-view-button"
                   >
-                    ← Назад
+                    ← {t('signing.back')}
                   </button>
                   <button
                     onClick={handleSaveSignerInfo}
                     className="flex-1 py-3 px-4 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/20"
                     data-testid="save-signer-info-button"
                   >
-                    Сохранить и продолжить →
+                    {t('signing.saveAndContinue')} →
                   </button>
                 </div>
               </motion.div>
