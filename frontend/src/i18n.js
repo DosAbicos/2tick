@@ -684,8 +684,12 @@ const resources = {
       "templates.preview": "Алдын ала қарау",
       "templates.addToFavorites": "Таңдаулыларға қосу",
       "templates.removeFromFavorites": "Таңдаулылардан жою",
+      "templates.addedToFavorites": "Таңдаулыларға қосылды",
+      "templates.removedFromFavorites": "Таңдаулылардан жойылды",
       "templates.noTemplates": "Үлгілер табылмады",
+      "templates.noTemplatesYet": "Үлгілер әлі қосылмаған",
       "templates.loading": "Үлгілер жүктелуде...",
+      "templates.loadError": "Үлгілерді жүктеу қатесі",
       
       // ===== ADMIN =====
       "admin.title": "Әкімші панелі",
