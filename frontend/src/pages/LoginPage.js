@@ -76,10 +76,10 @@ const LoginPage = () => {
             </span>
           </Link>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            Вход в аккаунт
+            {t('auth.login.title')}
           </h1>
           <p className="text-gray-600 text-sm">
-            Войдите чтобы продолжить работу
+            {t('auth.login.subtitle')}
           </p>
         </div>
 
@@ -90,7 +90,7 @@ const LoginPage = () => {
             <div className="space-y-2">
               <label htmlFor="email" className="text-gray-700 text-sm font-medium flex items-center gap-2">
                 <Mail className="w-4 h-4 text-blue-500" />
-                Email
+                {t('auth.login.email')}
               </label>
               <input
                 id="email"
@@ -109,10 +109,10 @@ const LoginPage = () => {
               <div className="flex items-center justify-between">
                 <label htmlFor="password" className="text-gray-700 text-sm font-medium flex items-center gap-2">
                   <Lock className="w-4 h-4 text-blue-500" />
-                  Пароль
+                  {t('auth.login.password')}
                 </label>
                 <Link to="/forgot-password" className="text-xs text-blue-600 hover:text-blue-700">
-                  Забыли пароль?
+                  {t('auth.login.forgotPassword')}
                 </Link>
               </div>
               <input
@@ -123,7 +123,7 @@ const LoginPage = () => {
                 value={formData.password}
                 onChange={handleChange}
                 className="minimal-input w-full"
-                placeholder="Введите пароль"
+                placeholder={t('auth.login.passwordPlaceholder')}
               />
             </div>
 
@@ -132,7 +132,7 @@ const LoginPage = () => {
               disabled={loading}
               className="w-full py-4 text-base font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2"
             >
-              {loading ? 'Вход...' : 'Войти'}
+              {loading ? t('auth.login.loading') : t('auth.login.submit')}
               {!loading && <ArrowRight className="w-5 h-5" />}
             </button>
           </form>
