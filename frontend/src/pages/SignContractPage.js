@@ -492,7 +492,7 @@ const SignContractPage = () => {
       // Check if all required placeholders are filled
       for (const { key, config } of unfilledPlaceholders) {
         if (config.required && !placeholderValues[key]) {
-          toast.error(`Пожалуйста, заполните поле: ${config.label}`);
+          toast.error(`${t('signing.pleaseFillField')}: ${getPlaceholderLabel(config)}`);
           return;
         }
       }
@@ -513,7 +513,7 @@ const SignContractPage = () => {
         // Mark that all required info is now filled
         setNeedsInfo(false);
         
-        toast.success('Информация сохранена');
+        toast.success(t('signing.infoSaved'));
         
         // Always move to document step after saving info
         setStep(2);
@@ -525,18 +525,18 @@ const SignContractPage = () => {
       // For old contracts without template, validate old fields
       if (needsInfo) {
         if ((!contract.signer_name || contract.signer_name === 'Не указано') && !signerInfo.name) {
-          toast.error('Пожалуйста, укажите ФИО');
+          toast.error(t('signing.pleaseEnterName'));
           return;
         }
         if (!contract.signer_phone && !signerInfo.phone) {
-          toast.error('Пожалуйста, укажите телефон');
+          toast.error(t('signing.pleaseEnterPhone'));
           return;
         }
       }
       
       // Validate email if provided
       if (signerInfo.email && !validateEmail(signerInfo.email)) {
-        toast.error('Введите корректный email адрес');
+        toast.error(t('signing.invalidEmail'));
         return;
       }
       
@@ -554,7 +554,7 @@ const SignContractPage = () => {
         // Mark that all required info is now filled
         setNeedsInfo(false);
         
-        toast.success('Информация сохранена');
+        toast.success(t('signing.infoSaved'));
         
         // Always move to document step after saving info
         setStep(2);
