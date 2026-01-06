@@ -4570,6 +4570,10 @@ class BackendTester:
         
         all_passed = True
         
+        # NEW CRITICAL TEST: Bilingual/Trilingual PDF Generation and Placeholder Separation
+        bilingual_test_passed = self.test_bilingual_trilingual_pdf_generation()
+        all_passed = all_passed and bilingual_test_passed
+        
         # КРИТИЧЕСКОЕ ТЕСТИРОВАНИЕ: Contract Signing Fixes
         critical_test_passed = self.test_contract_signing_fixes_e2e()
         all_passed = all_passed and critical_test_passed
