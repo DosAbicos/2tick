@@ -725,7 +725,7 @@ const SignContractPage = () => {
       setVerificationMethod('telegram');
       setTelegramCooldown(60);
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Ошибка Telegram');
+      toast.error(error.response?.data?.detail || t('common.error'));
     } finally {
       setRequestingTelegram(false);
     }
@@ -733,7 +733,7 @@ const SignContractPage = () => {
 
   const handleVerifyTelegramOTP = async () => {
     if (telegramCode.length !== 6) {
-      toast.error('Введите 6-значный код');
+      toast.error(t('signing.enter6DigitCode'));
       return;
     }
     
@@ -744,11 +744,11 @@ const SignContractPage = () => {
       });
       
       if (response.data.verified) {
-        toast.success('Верификация успешна!');
+        toast.success(t('signing.verificationSuccess'));
         setStep(6);
       }
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Неверный код');
+      toast.error(error.response?.data?.detail || t('signing.enterCorrectCode'));
     } finally {
       setVerifying(false);
     }
@@ -756,7 +756,7 @@ const SignContractPage = () => {
 
   const handleVerifyCallOTP = async () => {
     if (callCode.length !== 4) {
-      toast.error('Введите 4 цифры');
+      toast.error(t('signing.enter4DigitCode'));
       return;
     }
     
@@ -767,11 +767,11 @@ const SignContractPage = () => {
       });
       
       if (response.data.verified) {
-        toast.success('Верификация успешна!');
+        toast.success(t('signing.verificationSuccess'));
         setStep(6); // Move to success
       }
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Неверный код');
+      toast.error(error.response?.data?.detail || t('signing.enterCorrectCode'));
     } finally {
       setVerifying(false);
     }
@@ -780,7 +780,7 @@ const SignContractPage = () => {
   const handleVerifyOTP = async () => {
     const codeToVerify = verificationCode || otpValue;
     if (codeToVerify.length !== 6 && codeToVerify.length !== 4) {
-      toast.error('Введите корректный код');
+      toast.error(t('signing.enterCorrectCode'));
       return;
     }
     
