@@ -1185,9 +1185,9 @@ const SignContractPage = () => {
                 data-testid="step-final-review"
               >
                 <div className="text-center mb-4">
-                  <h3 className="text-xl font-bold text-gray-900">Финальная проверка договора</h3>
+                  <h3 className="text-xl font-bold text-gray-900">{t('signing.finalReview')}</h3>
                   <p className="text-sm text-gray-600 mt-2">
-                    Внимательно проверьте все данные перед подписанием
+                    {t('signing.finalReviewDescription')}
                   </p>
                 </div>
 
@@ -1211,11 +1211,11 @@ const SignContractPage = () => {
                 {/* Display uploaded document (ID/passport) if exists */}
                 {contract.signature?.document_upload && (
                   <div className="bg-white p-6 rounded-lg border border-gray-200">
-                    <h4 className="text-base font-semibold text-gray-900 mb-4">Удостоверение личности клиента</h4>
+                    <h4 className="text-base font-semibold text-gray-900 mb-4">{t('signing.clientDocument')}</h4>
                     <div className="relative">
                       <img 
                         src={`data:image/jpeg;base64,${contract.signature.document_upload}`} 
-                        alt="Удостоверение личности" 
+                        alt={t('signing.clientDocument')} 
                         className="w-full max-w-2xl mx-auto rounded-lg shadow-lg border-2 border-gray-200"
                       />
                     </div>
@@ -1223,7 +1223,7 @@ const SignContractPage = () => {
                 )}
 
                 {/* English Disclaimer Checkbox */}
-                {language === 'en' && (
+                {contractLanguage === 'en' && (
                   <div className="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-6 space-y-4">
                     <div className="flex items-start gap-3">
                       <input
