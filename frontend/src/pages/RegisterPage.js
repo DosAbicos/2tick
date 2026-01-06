@@ -678,7 +678,7 @@ const RegisterPage = () => {
                 <div className="space-y-2">
                   <label htmlFor="confirmPassword" className="text-gray-700 text-sm font-medium flex items-center gap-2">
                     <Lock className="w-4 h-4 text-blue-500" />
-                    Подтвердите пароль *
+                    {t('auth.register.confirm_password')} *
                   </label>
                   <input
                     id="confirmPassword"
@@ -688,16 +688,16 @@ const RegisterPage = () => {
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     className="minimal-input w-full"
-                    placeholder="Повторите пароль"
+                    placeholder={t('auth.register.confirmPasswordPlaceholder')}
                   />
                   {!passwordMatch && formData.confirmPassword && (
                     <p className="text-red-500 text-sm flex items-center gap-1">
-                      <X className="w-4 h-4" /> Пароли не совпадают
+                      <X className="w-4 h-4" /> {t('auth.register.password_mismatch')}
                     </p>
                   )}
                   {passwordMatch && formData.confirmPassword && (
                     <p className="text-green-500 text-sm flex items-center gap-1">
-                      <Check className="w-4 h-4" /> Пароли совпадают
+                      <Check className="w-4 h-4" /> {t('auth.register.password_match')}
                     </p>
                   )}
                 </div>
@@ -708,14 +708,14 @@ const RegisterPage = () => {
                     onClick={() => setStep(2)}
                     className="flex-1 py-4 px-4 text-base font-medium text-gray-600 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all"
                   >
-                    Назад
+                    {t('auth.register.back')}
                   </button>
                   <button
                     type="submit"
                     disabled={loading || !passwordMatch}
                     className="flex-1 py-4 px-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {loading ? 'Сохранение...' : 'Продолжить'}
+                    {loading ? t('common.loading') : t('auth.register.next')}
                   </button>
                 </div>
               </>
