@@ -41,7 +41,7 @@ const TemplatesPage = () => {
       const response = await axios.get(`${API}/templates`, { params });
       setTemplates(response.data);
     } catch (error) {
-      toast.error('Ошибка загрузки шаблонов');
+      toast.error(t('templates.loadError'));
     } finally {
       setLoading(false);
     }
@@ -76,16 +76,16 @@ const TemplatesPage = () => {
           headers: { Authorization: `Bearer ${token}` }
         });
         setFavoriteTemplates(favoriteTemplates.filter(id => id !== templateId));
-        toast.success('Удалено из избранного');
+        toast.success(t('templates.removedFromFavorites'));
       } else {
         await axios.post(`${API}/users/favorites/templates/${templateId}`, {}, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setFavoriteTemplates([...favoriteTemplates, templateId]);
-        toast.success('Добавлено в избранное');
+        toast.success(t('templates.addedToFavorites'));
       }
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Ошибка');
+      toast.error(error.response?.data?.detail || t('common.error'));
     }
   };
 
@@ -142,7 +142,7 @@ const TemplatesPage = () => {
               <p className="text-neutral-600 mb-4">
                 {selectedCategory 
                   ? 'Нет шаблонов в этой категории' 
-                  : 'Шаблоны еще не добавлены'
+                  : t('templates.noTemplatesYet')
                 }
               </p>
               <Button variant="outline" onClick={() => navigate('/dashboard')}>
