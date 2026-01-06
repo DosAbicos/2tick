@@ -265,7 +265,7 @@ const DashboardPage = () => {
                 <FileText className="w-5 h-5 text-white" />
               </div>
               <div className="min-w-0">
-                <p className="text-xs sm:text-sm text-gray-600">Всего</p>
+                <p className="text-xs sm:text-sm text-gray-600">{t('dashboard.stats.total')}</p>
                 <p className="text-xl sm:text-2xl font-bold text-gray-900">{stats.total}</p>
               </div>
             </div>
@@ -277,7 +277,7 @@ const DashboardPage = () => {
                 <CheckCircle className="w-5 h-5 text-white" />
               </div>
               <div className="min-w-0">
-                <p className="text-xs sm:text-sm text-gray-600">Подписано</p>
+                <p className="text-xs sm:text-sm text-gray-600">{t('dashboard.stats.signedTotal')}</p>
                 <p className="text-xl sm:text-2xl font-bold text-gray-900">{stats.signed}</p>
               </div>
             </div>
@@ -289,7 +289,7 @@ const DashboardPage = () => {
                 <Clock className="w-5 h-5 text-white" />
               </div>
               <div className="min-w-0">
-                <p className="text-xs sm:text-sm text-gray-600">В ожидании</p>
+                <p className="text-xs sm:text-sm text-gray-600">{t('dashboard.stats.pending')}</p>
                 <p className="text-xl sm:text-2xl font-bold text-gray-900">{stats.pending}</p>
               </div>
             </div>
@@ -301,7 +301,7 @@ const DashboardPage = () => {
                 <FileText className="w-5 h-5 text-white" />
               </div>
               <div className="min-w-0">
-                <p className="text-xs sm:text-sm text-gray-600">Черновики</p>
+                <p className="text-xs sm:text-sm text-gray-600">{t('dashboard.stats.drafts')}</p>
                 <p className="text-xl sm:text-2xl font-bold text-gray-900">{stats.draft}</p>
               </div>
             </div>
