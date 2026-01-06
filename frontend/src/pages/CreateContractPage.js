@@ -508,6 +508,94 @@ Email: ${templateData.tenant_email || '[Email]'}
 Дата: ${contract_date}`;
   };
 
+  // Helper function to process content with placeholder replacements
+  const processContentWithPlaceholders = (content, placeholders, values) => {
+    if (!content || !placeholders || !values) return content;
+    
+    let processedContent = content;
+    
+    // First replace regular placeholders
+    Object.entries(placeholders).forEach(([key, config]) => {
+      if (config.type !== 'calculated') {
+        let value = values[key] || `[${config.label}]`;
+        
+        // Format dates to DD.MM.YYYY
+        if (config.type === 'date' && values[key]) {
+          value = formatDateToDDMMYYYY(values[key]);
+        }
+        
+        const regex = new RegExp(`{{${key}}}`, 'g');
+        processedContent = processedContent.replace(regex, value);
+      }
+    });
+    
+    // Calculate computed fields
+    Object.entries(placeholders).forEach(([key, config]) => {
+      if (config.type === 'calculated' && config.formula) {
+        const { operand1, operation, operand2 } = config.formula;
+        
+        let result = 0;
+        
+        if (operation === 'days_between') {
+          if (values[operand1] && values[operand2]) {
+            const date1 = new Date(values[operand1]);
+            const date2 = new Date(values[operand2]);
+            const diffTime = Math.abs(date2 - date1);
+            result = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          }
+        } else {
+          const val1 = parseFloat(values[operand1]) || 0;
+          const val2 = parseFloat(values[operand2]) || 0;
+          
+          switch(operation) {
+            case 'add': result = val1 + val2; break;
+            case 'subtract': result = val1 - val2; break;
+            case 'multiply': result = val1 * val2; break;
+            case 'divide': result = val2 !== 0 ? val1 / val2 : 0; break;
+            case 'modulo': result = val2 !== 0 ? val1 % val2 : 0; break;
+            default: result = 0;
+          }
+        }
+        
+        const regex = new RegExp(`{{${key}}}`, 'g');
+        processedContent = processedContent.replace(regex, result.toString());
+      }
+    });
+    
+    return processedContent;
+  };
+
+  // Helper function to clean HTML tags from content
+  const cleanHtmlTags = (content) => {
+    if (!content) return content;
+    return content
+      .replace(/<br\s*\/?>/gi, '\n')
+      .replace(/<div>/gi, '\n')
+      .replace(/<\/div>/gi, '')
+      .replace(/<p>/gi, '')
+      .replace(/<\/p>/gi, '\n')
+      .replace(/<h2>/gi, '\n')
+      .replace(/<\/h2>/gi, '\n')
+      .replace(/<h3>/gi, '\n')
+      .replace(/<\/h3>/gi, '\n')
+      .replace(/<b>/gi, '')
+      .replace(/<\/b>/gi, '')
+      .replace(/<strong>/gi, '')
+      .replace(/<\/strong>/gi, '')
+      .replace(/<i>/gi, '')
+      .replace(/<\/i>/gi, '')
+      .replace(/<em>/gi, '')
+      .replace(/<\/em>/gi, '')
+      .replace(/<u>/gi, '')
+      .replace(/<\/u>/gi, '')
+      .replace(/<ul>/gi, '\n')
+      .replace(/<\/ul>/gi, '\n')
+      .replace(/<li>/gi, '• ')
+      .replace(/<\/li>/gi, '\n')
+      .replace(/<span[^>]*>/gi, '')
+      .replace(/<\/span>/gi, '');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -515,59 +603,17 @@ Email: ${templateData.tenant_email || '[Email]'}
     try {
       // Use saved content if available, otherwise generate from form
       let contentToSave = isContentSaved ? manualContent : (selectedTemplate ? selectedTemplate.content : generateContractContent());
+      let contentKkToSave = selectedTemplate?.content_kk || null;
+      let contentEnToSave = selectedTemplate?.content_en || null;
       
-      // Replace placeholders with actual values
-      if (selectedTemplate && placeholderValues) {
-        // First replace regular placeholders
-        Object.entries(selectedTemplate.placeholders || {}).forEach(([key, config]) => {
-          if (config.type !== 'calculated') {
-            let value = placeholderValues[key] || `[${config.label}]`;
-            
-            // Format dates to DD.MM.YYYY
-            if (config.type === 'date' && placeholderValues[key]) {
-              value = formatDateToDDMMYYYY(placeholderValues[key]);
-            }
-            
-            const regex = new RegExp(`{{${key}}}`, 'g');
-            contentToSave = contentToSave.replace(regex, value);
-          }
-        });
-        
-        // Calculate computed fields
-        if (selectedTemplate.placeholders) {
-          Object.entries(selectedTemplate.placeholders).forEach(([key, config]) => {
-            if (config.type === 'calculated' && config.formula) {
-              const { operand1, operation, operand2 } = config.formula;
-              
-              let result = 0;
-              
-              if (operation === 'days_between') {
-                // Date calculation
-                if (placeholderValues[operand1] && placeholderValues[operand2]) {
-                  const date1 = new Date(placeholderValues[operand1]);
-                  const date2 = new Date(placeholderValues[operand2]);
-                  const diffTime = Math.abs(date2 - date1);
-                  result = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                }
-              } else {
-                // Numerical calculation
-                const val1 = parseFloat(placeholderValues[operand1]) || 0;
-                const val2 = parseFloat(placeholderValues[operand2]) || 0;
-                
-                switch(operation) {
-                  case 'add': result = val1 + val2; break;
-                  case 'subtract': result = val1 - val2; break;
-                  case 'multiply': result = val1 * val2; break;
-                  case 'divide': result = val2 !== 0 ? val1 / val2 : 0; break;
-                  case 'modulo': result = val2 !== 0 ? val1 % val2 : 0; break;
-                  default: result = 0;
-                }
-              }
-              
-              const regex = new RegExp(`{{${key}}}`, 'g');
-              contentToSave = contentToSave.replace(regex, result.toString());
-            }
-          });
+      // Replace placeholders with actual values for all language versions
+      if (selectedTemplate && placeholderValues && selectedTemplate.placeholders) {
+        contentToSave = processContentWithPlaceholders(contentToSave, selectedTemplate.placeholders, placeholderValues);
+        if (contentKkToSave) {
+          contentKkToSave = processContentWithPlaceholders(contentKkToSave, selectedTemplate.placeholders, placeholderValues);
+        }
+        if (contentEnToSave) {
+          contentEnToSave = processContentWithPlaceholders(contentEnToSave, selectedTemplate.placeholders, placeholderValues);
         }
       }
       
