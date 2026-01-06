@@ -638,7 +638,7 @@ const SignContractPage = () => {
     setSendingCode(true);
     try {
       const response = await axios.post(`${API}/sign/${id}/request-otp?method=sms`);
-      toast.success('Код отправлен на ваш телефон');
+      toast.success(t('signing.codeSentToPhone'));
       
       // Увеличиваем счетчик запросов
       const newCount = smsRequestCount + 1;
@@ -655,7 +655,7 @@ const SignContractPage = () => {
         setMockOtp(response.data.mock_otp);
       }
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Ошибка отправки SMS');
+      toast.error(error.response?.data?.detail || t('common.error'));
     } finally {
       setSendingCode(false);
     }
@@ -689,7 +689,7 @@ const SignContractPage = () => {
     setSendingCode(true);
     try {
       const response = await axios.post(`${API}/sign/${id}/request-call-otp`);
-      toast.success('Вам поступит звонок. Введите последние 4 цифры номера');
+      toast.success(t('signing.callInitiated'));
       setCallHint(response.data.hint || '');
       
       // Увеличиваем счетчик запросов
@@ -702,7 +702,7 @@ const SignContractPage = () => {
         setCallCooldown(cooldownTime);
       }
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Ошибка при звонке');
+      toast.error(error.response?.data?.detail || t('common.error'));
     } finally {
       setSendingCode(false);
     }
