@@ -76,9 +76,9 @@ backend:
 frontend:
   - task: "Interface Localization"
     implemented: true
-    working: false
+    working: true
     file: "frontend/src/pages/SignContractPage.js"
-    stuck_count: 1
+    stuck_count: 0
     priority: "high"
     needs_retesting: false
     status_history:
@@ -88,6 +88,21 @@ frontend:
       - working: false
         agent: "testing"
         comment: "❌ CRITICAL ISSUE: Language selection modal not appearing for new users. Contract 65acebb4-f3bd-4553-b3b6-e53eaa709584 has contract_language='ru' already set, preventing language selection. The showLanguageSelector logic in useEffect (lines 69-86) correctly checks if contract.contract_language exists and hides modal if set. However, this means users cannot select language on first visit. Russian interface works correctly with proper translations. Manual language switching via i18n works for UI but contract content remains in backend-locked language. Need to investigate why contract language gets set before user selection."
+      - working: true
+        agent: "testing"
+        comment: "✅ LANGUAGE SELECTION AND PLACEHOLDER REPLACEMENT WORKING! Tested contract b8e0a133-3e4c-4e28-8481-7921a87057f1. Language selector modal appears correctly for new contracts. Successfully selected Kazakh language (🇰🇿 Қазақша). Placeholder filling works perfectly - all test values correctly replaced: 'Тест Тестов' (NAME2), '+7 777 123 4567' (PHONE_NUM), 'test@test.kz' (EMAIL), '123456789012' (ID_CARD). Contract content displays with proper highlighting (green for filled values). Interface shows in Kazakh with proper field labels: 'Атыңыз', 'Телефон нөмірі', 'ИИН', 'Пошта'. Multi-language functionality working as expected."
+
+  - task: "Contract Placeholder Replacement"
+    implemented: true
+    working: true
+    file: "frontend/src/pages/SignContractPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ PLACEHOLDER REPLACEMENT FULLY FUNCTIONAL! Tested with contract b8e0a133-3e4c-4e28-8481-7921a87057f1. All placeholder fields correctly identified and filled: NAME2 → 'Тест Тестов', PHONE_NUM → '+7 777 123 4567', EMAIL → 'test@test.kz', ID_CARD → '123456789012'. Values properly saved via /api/sign/{id}/update-signer-info endpoint. Contract content displays replaced values with green highlighting indicating successful replacement. No unreplaced placeholders found in final contract view. highlightPlaceholders() function working correctly to show filled vs unfilled placeholders."
 
 metadata:
   created_by: "testing_agent"
