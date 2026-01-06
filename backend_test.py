@@ -4598,6 +4598,7 @@ class BackendTester:
         # Final summary
         self.log("\n" + "=" * 60)
         self.log("📊 FINAL TEST RESULTS:")
+        self.log(f"   🌍 NEW Bilingual/Trilingual PDF: {'✅ PASSED' if bilingual_test_passed else '❌ FAILED'}")
         self.log(f"   🚨 CRITICAL Contract Signing: {'✅ PASSED' if critical_test_passed else '❌ FAILED'}")
         self.log(f"   Authentication: {'✅ PASSED' if test1_passed else '❌ FAILED'}")
         self.log(f"   Contracts: {'✅ PASSED' if test2_passed else '❌ FAILED'}")
