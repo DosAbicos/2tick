@@ -136,7 +136,7 @@ const ProfilePage = () => {
             <div className="bg-white rounded-lg sm:shadow-md sm:border sm:border-gray-200 p-4 sm:p-6">
               <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <FileText className="w-5 h-5 text-blue-500" />
-                Статистика
+                {t('profile.statistics')}
               </h2>
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
@@ -293,7 +293,7 @@ const ProfilePage = () => {
                     <div className="flex-1 min-w-0">
                       <label className="text-sm font-medium text-gray-500 mb-1 block">Email</label>
                       <p className="text-base font-medium text-gray-900 break-words">{user?.email}</p>
-                      <p className="text-xs text-gray-400 mt-1">Email нельзя изменить</p>
+                      <p className="text-xs text-gray-400 mt-1">{t('profile.emailCannotChange')}</p>
                     </div>
                   </div>
                 </div>
@@ -437,7 +437,7 @@ const ProfilePage = () => {
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium text-gray-500 mb-2 block">Новый пароль</label>
+                    <label className="text-sm font-medium text-gray-500 mb-2 block">{t('profile.newPassword')}</label>
                     <input
                       type="password"
                       value={passwordData.new_password}
@@ -448,7 +448,7 @@ const ProfilePage = () => {
                   </div>
 
                   <div>
-                    <label className="text-sm font-medium text-gray-500 mb-2 block">Подтвердите новый пароль</label>
+                    <label className="text-sm font-medium text-gray-500 mb-2 block">{t('profile.confirmNewPassword')}</label>
                     <input
                       type="password"
                       value={passwordData.confirm_password}
