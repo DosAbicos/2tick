@@ -112,9 +112,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Interface Localization"
-  stuck_tasks:
-    - "Interface Localization"
+    - "Contract Placeholder Replacement"
+  stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
@@ -123,3 +122,5 @@ agent_communication:
     message: "✅ ALL CRITICAL MULTI-LANGUAGE BACKEND TESTS PASSED! Successfully tested contract creation and signing flow with multi-language support. Admin login works with specified credentials (asl@asl.kz/142314231423). Multi-language templates found and used correctly. Contract creation preserves content_kk and content_en fields. Signing page language switching works for all languages (ru/kk/en). Set contract language endpoint functions properly. All requested API endpoints tested and working: POST /api/auth/login, GET /api/templates, POST /api/contracts, GET /api/sign/{id}, POST /api/sign/{id}/set-contract-language. Backend is ready for multi-language contract functionality."
   - agent: "testing"
     message: "❌ CRITICAL FRONTEND ISSUE FOUND: Language selection modal not appearing for contract signing page. Contract 65acebb4-f3bd-4553-b3b6-e53eaa709584 already has contract_language='ru' set in backend, which prevents the language selection modal from showing (SignContractPage.js lines 69-86). This means users cannot select their preferred language on first visit. The frontend logic correctly hides the modal when contract_language exists, but this suggests the language is being set prematurely. Russian interface works correctly with proper i18n translations. Manual language switching works for UI elements but contract content remains locked to backend language. URGENT: Investigate why contract language gets set before user selection - this breaks the multi-language user experience."
+  - agent: "testing"
+    message: "✅ COMPREHENSIVE CONTRACT SIGNING TEST COMPLETED! Tested contract b8e0a133-3e4c-4e28-8481-7921a87057f1 with full placeholder replacement flow. LANGUAGE SELECTION: Modal appears correctly for new contracts, successfully selected Kazakh (🇰🇿 Қазақша). PLACEHOLDER FILLING: All 4 required fields filled correctly with test data - Name: 'Тест Тестов', Phone: '+7 777 123 4567', Email: 'test@test.kz', IIN: '123456789012'. REPLACEMENT VERIFICATION: Contract content shows all placeholders properly replaced with green highlighting. Interface displays in Kazakh with correct field labels. Multi-language functionality and placeholder replacement both working as expected. Previous issue with language selection was specific to pre-configured contracts - new contracts work correctly."
