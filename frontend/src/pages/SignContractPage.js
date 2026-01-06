@@ -167,33 +167,57 @@ const SignContractPage = () => {
     // Use approved content if contract is approved
     let result = contract?.approved ? (contract.approved_content || content) : content;
     
-    // Regular expression to match placeholders like [Label]
-    const placeholderRegex = /\[([^\]]+)\]/g;
+    // Get all placeholder values (from local state, contract, and localStorage)
+    const allPlaceholderValues = {
+      ...contract?.placeholder_values,
+      ...placeholderValues
+    };
     
-    result = result.replace(placeholderRegex, (match, label) => {
-      // Check if this placeholder has a value
+    // First, replace {{KEY}} format placeholders with values
+    const templatePlaceholderRegex = /\{\{([^}]+)\}\}/g;
+    result = result.replace(templatePlaceholderRegex, (match, key) => {
+      const value = allPlaceholderValues[key];
+      const config = template?.placeholders?.[key];
+      
+      if (value) {
+        // Value exists - show green highlighted
+        return `<span class="inline-block px-2 py-0.5 rounded-md border bg-emerald-50 border-emerald-200 text-emerald-700 font-medium transition-all duration-300 shadow-sm">${value}</span>`;
+      } else if (config) {
+        // No value but config exists - show placeholder label in amber
+        const label = getPlaceholderLabel(config);
+        return `<span class="inline-block px-2 py-0.5 rounded-md border bg-amber-50 border-amber-200 text-amber-700 font-medium transition-all duration-300 shadow-sm">[${label}]</span>`;
+      }
+      return match; // Keep original if no config
+    });
+    
+    // Then handle [Label] format placeholders (legacy format)
+    const labelPlaceholderRegex = /\[([^\]]+)\]/g;
+    result = result.replace(labelPlaceholderRegex, (match, label) => {
       let isFilled = false;
       let value = match;
       
       // Use signerInfo state if available, otherwise use contract data
-      if (label.includes('ФИО') || label.includes('Нанимателя')) {
-        value = signerInfo.name || contract?.signer_name || match;
-        isFilled = !!(signerInfo.name || contract?.signer_name);
-      } else if (label.includes('Телефон')) {
-        value = signerInfo.phone || contract?.signer_phone || match;
-        isFilled = !!(signerInfo.phone || contract?.signer_phone);
-      } else if (label.includes('Email') || label.includes('Почта')) {
-        value = signerInfo.email || contract?.signer_email || match;
-        isFilled = !!(signerInfo.email || contract?.signer_email);
+      if (label.includes('ФИО') || label.includes('Нанимателя') || label.includes('Имя') || label.includes('Атыңыз') || label.includes('Name')) {
+        value = signerInfo.name || contract?.signer_name || allPlaceholderValues['NAME2'] || allPlaceholderValues['SIGNER_NAME'] || match;
+        isFilled = !!(signerInfo.name || contract?.signer_name || allPlaceholderValues['NAME2'] || allPlaceholderValues['SIGNER_NAME']);
+      } else if (label.includes('Телефон') || label.includes('Phone') || label.includes('Нөмір')) {
+        value = signerInfo.phone || contract?.signer_phone || allPlaceholderValues['PHONE_NUM'] || allPlaceholderValues['PHONE'] || match;
+        isFilled = !!(signerInfo.phone || contract?.signer_phone || allPlaceholderValues['PHONE_NUM'] || allPlaceholderValues['PHONE']);
+      } else if (label.includes('Email') || label.includes('Почта') || label.includes('Пошта')) {
+        value = signerInfo.email || contract?.signer_email || allPlaceholderValues['EMAIL'] || match;
+        isFilled = !!(signerInfo.email || contract?.signer_email || allPlaceholderValues['EMAIL']);
+      } else if (label.includes('ИИН') || label.includes('IIN')) {
+        value = allPlaceholderValues['ID_CARD'] || allPlaceholderValues['IIN'] || match;
+        isFilled = !!(allPlaceholderValues['ID_CARD'] || allPlaceholderValues['IIN']);
       } else if (label.includes('Дата заселения')) {
         isFilled = !!contract?.move_in_date;
         value = contract?.move_in_date || match;
       } else if (label.includes('Дата выселения')) {
         isFilled = !!contract?.move_out_date;
         value = contract?.move_out_date || match;
-      } else if (label.includes('Адрес')) {
-        isFilled = !!contract?.property_address;
-        value = contract?.property_address || match;
+      } else if (label.includes('Адрес') || label.includes('Мекенжай') || label.includes('Address')) {
+        value = contract?.property_address || allPlaceholderValues['ADDRESS'] || match;
+        isFilled = !!(contract?.property_address || allPlaceholderValues['ADDRESS']);
       } else if (label.includes('Цена') || label.includes('сутки')) {
         isFilled = !!contract?.rent_amount;
         value = contract?.rent_amount || match;
