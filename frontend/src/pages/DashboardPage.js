@@ -368,9 +368,9 @@ const DashboardPage = () => {
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('dashboard.table.code')}</th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('dashboard.table.title')}</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Статус</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Дата</th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Действия</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('dashboard.table.status')}</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('dashboard.table.date')}</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">{t('dashboard.table.actions')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
