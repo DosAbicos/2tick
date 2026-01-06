@@ -123,7 +123,7 @@ const ProfilePage = () => {
               </div>
               <div>
                 <h1 className="text-xl sm:text-3xl font-bold text-white mb-1">{t('profile.title')}</h1>
-                <p className="text-sm sm:text-base text-blue-100">Управляйте своей учетной записью</p>
+                <p className="text-sm sm:text-base text-blue-100">{t('profile.subtitle')}</p>
               </div>
             </div>
           </div>
