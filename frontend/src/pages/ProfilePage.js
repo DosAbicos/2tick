@@ -44,7 +44,7 @@ const ProfilePage = () => {
       setStats(statsRes.data);
     } catch (error) {
       console.error('Error fetching profile:', error);
-      toast.error('Ошибка загрузки профиля');
+      toast.error(t('profile.loadError'));
       if (error.response?.status === 401) {
         navigate('/login');
       }
@@ -62,21 +62,21 @@ const ProfilePage = () => {
       setUser(editedUser);
       localStorage.setItem('user', JSON.stringify(editedUser));
       setEditing(false);
-      toast.success('Профиль успешно обновлен');
+      toast.success(t('profile.updateSuccess'));
     } catch (error) {
       console.error('Error updating profile:', error);
-      toast.error('Ошибка обновления профиля');
+      toast.error(t('profile.updateError'));
     }
   };
 
   const handleChangePassword = async () => {
     if (passwordData.new_password !== passwordData.confirm_password) {
-      toast.error('Пароли не совпадают');
+      toast.error(t('profile.passwordMismatch'));
       return;
     }
     
     if (passwordData.new_password.length < 6) {
-      toast.error('Пароль должен содержать минимум 6 символов');
+      toast.error(t('profile.passwordTooShort'));
       return;
     }
 
@@ -90,10 +90,10 @@ const ProfilePage = () => {
       
       setChangingPassword(false);
       setPasswordData({ old_password: '', new_password: '', confirm_password: '' });
-      toast.success('Пароль успешно изменен');
+      toast.success(t('profile.passwordChanged'));
     } catch (error) {
       console.error('Error changing password:', error);
-      toast.error(error.response?.data?.detail || 'Ошибка смены пароля');
+      toast.error(error.response?.data?.detail || t('profile.passwordChangeError'));
     }
   };
 
