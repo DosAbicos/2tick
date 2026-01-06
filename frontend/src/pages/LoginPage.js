@@ -31,7 +31,7 @@ const LoginPage = () => {
     e.preventDefault();
     
     if (!validateEmail(formData.email)) {
-      toast.error('Введите корректный email адрес');
+      toast.error(t('auth.login.invalidEmail'));
       return;
     }
     
@@ -44,14 +44,14 @@ const LoginPage = () => {
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
       
-      toast.success(`Добро пожаловать, ${user.full_name}!`);
+      toast.success(t('auth.login.welcome', { name: user.full_name }));
       navigate('/dashboard');
     } catch (error) {
       console.error('Login error:', error);
       if (error.response?.status === 401) {
-        toast.error('Неверный email или пароль');
+        toast.error(t('auth.login.invalidCredentials'));
       } else {
-        toast.error('Ошибка входа. Попробуйте снова.');
+        toast.error(t('auth.login.error'));
       }
     } finally {
       setLoading(false);
