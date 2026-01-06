@@ -449,10 +449,10 @@ const RegisterPage = () => {
             </span>
           </Link>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            Создайте аккаунт
+            {t('auth.register.title')}
           </h1>
           <p className="text-gray-600 text-sm">
-            Подписывайте договоры за 2 клика
+            {t('auth.register.subtitle')}
           </p>
         </div>
 
@@ -465,10 +465,10 @@ const RegisterPage = () => {
             <div className={`w-6 h-2 rounded-full transition-all ${step >= 4 ? 'bg-blue-500' : 'bg-gray-200'}`}></div>
           </div>
           <p className="text-center text-sm text-gray-500 mt-2">
-            {step === 1 && 'Шаг 1 из 4: Личные данные'}
-            {step === 2 && 'Шаг 2 из 4: Юридические данные'}
-            {step === 3 && 'Шаг 3 из 4: Создание пароля'}
-            {step === 4 && 'Шаг 4 из 4: Подтверждение телефона'}
+            {step === 1 && t('auth.register.step1Full')}
+            {step === 2 && t('auth.register.step2Full')}
+            {step === 3 && t('auth.register.step3Full')}
+            {step === 4 && t('auth.register.step4Full')}
           </p>
         </div>
 
@@ -481,7 +481,7 @@ const RegisterPage = () => {
                 <div className="space-y-2">
                   <label htmlFor="full_name" className="text-gray-700 text-sm font-medium flex items-center gap-2">
                     <User className="w-4 h-4 text-blue-500" />
-                    ФИО *
+                    {t('auth.register.full_name')} *
                   </label>
                   <input
                     id="full_name"
