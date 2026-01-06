@@ -385,6 +385,7 @@ const resources = {
       "dashboard.table.actions": "Әрекеттер",
       "dashboard.contractLimit": "Келісімшарттар лимиті",
       "dashboard.contractsRemaining": "{{count}} келісімшарт қалды",
+      "dashboard.limitAlmostReached": "Лимит біту алдында",
       "dashboard.contractsList": "Келісімшарттар тізімі",
       "dashboard.totalContracts": "Барлығы: {{count}} келісімшарт",
       "dashboard.noContracts": "Келісімшарттар жоқ",
