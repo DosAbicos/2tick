@@ -55,6 +55,7 @@ const resources = {
       "dashboard.table.actions": "Действия",
       "dashboard.contractLimit": "Лимит договоров",
       "dashboard.contractsRemaining": "Осталось {{count}} договоров",
+      "dashboard.limitAlmostReached": "Лимит почти исчерпан",
       "dashboard.contractsList": "Список договоров",
       "dashboard.totalContracts": "Всего договоров: {{count}}",
       "dashboard.noContracts": "Нет договоров",
