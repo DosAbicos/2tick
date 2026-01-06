@@ -899,24 +899,31 @@ def draw_signature_block(p, y_position, width, height, contract, signature, land
                 p.drawString(left_col_x, y_position, str(value)[:40])
                 y_position -= 15
     else:
-        # Fallback to old fields
+        # Fallback - use placeholder_values or landlord data
+        # Name from placeholder_values (1NAME) or landlord
+        landlord_name = placeholder_values.get('1NAME', '')
+        if not landlord_name and landlord:
+            landlord_name = landlord.get('company_name') or landlord.get('full_name', '')
+        
+        if landlord_name:
+            p.setFillColor(HexColor('#6b7280'))
+            p.drawString(left_col_x, y_position, f"{t['name']}:")
+            y_position -= 12
+            p.setFillColor(HexColor('#1f2937'))
+            p.drawString(left_col_x, y_position, landlord_name[:40])
+            y_position -= 15
+        
+        # Address from placeholder_values
+        address = placeholder_values.get('ADDRESS', '')
+        if address:
+            p.setFillColor(HexColor('#6b7280'))
+            p.drawString(left_col_x, y_position, f"{t['address']}:")
+            y_position -= 12
+            p.setFillColor(HexColor('#1f2937'))
+            p.drawString(left_col_x, y_position, address[:40])
+            y_position -= 15
+        
         if landlord:
-            if landlord.get('company_name'):
-                p.setFillColor(HexColor('#6b7280'))
-                p.drawString(left_col_x, y_position, "Компания:")
-                y_position -= 12
-                p.setFillColor(HexColor('#1f2937'))
-                p.drawString(left_col_x, y_position, landlord.get('company_name', '')[:40])
-                y_position -= 15
-            
-            if landlord.get('full_name'):
-                p.setFillColor(HexColor('#6b7280'))
-                p.drawString(left_col_x, y_position, "Представитель:")
-                y_position -= 12
-                p.setFillColor(HexColor('#1f2937'))
-                p.drawString(left_col_x, y_position, landlord.get('full_name', '')[:40])
-                y_position -= 15
-            
             if landlord.get('phone'):
                 p.setFillColor(HexColor('#6b7280'))
                 p.drawString(left_col_x, y_position, f"{t['phone']}:")
