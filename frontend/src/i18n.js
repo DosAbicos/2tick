@@ -1064,8 +1064,12 @@ const resources = {
       "templates.preview": "Preview",
       "templates.addToFavorites": "Add to favorites",
       "templates.removeFromFavorites": "Remove from favorites",
+      "templates.addedToFavorites": "Added to favorites",
+      "templates.removedFromFavorites": "Removed from favorites",
       "templates.noTemplates": "No templates found",
+      "templates.noTemplatesYet": "No templates added yet",
       "templates.loading": "Loading templates...",
+      "templates.loadError": "Error loading templates",
       
       // ===== ADMIN =====
       "admin.title": "Admin Panel",
