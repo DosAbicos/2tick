@@ -2269,7 +2269,17 @@ async def create_contract(contract_data: ContractCreate, current_user: dict = De
     doc['created_at'] = doc['created_at'].isoformat()
     doc['updated_at'] = doc['updated_at'].isoformat()
     
-    await db.contracts.insert_one(doc)
+    print(f"🔥 CREATE CONTRACT: ID={contract.id}, Code={contract_code}, Title={contract_data.title}")
+    logging.info(f"🔥 CREATE CONTRACT: ID={contract.id}, Code={contract_code}")
+    
+    result = await db.contracts.insert_one(doc)
+    print(f"🔥 INSERT RESULT: inserted_id={result.inserted_id}")
+    logging.info(f"🔥 INSERT RESULT: inserted_id={result.inserted_id}")
+    
+    # Verify contract was saved
+    saved = await db.contracts.find_one({"id": contract.id})
+    print(f"🔥 VERIFY SAVED: {bool(saved)}")
+    logging.info(f"🔥 VERIFY SAVED: {bool(saved)}")
     
     # Log contract creation
     if contract_data.template_id:
