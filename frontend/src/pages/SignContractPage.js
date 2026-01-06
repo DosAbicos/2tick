@@ -413,7 +413,7 @@ const SignContractPage = () => {
     
     try {
       await axios.post(`${API}/sign/${id}/upload-document`, formData);
-      toast.success('Документ загружен успешно!');
+      toast.success(t('signing.docUploaded'));
       setDocumentUploaded(true); // Mark as uploaded
       
       // Reload contract to get updated signature with document_upload
@@ -464,7 +464,7 @@ const SignContractPage = () => {
       }
     } catch (error) {
       console.error('Error setting language:', error);
-      toast.error('Failed to set language');
+      toast.error(t('common.error'));
     }
   };
   
