@@ -122,7 +122,7 @@ const ProfilePage = () => {
                 <User className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
               </div>
               <div>
-                <h1 className="text-xl sm:text-3xl font-bold text-white mb-1">Мой профиль</h1>
+                <h1 className="text-xl sm:text-3xl font-bold text-white mb-1">{t('profile.title')}</h1>
                 <p className="text-sm sm:text-base text-blue-100">Управляйте своей учетной записью</p>
               </div>
             </div>
@@ -232,7 +232,7 @@ const ProfilePage = () => {
                     className="p-1.5 border border-blue-200 rounded text-blue-600 hover:bg-blue-50 hover:border-blue-300 sm:px-3 sm:py-1.5 sm:bg-blue-50 sm:border-blue-100 sm:hover:bg-blue-100 transition-all flex items-center gap-1.5"
                   >
                     <Edit2 className="w-4 h-4" />
-                    <span className="hidden sm:inline text-xs font-medium">Изменить</span>
+                    <span className="hidden sm:inline text-xs font-medium">{t('profile.edit')}</span>
                   </button>
                 ) : (
                   <div className="flex gap-1.5">
@@ -241,7 +241,7 @@ const ProfilePage = () => {
                       className="p-1.5 border border-blue-500 rounded text-blue-600 hover:bg-blue-50 sm:px-3 sm:py-1.5 sm:text-white sm:bg-gradient-to-r sm:from-blue-600 sm:to-blue-500 sm:border-0 sm:hover:from-blue-700 sm:hover:to-blue-600 transition-all flex items-center gap-1"
                     >
                       <Save className="w-4 h-4" />
-                      <span className="hidden sm:inline text-xs font-medium">Сохранить</span>
+                      <span className="hidden sm:inline text-xs font-medium">{t('profile.save')}</span>
                     </button>
                     <button
                       onClick={() => {
@@ -269,7 +269,7 @@ const ProfilePage = () => {
                       <User className="w-5 h-5 text-blue-600" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <label className="text-sm font-medium text-gray-500 mb-1 block">ФИО</label>
+                      <label className="text-sm font-medium text-gray-500 mb-1 block">{t('profile.fullName')}</label>
                       {editing ? (
                         <input
                           type="text"
@@ -305,7 +305,7 @@ const ProfilePage = () => {
                       <Phone className="w-5 h-5 text-blue-600" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <label className="text-sm font-medium text-gray-500 mb-1 block">Телефон</label>
+                      <label className="text-sm font-medium text-gray-500 mb-1 block">{t('profile.phone')}</label>
                       {editing ? (
                         <input
                           type="tel"
@@ -327,7 +327,7 @@ const ProfilePage = () => {
                       <Building className="w-5 h-5 text-blue-600" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <label className="text-sm font-medium text-gray-500 mb-1 block">Компания</label>
+                      <label className="text-sm font-medium text-gray-500 mb-1 block">{t('profile.company')}</label>
                       {editing ? (
                         <input
                           type="text"
@@ -398,7 +398,7 @@ const ProfilePage = () => {
                   <Lock className="w-5 h-5 text-blue-600" />
                 </div>
                 <div className="flex-1">
-                  <h2 className="text-lg font-bold text-gray-900">Смена пароля</h2>
+                  <h2 className="text-lg font-bold text-gray-900">{t('profile.changePassword')}</h2>
                   <p className="text-sm text-gray-500">Обновите пароль для безопасности</p>
                 </div>
               </div>
@@ -414,7 +414,7 @@ const ProfilePage = () => {
                   onClick={() => setChangingPassword(true)}
                   className="w-full sm:w-auto px-6 py-3 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all"
                 >
-                  Изменить пароль
+                  {t('profile.changePassword')}
                 </motion.button>
               ) : (
                 <motion.div
@@ -472,7 +472,7 @@ const ProfilePage = () => {
                       onClick={handleChangePassword}
                       className="w-full sm:flex-1 px-4 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all"
                     >
-                      Сохранить пароль
+                      {t('profile.savePassword')}
                     </button>
                   </div>
                 </motion.div>
