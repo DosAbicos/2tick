@@ -849,7 +849,7 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
     # Graceful fallback for missing content_type
     content_type = contract.get('content_type', 'plain')
     
-    # ========== RUSSIAN VERSION ==========
+    # ========== RUSSIAN VERSION (Page 1) ==========
     try:
         content_ru = contract.get('content', '')
         if content_type == 'html':
@@ -859,16 +859,9 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
         logging.error(f"Error processing RU content: {str(e)}")
         content_ru = contract.get('content', 'Error loading content')
     
-    y_position = draw_content_section(p, content_ru, y_position, width, height, "РУССКИЙ / RUSSIAN")
+    y_position = draw_content_section(p, content_ru, y_position, width, height, "РУССКИЙ / RUSSIAN", start_new_page=False)
     
-    # ========== KAZAKH VERSION ==========
-    y_position -= 30  # Space between versions
-    
-    # Check if we need new page
-    if y_position < 200:
-        p.showPage()
-        y_position = height - 50
-    
+    # ========== KAZAKH VERSION (Page 2 - NEW PAGE) ==========
     try:
         content_kk = contract.get('content_kk', '')
         if not content_kk:
@@ -880,16 +873,10 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
         logging.error(f"Error processing KK content: {str(e)}")
         content_kk = contract.get('content_kk', contract.get('content', ''))
     
-    y_position = draw_content_section(p, content_kk, y_position, width, height, "ҚАЗАҚША / KAZAKH")
+    y_position = draw_content_section(p, content_kk, height - 50, width, height, "ҚАЗАҚША / KAZAKH", start_new_page=True)
     
-    # ========== ENGLISH VERSION (only if selected) ==========
+    # ========== ENGLISH VERSION (Page 3 - NEW PAGE, only if selected) ==========
     if include_english:
-        y_position -= 30
-        
-        if y_position < 200:
-            p.showPage()
-            y_position = height - 50
-        
         try:
             content_en = contract.get('content_en', '')
             if not content_en:
@@ -901,16 +888,12 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             logging.error(f"Error processing EN content: {str(e)}")
             content_en = contract.get('content_en', contract.get('content', ''))
         
-        y_position = draw_content_section(p, content_en, y_position, width, height, "ENGLISH", is_translation=True)
+        y_position = draw_content_section(p, content_en, height - 50, width, height, "ENGLISH", is_translation=True, start_new_page=True)
     
-    # Add ID document photo if available
+    # Add ID document photo if available (NEW PAGE)
     if signature and signature.get('document_upload'):
-        y_position -= 40
-        
-        # Check if we need a new page for the image
-        if y_position < 450:  # Need at least 450px for image section
-            p.showPage()
-            y_position = height - 50
+        p.showPage()
+        y_position = height - 50
         
         try:
             p.setFont("DejaVu-Bold", 12)
