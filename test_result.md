@@ -124,7 +124,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Bilingual/Trilingual PDF Generation and Placeholder Separation"
+    - "PDF Generation Refactoring - Dead code cleanup completed"
+    - "Email sending after contract approval - verify full flow works"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
