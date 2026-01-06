@@ -644,30 +644,47 @@ def html_to_text_for_pdf(html_content: str) -> str:
     
     return text.strip()
 
-def draw_content_section(p, content_text, y_position, width, height, language_label=None, is_translation=False):
-    """Helper function to draw a content section in PDF"""
+def draw_content_section(p, content_text, y_position, width, height, language_label=None, is_translation=False, start_new_page=False):
+    """Helper function to draw a content section in PDF
+    
+    Args:
+        start_new_page: If True, starts content on a new page
+    """
     from reportlab.lib.colors import HexColor
     
     left_margin = 55
     right_margin = width - 55
     max_chars_per_line = 95
     
+    # Start new page if requested
+    if start_new_page:
+        p.showPage()
+        y_position = height - 50
+    
     # Add language header if provided
     if language_label:
         try:
-            p.setFont("DejaVu-Bold", 12)
+            p.setFont("DejaVu-Bold", 14)
         except:
-            p.setFont("Helvetica-Bold", 12)
+            p.setFont("Helvetica-Bold", 14)
         
         if is_translation:
             p.setFillColor(HexColor('#94a3b8'))  # Gray for translation notice
-            p.drawString(left_margin, y_position, f"═══ {language_label} (перевод, юридической силы не имеет) ═══")
+            header_text = f"═══ {language_label} ═══"
+            p.drawCentredString(width / 2, y_position, header_text)
+            y_position -= 20
+            try:
+                p.setFont("DejaVu", 9)
+            except:
+                p.setFont("Helvetica", 9)
+            p.drawCentredString(width / 2, y_position, "(перевод, юридической силы не имеет / translation, no legal force)")
         else:
-            p.setFillColor(HexColor('#3b82f6'))  # Blue for official languages
-            p.drawString(left_margin, y_position, f"═══ {language_label} ═══")
+            p.setFillColor(HexColor('#1e40af'))  # Blue for official languages
+            header_text = f"═══ {language_label} ═══"
+            p.drawCentredString(width / 2, y_position, header_text)
         
         p.setFillColor(HexColor('#000000'))
-        y_position -= 25
+        y_position -= 35
     
     # Set content font
     try:
