@@ -1407,9 +1407,9 @@ const SignContractPage = () => {
                           </div>
                           <div className="flex-1 text-left">
                             <h4 className="text-lg font-semibold text-gray-900 mb-1">
-                              {smsCooldown > 0 ? `SMS через ${smsCooldown}с` : 'SMS'}
+                              {smsCooldown > 0 ? `${t('signing.sms')} ${smsCooldown}s` : t('signing.sms')}
                             </h4>
-                            <p className="text-sm text-gray-600">Код придет в сообщении</p>
+                            <p className="text-sm text-gray-600">{t('signing.smsHint')}</p>
                           </div>
                           <svg className="w-5 h-5 text-blue-600 flex-shrink-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -1436,9 +1436,9 @@ const SignContractPage = () => {
                           </div>
                           <div className="flex-1 text-left">
                             <h4 className="text-lg font-semibold text-gray-900 mb-1">
-                              {requestingCall ? 'Звоним...' : callCooldown > 0 ? `Звонок через ${callCooldown}с` : 'Звонок'}
+                              {requestingCall ? t('signing.verifying') : callCooldown > 0 ? `${t('signing.call')} ${callCooldown}s` : t('signing.call')}
                             </h4>
-                            <p className="text-sm text-gray-600">Вам поступит вызов</p>
+                            <p className="text-sm text-gray-600">{t('signing.callHint')}</p>
                           </div>
                           <svg className="w-5 h-5 text-blue-600 flex-shrink-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -1463,16 +1463,16 @@ const SignContractPage = () => {
                               // Открываем ссылку
                               window.open(res.data.deep_link, '_blank');
                               setVerificationMethod('telegram');
-                              toast.success('Откройте Telegram и скопируйте код');
+                              toast.success(t('signing.telegramCodeSent'));
                             } catch (err) {
                               console.error('Failed to load Telegram link:', err);
-                              toast.error('Ошибка загрузки ссылки Telegram');
+                              toast.error(t('common.error'));
                             }
                           } else {
                             // Если ссылка уже есть, просто открываем
                             window.open(telegramDeepLink, '_blank');
                             setVerificationMethod('telegram');
-                            toast.success('Откройте Telegram и скопируйте код');
+                            toast.success(t('signing.telegramCodeSent'));
                           }
                         }}
                         className="relative overflow-hidden block w-full p-6 rounded-2xl bg-gradient-to-br from-[#0088cc] to-[#0077b3] transition-all no-underline group shadow-lg shadow-[#0088cc]/20 hover:shadow-xl hover:shadow-[#0088cc]/30 text-left"
@@ -1484,8 +1484,8 @@ const SignContractPage = () => {
                             </svg>
                           </div>
                           <div className="flex-1 text-left">
-                            <h4 className="text-lg font-semibold text-white mb-1">Telegram</h4>
-                            <p className="text-sm text-white/80">Код в боте @twotick_bot</p>
+                            <h4 className="text-lg font-semibold text-white mb-1">{t('signing.telegram')}</h4>
+                            <p className="text-sm text-white/80">{t('signing.telegramHint')}</p>
                           </div>
                           <svg className="w-5 h-5 text-white flex-shrink-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
