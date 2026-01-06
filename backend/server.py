@@ -647,12 +647,12 @@ def html_to_text_for_pdf(html_content: str) -> str:
 def draw_page_header_footer(p, width, height, page_num, total_pages, contract_code, logo_path='/app/backend/logo.png', qr_data=None):
     """Draw header with logo, footer with page number, and QR code on every page"""
     from reportlab.lib.colors import HexColor
+    from reportlab.lib.utils import ImageReader
     
     # ===== HEADER =====
     # Logo
     if os.path.exists(logo_path):
         try:
-            from PIL import Image as PILImage
             img_reader = ImageReader(logo_path)
             p.drawImage(img_reader, 40, height - 50, width=40, height=40, mask='auto')
         except Exception as e:
