@@ -924,6 +924,7 @@ const resources = {
       "profile.iin": "IIN/BIN",
       "profile.address": "Legal Address",
       "profile.title": "Profile",
+      "profile.subtitle": "Manage your account",
       "profile.personalInfo": "Personal Information",
       "profile.fullName": "Full Name",
       "profile.email": "Email",
