@@ -45,7 +45,7 @@ const DashboardPage = () => {
       setFavoriteTemplates(response.data);
     } catch (error) {
       console.error('Error loading favorites:', error);
-      toast.error('Ошибка загрузки избранных шаблонов');
+      toast.error(t('dashboard.errorLoadingFavorites'));
     } finally {
       setLoadingFavorites(false);
     }
