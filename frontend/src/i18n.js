@@ -570,6 +570,7 @@ const resources = {
       
       // ===== PROFILE =====
       "profile.title": "Профиль",
+      "profile.subtitle": "Тіркелгіңізді басқарыңыз",
       "profile.statistics": "Статистика",
       "profile.emailCannotChange": "Email-ді өзгерту мүмкін емес",
       "profile.totalContracts": "Барлық келісімшарттар",
