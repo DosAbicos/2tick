@@ -725,207 +725,405 @@ def draw_page_header_footer(p, width, height, page_num, total_pages, contract_co
 
 
 def draw_signature_block(p, y_position, width, height, contract, signature, landlord, template, language='ru'):
-    """Draw signature information block after contract content in specified language"""
+    """Draw modern signature information block matching website design"""
     from reportlab.lib.colors import HexColor
     
-    # Translations
+    # Translations - matching ContractDetailsPage
     translations = {
         'ru': {
-            'title': 'ИНФОРМАЦИЯ О ПОДПИСАНИИ',
-            'landlord': 'Наймодатель',
-            'tenant': 'Наниматель / Арендатор',
-            'signature_hash': 'Хэш подписи',
-            'signed_at': 'Дата подписания',
-            'verification': 'Способ верификации',
-            'sms': 'SMS верификация',
-            'call': 'Верификация звонком',
-            'telegram': 'Telegram',
-            'phone': 'Телефон',
-            'email': 'Email',
+            'title': 'Информация о подписании',
+            'code_key': 'Код-ключ',
+            'name': 'Имя',
+            'address': 'Адрес',
+            'phone': 'Номер телефона',
+            'email': 'Почта',
             'iin': 'ИИН',
-            'not_signed': 'Не подписано',
-            'signature_line': '________________',
-            'sign_here': '(подпись)',
+            'status': 'Статус',
+            'approved': 'Утверждено',
+            'approval_time': 'Время утверждения',
+            'signing_time': 'Время подписания',
+            'contract_language': 'Язык договора',
+            'signing_method': 'Метод подписания',
+            'telegram': 'Telegram',
+            'sms': 'SMS',
+            'call': 'Входящий звонок',
+            'awaiting': 'Ожидает утверждения',
+            'russian': 'Русский',
+            'kazakh': 'Қазақша',
+            'english': 'English',
         },
         'kk': {
-            'title': 'ҚОЛ ҚОЮ ТУРАЛЫ АҚПАРАТ',
-            'landlord': 'Жалға беруші',
-            'tenant': 'Жалға алушы',
-            'signature_hash': 'Қолтаңба хэші',
-            'signed_at': 'Қол қойылған күні',
-            'verification': 'Верификация әдісі',
-            'sms': 'SMS верификация',
-            'call': 'Қоңырау верификациясы',
-            'telegram': 'Telegram',
-            'phone': 'Телефон',
-            'email': 'Email',
+            'title': 'Қол қою туралы ақпарат',
+            'code_key': 'Код-кілт',
+            'name': 'Аты',
+            'address': 'Мекенжай',
+            'phone': 'Телефон нөмірі',
+            'email': 'Пошта',
             'iin': 'ЖСН',
-            'not_signed': 'Қол қойылмаған',
-            'signature_line': '________________',
-            'sign_here': '(қолтаңба)',
+            'status': 'Мәртебесі',
+            'approved': 'Бекітілді',
+            'approval_time': 'Бекіту уақыты',
+            'signing_time': 'Қол қою уақыты',
+            'contract_language': 'Шарт тілі',
+            'signing_method': 'Қол қою әдісі',
+            'telegram': 'Telegram',
+            'sms': 'SMS',
+            'call': 'Кіріс қоңырау',
+            'awaiting': 'Бекітуді күтуде',
+            'russian': 'Орысша',
+            'kazakh': 'Қазақша',
+            'english': 'English',
         },
         'en': {
-            'title': 'SIGNATURE INFORMATION',
-            'landlord': 'Landlord',
-            'tenant': 'Tenant',
-            'signature_hash': 'Signature Hash',
-            'signed_at': 'Date Signed',
-            'verification': 'Verification Method',
-            'sms': 'SMS verification',
-            'call': 'Call verification',
-            'telegram': 'Telegram',
-            'phone': 'Phone',
+            'title': 'Signature Information',
+            'code_key': 'Code-key',
+            'name': 'Name',
+            'address': 'Address',
+            'phone': 'Phone number',
             'email': 'Email',
             'iin': 'IIN',
-            'not_signed': 'Not signed',
-            'signature_line': '________________',
-            'sign_here': '(signature)',
+            'status': 'Status',
+            'approved': 'Approved',
+            'approval_time': 'Approval time',
+            'signing_time': 'Signing time',
+            'contract_language': 'Contract language',
+            'signing_method': 'Signing method',
+            'telegram': 'Telegram',
+            'sms': 'SMS',
+            'call': 'Incoming call',
+            'awaiting': 'Awaiting approval',
+            'russian': 'Russian',
+            'kazakh': 'Kazakh',
+            'english': 'English',
         }
     }
     
     t = translations.get(language, translations['ru'])
     
-    # Check if we need new page
-    if y_position < 250:
+    # Check if we need new page - need more space for modern design
+    if y_position < 350:
         p.showPage()
         y_position = height - 80
     
-    y_position -= 40
-    
-    # Title
-    try:
-        p.setFont("DejaVu-Bold", 12)
-    except:
-        p.setFont("Helvetica-Bold", 12)
-    
-    p.setFillColor(HexColor('#1e40af'))
-    p.drawCentredString(width / 2, y_position, f"═══ {t['title']} ═══")
-    p.setFillColor(HexColor('#000000'))
-    
     y_position -= 30
     
-    # Two columns: Landlord and Tenant
-    left_col = 60
-    right_col = width / 2 + 20
-    
+    # Modern title with emoji style
     try:
-        p.setFont("DejaVu-Bold", 10)
+        p.setFont("DejaVu-Bold", 14)
     except:
-        p.setFont("Helvetica-Bold", 10)
+        p.setFont("Helvetica-Bold", 14)
     
-    # Get party roles
-    party_a_role = contract.get(f'party_a_role_{language}') or contract.get('party_a_role') or t['landlord']
-    party_b_role = contract.get(f'party_b_role_{language}') or contract.get('party_b_role') or t['tenant']
-    
-    # Landlord column header
-    p.drawString(left_col, y_position, party_a_role)
-    # Tenant column header
-    p.drawString(right_col, y_position, party_b_role)
-    
-    y_position -= 20
-    
-    try:
-        p.setFont("DejaVu", 9)
-    except:
-        p.setFont("Helvetica", 9)
-    
-    # Landlord info
-    landlord_name = ""
-    if landlord:
-        landlord_name = landlord.get('company_name') or landlord.get('full_name') or landlord.get('name', '')
-    if not landlord_name:
-        landlord_name = contract.get('placeholder_values', {}).get('1NAME', '')
-    
-    p.drawString(left_col, y_position, landlord_name or "—")
-    
-    # Tenant info
-    tenant_name = signature.get('signer_name') if signature else ''
-    if not tenant_name:
-        tenant_name = contract.get('signer_name') or contract.get('placeholder_values', {}).get('NAME2', '')
-    p.drawString(right_col, y_position, tenant_name or "—")
-    
-    y_position -= 15
-    
-    # Phone
-    p.setFillColor(HexColor('#64748b'))
-    p.drawString(left_col, y_position, f"{t['phone']}:")
-    p.drawString(right_col, y_position, f"{t['phone']}:")
-    
-    p.setFillColor(HexColor('#000000'))
-    landlord_phone = ""
-    if landlord:
-        landlord_phone = landlord.get('phone', '')
-    p.drawString(left_col + 60, y_position, landlord_phone or "—")
-    
-    tenant_phone = signature.get('signer_phone') if signature else ''
-    if not tenant_phone:
-        tenant_phone = contract.get('signer_phone') or contract.get('placeholder_values', {}).get('PHONE_NUM', '')
-    p.drawString(right_col + 60, y_position, tenant_phone or "—")
-    
-    y_position -= 15
-    
-    # IIN
-    p.setFillColor(HexColor('#64748b'))
-    p.drawString(left_col, y_position, f"{t['iin']}:")
-    p.drawString(right_col, y_position, f"{t['iin']}:")
-    
-    p.setFillColor(HexColor('#000000'))
-    tenant_iin = contract.get('placeholder_values', {}).get('ID_CARD', '') or contract.get('placeholder_values', {}).get('IIN', '')
-    p.drawString(left_col + 40, y_position, "—")
-    p.drawString(right_col + 40, y_position, tenant_iin or "—")
+    p.setFillColor(HexColor('#1f2937'))  # Dark gray like website
+    p.drawString(55, y_position, f"✍️  {t['title']}")
     
     y_position -= 25
     
-    # Signature lines
+    # Draw two card-style columns
+    left_col_x = 55
+    right_col_x = width / 2 + 10
+    col_width = (width - 110) / 2 - 10
+    
+    # Get party roles
+    party_a_role = contract.get(f'party_a_role_{language}') or contract.get('party_a_role') or 'Сторона А'
+    party_b_role = contract.get(f'party_b_role_{language}') or contract.get('party_b_role') or 'Сторона Б'
+    
+    # ========== LEFT COLUMN - Party A (Landlord) ==========
+    card_start_y = y_position
+    
+    # Card header with icon
     try:
-        p.setFont("DejaVu", 9)
+        p.setFont("DejaVu-Bold", 11)
     except:
-        p.setFont("Helvetica", 9)
+        p.setFont("Helvetica-Bold", 11)
+    p.setFillColor(HexColor('#1f2937'))
+    p.drawString(left_col_x, y_position, f"🏢  {party_a_role}")
     
-    # Landlord signature
-    p.setFillColor(HexColor('#64748b'))
-    p.drawString(left_col, y_position, t['signature_line'])
-    p.drawString(left_col, y_position - 12, t['sign_here'])
+    y_position -= 20
     
-    # Tenant signature / hash
-    if signature and signature.get('signature_hash'):
-        p.setFillColor(HexColor('#059669'))  # Green
-        try:
-            p.setFont("DejaVu-Bold", 9)
-        except:
-            p.setFont("Helvetica-Bold", 9)
-        p.drawString(right_col, y_position, f"✓ {signature['signature_hash']}")
+    # Landlord signature hash box (green background style)
+    landlord_hash = contract.get('landlord_signature_hash', '')
+    if landlord_hash:
+        # Draw green background box
+        p.setFillColor(HexColor('#ecfdf5'))  # Light green
+        p.roundRect(left_col_x, y_position - 25, col_width, 35, 4, fill=1, stroke=0)
+        
+        # Border
+        p.setStrokeColor(HexColor('#a7f3d0'))  # Green border
+        p.setLineWidth(1)
+        p.roundRect(left_col_x, y_position - 25, col_width, 35, 4, fill=0, stroke=1)
         
         try:
             p.setFont("DejaVu", 8)
         except:
             p.setFont("Helvetica", 8)
-        p.setFillColor(HexColor('#64748b'))
+        p.setFillColor(HexColor('#047857'))  # Dark green text
+        p.drawString(left_col_x + 8, y_position - 5, f"{t['code_key']}:")
         
-        signed_at = signature.get('signed_at', '')
-        if signed_at:
-            try:
-                if isinstance(signed_at, str):
-                    signed_dt = datetime.fromisoformat(signed_at.replace('Z', '+00:00'))
-                else:
-                    signed_dt = signed_at
-                signed_at = signed_dt.strftime('%d.%m.%Y %H:%M')
-            except:
-                pass
+        try:
+            p.setFont("DejaVu-Bold", 10)
+        except:
+            p.setFont("Helvetica-Bold", 10)
+        p.setFillColor(HexColor('#064e3b'))  # Darker green
+        p.drawString(left_col_x + 8, y_position - 18, landlord_hash)
         
-        p.drawString(right_col, y_position - 12, f"{t['signed_at']}: {signed_at}")
-        
-        verification_method = signature.get('verification_method', 'sms')
-        method_text = t.get(verification_method, verification_method)
-        p.drawString(right_col, y_position - 24, f"{t['verification']}: {method_text}")
+        y_position -= 35
+    
+    y_position -= 10
+    
+    # Landlord details - from template placeholders or fallback
+    try:
+        p.setFont("DejaVu", 9)
+    except:
+        p.setFont("Helvetica", 9)
+    
+    placeholder_values = contract.get('placeholder_values', {})
+    
+    # Get landlord data from template placeholders if available
+    if template and template.get('placeholders'):
+        for key, config in template['placeholders'].items():
+            if config.get('type') == 'calculated':
+                continue
+            if config.get('showInSignatureInfo') == False:
+                continue
+            if config.get('owner') != 'landlord':
+                continue
+            
+            value = placeholder_values.get(key, '')
+            label = config.get('label', key)
+            
+            if value:
+                p.setFillColor(HexColor('#6b7280'))  # Gray label
+                p.drawString(left_col_x, y_position, f"{label}:")
+                y_position -= 12
+                p.setFillColor(HexColor('#1f2937'))  # Dark value
+                p.drawString(left_col_x, y_position, str(value)[:40])
+                y_position -= 15
     else:
-        p.setFillColor(HexColor('#64748b'))
-        p.drawString(right_col, y_position, t['signature_line'])
-        p.drawString(right_col, y_position - 12, t['sign_here'])
+        # Fallback to old fields
+        if landlord:
+            if landlord.get('company_name'):
+                p.setFillColor(HexColor('#6b7280'))
+                p.drawString(left_col_x, y_position, "Компания:")
+                y_position -= 12
+                p.setFillColor(HexColor('#1f2937'))
+                p.drawString(left_col_x, y_position, landlord.get('company_name', '')[:40])
+                y_position -= 15
+            
+            if landlord.get('full_name'):
+                p.setFillColor(HexColor('#6b7280'))
+                p.drawString(left_col_x, y_position, "Представитель:")
+                y_position -= 12
+                p.setFillColor(HexColor('#1f2937'))
+                p.drawString(left_col_x, y_position, landlord.get('full_name', '')[:40])
+                y_position -= 15
+            
+            if landlord.get('phone'):
+                p.setFillColor(HexColor('#6b7280'))
+                p.drawString(left_col_x, y_position, f"{t['phone']}:")
+                y_position -= 12
+                p.setFillColor(HexColor('#1f2937'))
+                p.drawString(left_col_x, y_position, landlord.get('phone', ''))
+                y_position -= 15
+            
+            if landlord.get('email'):
+                p.setFillColor(HexColor('#6b7280'))
+                p.drawString(left_col_x, y_position, f"{t['email']}:")
+                y_position -= 12
+                p.setFillColor(HexColor('#1f2937'))
+                p.drawString(left_col_x, y_position, landlord.get('email', '')[:35])
+                y_position -= 15
     
+    # Status and approval time
+    p.setFillColor(HexColor('#6b7280'))
+    p.drawString(left_col_x, y_position, f"{t['status']}:")
+    y_position -= 12
+    if landlord_hash:
+        p.setFillColor(HexColor('#059669'))  # Green
+        p.drawString(left_col_x, y_position, t['approved'])
+    else:
+        p.setFillColor(HexColor('#d97706'))  # Amber
+        p.drawString(left_col_x, y_position, t['awaiting'])
+    y_position -= 15
+    
+    # Approval time
+    approved_at = contract.get('approved_at', '')
+    if approved_at:
+        p.setFillColor(HexColor('#6b7280'))
+        p.drawString(left_col_x, y_position, f"{t['approval_time']}:")
+        y_position -= 12
+        p.setFillColor(HexColor('#1f2937'))
+        try:
+            if isinstance(approved_at, str):
+                approved_dt = datetime.fromisoformat(approved_at.replace('Z', '+00:00'))
+            else:
+                approved_dt = approved_at
+            p.drawString(left_col_x, y_position, approved_dt.strftime('%d %b %Y %H:%M'))
+        except:
+            p.drawString(left_col_x, y_position, str(approved_at)[:20])
+        y_position -= 15
+    
+    # Contract language
+    contract_lang = contract.get('contract_language') or contract.get('signing_language', 'ru')
+    p.setFillColor(HexColor('#6b7280'))
+    p.drawString(left_col_x, y_position, f"{t['contract_language']}:")
+    y_position -= 12
+    p.setFillColor(HexColor('#1f2937'))
+    lang_display = {'ru': t['russian'], 'kk': t['kazakh'], 'en': t['english']}.get(contract_lang, contract_lang)
+    p.drawString(left_col_x, y_position, lang_display)
+    
+    left_col_end_y = y_position - 15
+    
+    # ========== RIGHT COLUMN - Party B (Tenant/Signer) ==========
+    y_position = card_start_y
+    
+    # Card header with icon
+    try:
+        p.setFont("DejaVu-Bold", 11)
+    except:
+        p.setFont("Helvetica-Bold", 11)
+    p.setFillColor(HexColor('#1f2937'))
+    p.drawString(right_col_x, y_position, f"👤  {party_b_role}")
+    
+    y_position -= 20
+    
+    # Tenant signature hash box (blue background style)
+    tenant_hash = signature.get('signature_hash', '') if signature else ''
+    if tenant_hash:
+        # Draw blue background box
+        p.setFillColor(HexColor('#eff6ff'))  # Light blue
+        p.roundRect(right_col_x, y_position - 25, col_width, 35, 4, fill=1, stroke=0)
+        
+        # Border
+        p.setStrokeColor(HexColor('#bfdbfe'))  # Blue border
+        p.setLineWidth(1)
+        p.roundRect(right_col_x, y_position - 25, col_width, 35, 4, fill=0, stroke=1)
+        
+        try:
+            p.setFont("DejaVu", 8)
+        except:
+            p.setFont("Helvetica", 8)
+        p.setFillColor(HexColor('#1d4ed8'))  # Dark blue text
+        p.drawString(right_col_x + 8, y_position - 5, f"{t['code_key']}:")
+        
+        try:
+            p.setFont("DejaVu-Bold", 10)
+        except:
+            p.setFont("Helvetica-Bold", 10)
+        p.setFillColor(HexColor('#1e3a8a'))  # Darker blue
+        p.drawString(right_col_x + 8, y_position - 18, tenant_hash)
+        
+        y_position -= 35
+    
+    y_position -= 10
+    
+    # Tenant details - from template placeholders or fallback
+    try:
+        p.setFont("DejaVu", 9)
+    except:
+        p.setFont("Helvetica", 9)
+    
+    if template and template.get('placeholders'):
+        for key, config in template['placeholders'].items():
+            if config.get('type') == 'calculated':
+                continue
+            if config.get('showInSignatureInfo') == False:
+                continue
+            if config.get('owner') not in ['tenant', 'signer']:
+                continue
+            
+            value = placeholder_values.get(key, '')
+            label = config.get('label', key)
+            
+            if value:
+                p.setFillColor(HexColor('#6b7280'))
+                p.drawString(right_col_x, y_position, f"{label}:")
+                y_position -= 12
+                p.setFillColor(HexColor('#1f2937'))
+                p.drawString(right_col_x, y_position, str(value)[:40])
+                y_position -= 15
+    else:
+        # Fallback to old fields
+        signer_name = contract.get('signer_name', '')
+        if signer_name:
+            p.setFillColor(HexColor('#6b7280'))
+            p.drawString(right_col_x, y_position, f"{t['name']}:")
+            y_position -= 12
+            p.setFillColor(HexColor('#1f2937'))
+            p.drawString(right_col_x, y_position, signer_name[:40])
+            y_position -= 15
+        
+        signer_phone = contract.get('signer_phone', '')
+        if signer_phone:
+            p.setFillColor(HexColor('#6b7280'))
+            p.drawString(right_col_x, y_position, f"{t['phone']}:")
+            y_position -= 12
+            p.setFillColor(HexColor('#1f2937'))
+            p.drawString(right_col_x, y_position, signer_phone)
+            y_position -= 15
+        
+        signer_email = contract.get('signer_email', '')
+        if signer_email:
+            p.setFillColor(HexColor('#6b7280'))
+            p.drawString(right_col_x, y_position, f"{t['email']}:")
+            y_position -= 12
+            p.setFillColor(HexColor('#1f2937'))
+            p.drawString(right_col_x, y_position, signer_email[:35])
+            y_position -= 15
+    
+    # Verification method
+    verification_method = contract.get('verification_method', '')
+    if verification_method:
+        p.setFillColor(HexColor('#6b7280'))
+        p.drawString(right_col_x, y_position, f"{t['signing_method']}:")
+        y_position -= 12
+        p.setFillColor(HexColor('#1f2937'))
+        method_display = {
+            'sms': f"📱 {t['sms']}",
+            'call': f"☎️ {t['call']}",
+            'telegram': f"💬 {t['telegram']}"
+        }.get(verification_method, verification_method)
+        p.drawString(right_col_x, y_position, method_display)
+        y_position -= 15
+    
+    # Telegram username
+    telegram_username = contract.get('telegram_username', '')
+    if verification_method == 'telegram' and telegram_username:
+        p.setFillColor(HexColor('#6b7280'))
+        p.drawString(right_col_x, y_position, "Telegram:")
+        y_position -= 12
+        p.setFillColor(HexColor('#1f2937'))
+        p.drawString(right_col_x, y_position, f"@{telegram_username}")
+        y_position -= 15
+    
+    # Signing time
+    signed_at = signature.get('signed_at', '') if signature else ''
+    if signed_at:
+        p.setFillColor(HexColor('#6b7280'))
+        p.drawString(right_col_x, y_position, f"{t['signing_time']}:")
+        y_position -= 12
+        p.setFillColor(HexColor('#1f2937'))
+        try:
+            if isinstance(signed_at, str):
+                signed_dt = datetime.fromisoformat(signed_at.replace('Z', '+00:00'))
+            else:
+                signed_dt = signed_at
+            p.drawString(right_col_x, y_position, signed_dt.strftime('%d %b %Y %H:%M'))
+        except:
+            p.drawString(right_col_x, y_position, str(signed_at)[:20])
+        y_position -= 15
+    
+    # Contract language for tenant too
+    p.setFillColor(HexColor('#6b7280'))
+    p.drawString(right_col_x, y_position, f"{t['contract_language']}:")
+    y_position -= 12
+    p.setFillColor(HexColor('#1f2937'))
+    p.drawString(right_col_x, y_position, lang_display)
+    
+    right_col_end_y = y_position - 15
+    
+    # Return the lowest y position
     p.setFillColor(HexColor('#000000'))
-    
-    return y_position - 60
+    return min(left_col_end_y, right_col_end_y) - 20
 
 
 def draw_content_section(p, content_text, y_position, width, height, language_label=None, is_translation=False, start_new_page=False):
