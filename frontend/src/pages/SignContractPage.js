@@ -428,6 +428,8 @@ const SignContractPage = () => {
 
   const handleLanguageSelect = async (lang) => {
     if (lang === 'en') {
+      // First change UI language to English so warning shows in English
+      i18n.changeLanguage('en');
       setShowEnglishWarning(true);
       return;
     }
