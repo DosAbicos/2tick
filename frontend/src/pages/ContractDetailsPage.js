@@ -208,7 +208,7 @@ const ContractDetailsPage = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
-      toast.success('Договор утвержден! Email отправлен нанимателю.');
+      toast.success(t('contract.approved'));
       
       // Reload contract and signature to show updated status
       await fetchContract();
@@ -235,7 +235,7 @@ const ContractDetailsPage = () => {
       link.click();
       link.remove();
       
-      toast.success('PDF downloaded');
+      toast.success(t('contract.downloadSuccess'));
     } catch (error) {
       toast.error(t('common.error'));
     }
@@ -247,7 +247,7 @@ const ContractDetailsPage = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      toast.success('Contract deleted');
+      toast.success(t('contract.deleted'));
       navigate('/dashboard');
     } catch (error) {
       toast.error(t('common.error'));
@@ -357,10 +357,10 @@ const ContractDetailsPage = () => {
                         link.click();
                         link.remove();
                         window.URL.revokeObjectURL(url);
-                        toast.success('Договор успешно скачан');
+                        toast.success(t('contract.downloadSuccess'));
                       } catch (error) {
                         console.error('Error downloading PDF:', error);
-                        toast.error('Ошибка скачивания договора');
+                        toast.error(t('contract.downloadError'));
                       }
                     }}
                     className="px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-green-600 to-green-500 rounded-lg hover:from-green-700 hover:to-green-600 transition-all shadow-lg shadow-green-500/20 flex items-center gap-2"
@@ -431,10 +431,10 @@ const ContractDetailsPage = () => {
                           try {
                             document.execCommand('copy');
                             setJustCopied(true);
-                            toast.success('Ссылка скопирована!');
+                            toast.success(t('contract.linkCopied'));
                             setTimeout(() => setJustCopied(false), 2000);
                           } catch (err) {
-                            toast.error('Не удалось скопировать');
+                            toast.error(t('contract.linkCopyError'));
                           }
                           document.body.removeChild(textArea);
                         }
