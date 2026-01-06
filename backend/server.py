@@ -644,6 +644,290 @@ def html_to_text_for_pdf(html_content: str) -> str:
     
     return text.strip()
 
+def draw_page_header_footer(p, width, height, page_num, total_pages, contract_code, logo_path='/app/backend/logo.png', qr_data=None):
+    """Draw header with logo, footer with page number, and QR code on every page"""
+    from reportlab.lib.colors import HexColor
+    
+    # ===== HEADER =====
+    # Logo
+    if os.path.exists(logo_path):
+        try:
+            from PIL import Image as PILImage
+            img_reader = ImageReader(logo_path)
+            p.drawImage(img_reader, 40, height - 50, width=40, height=40, mask='auto')
+        except Exception as e:
+            logging.error(f"Error loading logo: {str(e)}")
+    
+    # Company name
+    try:
+        p.setFont("DejaVu-Bold", 14)
+    except:
+        p.setFont("Helvetica-Bold", 14)
+    
+    p.setFillColor(HexColor('#3b82f6'))
+    p.drawString(90, height - 30, "2tick.kz")
+    
+    try:
+        p.setFont("DejaVu", 8)
+    except:
+        p.setFont("Helvetica", 8)
+    p.setFillColor(HexColor('#64748b'))
+    p.drawString(90, height - 42, "Электронная подпись договоров")
+    
+    # Contract code on right
+    p.setFillColor(HexColor('#64748b'))
+    p.drawRightString(width - 40, height - 30, f"№ {contract_code}")
+    p.drawRightString(width - 40, height - 42, datetime.now().strftime('%d.%m.%Y'))
+    
+    # ===== QR CODE (top right corner) =====
+    if qr_data:
+        try:
+            import qrcode
+            from io import BytesIO
+            
+            qr = qrcode.QRCode(version=1, box_size=3, border=1)
+            qr.add_data(qr_data)
+            qr.make(fit=True)
+            qr_img = qr.make_image(fill_color="black", back_color="white")
+            
+            # Save to bytes
+            qr_buffer = BytesIO()
+            qr_img.save(qr_buffer, format='PNG')
+            qr_buffer.seek(0)
+            
+            # Draw QR code
+            from reportlab.lib.utils import ImageReader
+            qr_reader = ImageReader(qr_buffer)
+            p.drawImage(qr_reader, width - 100, height - 100, width=50, height=50)
+            
+            # QR label
+            try:
+                p.setFont("DejaVu", 6)
+            except:
+                p.setFont("Helvetica", 6)
+            p.setFillColor(HexColor('#94a3b8'))
+            p.drawCentredString(width - 75, height - 105, "Проверить")
+        except Exception as e:
+            logging.error(f"Error creating QR code: {str(e)}")
+    
+    # ===== FOOTER =====
+    try:
+        p.setFont("DejaVu", 8)
+    except:
+        p.setFont("Helvetica", 8)
+    p.setFillColor(HexColor('#94a3b8'))
+    p.drawCentredString(width / 2, 25, f"Страница {page_num} из {total_pages}")
+    p.drawString(40, 25, "2tick.kz — Электронная подпись договоров")
+    p.drawRightString(width - 40, 25, f"№ {contract_code}")
+    
+    # Reset color
+    p.setFillColor(HexColor('#000000'))
+
+
+def draw_signature_block(p, y_position, width, height, contract, signature, landlord, template, language='ru'):
+    """Draw signature information block after contract content in specified language"""
+    from reportlab.lib.colors import HexColor
+    
+    # Translations
+    translations = {
+        'ru': {
+            'title': 'ИНФОРМАЦИЯ О ПОДПИСАНИИ',
+            'landlord': 'Наймодатель',
+            'tenant': 'Наниматель / Арендатор',
+            'signature_hash': 'Хэш подписи',
+            'signed_at': 'Дата подписания',
+            'verification': 'Способ верификации',
+            'sms': 'SMS верификация',
+            'call': 'Верификация звонком',
+            'telegram': 'Telegram',
+            'phone': 'Телефон',
+            'email': 'Email',
+            'iin': 'ИИН',
+            'not_signed': 'Не подписано',
+            'signature_line': '________________',
+            'sign_here': '(подпись)',
+        },
+        'kk': {
+            'title': 'ҚОЛ ҚОЮ ТУРАЛЫ АҚПАРАТ',
+            'landlord': 'Жалға беруші',
+            'tenant': 'Жалға алушы',
+            'signature_hash': 'Қолтаңба хэші',
+            'signed_at': 'Қол қойылған күні',
+            'verification': 'Верификация әдісі',
+            'sms': 'SMS верификация',
+            'call': 'Қоңырау верификациясы',
+            'telegram': 'Telegram',
+            'phone': 'Телефон',
+            'email': 'Email',
+            'iin': 'ЖСН',
+            'not_signed': 'Қол қойылмаған',
+            'signature_line': '________________',
+            'sign_here': '(қолтаңба)',
+        },
+        'en': {
+            'title': 'SIGNATURE INFORMATION',
+            'landlord': 'Landlord',
+            'tenant': 'Tenant',
+            'signature_hash': 'Signature Hash',
+            'signed_at': 'Date Signed',
+            'verification': 'Verification Method',
+            'sms': 'SMS verification',
+            'call': 'Call verification',
+            'telegram': 'Telegram',
+            'phone': 'Phone',
+            'email': 'Email',
+            'iin': 'IIN',
+            'not_signed': 'Not signed',
+            'signature_line': '________________',
+            'sign_here': '(signature)',
+        }
+    }
+    
+    t = translations.get(language, translations['ru'])
+    
+    # Check if we need new page
+    if y_position < 250:
+        p.showPage()
+        y_position = height - 80
+    
+    y_position -= 40
+    
+    # Title
+    try:
+        p.setFont("DejaVu-Bold", 12)
+    except:
+        p.setFont("Helvetica-Bold", 12)
+    
+    p.setFillColor(HexColor('#1e40af'))
+    p.drawCentredString(width / 2, y_position, f"═══ {t['title']} ═══")
+    p.setFillColor(HexColor('#000000'))
+    
+    y_position -= 30
+    
+    # Two columns: Landlord and Tenant
+    left_col = 60
+    right_col = width / 2 + 20
+    
+    try:
+        p.setFont("DejaVu-Bold", 10)
+    except:
+        p.setFont("Helvetica-Bold", 10)
+    
+    # Get party roles
+    party_a_role = contract.get(f'party_a_role_{language}') or contract.get('party_a_role') or t['landlord']
+    party_b_role = contract.get(f'party_b_role_{language}') or contract.get('party_b_role') or t['tenant']
+    
+    # Landlord column header
+    p.drawString(left_col, y_position, party_a_role)
+    # Tenant column header
+    p.drawString(right_col, y_position, party_b_role)
+    
+    y_position -= 20
+    
+    try:
+        p.setFont("DejaVu", 9)
+    except:
+        p.setFont("Helvetica", 9)
+    
+    # Landlord info
+    landlord_name = ""
+    if landlord:
+        landlord_name = landlord.get('company_name') or landlord.get('full_name') or landlord.get('name', '')
+    if not landlord_name:
+        landlord_name = contract.get('placeholder_values', {}).get('1NAME', '')
+    
+    p.drawString(left_col, y_position, landlord_name or "—")
+    
+    # Tenant info
+    tenant_name = signature.get('signer_name') if signature else ''
+    if not tenant_name:
+        tenant_name = contract.get('signer_name') or contract.get('placeholder_values', {}).get('NAME2', '')
+    p.drawString(right_col, y_position, tenant_name or "—")
+    
+    y_position -= 15
+    
+    # Phone
+    p.setFillColor(HexColor('#64748b'))
+    p.drawString(left_col, y_position, f"{t['phone']}:")
+    p.drawString(right_col, y_position, f"{t['phone']}:")
+    
+    p.setFillColor(HexColor('#000000'))
+    landlord_phone = ""
+    if landlord:
+        landlord_phone = landlord.get('phone', '')
+    p.drawString(left_col + 60, y_position, landlord_phone or "—")
+    
+    tenant_phone = signature.get('signer_phone') if signature else ''
+    if not tenant_phone:
+        tenant_phone = contract.get('signer_phone') or contract.get('placeholder_values', {}).get('PHONE_NUM', '')
+    p.drawString(right_col + 60, y_position, tenant_phone or "—")
+    
+    y_position -= 15
+    
+    # IIN
+    p.setFillColor(HexColor('#64748b'))
+    p.drawString(left_col, y_position, f"{t['iin']}:")
+    p.drawString(right_col, y_position, f"{t['iin']}:")
+    
+    p.setFillColor(HexColor('#000000'))
+    tenant_iin = contract.get('placeholder_values', {}).get('ID_CARD', '') or contract.get('placeholder_values', {}).get('IIN', '')
+    p.drawString(left_col + 40, y_position, "—")
+    p.drawString(right_col + 40, y_position, tenant_iin or "—")
+    
+    y_position -= 25
+    
+    # Signature lines
+    try:
+        p.setFont("DejaVu", 9)
+    except:
+        p.setFont("Helvetica", 9)
+    
+    # Landlord signature
+    p.setFillColor(HexColor('#64748b'))
+    p.drawString(left_col, y_position, t['signature_line'])
+    p.drawString(left_col, y_position - 12, t['sign_here'])
+    
+    # Tenant signature / hash
+    if signature and signature.get('signature_hash'):
+        p.setFillColor(HexColor('#059669'))  # Green
+        try:
+            p.setFont("DejaVu-Bold", 9)
+        except:
+            p.setFont("Helvetica-Bold", 9)
+        p.drawString(right_col, y_position, f"✓ {signature['signature_hash']}")
+        
+        try:
+            p.setFont("DejaVu", 8)
+        except:
+            p.setFont("Helvetica", 8)
+        p.setFillColor(HexColor('#64748b'))
+        
+        signed_at = signature.get('signed_at', '')
+        if signed_at:
+            try:
+                if isinstance(signed_at, str):
+                    signed_dt = datetime.fromisoformat(signed_at.replace('Z', '+00:00'))
+                else:
+                    signed_dt = signed_at
+                signed_at = signed_dt.strftime('%d.%m.%Y %H:%M')
+            except:
+                pass
+        
+        p.drawString(right_col, y_position - 12, f"{t['signed_at']}: {signed_at}")
+        
+        verification_method = signature.get('verification_method', 'sms')
+        method_text = t.get(verification_method, verification_method)
+        p.drawString(right_col, y_position - 24, f"{t['verification']}: {method_text}")
+    else:
+        p.setFillColor(HexColor('#64748b'))
+        p.drawString(right_col, y_position, t['signature_line'])
+        p.drawString(right_col, y_position - 12, t['sign_here'])
+    
+    p.setFillColor(HexColor('#000000'))
+    
+    return y_position - 60
+
+
 def draw_content_section(p, content_text, y_position, width, height, language_label=None, is_translation=False, start_new_page=False):
     """Helper function to draw a content section in PDF
     
@@ -659,7 +943,7 @@ def draw_content_section(p, content_text, y_position, width, height, language_la
     # Start new page if requested
     if start_new_page:
         p.showPage()
-        y_position = height - 50
+        y_position = height - 120  # Leave space for header
     
     # Add language header if provided
     if language_label:
@@ -702,7 +986,7 @@ def draw_content_section(p, content_text, y_position, width, height, language_la
             except:
                 p.setFont("Helvetica", 10)
             p.setFillColor(HexColor('#000000'))
-            y_position = height - 50
+            y_position = height - 120
         
         if len(line) > max_chars_per_line:
             words = line.split()
