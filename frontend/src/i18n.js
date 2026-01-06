@@ -919,6 +919,16 @@ const resources = {
       "contract.downloadSuccess": "Contract downloaded successfully",
       "contract.downloadError": "Error downloading contract",
       "contract.sent": "Contract sent!",
+      "contract.templateLoaded": "Template \"{{title}}\" loaded",
+      "contract.templateLoadError": "Error loading template",
+      "contract.changesSaved": "Changes saved!",
+      "contract.clientDocSelected": "Client document selected",
+      "contract.createdWithDoc": "Contract and client document created successfully",
+      "contract.createdNoDoc": "Contract created, but client document not uploaded",
+      "contract.loadingTemplate": "Loading template...",
+      "contract.fillDataHint": "Fill in the data on the right, contract will update on the left",
+      "contract.fillData": "Fill in data",
+      "contract.docSelected": "Document selected",
       
       // ===== CONTRACT DETAILS =====
       "contractDetails.title": "Contract Details",
