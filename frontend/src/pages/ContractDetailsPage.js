@@ -449,14 +449,14 @@ const ContractDetailsPage = () => {
                       {justCopied ? (
                         <>
                           <CheckCheck className="w-3 h-3 sm:w-4 sm:h-4" />
-                          <span className="hidden sm:inline">Скопировано!</span>
+                          <span className="hidden sm:inline">{t('contractDetails.copied')}</span>
                           <span className="sm:hidden">✓</span>
                         </>
                       ) : (
                         <>
                           <Copy className="w-3 h-3 sm:w-4 sm:h-4" />
-                          <span className="hidden sm:inline">{sendingContract ? 'Генерация...' : (contract.signature_link ? 'Копировать ссылку' : 'Сгенерировать ссылку')}</span>
-                          <span className="sm:hidden">{contract.signature_link ? 'Копия' : 'Ссылка'}</span>
+                          <span className="hidden sm:inline">{sendingContract ? t('contractDetails.generating') : (contract.signature_link ? t('contractDetails.copyLink') : t('contractDetails.generateLink'))}</span>
+                          <span className="sm:hidden">{contract.signature_link ? t('contractDetails.copy') : t('contractDetails.link')}</span>
                         </>
                       )}
                     </button>
