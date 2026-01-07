@@ -717,13 +717,13 @@ const ContractDetailsPage = () => {
                         <>
                           {contract.signer_name && (
                             <div>
-                              <span className="text-neutral-500">Имя:</span>
+                              <span className="text-neutral-500">{t('contractDetails.name')}:</span>
                               <p className="font-medium">{contract.signer_name}</p>
                             </div>
                           )}
                           {contract.signer_phone && (
                             <div>
-                              <span className="text-neutral-500">Телефон:</span>
+                              <span className="text-neutral-500">{t('contractDetails.phone')}:</span>
                               <p className="font-medium">{contract.signer_phone}</p>
                             </div>
                           )}
@@ -736,12 +736,12 @@ const ContractDetailsPage = () => {
                         </>
                       )}
                       <div>
-                        <span className="text-neutral-500">Метод подписания:</span>
+                        <span className="text-neutral-500">{t('contractDetails.signingMethod')}:</span>
                         <p className="font-medium">
-                          {contract.verification_method === 'sms' && '📱 SMS'}
-                          {contract.verification_method === 'call' && '☎️ Входящий звонок'}
-                          {contract.verification_method === 'telegram' && '💬 Telegram'}
-                          {!contract.verification_method && 'Не указан'}
+                          {contract.verification_method === 'sms' && 'SMS'}
+                          {contract.verification_method === 'call' && t('contractDetails.incomingCall')}
+                          {contract.verification_method === 'telegram' && 'Telegram'}
+                          {!contract.verification_method && t('contractDetails.notSpecified')}
                         </p>
                       </div>
                       {contract.verification_method === 'telegram' && contract.telegram_username && (
@@ -751,16 +751,16 @@ const ContractDetailsPage = () => {
                         </div>
                       )}
                       <div>
-                        <span className="text-neutral-500">Время подписания:</span>
+                        <span className="text-neutral-500">{t('contractDetails.signingTime')}:</span>
                         <p className="font-medium">{signature.signed_at ? format(new Date(signature.signed_at), 'dd MMM yyyy HH:mm') : 'N/A'}</p>
                       </div>
                       <div>
-                        <span className="text-neutral-500">Язык договора:</span>
+                        <span className="text-neutral-500">{t('contractDetails.contractLanguage')}:</span>
                         <p className="font-medium">
-                          {(contract.contract_language || contract.signing_language) === 'ru' && 'Русский'}
-                          {(contract.contract_language || contract.signing_language) === 'kk' && 'Қазақша'}
-                          {(contract.contract_language || contract.signing_language) === 'en' && 'English'}
-                          {!(contract.contract_language || contract.signing_language) && 'Русский (по умолчанию)'}
+                          {(contract.contract_language || contract.signing_language) === 'ru' && t('contractDetails.russian')}
+                          {(contract.contract_language || contract.signing_language) === 'kk' && t('contractDetails.kazakh')}
+                          {(contract.contract_language || contract.signing_language) === 'en' && t('contractDetails.english')}
+                          {!(contract.contract_language || contract.signing_language) && t('contractDetails.russianDefault')}
                         </p>
                       </div>
                     </div>
@@ -770,7 +770,7 @@ const ContractDetailsPage = () => {
                 {/* Document Photo */}
                 {signature.document_upload && (
                   <div className="mt-6">
-                    <h4 className="font-semibold mb-3 text-sm sm:text-base">📄 Документ подписанта:</h4>
+                    <h4 className="font-semibold mb-3 text-sm sm:text-base">{t('contractDetails.signerDocument')}:</h4>
                     <div className="border rounded-lg p-2 sm:p-4 bg-white overflow-hidden">
                       <img 
                         src={`data:image/jpeg;base64,${signature.document_upload}`}
@@ -795,7 +795,7 @@ const ContractDetailsPage = () => {
                       {signature.document_filename && (
                         <p className="text-xs text-neutral-500 mt-2 text-center break-all">{signature.document_filename}</p>
                       )}
-                      <p className="text-xs text-neutral-400 mt-1 text-center">Нажмите для увеличения</p>
+                      <p className="text-xs text-neutral-400 mt-1 text-center">{t('contractDetails.clickToEnlarge')}</p>
                     </div>
                   </div>
                 )}
