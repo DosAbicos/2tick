@@ -1192,11 +1192,10 @@ Email: ${templateData.tenant_email || '[Email]'}
                               <div className="mt-6 pt-6 border-t border-slate-200">
                                 <div className="p-4 bg-gradient-to-br from-indigo-50 to-blue-50 border-2 border-indigo-200 rounded-xl">
                                   <label className="font-semibold text-indigo-900 flex items-center gap-2 mb-2">
-                                    📄 Удостоверение личности нанимателя
+                                    {t('contract.tenantDocument')}
                                   </label>
                                   <p className="text-xs text-indigo-700 mt-1 mb-3">
-                                    Вы можете загрузить удостоверение нанимателя сейчас (если есть копия), 
-                                    или наниматель загрузит его при подписании
+                                    {t('contract.tenantDocumentHint')}
                                   </p>
                                   
                                   <div className="flex gap-2 items-center">
@@ -1224,14 +1223,14 @@ Email: ${templateData.tenant_email || '[Email]'}
                                         }}
                                         className="px-3 py-2 text-sm font-medium text-red-600 bg-white border border-red-200 rounded-lg hover:bg-red-50 transition-all"
                                       >
-                                        Удалить
+                                        {t('contract.delete')}
                                       </button>
                                     )}
                                   </div>
                                   
                                   {tenantDocPreview && (
                                     <div className="mt-2">
-                                      <p className="text-xs text-green-600">✓ Документ загружен: {tenantDocument.name}</p>
+                                      <p className="text-xs text-green-600">✓ {t('contract.docUploaded')}: {tenantDocument.name}</p>
                                     </div>
                                   )}
                                 </div>
