@@ -2267,6 +2267,7 @@ const resources = {
       // ===== COMMON =====
       "common.close": "Close",
       "common.cancel": "Cancel",
+      "common.back": "Back",
       "common.confirm": "Confirm",
       "common.loading": "Loading...",
       "common.error": "Error",
