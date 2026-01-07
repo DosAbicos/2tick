@@ -43,9 +43,36 @@ const ContractDetailsPage = () => {
 
   // Function to translate placeholder labels
   const translateLabel = (key, fallbackLabel) => {
-    const labelKey = `placeholders.${key}`;
-    const translated = t(labelKey, { defaultValue: '' });
-    return translated || fallbackLabel;
+    // First try to find translation by placeholder key
+    const keyTranslation = t(`placeholders.${key}`, { defaultValue: '' });
+    if (keyTranslation) return keyTranslation;
+    
+    // Then try to find translation by label text (for custom placeholders)
+    const labelMap = {
+      'Имя': t('contractDetails.name'),
+      'Номер телефона': t('contractDetails.phone'),
+      'Удостоверение личности': t('placeholders.ID_CARD'),
+      'Почта': t('contractDetails.email'),
+      'ИИН': t('contractDetails.iin'),
+      'Адрес': t('contractDetails.address'),
+      'Компания': t('contractDetails.company'),
+      'Представитель': t('contractDetails.representative'),
+      'ФИО': t('placeholders.TENANT_FULL_NAME'),
+      'Телефон': t('contractDetails.phone'),
+      'Email': 'Email',
+      'Город': t('placeholders.CITY'),
+      'Дата начала': t('placeholders.START_DATE'),
+      'Дата окончания': t('placeholders.END_DATE'),
+      'Сумма': t('placeholders.AMOUNT'),
+      'Сумма аренды': t('placeholders.RENT_AMOUNT'),
+    };
+    
+    // Check if fallbackLabel matches any known Russian label
+    if (labelMap[fallbackLabel]) {
+      return labelMap[fallbackLabel];
+    }
+    
+    return fallbackLabel;
   };
 
   useEffect(() => {
