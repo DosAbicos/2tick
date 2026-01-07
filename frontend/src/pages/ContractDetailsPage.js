@@ -313,7 +313,7 @@ const ContractDetailsPage = () => {
             {isReadOnly && (
               <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
                 <p className="text-sm text-amber-800 font-medium">
-                  👁️ Режим просмотра (только чтение)
+                  {t('contractDetails.readOnlyMode')}
                 </p>
               </div>
             )}
