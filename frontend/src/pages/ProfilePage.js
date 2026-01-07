@@ -443,7 +443,7 @@ const ProfilePage = () => {
                       value={passwordData.new_password}
                       onChange={(e) => setPasswordData({ ...passwordData, new_password: e.target.value })}
                       className="minimal-input w-full"
-                      placeholder="Минимум 6 символов"
+                      placeholder={t('profile.minPassword')}
                     />
                   </div>
 
