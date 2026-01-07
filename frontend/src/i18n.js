@@ -1498,6 +1498,7 @@ const resources = {
       // ===== COMMON =====
       "common.close": "Жабу",
       "common.cancel": "Болдырмау",
+      "common.back": "Артқа",
       "common.confirm": "Растау",
       "common.loading": "Жүктелуде...",
       "common.error": "Қате",
