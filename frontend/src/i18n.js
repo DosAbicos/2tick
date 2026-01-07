@@ -794,6 +794,7 @@ const resources = {
       "common.cancel": "Отмена",
       "common.back": "Назад",
       "common.client_will_fill": "Клиент заполнит",
+      "common.enter": "Введите",
       "common.confirm": "Подтвердить",
       "common.loading": "Загрузка...",
       "common.error": "Ошибка",
