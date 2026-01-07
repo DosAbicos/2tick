@@ -86,11 +86,11 @@ const VerifyRegistrationPage = () => {
     try {
       const response = await axios.post(`${API}/auth/registration/${registration_id}/request-otp?method=sms`);
       setMockOtp(response.data.mock_otp || '');
-      toast.success('SMS отправлено!');
+      toast.success(t('verification.smsSent'));
       setVerificationMethod('sms');
       setSmsCooldown(60);
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Ошибка отправки SMS');
+      toast.error(error.response?.data?.detail || t('verification.smsError'));
     } finally {
       setLoading(false);
     }
@@ -107,7 +107,7 @@ const VerifyRegistrationPage = () => {
       setVerificationMethod('call');
       setCallCooldown(60);
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Ошибка звонка');
+      toast.error(error.response?.data?.detail || t('verification.callError'));
     } finally {
       setRequestingCall(false);
     }
@@ -115,7 +115,7 @@ const VerifyRegistrationPage = () => {
 
   const handleVerifySMS = async () => {
     if (otpValue.length !== 6) {
-      toast.error('Введите 6-значный код');
+      toast.error(t('verification.enter6Digits'));
       return;
     }
     
@@ -131,11 +131,11 @@ const VerifyRegistrationPage = () => {
         localStorage.setItem('user', JSON.stringify(user));
         
         setVerified(true);
-        toast.success('Регистрация завершена!');
+        toast.success(t('verification.registrationComplete'));
         setTimeout(() => navigate('/dashboard'), 2000);
       }
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Неверный код');
+      toast.error(error.response?.data?.detail || t('verification.invalidCode'));
     } finally {
       setVerifying(false);
     }
@@ -143,7 +143,7 @@ const VerifyRegistrationPage = () => {
 
   const handleVerifyCall = async () => {
     if (callCode.length !== 4) {
-      toast.error('Введите 4 цифры');
+      toast.error(t('verification.enter4Digits'));
       return;
     }
     
@@ -159,11 +159,11 @@ const VerifyRegistrationPage = () => {
         localStorage.setItem('user', JSON.stringify(user));
         
         setVerified(true);
-        toast.success('Регистрация завершена!');
+        toast.success(t('verification.registrationComplete'));
         setTimeout(() => navigate('/dashboard'), 2000);
       }
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Неверный код');
+      toast.error(error.response?.data?.detail || t('verification.invalidCode'));
     } finally {
       setVerifying(false);
     }
@@ -171,7 +171,7 @@ const VerifyRegistrationPage = () => {
 
   const handleVerifyTelegram = async () => {
     if (telegramCode.length !== 6) {
-      toast.error('Введите 6-значный код');
+      toast.error(t('verification.enter6Digits'));
       return;
     }
     
@@ -187,11 +187,11 @@ const VerifyRegistrationPage = () => {
         localStorage.setItem('user', JSON.stringify(user));
         
         setVerified(true);
-        toast.success('Регистрация завершена!');
+        toast.success(t('verification.registrationComplete'));
         setTimeout(() => navigate('/dashboard'), 2000);
       }
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Неверный код');
+      toast.error(error.response?.data?.detail || t('verification.invalidCode'));
     } finally {
       setVerifying(false);
     }
@@ -211,8 +211,8 @@ const VerifyRegistrationPage = () => {
               <div className="w-20 h-20 mx-auto bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-green-500/30">
                 <CheckCircle className="w-10 h-10 text-white" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Регистрация завершена!</h2>
-              <p className="text-gray-600">Перенаправление на панель управления...</p>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('verification.registrationComplete')}</h2>
+              <p className="text-gray-600">{t('verification.redirecting')}</p>
             </motion.div>
           </div>
         </div>
@@ -227,8 +227,8 @@ const VerifyRegistrationPage = () => {
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8 sm:py-16">
         <div className="minimal-card p-6 sm:p-8 animate-fade-in" data-testid="verify-registration-card">
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Подтверждение телефона</h2>
-            <p className="text-gray-600">Выберите способ верификации</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('verification.title')}</h2>
+            <p className="text-gray-600">{t('verification.selectMethod')}</p>
           </div>
           <div className="space-y-6">
             {!verificationMethod && (
@@ -250,7 +250,7 @@ const VerifyRegistrationPage = () => {
                   transition={{ delay: 0.3 }}
                   className="text-2xl font-bold text-gray-900 mb-2"
                 >
-                  Подтверждение телефона
+                  {t('verification.title')}
                 </motion.h3>
                 
                 <motion.p
@@ -259,7 +259,7 @@ const VerifyRegistrationPage = () => {
                   transition={{ delay: 0.4 }}
                   className="text-gray-600 text-sm mb-8"
                 >
-                  Выберите удобный способ верификации
+                  {t('verification.selectMethod')}
                 </motion.p>
                 
                 <div className="space-y-4 max-w-md mx-auto">
@@ -283,9 +283,9 @@ const VerifyRegistrationPage = () => {
                       </div>
                       <div className="flex-1 text-left">
                         <h4 className="text-lg font-semibold text-gray-900 mb-1">
-                          {smsCooldown > 0 ? `SMS через ${smsCooldown}с` : 'SMS'}
+                          {smsCooldown > 0 ? t('verification.smsIn', { seconds: smsCooldown }) : t('verification.sms')}
                         </h4>
-                        <p className="text-sm text-gray-600">Код придет в сообщении</p>
+                        <p className="text-sm text-gray-600">{t('verification.smsHint')}</p>
                       </div>
                       <svg className="w-5 h-5 text-blue-600 flex-shrink-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -313,9 +313,9 @@ const VerifyRegistrationPage = () => {
                       </div>
                       <div className="flex-1 text-left">
                         <h4 className="text-lg font-semibold text-gray-900 mb-1">
-                          {requestingCall ? 'Звоним...' : callCooldown > 0 ? `Звонок через ${callCooldown}с` : 'Звонок'}
+                          {requestingCall ? t('verification.calling') : callCooldown > 0 ? t('verification.callIn', { seconds: callCooldown }) : t('verification.call')}
                         </h4>
-                        <p className="text-sm text-gray-600">Вам поступит вызов</p>
+                        <p className="text-sm text-gray-600">{t('verification.callHint')}</p>
                       </div>
                       <svg className="w-5 h-5 text-blue-600 flex-shrink-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -349,9 +349,9 @@ const VerifyRegistrationPage = () => {
                       </div>
                       <div className="flex-1 text-left">
                         <h4 className="text-lg font-semibold text-white mb-1">
-                          {loadingTelegramLink ? 'Загрузка...' : telegramCooldown > 0 ? `Telegram (${telegramCooldown}с)` : 'Telegram'}
+                          {loadingTelegramLink ? t('verification.loading') : telegramCooldown > 0 ? t('verification.telegramIn', { seconds: telegramCooldown }) : t('verification.telegram')}
                         </h4>
-                        <p className="text-sm text-white/80">Код в боте @twotick_bot</p>
+                        <p className="text-sm text-white/80">{t('verification.telegramHint')}</p>
                       </div>
                       <svg className="w-5 h-5 text-white/80 flex-shrink-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -375,11 +375,11 @@ const VerifyRegistrationPage = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">SMS верификация</h3>
-                  <p className="text-sm text-gray-600 mb-4">Введите 6-значный код из SMS</p>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{t('verification.smsVerification')}</h3>
+                  <p className="text-sm text-gray-600 mb-4">{t('verification.enter6DigitSms')}</p>
                   {mockOtp && (
                     <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-200 mb-4">
-                      <p className="text-sm text-blue-900 font-medium">🔐 Тестовый код: <strong className="text-lg">{mockOtp}</strong></p>
+                      <p className="text-sm text-blue-900 font-medium">{t('verification.testCode')}: <strong className="text-lg">{mockOtp}</strong></p>
                     </div>
                   )}
                 </div>
@@ -405,14 +405,14 @@ const VerifyRegistrationPage = () => {
                     }}
                     className="neuro-button flex-1 py-3"
                   >
-                    ← Назад
+                    ← {t('verification.back')}
                   </button>
                   <button
                     onClick={handleVerifySMS}
                     disabled={verifying || otpValue.length !== 6}
                     className="neuro-button-primary flex-1 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {verifying ? 'Проверяем...' : '✓ Подтвердить'}
+                    {verifying ? t('verification.verifying') : t('verification.confirm')}
                   </button>
                 </div>
                 
@@ -421,7 +421,7 @@ const VerifyRegistrationPage = () => {
                   disabled={smsCooldown > 0}
                   className="w-full text-sm text-blue-600 font-medium hover:text-blue-700 hover:underline disabled:opacity-50 disabled:cursor-not-allowed py-2"
                 >
-                  {smsCooldown > 0 ? `Повторить через ${smsCooldown}с` : '↻ Отправить код повторно'}
+                  {smsCooldown > 0 ? t('verification.resendIn', { seconds: smsCooldown }) : t('verification.resendCode')}
                 </button>
               </motion.div>
             )}
@@ -439,11 +439,11 @@ const VerifyRegistrationPage = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Звонок верификация</h3>
-                  <p className="text-sm text-gray-600 mb-4">Введите последние 4 цифры номера</p>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{t('verification.callVerification')}</h3>
+                  <p className="text-sm text-gray-600 mb-4">{t('verification.enterLast4Digits')}</p>
                   {callHint && (
                     <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-200 mb-4">
-                      <p className="text-sm text-blue-900 font-medium">📞 {callHint}</p>
+                      <p className="text-sm text-blue-900 font-medium">{callHint}</p>
                     </div>
                   )}
                 </div>
@@ -467,14 +467,14 @@ const VerifyRegistrationPage = () => {
                     }}
                     className="neuro-button flex-1 py-3"
                   >
-                    ← Назад
+                    ← {t('verification.back')}
                   </button>
                   <button
                     onClick={handleVerifyCall}
                     disabled={verifying || callCode.length !== 4}
                     className="neuro-button-primary flex-1 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {verifying ? 'Проверяем...' : '✓ Подтвердить'}
+                    {verifying ? t('verification.verifying') : t('verification.confirm')}
                   </button>
                 </div>
               </motion.div>
@@ -493,13 +493,13 @@ const VerifyRegistrationPage = () => {
                       <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
                     </svg>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Telegram верификация</h3>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{t('verification.telegramVerification')}</h3>
                   <p className="text-sm text-gray-600 mb-4">
-                    Скопируйте код из чата с ботом <span className="font-semibold text-[#0088cc]">@twotick_bot</span>
+                    {t('verification.copyCodeFromBot')} <span className="font-semibold text-[#0088cc]">@twotick_bot</span>
                   </p>
                   <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-200 mb-4">
                     <p className="text-sm text-blue-900 font-medium">
-                      💡 Код отправлен в Telegram. Если не получили - нажмите кнопку ниже
+                      {t('verification.codeSentToTelegram')}
                     </p>
                   </div>
                 </div>
@@ -525,14 +525,14 @@ const VerifyRegistrationPage = () => {
                     }}
                     className="neuro-button flex-1 py-3"
                   >
-                    ← Назад
+                    ← {t('verification.back')}
                   </button>
                   <button
                     onClick={handleVerifyTelegram}
                     disabled={verifying || telegramCode.length !== 6}
                     className="neuro-button-primary flex-1 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {verifying ? 'Проверяем...' : '✓ Подтвердить'}
+                    {verifying ? t('verification.verifying') : t('verification.confirm')}
                   </button>
                 </div>
                 
@@ -543,7 +543,7 @@ const VerifyRegistrationPage = () => {
                     rel="noopener noreferrer"
                     className="block w-full text-center py-3 text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline"
                   >
-                    ↻ Отправить код повторно
+                    {t('verification.resendCode')}
                   </a>
                 )}
               </motion.div>
