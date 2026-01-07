@@ -1048,80 +1048,99 @@ class BackendTester:
         
         return all_passed
     
-    def test_multilang_contract_creation_and_signing(self):
+    def test_internationalization_backend_apis(self):
         """
-        CRITICAL TEST: Multi-language contract creation and signing flow
+        COMPREHENSIVE INTERNATIONALIZATION TESTING
         
-        Tests the specific requirements from review_request:
-        1. Login as admin (asl@asl.kz / 142314231423)
-        2. Get templates with multi-language content (content_kk and content_en fields)
-        3. Create a new contract from this template
-        4. Verify the new contract has content_kk and content_en fields populated
-        5. Test signing page language switching
-        6. Test the signing endpoints with different languages
+        Tests the backend APIs that support the frontend i18n functionality:
+        1. Admin authentication with specific credentials (asl@asl.kz / 142314231423)
+        2. Multi-language template retrieval and content verification
+        3. Contract creation with multi-language content preservation
+        4. Signing page language switching (ru/kk/en)
+        5. Set contract language endpoint functionality
+        6. Placeholder replacement in different languages
+        7. PDF generation with correct language content
         """
-        self.log("\n🌍 CRITICAL TEST: Multi-language contract creation and signing flow")
+        self.log("\n🌍 COMPREHENSIVE INTERNATIONALIZATION BACKEND TESTING")
         self.log("=" * 80)
         
         all_tests_passed = True
         
-        # Step 1: Login as admin with specific credentials
-        self.log("\n🔐 Step 1: Login as admin (asl@asl.kz)")
+        # Step 1: Admin authentication with specific credentials
+        self.log("\n🔐 Step 1: Admin authentication (asl@asl.kz / 142314231423)")
         if not self.login_as_admin():
-            self.log("❌ Failed to login as admin. Cannot proceed with multi-language tests.")
+            self.log("❌ Failed to login as admin. Cannot proceed with i18n tests.")
             return False
         
-        # Step 2: Get templates with multi-language content
-        self.log("\n📋 Step 2: Get templates with multi-language content")
+        # Step 2: Multi-language template verification
+        self.log("\n📋 Step 2: Multi-language template retrieval and verification")
         template_id, multilang_template = self.test_get_multilang_template()
         if not template_id:
             self.log("❌ No multi-language template found. Cannot proceed.")
             return False
         
-        # Step 3: Create contract from multi-language template
-        self.log("\n📝 Step 3: Create contract from multi-language template")
+        # Step 3: Contract creation with multi-language content
+        self.log("\n📝 Step 3: Contract creation with multi-language content preservation")
         contract_id, creation_success = self.test_create_contract_from_multilang_template(template_id, multilang_template)
         if not creation_success:
             self.log("❌ Failed to create contract from multi-language template.")
             all_tests_passed = False
         
-        # Step 4: Verify contract has multi-language content
-        self.log("\n✅ Step 4: Verify contract has multi-language content")
+        # Step 4: Multi-language content verification
+        self.log("\n✅ Step 4: Multi-language content verification")
         if contract_id:
             verification_success = self.test_verify_multilang_contract_content(contract_id)
             if not verification_success:
                 self.log("❌ Contract multi-language content verification failed.")
                 all_tests_passed = False
         
-        # Step 5: Test signing page language switching
-        self.log("\n🔄 Step 5: Test signing page language switching")
+        # Step 5: Signing page language switching
+        self.log("\n🔄 Step 5: Signing page language switching (ru/kk/en)")
         if contract_id:
             language_switch_success = self.test_signing_page_language_switching(contract_id)
             if not language_switch_success:
                 self.log("❌ Signing page language switching failed.")
                 all_tests_passed = False
         
-        # Step 6: Test set-contract-language endpoint
-        self.log("\n🌐 Step 6: Test set-contract-language endpoint")
+        # Step 6: Set contract language endpoint
+        self.log("\n🌐 Step 6: Set contract language endpoint functionality")
         if contract_id:
             set_language_success = self.test_set_contract_language_endpoint(contract_id)
             if not set_language_success:
                 self.log("❌ Set contract language endpoint failed.")
                 all_tests_passed = False
         
+        # Step 7: Placeholder replacement testing
+        self.log("\n🔧 Step 7: Placeholder replacement in different languages")
+        if contract_id:
+            placeholder_success = self.test_multilang_placeholder_replacement(contract_id)
+            if not placeholder_success:
+                self.log("❌ Multi-language placeholder replacement failed.")
+                all_tests_passed = False
+        
+        # Step 8: PDF generation with language content
+        self.log("\n📄 Step 8: PDF generation with correct language content")
+        if contract_id:
+            pdf_success = self.test_multilang_pdf_generation(contract_id)
+            if not pdf_success:
+                self.log("❌ Multi-language PDF generation failed.")
+                all_tests_passed = False
+        
         # Final result
         self.log("\n" + "=" * 80)
-        self.log("📊 MULTI-LANGUAGE TEST RESULTS:")
+        self.log("📊 INTERNATIONALIZATION TEST RESULTS:")
         if all_tests_passed:
-            self.log("🎉 ALL MULTI-LANGUAGE TESTS PASSED!")
-            self.log("✅ Admin login successful")
-            self.log("✅ Multi-language template found and used")
-            self.log("✅ Contract created with multi-language content")
+            self.log("🎉 ALL INTERNATIONALIZATION TESTS PASSED!")
+            self.log("✅ Admin authentication successful with specified credentials")
+            self.log("✅ Multi-language template found and content verified")
+            self.log("✅ Contract created with multi-language content preserved")
             self.log("✅ Contract content verification successful")
-            self.log("✅ Signing page language switching works")
-            self.log("✅ Set contract language endpoint works")
+            self.log("✅ Signing page language switching works for ru/kk/en")
+            self.log("✅ Set contract language endpoint works correctly")
+            self.log("✅ Placeholder replacement works in different languages")
+            self.log("✅ PDF generation includes correct language content")
         else:
-            self.log("❌ SOME MULTI-LANGUAGE TESTS FAILED! Check logs above.")
+            self.log("❌ SOME INTERNATIONALIZATION TESTS FAILED! Check logs above.")
         
         return all_tests_passed
     
