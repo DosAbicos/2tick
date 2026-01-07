@@ -20,7 +20,7 @@ import os
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://contract-signing.preview.emergentagent.com/api"
+BASE_URL = "https://multilingual-docs-5.preview.emergentagent.com/api"
 
 class ApproveButtonTester:
     def __init__(self):

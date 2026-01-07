@@ -13,7 +13,7 @@ import base64
 from datetime import datetime
 
 # Configuration from review request
-BASE_URL = "https://contract-signing.preview.emergentagent.com/api"
+BASE_URL = "https://multilingual-docs-5.preview.emergentagent.com/api"
 ADMIN_EMAIL = "asl@asl.kz"
 ADMIN_PASSWORD = "142314231423"
 
