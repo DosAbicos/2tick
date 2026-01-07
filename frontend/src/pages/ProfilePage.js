@@ -426,13 +426,13 @@ const ProfilePage = () => {
                   className="space-y-5"
                 >
                   <div>
-                    <label className="text-sm font-medium text-gray-500 mb-2 block">Старый пароль</label>
+                    <label className="text-sm font-medium text-gray-500 mb-2 block">{t('profile.oldPassword')}</label>
                     <input
                       type="password"
                       value={passwordData.old_password}
                       onChange={(e) => setPasswordData({ ...passwordData, old_password: e.target.value })}
                       className="minimal-input w-full"
-                      placeholder="Введите старый пароль"
+                      placeholder={t('profile.enterOldPassword')}
                     />
                   </div>
 
