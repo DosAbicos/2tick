@@ -553,7 +553,7 @@ const ContractDetailsPage = () => {
             
             {/* Content */}
             <div className="minimal-card p-4 sm:p-6">
-              <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-gray-900">📄 Содержимое договора</h3>
+              <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-gray-900">{t('contractDetails.content')}</h3>
               <div className="bg-gradient-to-br from-white to-gray-50 p-4 sm:p-6 rounded-xl border border-gray-100 shadow-inner">
                 <div 
                   className="whitespace-pre-wrap text-xs sm:text-sm leading-relaxed text-gray-800 break-words overflow-x-auto"
