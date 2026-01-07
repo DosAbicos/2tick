@@ -46,6 +46,7 @@ const resources = {
       "auth.register.dataSaved": "Данные сохранены. Теперь подтвердите телефон",
       "auth.register.emailExists": "Пользователь с таким email уже зарегистрирован",
       "auth.register.error": "Ошибка регистрации. Попробуйте снова.",
+      "auth.register.invalidEmail": "Введите корректный email адрес",
       "auth.register.smsError": "Ошибка отправки SMS",
       "auth.register.callError": "Ошибка инициации звонка",
       "auth.register.telegramError": "Ошибка Telegram",
