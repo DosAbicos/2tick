@@ -573,7 +573,7 @@ const ContractDetailsPage = () => {
             {/* Signature Details (if signed) */}
             {signature && signature.verified && (
               <div className="minimal-card p-4 sm:p-6">
-                <h3 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-gray-900">Информация о подписании</h3>
+                <h3 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-gray-900">{t('contractDetails.signatureInfo')}</h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   {/* Landlord Signature - LEFT COLUMN */}
