@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
@@ -11,6 +12,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const ResetPasswordPage = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const emailFromUrl = searchParams.get('email') || '';
@@ -26,17 +28,17 @@ const ResetPasswordPage = () => {
     e.preventDefault();
 
     if (newPassword !== confirmPassword) {
-      toast.error('Пароли не совпадают');
+      toast.error(t('auth.resetPassword.passwordMismatch'));
       return;
     }
 
     if (newPassword.length < 6) {
-      toast.error('Пароль должен быть минимум 6 символов');
+      toast.error(t('auth.resetPassword.minPassword'));
       return;
     }
 
     if (resetCode.length !== 6) {
-      toast.error('Введите 6-значный код');
+      toast.error(t('auth.resetPassword.enter6Digits'));
       return;
     }
 
@@ -50,12 +52,12 @@ const ResetPasswordPage = () => {
       });
 
       setSuccess(true);
-      toast.success('Пароль успешно изменен!');
+      toast.success(t('auth.resetPassword.success'));
     } catch (error) {
       if (error.response?.status === 400) {
-        toast.error('Неверный или истёкший код');
+        toast.error(t('auth.resetPassword.invalidCode'));
       } else {
-        toast.error(error.response?.data?.detail || 'Ошибка при сбросе пароля');
+        toast.error(error.response?.data?.detail || t('auth.resetPassword.error'));
       }
     } finally {
       setLoading(false);
@@ -73,13 +75,13 @@ const ResetPasswordPage = () => {
               <div className="w-16 h-16 mx-auto bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-green-500/30">
                 <CheckCircle2 className="w-8 h-8 text-white" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Пароль изменен</h2>
-              <p className="text-gray-600">Теперь вы можете войти с новым паролем</p>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('auth.resetPassword.passwordChanged')}</h2>
+              <p className="text-gray-600">{t('auth.resetPassword.canLoginNow')}</p>
             </div>
 
             <div className="bg-green-50 border-2 border-green-200 rounded-xl p-4 mb-6">
               <p className="text-sm text-green-800">
-                Ваш пароль успешно изменен. Используйте новый пароль для входа в систему.
+                {t('auth.resetPassword.successMessage')}
               </p>
             </div>
 
@@ -87,7 +89,7 @@ const ResetPasswordPage = () => {
               onClick={() => navigate('/login')}
               className="w-full px-6 py-3 text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 font-medium"
             >
-              Перейти к входу
+              {t('auth.resetPassword.goToLogin')}
             </button>
           </div>
         </div>
@@ -105,7 +107,7 @@ const ResetPasswordPage = () => {
           className="mb-6 px-4 py-2 text-gray-600 hover:text-blue-600 flex items-center gap-2 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          Назад
+          {t('common.previous')}
         </button>
 
         <div className="minimal-card p-6 sm:p-8 animate-fade-in">
@@ -113,8 +115,8 @@ const ResetPasswordPage = () => {
             <div className="w-16 h-16 mx-auto bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-blue-500/30">
               <Lock className="w-8 h-8 text-white" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Новый пароль</h2>
-            <p className="text-gray-600">Введите код из email и установите новый пароль</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('auth.resetPassword.title')}</h2>
+            <p className="text-gray-600">{t('auth.resetPassword.subtitle')}</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -133,7 +135,7 @@ const ResetPasswordPage = () => {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-3">
                 <Key className="w-4 h-4 inline mr-1" />
-                Код из email (6 цифр)
+                {t('auth.resetPassword.codeFromEmail')}
               </label>
               <div className="flex justify-center">
                 <InputOTP maxLength={6} value={resetCode} onChange={setResetCode}>
@@ -150,19 +152,19 @@ const ResetPasswordPage = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Новый пароль</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('auth.resetPassword.newPassword')}</label>
               <input
                 type="password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
                 className="minimal-input w-full"
-                placeholder="Минимум 6 символов"
+                placeholder={t('auth.resetPassword.minChars')}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Подтвердите новый пароль</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('auth.resetPassword.confirmPassword')}</label>
               <input
                 type="password"
                 value={confirmPassword}
@@ -175,13 +177,13 @@ const ResetPasswordPage = () => {
                     ? 'border-green-500'
                     : ''
                 }`}
-                placeholder="Повторите новый пароль"
+                placeholder={t('auth.resetPassword.repeatPassword')}
               />
               {confirmPassword && newPassword !== confirmPassword && (
-                <p className="text-xs text-red-500 mt-1">Пароли не совпадают</p>
+                <p className="text-xs text-red-500 mt-1">{t('auth.resetPassword.passwordMismatch')}</p>
               )}
               {confirmPassword && newPassword === confirmPassword && newPassword.length > 0 && (
-                <p className="text-xs text-green-500 mt-1">Пароли совпадают ✓</p>
+                <p className="text-xs text-green-500 mt-1">{t('auth.resetPassword.passwordMatch')} ✓</p>
               )}
             </div>
 
@@ -197,13 +199,13 @@ const ResetPasswordPage = () => {
               }
               className="w-full px-6 py-3 text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
             >
-              {loading ? 'Сброс пароля...' : 'Сбросить пароль'}
+              {loading ? t('auth.resetPassword.submitting') : t('auth.resetPassword.submit')}
             </button>
           </form>
 
           <div className="mt-6 text-center text-sm">
             <Link to="/forgot-password" className="text-blue-600 hover:text-blue-700 font-medium">
-              Не получили код? Отправить снова
+              {t('auth.resetPassword.noCode')}
             </Link>
           </div>
         </div>
