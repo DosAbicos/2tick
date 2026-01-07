@@ -611,7 +611,7 @@ const ContractDetailsPage = () => {
                                   const value = contract.placeholder_values[key];
                                   return (
                                     <div key={key}>
-                                      <span className="text-neutral-500">{config.label}:</span>
+                                      <span className="text-neutral-500">{translateLabel(key, config.label)}:</span>
                                       <p className="font-medium">{value || <span className="text-neutral-400">{t('contractDetails.notFilled')}</span>}</p>
                                     </div>
                                   );
