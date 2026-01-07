@@ -41,6 +41,13 @@ const ContractDetailsPage = () => {
   const searchParams = new URLSearchParams(window.location.search);
   const isReadOnly = searchParams.get('readonly') === 'true';
 
+  // Function to translate placeholder labels
+  const translateLabel = (key, fallbackLabel) => {
+    const labelKey = `placeholders.${key}`;
+    const translated = t(labelKey, { defaultValue: '' });
+    return translated || fallbackLabel;
+  };
+
   useEffect(() => {
     fetchContract();
     fetchSignature();
