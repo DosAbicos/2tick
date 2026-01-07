@@ -745,7 +745,7 @@ Email: ${templateData.tenant_email || '[Email]'}
             sessionStorage.removeItem('selectedTemplateId');
             navigate('/dashboard');
           }}
-          className="mb-6 px-4 py-2 text-gray-600 hover:text-blue-600 flex items-center gap-2 transition-colors"
+          className="mb-4 sm:mb-6 px-3 sm:px-4 py-2 text-sm font-medium text-gray-700 minimal-card hover:shadow-lg transition-all flex items-center gap-2"
           data-testid="back-button"
         >
           <ArrowLeft className="w-4 h-4" />
