@@ -454,7 +454,7 @@ const ProfilePage = () => {
                       value={passwordData.confirm_password}
                       onChange={(e) => setPasswordData({ ...passwordData, confirm_password: e.target.value })}
                       className="minimal-input w-full"
-                      placeholder="Повторите новый пароль"
+                      placeholder={t('profile.repeatPassword')}
                     />
                   </div>
 
