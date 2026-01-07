@@ -1412,6 +1412,7 @@ const resources = {
       "auth.register.dataSaved": "Data saved. Now verify your phone",
       "auth.register.emailExists": "User with this email already exists",
       "auth.register.error": "Registration error. Please try again.",
+      "auth.register.invalidEmail": "Please enter a valid email address",
       "auth.register.smsError": "SMS sending error",
       "auth.register.callError": "Call initiation error",
       "auth.register.telegramError": "Telegram error",
