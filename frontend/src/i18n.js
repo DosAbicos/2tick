@@ -729,6 +729,7 @@ const resources = {
       // ===== COMMON =====
       "common.close": "Закрыть",
       "common.cancel": "Отмена",
+      "common.back": "Назад",
       "common.confirm": "Подтвердить",
       "common.loading": "Загрузка...",
       "common.error": "Ошибка",
