@@ -517,7 +517,7 @@ const ContractDetailsPage = () => {
                           <div key={key}>
                             <span className="text-neutral-500">{config.label}:</span>
                             <p className="font-medium" data-testid={`placeholder-${key}`}>
-                              {value || <span className="text-neutral-400">Не заполнено</span>}
+                              {value || <span className="text-neutral-400">{t('contractDetails.notFilled')}</span>}
                             </p>
                           </div>
                         );
@@ -605,7 +605,7 @@ const ContractDetailsPage = () => {
                                   return (
                                     <div key={key}>
                                       <span className="text-neutral-500">{config.label}:</span>
-                                      <p className="font-medium">{value || <span className="text-neutral-400">Не заполнено</span>}</p>
+                                      <p className="font-medium">{value || <span className="text-neutral-400">{t('contractDetails.notFilled')}</span>}</p>
                                     </div>
                                   );
                                 })}
@@ -707,7 +707,7 @@ const ContractDetailsPage = () => {
                               return (
                                 <div key={key}>
                                   <span className="text-neutral-500">{config.label}:</span>
-                                  <p className="font-medium">{value || <span className="text-neutral-400">Не заполнено</span>}</p>
+                                  <p className="font-medium">{value || <span className="text-neutral-400">{t('contractDetails.notFilled')}</span>}</p>
                                 </div>
                               );
                             })}
