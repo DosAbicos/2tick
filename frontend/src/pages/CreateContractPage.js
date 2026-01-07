@@ -1248,15 +1248,15 @@ Email: ${templateData.tenant_email || '[Email]'}
                   <div className="space-y-4">
                     <div className="flex items-center justify-between border-b pb-2">
                       <div>
-                        <h3 className="font-semibold text-neutral-900">Наниматель (Клиент)</h3>
-                        <p className="text-xs text-neutral-500">Необязательные поля - клиент заполнит при подписании</p>
+                        <h3 className="font-semibold text-neutral-900">{t('contract.tenant')}</h3>
+                        <p className="text-xs text-neutral-500">{t('contract.tenantHint')}</p>
                       </div>
                       <button
                         type="button"
                         onClick={() => setShowOptionalFields(!showOptionalFields)}
                         className="px-3 py-2 text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors"
                       >
-                        {showOptionalFields ? '▼ Скрыть' : '▶ Показать опциональные поля'}
+                        {showOptionalFields ? `▼ ${t('contract.hideOptional')}` : `▶ ${t('contract.showOptional')}`}
                       </button>
                     </div>
                   
