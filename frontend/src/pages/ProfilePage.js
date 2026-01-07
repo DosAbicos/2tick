@@ -334,10 +334,10 @@ const ProfilePage = () => {
                           value={editedUser.company_name || ''}
                           onChange={(e) => setEditedUser({ ...editedUser, company_name: e.target.value })}
                           className="minimal-input w-full"
-                          placeholder="Не указана"
+                          placeholder={t('profile.notSpecified')}
                         />
                       ) : (
-                        <p className="text-base font-medium text-gray-900 break-words">{user?.company_name || 'Не указана'}</p>
+                        <p className="text-base font-medium text-gray-900 break-words">{user?.company_name || t('profile.notSpecified')}</p>
                       )}
                     </div>
                   </div>
