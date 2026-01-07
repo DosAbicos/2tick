@@ -793,6 +793,7 @@ const resources = {
       "common.close": "Закрыть",
       "common.cancel": "Отмена",
       "common.back": "Назад",
+      "common.client_will_fill": "Клиент заполнит",
       "common.confirm": "Подтвердить",
       "common.loading": "Загрузка...",
       "common.error": "Ошибка",
