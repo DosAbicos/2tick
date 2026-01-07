@@ -305,8 +305,7 @@ const ContractDetailsPage = () => {
           data-testid="back-button"
         >
           <ArrowLeft className="h-4 w-4" />
-          <span className="hidden sm:inline">Back to Dashboard</span>
-          <span className="sm:hidden">Назад</span>
+          {t('common.back')}
         </button>
         
         <div className="minimal-card p-4 sm:p-6 lg:p-8 animate-fade-in" data-testid="contract-details-card">
