@@ -357,10 +357,10 @@ const ProfilePage = () => {
                           value={editedUser.iin || ''}
                           onChange={(e) => setEditedUser({ ...editedUser, iin: e.target.value })}
                           className="minimal-input w-full"
-                          placeholder="Не указан"
+                          placeholder={t('profile.notSpecified')}
                         />
                       ) : (
-                        <p className="text-base font-medium text-gray-900 break-words">{user?.iin || 'Не указан'}</p>
+                        <p className="text-base font-medium text-gray-900 break-words">{user?.iin || t('profile.notSpecified')}</p>
                       )}
                     </div>
                   </div>
