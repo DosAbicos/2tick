@@ -521,7 +521,7 @@ const RegisterPage = () => {
                       exit={{ opacity: 0 }}
                       className="text-sm text-red-500 font-medium"
                     >
-                      Введите корректный email адрес
+                      {t('auth.register.invalidEmail')}
                     </motion.p>
                   )}
                   {userExists && emailError && (
@@ -531,7 +531,7 @@ const RegisterPage = () => {
                       exit={{ opacity: 0 }}
                       className="text-sm text-red-500 font-medium"
                     >
-                      Пользователь с таким email уже зарегистрирован
+                      {t('auth.register.emailExists')}
                     </motion.p>
                   )}
                 </div>
