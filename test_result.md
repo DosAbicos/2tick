@@ -202,8 +202,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Profile Page Multilingual Support - CRITICAL ISSUE FOUND"
-    - "Multilingual Dashboard Interface - COMPLETED SUCCESSFULLY"
+    - "Profile Page Multilingual Support - CRITICAL HARDCODED RUSSIAN TEXTS"
+    - "Complete Internationalization Testing - COMPLETED SUCCESSFULLY"
   stuck_tasks: 
     - "Profile Page Multilingual Support - hardcoded Russian text instead of i18n"
   test_all: false
