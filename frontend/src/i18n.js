@@ -733,6 +733,7 @@ const resources = {
       "auth.register.dataSaved": "Деректер сақталды. Телефонды растаңыз",
       "auth.register.emailExists": "Бұл email-мен пайдаланушы тіркелген",
       "auth.register.error": "Тіркелу қатесі. Қайталап көріңіз.",
+      "auth.register.invalidEmail": "Дұрыс email мекенжайын енгізіңіз",
       "auth.register.smsError": "SMS жіберу қатесі",
       "auth.register.callError": "Қоңырау қатесі",
       "auth.register.telegramError": "Telegram қатесі",
