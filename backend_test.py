@@ -1340,20 +1340,120 @@ class BackendTester:
                 success = False
         
         return success
-        """
-        КРИТИЧЕСКОЕ ТЕСТИРОВАНИЕ: Редизайн PDF документов договоров
+    
+    def test_multilang_placeholder_replacement(self, contract_id):
+        """Test placeholder replacement in different languages"""
+        self.log(f"   🔧 Testing multi-language placeholder replacement for contract {contract_id}...")
         
-        ПРОБЛЕМА: Полностью переработан дизайн PDF-документов с добавлением профессионального оформления
+        # Test placeholder replacement with different language values
+        multilang_placeholder_data = {
+            "placeholder_values": {
+                "NAME2": "Тест Пользователь",  # Russian name
+                "PHONE_NUM": "+77071234567",
+                "EMAIL": "test@example.kz",
+                "ID_CARD": "123456789012",
+                "ADDRESS": "г. Алматы, ул. Тестовая 1",  # Russian address
+                "RENT_AMOUNT": "15000"
+            }
+        }
         
-        ТЕСТИРУЕМЫЕ ЭЛЕМЕНТЫ:
-        1. Логотип компании (2tick.kz) в header и секции подписей
-        2. Декоративный header с двойной линией, логотипом, названием компании
-        3. Улучшенное форматирование контента с центрированным заголовком
-        4. Профессиональная секция подписей с элегантной рамкой
-        5. Footer с информацией о безопасности и нумерацией страниц
-        6. Динамические роли (Арендодатель/Арендатор)
-        7. Правильная замена плейсхолдеров
-        """
+        # Update contract with multilingual placeholder values
+        response = self.session.put(f"{BASE_URL}/contracts/{contract_id}", json=multilang_placeholder_data)
+        
+        if response.status_code == 200:
+            self.log("      ✅ Placeholder values updated successfully")
+            
+            # Verify placeholders in different language contexts
+            languages = ["ru", "kk", "en"]
+            success = True
+            
+            for lang in languages:
+                self.log(f"         Testing placeholders in {lang} context...")
+                
+                # Get contract content in specific language
+                get_response = self.session.get(f"{BASE_URL}/sign/{contract_id}?lang={lang}")
+                
+                if get_response.status_code == 200:
+                    contract = get_response.json()
+                    
+                    # Check if placeholder values are preserved
+                    placeholder_values = contract.get("placeholder_values", {})
+                    
+                    for key, expected_value in multilang_placeholder_data["placeholder_values"].items():
+                        actual_value = placeholder_values.get(key)
+                        if actual_value == expected_value:
+                            self.log(f"            ✅ {key}: '{actual_value}' preserved in {lang}")
+                        else:
+                            self.log(f"            ❌ {key}: expected '{expected_value}', got '{actual_value}' in {lang}")
+                            success = False
+                else:
+                    self.log(f"         ❌ Failed to get contract in {lang}: {get_response.status_code}")
+                    success = False
+            
+            if success:
+                self.log("   ✅ Multi-language placeholder replacement test passed")
+            else:
+                self.log("   ❌ Multi-language placeholder replacement test failed")
+            
+            return success
+        else:
+            self.log(f"   ❌ Failed to update placeholder values: {response.status_code} - {response.text}")
+            return False
+    
+    def test_multilang_pdf_generation(self, contract_id):
+        """Test PDF generation with multi-language content"""
+        self.log(f"   📄 Testing multi-language PDF generation for contract {contract_id}...")
+        
+        # Test PDF generation for different language selections
+        languages = ["ru", "kk", "en"]
+        success = True
+        
+        for lang in languages:
+            self.log(f"      Testing PDF generation for language: {lang}")
+            
+            # Set contract language first
+            set_lang_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/set-contract-language", 
+                                                json={"language": lang})
+            
+            if set_lang_response.status_code == 200:
+                self.log(f"         ✅ Contract language set to {lang}")
+                
+                # Generate PDF
+                pdf_response = self.session.get(f"{BASE_URL}/contracts/{contract_id}/download-pdf")
+                
+                if pdf_response.status_code == 200:
+                    content_type = pdf_response.headers.get('Content-Type', '')
+                    pdf_size = len(pdf_response.content)
+                    
+                    if content_type == 'application/pdf' and pdf_response.content.startswith(b'%PDF'):
+                        self.log(f"         ✅ PDF generated successfully for {lang}. Size: {pdf_size} bytes")
+                        
+                        # Verify PDF size is reasonable (should contain content)
+                        if pdf_size < 10000:  # Less than 10KB might indicate missing content
+                            self.log(f"         ⚠️ PDF size seems small for {lang}: {pdf_size} bytes")
+                        
+                        # For English, PDF should be larger (trilingual)
+                        if lang == "en" and pdf_size < 15000:
+                            self.log(f"         ⚠️ English PDF should be larger (trilingual): {pdf_size} bytes")
+                        
+                    else:
+                        self.log(f"         ❌ Invalid PDF for {lang}. Content-Type: {content_type}")
+                        success = False
+                else:
+                    self.log(f"         ❌ PDF generation failed for {lang}: {pdf_response.status_code}")
+                    success = False
+            else:
+                self.log(f"         ❌ Failed to set language to {lang}: {set_lang_response.status_code}")
+                success = False
+        
+        if success:
+            self.log("   ✅ Multi-language PDF generation test passed")
+        else:
+            self.log("   ❌ Multi-language PDF generation test failed")
+        
+        return success
+    
+    def test_pdf_redesign_critical(self):
         self.log("\n🎨 КРИТИЧЕСКОЕ ТЕСТИРОВАНИЕ: Редизайн PDF документов")
         self.log("=" * 80)
         
