@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { Badge } from '@/components/ui/badge';
@@ -12,6 +13,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const UserLogsPage = () => {
+  const { t } = useTranslation();
   const { userId } = useParams();
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
@@ -32,7 +34,7 @@ const UserLogsPage = () => {
       setLogs(response.data.logs);
       setUser(response.data.user);
     } catch (error) {
-      toast.error('Ошибка загрузки логов');
+      toast.error(t('userLogs.errorLoadingLogs'));
       console.error(error);
     } finally {
       setLoading(false);
@@ -41,18 +43,18 @@ const UserLogsPage = () => {
 
   const getActionBadge = (action) => {
     const actionMap = {
-      'login_success': { variant: 'default', text: '✅ Успешный вход' },
-      'login_failed': { variant: 'destructive', text: '❌ Неудачный вход' },
-      'logout': { variant: 'secondary', text: '🚺 Выход' },
-      'contract_created': { variant: 'default', text: '📄 Создан договор' },
-      'contract_viewed': { variant: 'outline', text: '👁️ Просмотр договора' },
-      'contract_sent': { variant: 'default', text: '📤 Отправлен договор' },
-      'contract_signed': { variant: 'success', text: '✍️ Подписан договор' },
-      'contract_deleted': { variant: 'destructive', text: '🗑️ Удален договор' },
-      'template_favorited': { variant: 'default', text: '⭐ Добавлен в избранное' },
-      'template_unfavorited': { variant: 'secondary', text: '➖ Удален из избранного' },
-      'profile_updated': { variant: 'default', text: '✏️ Обновлен профиль' },
-      'password_changed': { variant: 'default', text: '🔑 Изменен пароль' }
+      'login_success': { variant: 'default', text: t('userLogs.loginSuccess') },
+      'login_failed': { variant: 'destructive', text: t('userLogs.loginFailed') },
+      'logout': { variant: 'secondary', text: t('userLogs.logout') },
+      'contract_created': { variant: 'default', text: t('userLogs.contractCreated') },
+      'contract_viewed': { variant: 'outline', text: t('userLogs.contractViewed') },
+      'contract_sent': { variant: 'default', text: t('userLogs.contractSent') },
+      'contract_signed': { variant: 'success', text: t('userLogs.contractSigned') },
+      'contract_deleted': { variant: 'destructive', text: t('userLogs.contractDeleted') },
+      'template_favorited': { variant: 'default', text: t('userLogs.templateFavorited') },
+      'template_unfavorited': { variant: 'secondary', text: t('userLogs.templateUnfavorited') },
+      'profile_updated': { variant: 'default', text: t('userLogs.profileUpdated') },
+      'password_changed': { variant: 'default', text: t('userLogs.passwordChanged') }
     };
     
     const config = actionMap[action] || { variant: 'outline', text: action };
@@ -77,10 +79,10 @@ const UserLogsPage = () => {
           className="mb-6 px-4 py-2 text-gray-600 hover:text-blue-600 flex items-center gap-2 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          Назад
+          {t('userLogs.back')}
         </button>
 
-        {/* Информация о пользователе */}
+        {/* User info */}
         {user && (
           <div className="minimal-card p-6 mb-6 animate-fade-in">
             <div className="flex items-center gap-4">
@@ -95,17 +97,17 @@ const UserLogsPage = () => {
           </div>
         )}
 
-        {/* Логи */}
+        {/* Logs */}
         <div className="minimal-card overflow-hidden animate-fade-in">
           <div className="p-6 border-b border-gray-100">
             <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
               <Activity className="w-5 h-5 text-blue-500" />
-              История действий ({logs.length})
+              {t('userLogs.activityHistory')} ({logs.length})
             </h3>
           </div>
           <div className="p-6">
             {logs.length === 0 ? (
-              <p className="text-gray-600 text-center py-8">Нет логов</p>
+              <p className="text-gray-600 text-center py-8">{t('userLogs.noLogs')}</p>
             ) : (
               <div className="space-y-3">
                 {logs.map((log, index) => (
@@ -119,7 +121,7 @@ const UserLogsPage = () => {
                           {getActionBadge(log.action)}
                           <span className="text-xs text-gray-500 flex items-center gap-1">
                             <Clock className="w-3 h-3" />
-                            {new Date(log.timestamp).toLocaleString('ru-RU')}
+                            {new Date(log.timestamp).toLocaleString()}
                           </span>
                         </div>
                         {log.details && (

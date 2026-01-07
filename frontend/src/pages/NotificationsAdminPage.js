@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -16,6 +17,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const NotificationsAdminPage = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
   
@@ -42,10 +44,10 @@ const NotificationsAdminPage = () => {
       const response = await axios.get(`${API}/admin/notifications`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setNotifications(response.data || []); // Исправлено: fallback на пустой массив
+      setNotifications(response.data || []);
     } catch (error) {
       console.error('Error fetching notifications:', error);
-      setNotifications([]); // Исправлено: установка пустого массива при ошибке
+      setNotifications([]);
     } finally {
       setLoading(false);
     }
@@ -70,9 +72,9 @@ const NotificationsAdminPage = () => {
       });
       
       setImageUrl(response.data.image_url);
-      toast.success('Картинка загружена');
+      toast.success(t('adminNotifications.imageUploaded'));
     } catch (error) {
-      toast.error('Ошибка загрузки картинки');
+      toast.error(t('adminNotifications.imageUploadError'));
       console.error(error);
     } finally {
       setUploadingImage(false);
@@ -81,7 +83,7 @@ const NotificationsAdminPage = () => {
 
   const handleCreate = async () => {
     if (!title.trim() || !message.trim()) {
-      toast.error('Заполните заголовок и сообщение');
+      toast.error(t('adminNotifications.fillTitleAndMessage'));
       return;
     }
     
@@ -95,14 +97,14 @@ const NotificationsAdminPage = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      toast.success('Оповещение создано');
+      toast.success(t('adminNotifications.notificationCreated'));
       setTitle('');
       setMessage('');
       setImageUrl('');
       setImageFile(null);
       fetchNotifications();
     } catch (error) {
-      toast.error('Ошибка создания оповещения');
+      toast.error(t('adminNotifications.createError'));
       console.error(error);
     } finally {
       setCreating(false);
@@ -110,17 +112,17 @@ const NotificationsAdminPage = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!confirm('Удалить оповещение?')) return;
+    if (!confirm(t('adminNotifications.deleteConfirm'))) return;
     
     try {
       await axios.delete(`${API}/admin/notifications/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      toast.success('Оповещение удалено');
+      toast.success(t('adminNotifications.notificationDeleted'));
       fetchNotifications();
     } catch (error) {
-      toast.error('Ошибка удаления');
+      toast.error(t('adminNotifications.deleteError'));
       console.error(error);
     }
   };
@@ -145,35 +147,35 @@ const NotificationsAdminPage = () => {
               className="neuro-button flex items-center gap-2 px-4 py-2 mb-4"
             >
               <ArrowLeft className="h-4 w-4" />
-              Назад
+              {t('common.previous')}
             </button>
-            <h1 className="text-4xl font-bold text-gray-900">Управление оповещениями</h1>
-            <p className="text-gray-600 text-lg mt-2">Создавайте оповещения для всех пользователей</p>
+            <h1 className="text-4xl font-bold text-gray-900">{t('adminNotifications.title')}</h1>
+            <p className="text-gray-600 text-lg mt-2">{t('adminNotifications.subtitle')}</p>
           </div>
         </div>
 
         {/* Create notification form */}
         <div className="minimal-card p-6 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Создать новое оповещение</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('adminNotifications.createNew')}</h2>
           <div className="space-y-4">
             <div>
-              <Label htmlFor="title" className="text-sm font-semibold text-gray-700">Заголовок *</Label>
+              <Label htmlFor="title" className="text-sm font-semibold text-gray-700">{t('adminNotifications.notificationTitle')} *</Label>
               <Input
                 id="title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="Важное объявление"
+                placeholder={t('adminNotifications.importantAnnouncement')}
                 className="mt-1 minimal-input"
               />
             </div>
             
             <div>
-              <Label htmlFor="message" className="text-sm font-semibold text-gray-700">Сообщение *</Label>
+              <Label htmlFor="message" className="text-sm font-semibold text-gray-700">{t('adminNotifications.message')} *</Label>
               <Textarea
                 id="message"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                placeholder="Текст оповещения..."
+                placeholder={t('adminNotifications.notificationText')}
                 rows={4}
                 className="mt-1 minimal-input"
               />
@@ -187,12 +189,12 @@ const NotificationsAdminPage = () => {
                     className="neuro-button flex items-center gap-2 px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Eye className="h-4 w-4" />
-                    Предпросмотр
+                    {t('adminNotifications.preview')}
                   </button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl">
                   <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold text-gray-900">Предпросмотр оповещения</DialogTitle>
+                    <DialogTitle className="text-2xl font-bold text-gray-900">{t('adminNotifications.previewTitle')}</DialogTitle>
                   </DialogHeader>
                   <div className="minimal-card p-6 bg-gradient-to-r from-blue-50 to-blue-100">
                     <div className="flex items-start gap-3">
@@ -214,7 +216,7 @@ const NotificationsAdminPage = () => {
                 className="neuro-button-primary flex items-center gap-2 px-6 py-2 text-white ml-auto disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Bell className="h-4 w-4" />
-                {creating ? 'Создание...' : 'Создать оповещение'}
+                {creating ? t('adminNotifications.creating') : t('adminNotifications.create')}
               </button>
             </div>
           </div>
@@ -222,11 +224,11 @@ const NotificationsAdminPage = () => {
 
         {/* List of notifications */}
         <div className="minimal-card p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Все оповещения</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('adminNotifications.allNotifications')}</h2>
           {!notifications || notifications.length === 0 ? (
             <div className="text-center py-12">
               <Bell className="h-16 w-16 text-blue-300 mx-auto mb-4" />
-              <p className="text-gray-600 text-lg">Нет оповещений</p>
+              <p className="text-gray-600 text-lg">{t('adminNotifications.noNotifications')}</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -237,13 +239,13 @@ const NotificationsAdminPage = () => {
                       <h3 className="font-bold text-gray-900 text-lg">{notif.title}</h3>
                       {notif.is_active && (
                         <span className="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-medium">
-                          Активно
+                          {t('adminNotifications.active')}
                         </span>
                       )}
                     </div>
                     <p className="text-sm text-gray-700 mt-2">{notif.message}</p>
                     <p className="text-xs text-gray-500 mt-3">
-                      Создано: {new Date(notif.created_at).toLocaleString('ru-RU')}
+                      {t('adminNotifications.created')}: {new Date(notif.created_at).toLocaleString()}
                     </p>
                   </div>
                   <button 
