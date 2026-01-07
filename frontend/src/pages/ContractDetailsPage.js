@@ -583,7 +583,7 @@ const ContractDetailsPage = () => {
                     {contract.landlord_signature_hash ? (
                       <>
                         <div className="bg-emerald-50 p-3 rounded border border-emerald-200 mb-3">
-                          <p className="text-xs text-emerald-700 mb-1">Код-ключ:</p>
+                          <p className="text-xs text-emerald-700 mb-1">{t('contractDetails.codeKey')}:</p>
                           <p className="font-mono text-sm font-bold text-emerald-900">{contract.landlord_signature_hash}</p>
                         </div>
                         
