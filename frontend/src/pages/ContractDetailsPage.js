@@ -497,7 +497,7 @@ const ContractDetailsPage = () => {
             
             {/* Contract Details */}
             <div className="minimal-card p-4 sm:p-6">
-              <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-gray-900">📋 Contract Details</h3>
+              <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-gray-900">{t('contractDetails.details')}</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-sm">
                 {/* Show dynamic placeholders from template if available */}
                 {template && template.placeholders ? (
