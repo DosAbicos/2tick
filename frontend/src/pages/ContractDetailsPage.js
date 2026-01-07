@@ -684,7 +684,7 @@ const ContractDetailsPage = () => {
                     
                     {signature.signature_hash && (
                       <div className="bg-blue-50 p-3 rounded border border-blue-200 mb-3">
-                        <p className="text-xs text-blue-700 mb-1">Код-ключ:</p>
+                        <p className="text-xs text-blue-700 mb-1">{t('contractDetails.codeKey')}:</p>
                         <p className="font-mono text-sm font-bold text-blue-900">{signature.signature_hash}</p>
                       </div>
                     )}
