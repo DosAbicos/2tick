@@ -5913,19 +5913,26 @@ if __name__ == "__main__":
     tester = BackendTester()
     
     print("🚀 Starting Backend Testing for 2tick.kz Contract Management System")
+    print("🌍 INTERNATIONALIZATION (i18n) TESTING - Two Tick Application")
     print("=" * 80)
     
-    # Run the critical multi-language tests as requested in review_request
-    tester.log("🌍 RUNNING CRITICAL MULTI-LANGUAGE TESTS")
-    multilang_success = tester.test_multilang_contract_creation_and_signing()
+    # Run the comprehensive internationalization tests as requested in review_request
+    tester.log("🌍 RUNNING COMPREHENSIVE INTERNATIONALIZATION BACKEND TESTS")
+    i18n_success = tester.test_internationalization_backend_apis()
     
-    if multilang_success:
-        tester.log("\n🎉 ALL CRITICAL MULTI-LANGUAGE TESTS PASSED!")
-        tester.log("✅ Contract creation with multi-language support works")
-        tester.log("✅ Signing page language switching works")
-        tester.log("✅ Set contract language endpoint works")
+    if i18n_success:
+        tester.log("\n🎉 ALL INTERNATIONALIZATION BACKEND TESTS PASSED!")
+        tester.log("✅ Admin authentication successful with specified credentials (asl@asl.kz)")
+        tester.log("✅ Multi-language template retrieval and content verification works")
+        tester.log("✅ Contract creation with multi-language content preservation works")
+        tester.log("✅ Signing page language switching works for ru/kk/en")
+        tester.log("✅ Set contract language endpoint works correctly")
+        tester.log("✅ Placeholder replacement works in different languages")
+        tester.log("✅ PDF generation includes correct language content")
+        tester.log("✅ Backend APIs fully support frontend i18n functionality")
     else:
-        tester.log("\n❌ CRITICAL MULTI-LANGUAGE TESTS FAILED!")
+        tester.log("\n❌ INTERNATIONALIZATION BACKEND TESTS FAILED!")
         tester.log("Please check the logs above for specific failures.")
+        tester.log("Some backend APIs may not properly support frontend i18n functionality.")
     
-    sys.exit(0 if multilang_success else 1)
+    sys.exit(0 if i18n_success else 1)
