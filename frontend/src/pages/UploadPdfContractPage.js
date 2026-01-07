@@ -52,11 +52,11 @@ const UploadPdfContractPage = () => {
   const handleFileChange = (selectedFile) => {
     if (!selectedFile) return;
     if (selectedFile.type !== 'application/pdf') {
-      toast.error('Пожалуйста, выберите PDF файл');
+      toast.error(t('uploadPdf.selectPdfFile'));
       return;
     }
     if (selectedFile.size > 10 * 1024 * 1024) {
-      toast.error('Файл слишком большой (максимум 10 МБ)');
+      toast.error(t('uploadPdf.fileTooLarge'));
       return;
     }
     setFile(selectedFile);
@@ -65,7 +65,7 @@ const UploadPdfContractPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!file) {
-      toast.error('Пожалуйста, выберите PDF файл');
+      toast.error(t('uploadPdf.selectPdfFile'));
       return;
     }
 
@@ -86,10 +86,10 @@ const UploadPdfContractPage = () => {
         }
       });
 
-      toast.success('PDF договор успешно загружен!');
+      toast.success(t('uploadPdf.success'));
       navigate('/dashboard');
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Ошибка при загрузке PDF');
+      toast.error(error.response?.data?.detail || t('uploadPdf.error'));
     } finally {
       setUploading(false);
     }
@@ -105,13 +105,13 @@ const UploadPdfContractPage = () => {
           className="mb-6 px-4 py-2 text-gray-600 hover:text-blue-600 flex items-center gap-2 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          Назад
+          {t('common.previous')}
         </button>
 
         <div className="minimal-card p-6 sm:p-8">
           <div className="mb-6">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">Загрузить PDF договор</h1>
-            <p className="text-sm text-gray-500">Загрузите готовый PDF договор для отправки на подписание</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">{t('uploadPdf.title')}</h1>
+            <p className="text-sm text-gray-500">{t('uploadPdf.subtitle')}</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -130,10 +130,10 @@ const UploadPdfContractPage = () => {
               {!file ? (
                 <>
                   <Upload className="w-12 h-12 mx-auto mb-4 text-blue-500" />
-                  <p className="text-gray-700 font-medium mb-2">Перетащите PDF файл сюда</p>
-                  <p className="text-sm text-gray-500 mb-4">или</p>
+                  <p className="text-gray-700 font-medium mb-2">{t('uploadPdf.dragHere')}</p>
+                  <p className="text-sm text-gray-500 mb-4">{t('uploadPdf.or')}</p>
                   <label className="inline-block px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg hover:from-blue-700 hover:to-blue-600 cursor-pointer transition-all shadow-md">
-                    Выбрать файл
+                    {t('uploadPdf.selectFile')}
                     <input
                       type="file"
                       accept=".pdf"
@@ -141,14 +141,14 @@ const UploadPdfContractPage = () => {
                       className="hidden"
                     />
                   </label>
-                  <p className="text-xs text-gray-500 mt-4">PDF, до 10 МБ</p>
+                  <p className="text-xs text-gray-500 mt-4">{t('uploadPdf.pdfUpTo')}</p>
                 </>
               ) : (
                 <div className="flex items-center justify-center gap-4">
                   <FileText className="w-10 h-10 text-blue-500" />
                   <div className="text-left flex-1">
                     <p className="font-medium text-gray-900">{file.name}</p>
-                    <p className="text-sm text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} МБ</p>
+                    <p className="text-sm text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
                   </div>
                   <button
                     type="button"
@@ -164,41 +164,41 @@ const UploadPdfContractPage = () => {
             {/* Form Fields */}
             <div className="space-y-4">
               <div>
-                <Label className="text-sm font-medium text-gray-700">Название договора</Label>
+                <Label className="text-sm font-medium text-gray-700">{t('uploadPdf.contractTitle')}</Label>
                 <Input
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   required
                   className="minimal-input mt-1"
-                  placeholder="Например: Договор аренды квартиры"
+                  placeholder={t('uploadPdf.contractTitlePlaceholder')}
                 />
               </div>
 
               <div>
-                <Label className="text-sm font-medium text-gray-700">ФИО подписанта</Label>
+                <Label className="text-sm font-medium text-gray-700">{t('uploadPdf.signerName')}</Label>
                 <Input
                   value={formData.signer_name}
                   onChange={(e) => setFormData({ ...formData, signer_name: e.target.value })}
                   required
                   className="minimal-input mt-1"
-                  placeholder="Иванов Иван Иванович"
+                  placeholder={t('uploadPdf.signerNamePlaceholder')}
                 />
               </div>
 
               <div>
-                <Label className="text-sm font-medium text-gray-700">Email подписанта</Label>
+                <Label className="text-sm font-medium text-gray-700">{t('uploadPdf.signerEmail')}</Label>
                 <Input
                   type="email"
                   value={formData.signer_email}
                   onChange={(e) => setFormData({ ...formData, signer_email: e.target.value })}
                   required
                   className="minimal-input mt-1"
-                  placeholder="ivanov@example.com"
+                  placeholder="example@mail.com"
                 />
               </div>
 
               <div>
-                <Label className="text-sm font-medium text-gray-700">Телефон подписанта</Label>
+                <Label className="text-sm font-medium text-gray-700">{t('uploadPdf.signerPhone')}</Label>
                 <IMaskInput
                   mask="+7 (000) 000-00-00"
                   value={formData.signer_phone}
@@ -214,7 +214,7 @@ const UploadPdfContractPage = () => {
               disabled={uploading || !file}
               className="w-full px-6 py-3 text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
             >
-              {uploading ? 'Загрузка...' : 'Загрузить и отправить на подпись'}
+              {uploading ? t('uploadPdf.uploading') : t('uploadPdf.uploadAndSend')}
             </button>
           </form>
         </div>
