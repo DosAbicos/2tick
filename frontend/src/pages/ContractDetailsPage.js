@@ -534,11 +534,11 @@ const ContractDetailsPage = () => {
                   // Fallback to old fields for contracts without template
                   <>
                     <div>
-                      <span className="text-neutral-500">Signer:</span>
+                      <span className="text-neutral-500">{t('placeholders.signer')}:</span>
                       <p className="font-medium" data-testid="signer-name">{contract.signer_name}</p>
                     </div>
                     <div>
-                      <span className="text-neutral-500">Phone:</span>
+                      <span className="text-neutral-500">{t('placeholders.phone')}:</span>
                       <p className="font-medium" data-testid="signer-phone">{contract.signer_phone}</p>
                     </div>
                     {contract.signer_email && (
@@ -551,7 +551,7 @@ const ContractDetailsPage = () => {
                 )}
                 {contract.amount && (
                   <div>
-                    <span className="text-neutral-500">Amount:</span>
+                    <span className="text-neutral-500">{t('placeholders.amount')}:</span>
                     <p className="font-medium">{contract.amount}</p>
                   </div>
                 )}
