@@ -615,19 +615,19 @@ const ContractDetailsPage = () => {
                             <>
                               {contract.landlord_name && (
                                 <div>
-                                  <span className="text-neutral-500">Компания:</span>
+                                  <span className="text-neutral-500">{t('contractDetails.company')}:</span>
                                   <p className="font-medium">{contract.landlord_name}</p>
                                 </div>
                               )}
                               {contract.landlord_representative && (
                                 <div>
-                                  <span className="text-neutral-500">Представитель:</span>
+                                  <span className="text-neutral-500">{t('contractDetails.representative')}:</span>
                                   <p className="font-medium">{contract.landlord_representative}</p>
                                 </div>
                               )}
                               {contract.landlord_iin_bin && (
                                 <div>
-                                  <span className="text-neutral-500">ИИН/БИН:</span>
+                                  <span className="text-neutral-500">{t('contractDetails.iinBin')}:</span>
                                   <p className="font-medium">{contract.landlord_iin_bin}</p>
                                 </div>
                               )}
@@ -639,13 +639,13 @@ const ContractDetailsPage = () => {
                               )}
                               {creator && creator.phone && (
                                 <div>
-                                  <span className="text-neutral-500">Телефон:</span>
+                                  <span className="text-neutral-500">{t('contractDetails.phone')}:</span>
                                   <p className="font-medium">{creator.phone}</p>
                                 </div>
                               )}
                               {creator && creator.legal_address && (
                                 <div>
-                                  <span className="text-neutral-500">Юр. адрес:</span>
+                                  <span className="text-neutral-500">{t('contractDetails.legalAddress')}:</span>
                                   <p className="font-medium">{creator.legal_address}</p>
                                 </div>
                               )}
@@ -653,34 +653,34 @@ const ContractDetailsPage = () => {
                           )}
                           
                           <div>
-                            <span className="text-neutral-500">Статус:</span>
-                            <p className="font-medium text-emerald-600">Утверждено</p>
+                            <span className="text-neutral-500">{t('contractDetails.status')}:</span>
+                            <p className="font-medium text-emerald-600">{t('contractDetails.approved')}</p>
                           </div>
                           {contract.approved_at && (
                             <div>
-                              <span className="text-neutral-500">Время утверждения:</span>
+                              <span className="text-neutral-500">{t('contractDetails.approvalTime')}:</span>
                               <p className="font-medium">{format(new Date(contract.approved_at), 'dd MMM yyyy HH:mm')}</p>
                             </div>
                           )}
                           <div>
-                            <span className="text-neutral-500">Язык договора:</span>
+                            <span className="text-neutral-500">{t('contractDetails.contractLanguage')}:</span>
                             <p className="font-medium">
-                              {(contract.contract_language || contract.signing_language) === 'ru' && 'Русский'}
-                              {(contract.contract_language || contract.signing_language) === 'kk' && 'Қазақша'}
-                              {(contract.contract_language || contract.signing_language) === 'en' && 'English'}
-                              {!(contract.contract_language || contract.signing_language) && 'Русский (по умолчанию)'}
+                              {(contract.contract_language || contract.signing_language) === 'ru' && t('contractDetails.russian')}
+                              {(contract.contract_language || contract.signing_language) === 'kk' && t('contractDetails.kazakh')}
+                              {(contract.contract_language || contract.signing_language) === 'en' && t('contractDetails.english')}
+                              {!(contract.contract_language || contract.signing_language) && t('contractDetails.russianDefault')}
                             </p>
                           </div>
                         </div>
                       </>
                     ) : (
-                      <p className="text-sm text-amber-600">Ожидает утверждения</p>
+                      <p className="text-sm text-amber-600">{t('contractDetails.awaitingApproval')}</p>
                     )}
                   </div>
                   
                   {/* Tenant Signature - RIGHT COLUMN */}
                   <div className="bg-white p-3 sm:p-4 rounded-xl border border-gray-200">
-                    <h4 className="font-semibold mb-3 text-gray-900 text-sm sm:text-base">{contract.party_b_role || 'Сторона Б'}</h4>
+                    <h4 className="font-semibold mb-3 text-gray-900 text-sm sm:text-base">{contract.party_b_role || t('contractDetails.partyB')}</h4>
                     
                     {signature.signature_hash && (
                       <div className="bg-blue-50 p-3 rounded border border-blue-200 mb-3">
