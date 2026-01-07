@@ -1,73 +1,72 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, Zap, Shield, Users, ArrowRight, Check } from 'lucide-react';
+import { CheckCircle2, Zap, Shield, Users, ArrowRight, Check, FileText, Smartphone } from 'lucide-react';
 import Header from '../components/Header';
 import '../styles/neumorphism.css';
 
 const NewLandingPage = () => {
+  const { t } = useTranslation();
+  
   return (
     <div className="min-h-screen gradient-bg">
-      {/* Header с адаптацией */}
       <Header showAuth={true} />
 
       {/* Hero Section */}
       <section className="relative overflow-hidden py-20 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            {/* Левая часть - текст */}
             <div className="space-y-8">
               <div className="inline-block minimal-card px-4 py-2">
                 <span className="text-sm font-semibold text-blue-600 flex items-center gap-2">
                   <Zap className="w-4 h-4" />
-                  Быстро как колибри
+                  {t('landing.hero.badge')}
                 </span>
               </div>
               
               <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight">
-                Подписывайте договоры
+                {t('landing.hero.title')}
                 <span className="block bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
-                  за 2 клика
+                  {t('landing.hero.subtitle')}
                 </span>
               </h1>
               
               <p className="text-xl text-gray-600 leading-relaxed">
-                Современная платформа для электронного подписания договоров в Казахстане. 
-                Быстро, безопасно, юридически значимо.
+                {t('landing.hero.description')}
               </p>
               
               <div className="flex flex-wrap gap-4">
                 <Link to="/register">
                   <button className="text-lg px-8 py-4 font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 flex items-center gap-2">
-                    Начать бесплатно
+                    {t('landing.hero.startFree')}
                     <ArrowRight className="w-5 h-5" />
                   </button>
                 </Link>
                 <a href="#features">
                   <button className="text-lg px-8 py-4 font-medium text-blue-600 bg-white border-2 border-blue-100 rounded-xl hover:bg-blue-50 transition-all">
-                    Узнать больше
+                    {t('landing.hero.ctaSecondary')}
                   </button>
                 </a>
               </div>
               
-              {/* Статистика */}
+              {/* Statistics */}
               <div className="flex gap-8 pt-8">
                 <div>
                   <div className="text-3xl font-bold text-blue-600">2 сек</div>
-                  <div className="text-sm text-gray-500">на подпись</div>
+                  <div className="text-sm text-gray-500">{t('landing.hero.stat1')}</div>
                 </div>
                 <div>
                   <div className="text-3xl font-bold text-blue-600">100%</div>
-                  <div className="text-sm text-gray-500">безопасно</div>
+                  <div className="text-sm text-gray-500">{t('landing.hero.stat2')}</div>
                 </div>
                 <div>
                   <div className="text-3xl font-bold text-blue-600">24/7</div>
-                  <div className="text-sm text-gray-500">доступность</div>
+                  <div className="text-sm text-gray-500">{t('landing.hero.stat3')}</div>
                 </div>
               </div>
             </div>
             
-            {/* Правая часть - изображение */}
             <div className="relative">
               <div className="minimal-card p-8 animate-float">
                 <img 
@@ -76,7 +75,6 @@ const NewLandingPage = () => {
                   className="rounded-xl w-full"
                 />
               </div>
-              {/* Декоративные элементы */}
               <div className="absolute -top-4 -right-4 w-20 h-20 bg-blue-500/10 rounded-full blur-2xl"></div>
               <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-blue-400/10 rounded-full blur-3xl"></div>
             </div>
@@ -89,44 +87,51 @@ const NewLandingPage = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Почему выбирают 2tick?
+              {t('landing.features.title')}
             </h2>
             <p className="text-xl text-gray-600">
-              Все что нужно для удобного подписания договоров
+              {t('landing.features.subtitle')}
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Feature 1 */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="minimal-card p-8 space-y-4 group hover:scale-105 smooth-transition">
               <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center">
                 <Zap className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900">Быстрая подпись</h3>
-              <p className="text-gray-600">
-                Подписывайте договоры за 2 клика через SMS или Telegram. Без сложных процедур и долгого ожидания.
+              <h3 className="text-xl font-bold text-gray-900">{t('landing.features.speed.title')}</h3>
+              <p className="text-gray-600 text-sm">
+                {t('landing.features.speed.desc')}
               </p>
             </div>
             
-            {/* Feature 2 */}
             <div className="minimal-card p-8 space-y-4 group hover:scale-105 smooth-transition">
               <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center">
                 <Shield className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900">Безопасность</h3>
-              <p className="text-gray-600">
-                Многофакторная аутентификация и шифрование данных. Ваши документы защищены по стандартам РК.
+              <h3 className="text-xl font-bold text-gray-900">{t('landing.features.security.title')}</h3>
+              <p className="text-gray-600 text-sm">
+                {t('landing.features.security.desc')}
               </p>
             </div>
             
-            {/* Feature 3 */}
             <div className="minimal-card p-8 space-y-4 group hover:scale-105 smooth-transition">
               <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center">
-                <CheckCircle2 className="w-8 h-8 text-white" />
+                <FileText className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900">Простота</h3>
-              <p className="text-gray-600">
-                Интуитивный интерфейс на 3 языках. Создавайте и отправляйте договоры без специальных навыков.
+              <h3 className="text-xl font-bold text-gray-900">{t('landing.features.templates.title')}</h3>
+              <p className="text-gray-600 text-sm">
+                {t('landing.features.templates.desc')}
+              </p>
+            </div>
+
+            <div className="minimal-card p-8 space-y-4 group hover:scale-105 smooth-transition">
+              <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center">
+                <Smartphone className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900">{t('landing.features.mobile.title')}</h3>
+              <p className="text-gray-600 text-sm">
+                {t('landing.features.mobile.desc')}
               </p>
             </div>
           </div>
@@ -138,187 +143,125 @@ const NewLandingPage = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Как это работает?
+              {t('landing.howItWorks.title')}
             </h2>
             <p className="text-xl text-gray-600">
-              Всего 3 простых шага
+              {t('landing.howItWorks.subtitle')}
             </p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            {/* Step 1 */}
             <div className="relative">
-              <div className="minimal-card p-8 space-y-4">
-                <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
-                  1
+              <div className="minimal-card p-8 text-center">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <span className="text-3xl font-bold text-blue-600">1</span>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900">Создайте договор</h3>
-                <p className="text-gray-600">
-                  Выберите шаблон или загрузите свой документ. Заполните необходимые поля.
-                </p>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{t('landing.howItWorks.step1.title')}</h3>
+                <p className="text-gray-600">{t('landing.howItWorks.step1.desc')}</p>
               </div>
-              {/* Стрелка */}
-              <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2">
-                <ArrowRight className="w-8 h-8 text-blue-300" />
-              </div>
+              <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-0.5 bg-blue-200"></div>
             </div>
             
-            {/* Step 2 */}
             <div className="relative">
-              <div className="minimal-card p-8 space-y-4">
-                <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
-                  2
+              <div className="minimal-card p-8 text-center">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <span className="text-3xl font-bold text-blue-600">2</span>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900">Отправьте на подпись</h3>
-                <p className="text-gray-600">
-                  Введите телефон получателя. Система автоматически отправит ссылку для подписания.
-                </p>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{t('landing.howItWorks.step2.title')}</h3>
+                <p className="text-gray-600">{t('landing.howItWorks.step2.desc')}</p>
               </div>
-              {/* Стрелка */}
-              <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2">
-                <ArrowRight className="w-8 h-8 text-blue-300" />
-              </div>
+              <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-0.5 bg-blue-200"></div>
             </div>
             
-            {/* Step 3 */}
-            <div className="minimal-card p-8 space-y-4">
-              <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
-                <Check className="w-6 h-6" />
+            <div className="relative">
+              <div className="minimal-card p-8 text-center">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <span className="text-3xl font-bold text-blue-600">3</span>
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{t('landing.howItWorks.step3.title')}</h3>
+                <p className="text-gray-600">{t('landing.howItWorks.step3.desc')}</p>
               </div>
-              <h3 className="text-xl font-bold text-gray-900">Готово!</h3>
-              <p className="text-gray-600">
-                Получите подписанный договор на email. Храните и скачивайте в любое время.
-              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Pricing */}
+      {/* Pricing Section */}
       <section id="pricing" className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Простые и честные цены
+              {t('landing.pricing.title')}
             </h2>
             <p className="text-xl text-gray-600">
-              Начните бесплатно, платите только за результат
+              {t('landing.pricing.subtitle')}
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {/* Free Plan */}
             <div className="minimal-card p-8 space-y-6">
               <div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Базовый</h3>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold text-blue-600">0 ₸</span>
-                  <span className="text-gray-500">/месяц</span>
+                <h3 className="text-2xl font-bold text-gray-900">{t('landing.pricing.free.title')}</h3>
+                <div className="mt-4 flex items-baseline">
+                  <span className="text-4xl font-bold text-gray-900">{t('landing.pricing.free.price')}</span>
+                  <span className="ml-2 text-gray-500">/ {t('landing.pricing.free.period')}</span>
                 </div>
               </div>
-              <ul className="space-y-3">
-                <li className="flex items-center gap-2 text-gray-600">
+              <ul className="space-y-4">
+                <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500" />
-                  10 договоров в месяц
+                  <span className="text-gray-600">{t('landing.pricing.free.feature1')}</span>
                 </li>
-                <li className="flex items-center gap-2 text-gray-600">
+                <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500" />
-                  SMS/Telegram подпись
+                  <span className="text-gray-600">{t('landing.pricing.free.feature2')}</span>
                 </li>
-                <li className="flex items-center gap-2 text-gray-600">
+                <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500" />
-                  Базовые шаблоны
+                  <span className="text-gray-600">{t('landing.pricing.free.feature3')}</span>
                 </li>
               </ul>
               <Link to="/register" className="block">
-                <button className="w-full py-3 font-medium text-blue-600 bg-white border-2 border-blue-100 rounded-lg hover:bg-blue-50 transition-all">Начать бесплатно</button>
+                <button className="w-full py-4 font-medium text-blue-600 bg-blue-50 rounded-xl hover:bg-blue-100 transition-all">
+                  {t('landing.pricing.choosePlan')}
+                </button>
               </Link>
             </div>
             
             {/* Pro Plan */}
-            <div className="minimal-card p-8 space-y-6 relative ring-2 ring-blue-500">
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <span className="bg-gradient-to-r from-blue-600 to-blue-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
-                  Популярный
-                </span>
+            <div className="minimal-card p-8 space-y-6 border-2 border-blue-500 relative">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-500 text-white px-4 py-1 rounded-full text-sm font-medium">
+                {t('landing.pricing.pro.title')}
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Профи</h3>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold text-blue-600">9,990 ₸</span>
-                  <span className="text-gray-500">/месяц</span>
+                <h3 className="text-2xl font-bold text-gray-900">{t('landing.pricing.pro.title')}</h3>
+                <div className="mt-4 flex items-baseline">
+                  <span className="text-4xl font-bold text-gray-900">{t('landing.pricing.pro.price')}</span>
+                  <span className="ml-2 text-gray-500">/ {t('landing.pricing.pro.period')}</span>
                 </div>
               </div>
-              <ul className="space-y-3">
-                <li className="flex items-center gap-2 text-gray-600">
+              <ul className="space-y-4">
+                <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500" />
-                  Неограниченно договоров
+                  <span className="text-gray-600">{t('landing.pricing.pro.feature1')}</span>
                 </li>
-                <li className="flex items-center gap-2 text-gray-600">
+                <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500" />
-                  Все способы подписи
+                  <span className="text-gray-600">{t('landing.pricing.pro.feature2')}</span>
                 </li>
-                <li className="flex items-center gap-2 text-gray-600">
+                <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500" />
-                  Свои шаблоны
+                  <span className="text-gray-600">{t('landing.pricing.pro.feature3')}</span>
                 </li>
-                <li className="flex items-center gap-2 text-gray-600">
+                <li className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500" />
-                  Приоритетная поддержка
+                  <span className="text-gray-600">{t('landing.pricing.pro.feature4')}</span>
                 </li>
               </ul>
               <Link to="/register" className="block">
-                <button className="w-full py-3 font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30">Попробовать Pro</button>
-              </Link>
-            </div>
-            
-            {/* Enterprise Plan */}
-            <div className="minimal-card p-8 space-y-6">
-              <div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Бизнес</h3>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold text-blue-600">Договорная</span>
-                </div>
-              </div>
-              <ul className="space-y-3">
-                <li className="flex items-center gap-2 text-gray-600">
-                  <Check className="w-5 h-5 text-green-500" />
-                  Все из Pro
-                </li>
-                <li className="flex items-center gap-2 text-gray-600">
-                  <Check className="w-5 h-5 text-green-500" />
-                  API интеграция
-                </li>
-                <li className="flex items-center gap-2 text-gray-600">
-                  <Check className="w-5 h-5 text-green-500" />
-                  Корпоративный аккаунт
-                </li>
-                <li className="flex items-center gap-2 text-gray-600">
-                  <Check className="w-5 h-5 text-green-500" />
-                  Персональный менеджер
-                </li>
-              </ul>
-              <button className="w-full py-3 font-medium text-blue-600 bg-white border-2 border-blue-100 rounded-lg hover:bg-blue-50 transition-all">Связаться с нами</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 px-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="minimal-card p-12 text-center space-y-6">
-            <h2 className="text-4xl font-bold text-gray-900">
-              Готовы начать?
-            </h2>
-            <p className="text-xl text-gray-600">
-              Присоединяйтесь к сотням компаний, которые доверяют 2tick
-            </p>
-            <div className="flex justify-center gap-4">
-              <Link to="/register">
-                <button className="text-lg px-8 py-4 font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 flex items-center gap-2">
-                  Создать аккаунт бесплатно
-                  <ArrowRight className="w-5 h-5" />
+                <button className="w-full py-4 font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30">
+                  {t('landing.pricing.choosePlan')}
                 </button>
               </Link>
             </div>
@@ -326,54 +269,37 @@ const NewLandingPage = () => {
         </div>
       </section>
 
+      {/* CTA Section */}
+      <section className="py-20 px-4 bg-gradient-to-r from-blue-600 to-blue-500">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-4xl font-bold text-white mb-4">
+            {t('landing.cta.title')}
+          </h2>
+          <p className="text-xl text-blue-100 mb-8">
+            {t('landing.cta.subtitle')}
+          </p>
+          <Link to="/register">
+            <button className="px-8 py-4 text-lg font-medium text-blue-600 bg-white rounded-xl hover:bg-blue-50 transition-all shadow-lg flex items-center gap-2 mx-auto">
+              {t('landing.cta.button')}
+              <ArrowRight className="w-5 h-5" />
+            </button>
+          </Link>
+        </div>
+      </section>
+
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <svg width="32" height="32" viewBox="0 0 32 32">
-                  <circle cx="16" cy="16" r="15" fill="#3B82F6" />
-                  <path d="M10 16 L14 20 L22 12" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-                  <path d="M14 16 L18 20 L26 12" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" opacity="0.6" />
-                </svg>
-                <span className="text-xl font-bold">2tick.kz</span>
-              </div>
-              <p className="text-gray-400">
-                Современная платформа для электронного подписания договоров
-              </p>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold mb-4">Продукт</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#features" className="hover:text-white">Возможности</a></li>
-                <li><a href="#pricing" className="hover:text-white">Цены</a></li>
-                <li><a href="#" className="hover:text-white">Шаблоны</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold mb-4">Компания</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white">О нас</a></li>
-                <li><a href="#" className="hover:text-white">Блог</a></li>
-                <li><a href="#" className="hover:text-white">Контакты</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold mb-4">Поддержка</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white">FAQ</a></li>
-                <li><a href="#" className="hover:text-white">Документация</a></li>
-                <li><a href="#" className="hover:text-white">Связаться</a></li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>© 2025 2tick.kz. Все права защищены.</p>
+      <footer className="py-8 px-4 bg-gray-900">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-gray-400 text-sm">
+            {t('landing.footer.copyright')}
+          </p>
+          <div className="flex gap-6">
+            <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
+              {t('landing.footer.privacy')}
+            </a>
+            <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
+              {t('landing.footer.terms')}
+            </a>
           </div>
         </div>
       </footer>
