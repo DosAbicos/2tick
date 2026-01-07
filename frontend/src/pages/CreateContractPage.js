@@ -749,7 +749,7 @@ Email: ${templateData.tenant_email || '[Email]'}
           data-testid="back-button"
         >
           <ArrowLeft className="w-4 h-4" />
-          Назад
+          {t('common.back')}
         </button>
         
         <div className="minimal-card p-6 mb-6">
