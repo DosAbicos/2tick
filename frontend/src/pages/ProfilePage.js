@@ -213,8 +213,8 @@ const ProfilePage = () => {
                 {Math.max((user?.contract_limit || 10) - (stats?.contracts_used || 0), 0) === 0 
                   ? t('profile.limitExhausted') 
                   : Math.max((user?.contract_limit || 10) - (stats?.contracts_used || 0), 0) <= 2 
-                  ? `⚠️ Осталось всего ${Math.max((user?.contract_limit || 10) - (stats?.contracts_used || 0), 0)} договоров!` 
-                  : `Осталось ${Math.max((user?.contract_limit || 10) - (stats?.contracts_used || 0), 0)} договоров`
+                  ? t('profile.limitAlmostReached', { count: Math.max((user?.contract_limit || 10) - (stats?.contracts_used || 0), 0) })
+                  : t('profile.contractsRemaining', { count: Math.max((user?.contract_limit || 10) - (stats?.contracts_used || 0), 0) })
                 }
               </p>
             </div>
