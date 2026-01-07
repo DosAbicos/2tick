@@ -2459,6 +2459,7 @@ const resources = {
       "common.close": "Close",
       "common.cancel": "Cancel",
       "common.back": "Back",
+      "common.client_will_fill": "Client will fill",
       "common.confirm": "Confirm",
       "common.loading": "Loading...",
       "common.error": "Error",
