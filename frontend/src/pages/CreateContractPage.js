@@ -1004,7 +1004,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                             </div>
                             <div>
                               <h3 className="text-lg font-semibold text-gray-900">
-                                Ваши данные
+                                {t('contract.yourData')}
                               </h3>
                               <p className="text-sm text-gray-500">
                                 Информация о наймодателе
