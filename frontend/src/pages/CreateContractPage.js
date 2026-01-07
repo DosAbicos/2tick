@@ -755,7 +755,7 @@ Email: ${templateData.tenant_email || '[Email]'}
         <div className="minimal-card p-6 mb-6">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-              {selectedTemplate ? selectedTemplate.title : 'Создать договор'}
+              {selectedTemplate ? selectedTemplate.title : t('contract.createContract')}
             </h1>
             <p className="text-sm text-gray-500">
               {loadingTemplate ? t('contract.loadingTemplate') : t('contract.fillDataHint')}
