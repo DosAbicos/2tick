@@ -1626,6 +1626,7 @@ const resources = {
       "common.close": "Жабу",
       "common.cancel": "Болдырмау",
       "common.back": "Артқа",
+      "common.client_will_fill": "Клиент толтырады",
       "common.confirm": "Растау",
       "common.loading": "Жүктелуде...",
       "common.error": "Қате",
