@@ -399,7 +399,7 @@ const ProfilePage = () => {
                 </div>
                 <div className="flex-1">
                   <h2 className="text-lg font-bold text-gray-900">{t('profile.changePassword')}</h2>
-                  <p className="text-sm text-gray-500">Обновите пароль для безопасности</p>
+                  <p className="text-sm text-gray-500">{t('profile.updatePasswordDesc')}</p>
                 </div>
               </div>
 
