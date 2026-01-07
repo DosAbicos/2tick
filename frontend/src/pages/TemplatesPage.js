@@ -7,27 +7,33 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Header';
-import { FileText, Eye, Plus, Filter, Heart } from 'lucide-react';
+import { FileText, Eye, Plus, Filter, Heart, X, Languages } from 'lucide-react';
 import '../styles/neumorphism.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const CATEGORIES = {
-  real_estate: { label: '🏠 Недвижимость', color: 'bg-blue-100 text-blue-800' },
-  services: { label: '💼 Услуги', color: 'bg-green-100 text-green-800' },
-  employment: { label: '👔 Трудоустройство', color: 'bg-purple-100 text-purple-800' },
-  other: { label: '📄 Другое', color: 'bg-gray-100 text-gray-800' }
-};
-
 const TemplatesPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [previewTemplate, setPreviewTemplate] = useState(null);
+  const [previewLanguage, setPreviewLanguage] = useState('ru');
   const [favoriteTemplates, setFavoriteTemplates] = useState([]);
+
+  // Categories with translations
+  const CATEGORIES = {
+    real_estate: { icon: '🏠', color: 'bg-blue-100 text-blue-800' },
+    services: { icon: '💼', color: 'bg-green-100 text-green-800' },
+    employment: { icon: '👔', color: 'bg-purple-100 text-purple-800' },
+    other: { icon: '📄', color: 'bg-gray-100 text-gray-800' }
+  };
+
+  const getCategoryLabel = (key) => {
+    return t(`templates.categories.${key}`, key);
+  };
 
   useEffect(() => {
     fetchTemplates();
@@ -57,7 +63,7 @@ const TemplatesPage = () => {
       });
       setFavoriteTemplates(response.data.map(t => t.id));
     } catch (error) {
-      // Игнорируем ошибки для избранного
+      // Ignore favorites errors
     }
   };
 
@@ -89,6 +95,19 @@ const TemplatesPage = () => {
     }
   };
 
+  const getPreviewContent = () => {
+    if (!previewTemplate) return '';
+    
+    switch (previewLanguage) {
+      case 'kk':
+        return previewTemplate.content_kk || previewTemplate.content || t('templates.noDescription');
+      case 'en':
+        return previewTemplate.content_en || previewTemplate.content || t('templates.noDescription');
+      default:
+        return previewTemplate.content || t('templates.noDescription');
+    }
+  };
+
   return (
     <div className="min-h-screen gradient-bg">
       <Header />
@@ -96,9 +115,9 @@ const TemplatesPage = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Header */}
         <div className="minimal-card p-6 mb-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">📚 Маркет шаблонов</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">{t('templates.title')}</h1>
           <p className="text-sm text-gray-500">
-            Выберите готовый шаблон договора и добавьте в избранное
+            {t('templates.subtitle')}
           </p>
         </div>
 
@@ -113,9 +132,9 @@ const TemplatesPage = () => {
             onClick={() => setSelectedCategory(null)}
           >
             <Filter className="w-4 h-4" />
-            Все категории
+            {t('templates.allCategories')}
           </button>
-          {Object.entries(CATEGORIES).map(([key, { label }]) => (
+          {Object.entries(CATEGORIES).map(([key, { icon }]) => (
             <button
               key={key}
               className={`px-4 py-2 text-sm font-medium rounded-lg transition-all whitespace-nowrap ${
@@ -125,7 +144,7 @@ const TemplatesPage = () => {
               }`}
               onClick={() => setSelectedCategory(key)}
             >
-              {label}
+              {icon} {getCategoryLabel(key)}
             </button>
           ))}
         </div>
@@ -133,7 +152,7 @@ const TemplatesPage = () => {
         {/* Templates Grid */}
         {loading ? (
           <div className="text-center py-12">
-            <p className="text-neutral-600">Загрузка шаблонов...</p>
+            <p className="text-neutral-600">{t('templates.loading')}</p>
           </div>
         ) : templates.length === 0 ? (
           <Card>
@@ -141,12 +160,12 @@ const TemplatesPage = () => {
               <FileText className="h-12 w-12 mx-auto text-neutral-400 mb-4" />
               <p className="text-neutral-600 mb-4">
                 {selectedCategory 
-                  ? 'Нет шаблонов в этой категории' 
+                  ? t('templates.noTemplatesInCategory')
                   : t('templates.noTemplatesYet')
                 }
               </p>
               <Button variant="outline" onClick={() => navigate('/dashboard')}>
-                Вернуться к договорам
+                {t('templates.backToContracts')}
               </Button>
             </CardContent>
           </Card>
@@ -157,19 +176,22 @@ const TemplatesPage = () => {
                 <div className="flex items-start justify-between mb-3">
                   <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">{template.title}</h3>
                   <span className={`text-xs px-2 py-1 rounded-lg ${CATEGORIES[template.category]?.color || CATEGORIES.other.color}`}>
-                    {CATEGORIES[template.category]?.label.split(' ')[0] || '📄'}
+                    {CATEGORIES[template.category]?.icon || '📄'}
                   </span>
                 </div>
                 <p className="text-sm text-gray-600 mb-4 line-clamp-3">
-                  {template.description}
+                  {template.description || t('templates.noDescription')}
                 </p>
                 <div className="flex gap-2">
                   <button
-                    onClick={() => setPreviewTemplate(template)}
+                    onClick={() => {
+                      setPreviewTemplate(template);
+                      setPreviewLanguage('ru');
+                    }}
                     className="flex-1 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-blue-400 transition-all flex items-center justify-center gap-1"
                   >
                     <Eye className="w-4 h-4 flex-shrink-0" />
-                    <span>Просмотр</span>
+                    <span>{t('templates.view')}</span>
                   </button>
                   <button
                     onClick={() => handleToggleFavorite(template.id)}
@@ -182,7 +204,9 @@ const TemplatesPage = () => {
                     <Heart 
                       className={`w-4 h-4 flex-shrink-0 ${favoriteTemplates.includes(template.id) ? 'fill-current' : ''}`} 
                     />
-                    <span className="truncate">{favoriteTemplates.includes(template.id) ? 'В избр.' : 'Избр.'}</span>
+                    <span className="truncate">
+                      {favoriteTemplates.includes(template.id) ? t('templates.inFavorites') : t('templates.toFavorites')}
+                    </span>
                   </button>
                 </div>
               </div>
@@ -190,53 +214,107 @@ const TemplatesPage = () => {
           </div>
         )}
 
-        {/* Preview Modal */}
+        {/* Improved Preview Modal */}
         {previewTemplate && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-            <Card className="max-w-3xl w-full max-h-[80vh] overflow-auto">
-              <CardHeader>
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in">
+            <div className="minimal-card max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+              {/* Modal Header */}
+              <div className="p-6 border-b border-gray-100">
                 <div className="flex items-start justify-between">
-                  <div>
-                    <CardTitle>{previewTemplate.title}</CardTitle>
-                    <CardDescription className="mt-2">
-                      {previewTemplate.description}
-                    </CardDescription>
+                  <div className="flex-1 min-w-0 pr-4">
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className={`text-sm px-3 py-1 rounded-lg ${CATEGORIES[previewTemplate.category]?.color || CATEGORIES.other.color}`}>
+                        {CATEGORIES[previewTemplate.category]?.icon} {getCategoryLabel(previewTemplate.category)}
+                      </span>
+                    </div>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-1">{previewTemplate.title}</h2>
+                    <p className="text-gray-600">{previewTemplate.description || t('templates.noDescription')}</p>
                   </div>
-                  <Button variant="ghost" onClick={() => setPreviewTemplate(null)}>
-                    ✕
-                  </Button>
+                  <button 
+                    onClick={() => setPreviewTemplate(null)}
+                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0"
+                  >
+                    <X className="w-6 h-6 text-gray-500" />
+                  </button>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="bg-neutral-50 p-4 rounded-lg mb-4">
-                  <p className="whitespace-pre-wrap text-sm">
-                    {previewTemplate.content.substring(0, 1000)}
-                    {previewTemplate.content.length > 1000 && '...'}
+                
+                {/* Language Tabs */}
+                <div className="flex items-center gap-2 mt-4">
+                  <Languages className="w-4 h-4 text-gray-400" />
+                  <div className="flex gap-1 bg-gray-100 p-1 rounded-lg">
+                    <button
+                      onClick={() => setPreviewLanguage('ru')}
+                      className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
+                        previewLanguage === 'ru'
+                          ? 'bg-white text-blue-600 shadow-sm'
+                          : 'text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      {t('templates.contentRu')}
+                    </button>
+                    <button
+                      onClick={() => setPreviewLanguage('kk')}
+                      className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
+                        previewLanguage === 'kk'
+                          ? 'bg-white text-blue-600 shadow-sm'
+                          : 'text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      {t('templates.contentKk')}
+                    </button>
+                    <button
+                      onClick={() => setPreviewLanguage('en')}
+                      className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${
+                        previewLanguage === 'en'
+                          ? 'bg-white text-blue-600 shadow-sm'
+                          : 'text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      {t('templates.contentEn')}
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Modal Content - Scrollable */}
+              <div className="flex-1 overflow-y-auto p-6">
+                <div className="bg-gray-50 border border-gray-200 rounded-xl p-6">
+                  <p className="whitespace-pre-wrap text-sm text-gray-800 leading-relaxed font-mono">
+                    {getPreviewContent()}
                   </p>
                 </div>
-                <div className="flex gap-2">
-                  <Button
+              </div>
+              
+              {/* Modal Footer */}
+              <div className="p-6 border-t border-gray-100 bg-gray-50">
+                <div className="flex gap-3">
+                  <button
                     onClick={() => {
                       handleToggleFavorite(previewTemplate.id);
-                      setPreviewTemplate(null);
                     }}
-                    variant={favoriteTemplates.includes(previewTemplate.id) ? "default" : "outline"}
-                    className="flex-1"
+                    className={`flex-1 px-6 py-3 text-sm font-medium rounded-xl transition-all flex items-center justify-center gap-2 ${
+                      favoriteTemplates.includes(previewTemplate.id)
+                        ? 'bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-lg shadow-red-500/30'
+                        : 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg shadow-blue-500/30'
+                    }`}
                   >
                     <Heart 
-                      className={`mr-2 h-4 w-4 ${favoriteTemplates.includes(previewTemplate.id) ? 'fill-current' : ''}`} 
+                      className={`w-5 h-5 ${favoriteTemplates.includes(previewTemplate.id) ? 'fill-current' : ''}`} 
                     />
-                    {favoriteTemplates.includes(previewTemplate.id) ? 'Удалить из избранного' : 'Добавить в избранное'}
-                  </Button>
-                  <Button
-                    variant="outline"
+                    {favoriteTemplates.includes(previewTemplate.id) 
+                      ? t('templates.removeFromFavorites')
+                      : t('templates.addToFavorites')
+                    }
+                  </button>
+                  <button
                     onClick={() => setPreviewTemplate(null)}
+                    className="px-6 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-all"
                   >
-                    Закрыть
-                  </Button>
+                    {t('templates.close')}
+                  </button>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
         )}
       </div>
