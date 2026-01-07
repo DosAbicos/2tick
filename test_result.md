@@ -130,6 +130,9 @@ frontend:
       - working: false
         agent: "testing"
         comment: "❌ CRITICAL PROFILE PAGE TRANSLATION ISSUE: ProfilePage.js contains hardcoded Russian text instead of using i18n translation system. Missing t() function calls for key elements: 'Мой профиль' (should be t('profile.title')), 'Основная информация' (should be t('profile.personalInfo')), 'ФИО' (should be t('profile.fullName')), 'Телефон' (should be t('profile.phone')), 'Компания' (should be t('profile.company')), 'Изменить' (should be t('profile.edit')), 'Смена пароля' (should be t('profile.changePassword')), and many others. The i18n translations exist in i18n.js but are not being used. This breaks the multilingual experience when users switch to Kazakh or English. URGENT FIX REQUIRED: Replace all hardcoded Russian strings with proper t() function calls."
+      - working: false
+        agent: "testing"
+        comment: "❌ FINAL INTERNATIONALIZATION TESTING RESULTS: CONFIRMED hardcoded Russian texts still exist in ProfilePage.js. Found specific hardcoded texts: 'Не указана', 'Не указан', 'Старый пароль', 'Минимум 6 символов', 'Повторите новый пароль', 'Отмена', 'Обновите пароль для безопасности'. These appear in placeholders and labels at lines 337, 340, 360, 363, 383, 386, 402, 429, 446, 457, 469. Main profile interface (title, statistics) uses proper t() functions and works correctly in all languages. CRITICAL: Only password change section and placeholder texts are hardcoded. All other internationalization features work perfectly: Landing page (RU/KK/EN), Dashboard (RU/KK/EN), Admin panel (RU only working, KK/EN translations missing), Language persistence, No mixed languages detected."
 
   - task: "Contract Placeholder Replacement"
     implemented: true
