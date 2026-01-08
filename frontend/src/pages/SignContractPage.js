@@ -480,6 +480,13 @@ const SignContractPage = () => {
         // Set UI language
         i18n.changeLanguage(lang);
         
+        // IMPORTANT: After language selection, always start from step 1 (contract review)
+        // This ensures user first reviews the contract before filling form
+        setStep(1);
+        
+        // Clear any previous state that might skip the review step
+        localStorage.removeItem(`contract_${id}_state`);
+        
         // Refetch contract to get updated data
         await fetchContract();
         
