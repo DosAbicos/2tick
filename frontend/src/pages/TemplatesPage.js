@@ -190,13 +190,13 @@ const TemplatesPage = () => {
             {templates.map((template) => (
               <div key={template.id} className="minimal-card p-5 hover:shadow-xl transition-all animate-fade-in group">
                 <div className="flex items-start justify-between mb-3">
-                  <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">{template.title}</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">{getTemplateTitle(template)}</h3>
                   <span className={`text-xs px-2 py-1 rounded-lg ${CATEGORIES[template.category]?.color || CATEGORIES.other.color}`}>
                     {CATEGORIES[template.category]?.icon || '📄'}
                   </span>
                 </div>
                 <p className="text-sm text-gray-600 mb-4 line-clamp-3">
-                  {template.description || t('templates.noDescription')}
+                  {getTemplateDescription(template)}
                 </p>
                 <div className="flex gap-2">
                   <button
