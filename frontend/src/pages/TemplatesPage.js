@@ -323,16 +323,6 @@ const TemplatesPage = () => {
                     }
                   </button>
                   <button
-                    onClick={() => {
-                      sessionStorage.setItem('selectedTemplateId', previewTemplate.id);
-                      navigate('/contracts/create');
-                    }}
-                    className="flex-1 px-6 py-3 text-sm font-medium bg-gradient-to-r from-green-600 to-emerald-500 text-white rounded-xl hover:from-green-700 hover:to-emerald-600 shadow-lg shadow-green-500/30 transition-all flex items-center justify-center gap-2"
-                  >
-                    <FileText className="w-5 h-5" />
-                    {t('templates.useTemplate')}
-                  </button>
-                  <button
                     onClick={() => setPreviewTemplate(null)}
                     className="px-6 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-all"
                   >
