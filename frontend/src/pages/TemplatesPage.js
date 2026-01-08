@@ -108,6 +108,22 @@ const TemplatesPage = () => {
     }
   };
 
+  // Get localized template title based on current UI language
+  const getTemplateTitle = (template) => {
+    const lang = i18n.language;
+    if (lang === 'kk' && template.title_kk) return template.title_kk;
+    if (lang === 'en' && template.title_en) return template.title_en;
+    return template.title;
+  };
+
+  // Get localized template description based on current UI language
+  const getTemplateDescription = (template) => {
+    const lang = i18n.language;
+    if (lang === 'kk' && template.description_kk) return template.description_kk;
+    if (lang === 'en' && template.description_en) return template.description_en;
+    return template.description || t('templates.noDescription');
+  };
+
   return (
     <div className="min-h-screen gradient-bg">
       <Header />
