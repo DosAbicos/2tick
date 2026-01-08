@@ -177,6 +177,49 @@ const DashboardPage = () => {
     <div className="min-h-screen gradient-bg">
       <Header />
       
+      {/* Notification Popup */}
+      {showNotificationPopup && notification && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden animate-fade-in">
+            {/* Header with gradient */}
+            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-4 text-white">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                  <Bell className="w-5 h-5" />
+                </div>
+                <h3 className="text-lg font-bold">{notification.title}</h3>
+              </div>
+            </div>
+            
+            {/* Content */}
+            <div className="p-6">
+              {notification.image_url && (
+                <div className="mb-4 rounded-lg overflow-hidden">
+                  <img 
+                    src={notification.image_url} 
+                    alt={notification.title}
+                    className="w-full h-48 object-cover"
+                  />
+                </div>
+              )}
+              <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                {notification.message}
+              </p>
+            </div>
+            
+            {/* Footer */}
+            <div className="px-6 pb-6">
+              <button
+                onClick={handleDismissNotification}
+                className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg shadow-blue-500/30"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
       {/* Modal for selecting favorite template */}
       <Dialog open={showTemplateModal} onOpenChange={setShowTemplateModal}>
         <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
