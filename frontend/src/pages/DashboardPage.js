@@ -16,7 +16,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const DashboardPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
   const [contracts, setContracts] = useState([]);
@@ -32,6 +32,22 @@ const DashboardPage = () => {
   const [showTemplateModal, setShowTemplateModal] = useState(false);
   const [favoriteTemplates, setFavoriteTemplates] = useState([]);
   const [loadingFavorites, setLoadingFavorites] = useState(false);
+
+  // Get localized template title based on current UI language
+  const getTemplateTitle = (template) => {
+    const lang = i18n.language;
+    if (lang === 'kk' && template.title_kk) return template.title_kk;
+    if (lang === 'en' && template.title_en) return template.title_en;
+    return template.title || template.name;
+  };
+
+  // Get localized template description based on current UI language
+  const getTemplateDescription = (template) => {
+    const lang = i18n.language;
+    if (lang === 'kk' && template.description_kk) return template.description_kk;
+    if (lang === 'en' && template.description_en) return template.description_en;
+    return template.description || t('templates.noDescription');
+  };
 
   useEffect(() => {
     fetchContracts();
