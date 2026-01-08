@@ -243,8 +243,8 @@ const TemplatesPage = () => {
                         {CATEGORIES[previewTemplate.category]?.icon} {getCategoryLabel(previewTemplate.category)}
                       </span>
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-1">{previewTemplate.title}</h2>
-                    <p className="text-gray-600">{previewTemplate.description || t('templates.noDescription')}</p>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-1">{getTemplateTitle(previewTemplate)}</h2>
+                    <p className="text-gray-600">{getTemplateDescription(previewTemplate)}</p>
                   </div>
                   <button 
                     onClick={() => setPreviewTemplate(null)}
