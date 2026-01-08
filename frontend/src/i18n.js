@@ -255,6 +255,7 @@ const resources = {
       "contract.fillDataHint": "Заполните данные справа, договор обновится слева",
       "contract.fillData": "Заполните данные",
       "contract.docSelected": "Документ выбран",
+      "contract.sendForSigning": "Отправить на подпись",
       
       // ===== CONTRACT DETAILS =====
       "contractDetails.title": "Детали договора",
