@@ -883,49 +883,114 @@ const AdminTemplatesPageNew = () => {
             </DialogHeader>
 
             <form onSubmit={handleSubmit} className="space-y-6 mt-6">
-              <div className="grid grid-cols-2 gap-4">
+              {/* Title and Category Row */}
+              <div className="minimal-card p-5 bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                    </svg>
+                    <Label className="text-sm font-semibold text-gray-900">Название и описание шаблона *</Label>
+                  </div>
+                  {/* Language Switcher for Title/Description */}
+                  <div className="flex gap-1">
+                    <button
+                      type="button"
+                      onClick={() => setCurrentLang('ru')}
+                      className={`px-3 py-1 text-xs font-medium rounded-lg transition-all ${
+                        currentLang === 'ru'
+                          ? 'bg-blue-600 text-white shadow-md'
+                          : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+                      }`}
+                    >
+                      🇷🇺 RU
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCurrentLang('kk')}
+                      className={`px-3 py-1 text-xs font-medium rounded-lg transition-all ${
+                        currentLang === 'kk'
+                          ? 'bg-blue-600 text-white shadow-md'
+                          : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+                      }`}
+                    >
+                      🇰🇿 KK
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCurrentLang('en')}
+                      className={`px-3 py-1 text-xs font-medium rounded-lg transition-all ${
+                        currentLang === 'en'
+                          ? 'bg-blue-600 text-white shadow-md'
+                          : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+                      }`}
+                    >
+                      🇬🇧 EN
+                    </button>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <Label htmlFor="title" className="text-sm font-medium text-gray-700">
+                      Название {currentLang === 'ru' ? '(Русский)' : currentLang === 'kk' ? '(Қазақша)' : '(English)'} *
+                    </Label>
+                    <Input
+                      id="title"
+                      name={currentLang === 'ru' ? 'title' : currentLang === 'kk' ? 'title_kk' : 'title_en'}
+                      value={currentLang === 'ru' ? formData.title : currentLang === 'kk' ? formData.title_kk : formData.title_en}
+                      onChange={handleChange}
+                      placeholder={currentLang === 'ru' ? 'Договор аренды квартиры' : currentLang === 'kk' ? 'Пәтерді жалға беру шарты' : 'Apartment Rental Agreement'}
+                      required={currentLang === 'ru'}
+                      className="mt-1 minimal-input"
+                    />
+                  </div>
+
+                  <div>
+                    <Label className="text-sm font-medium text-gray-700">Категория *</Label>
+                    <Select value={formData.category} onValueChange={handleCategoryChange}>
+                      <SelectTrigger className="mt-1 minimal-input">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {CATEGORIES.map((cat) => (
+                          <SelectItem key={cat.value} value={cat.value}>
+                            {cat.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
                 <div>
-                  <Label htmlFor="title" className="text-sm font-semibold text-gray-700">Название *</Label>
-                  <Input
-                    id="title"
-                    name="title"
-                    value={formData.title}
+                  <Label htmlFor="description" className="text-sm font-medium text-gray-700">
+                    Описание {currentLang === 'ru' ? '(Русский)' : currentLang === 'kk' ? '(Қазақша)' : '(English)'} *
+                  </Label>
+                  <Textarea
+                    id="description"
+                    name={currentLang === 'ru' ? 'description' : currentLang === 'kk' ? 'description_kk' : 'description_en'}
+                    value={currentLang === 'ru' ? formData.description : currentLang === 'kk' ? formData.description_kk : formData.description_en}
                     onChange={handleChange}
-                    placeholder="Договор аренды квартиры"
-                    required
+                    placeholder={currentLang === 'ru' ? 'Краткое описание шаблона...' : currentLang === 'kk' ? 'Үлгінің қысқаша сипаттамасы...' : 'Brief template description...'}
+                    rows={2}
+                    required={currentLang === 'ru'}
                     className="mt-1 minimal-input"
                   />
                 </div>
-
-                <div>
-                  <Label className="text-sm font-semibold text-gray-700">Категория *</Label>
-                  <Select value={formData.category} onValueChange={handleCategoryChange}>
-                    <SelectTrigger className="mt-1 minimal-input">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {CATEGORIES.map((cat) => (
-                        <SelectItem key={cat.value} value={cat.value}>
-                          {cat.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                
+                {/* Translation Status */}
+                <div className="flex gap-2 mt-3">
+                  <span className={`px-2 py-1 text-xs rounded-full ${formData.title ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+                    🇷🇺 {formData.title ? '✓' : '—'}
+                  </span>
+                  <span className={`px-2 py-1 text-xs rounded-full ${formData.title_kk ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+                    🇰🇿 {formData.title_kk ? '✓' : '—'}
+                  </span>
+                  <span className={`px-2 py-1 text-xs rounded-full ${formData.title_en ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+                    🇬🇧 {formData.title_en ? '✓' : '—'}
+                  </span>
                 </div>
-              </div>
-
-              <div>
-                <Label htmlFor="description" className="text-sm font-semibold text-gray-700">Описание *</Label>
-                <Textarea
-                  id="description"
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  placeholder="Краткое описание шаблона..."
-                  rows={2}
-                  required
-                  className="mt-1 minimal-input"
-                />
               </div>
 
               {/* Party Roles Selection */}
