@@ -203,7 +203,7 @@ metadata:
 test_plan:
   current_focus:
     - "Profile Page Multilingual Support - CRITICAL HARDCODED RUSSIAN TEXTS"
-    - "Complete Internationalization Testing - COMPLETED SUCCESSFULLY"
+    - "Template Title Language Switching on CreateContractPage - COMPLETED SUCCESSFULLY"
   stuck_tasks: 
     - "Profile Page Multilingual Support - hardcoded Russian text instead of i18n"
   test_all: false
