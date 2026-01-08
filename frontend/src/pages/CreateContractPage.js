@@ -53,6 +53,19 @@ const CreateContractPage = () => {
     }
     return config.label;
   };
+
+  // Get localized template title based on current UI language
+  const getTemplateTitle = () => {
+    if (!selectedTemplate) return t('contract.createContract');
+    const uiLang = i18n.language;
+    if (uiLang === 'kk' && selectedTemplate.title_kk) {
+      return selectedTemplate.title_kk;
+    }
+    if (uiLang === 'en' && selectedTemplate.title_en) {
+      return selectedTemplate.title_en;
+    }
+    return selectedTemplate.title;
+  };
   
   // Optional fields visibility
   const [showOptionalFields, setShowOptionalFields] = useState(false);
