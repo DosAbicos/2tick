@@ -24,7 +24,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const ContractDetailsPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams();
   const [contract, setContract] = useState(null);
@@ -40,6 +40,20 @@ const ContractDetailsPage = () => {
   // Check if readonly mode (for admin)
   const searchParams = new URLSearchParams(window.location.search);
   const isReadOnly = searchParams.get('readonly') === 'true';
+
+  // Function to get party role based on current language
+  const getPartyRole = (type) => {
+    const lang = i18n.language;
+    if (type === 'a') {
+      if (lang === 'kk' && contract?.party_a_role_kk) return contract.party_a_role_kk;
+      if (lang === 'en' && contract?.party_a_role_en) return contract.party_a_role_en;
+      return contract?.party_a_role || t('contractDetails.partyA');
+    } else {
+      if (lang === 'kk' && contract?.party_b_role_kk) return contract.party_b_role_kk;
+      if (lang === 'en' && contract?.party_b_role_en) return contract.party_b_role_en;
+      return contract?.party_b_role || t('contractDetails.partyB');
+    }
+  };
 
   // Function to translate placeholder labels
   const translateLabel = (key, fallbackLabel) => {
