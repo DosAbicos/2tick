@@ -663,6 +663,8 @@ Email: ${templateData.tenant_email || '[Email]'}
       
       const contractData = {
         title: selectedTemplate ? selectedTemplate.title : `Договор от ${templateData.contract_date}`,
+        title_kk: selectedTemplate?.title_kk || null,
+        title_en: selectedTemplate?.title_en || null,
         content: contentToSave,
         content_kk: contentKkToSave,  // Казахская версия контента
         content_en: contentEnToSave,  // Английская версия контента
