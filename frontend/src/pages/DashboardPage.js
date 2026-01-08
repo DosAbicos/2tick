@@ -298,13 +298,13 @@ const DashboardPage = () => {
                           }}
                         >
                           <div className="flex items-start justify-between mb-3">
-                            <h4 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">{template.title || template.name}</h4>
+                            <h4 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">{getTemplateTitle(template)}</h4>
                             <span className="text-xs px-2 py-1 rounded-lg bg-blue-100 text-blue-800">
                               🏠
                             </span>
                           </div>
                           <p className="text-sm text-gray-600 mb-4 line-clamp-3">
-                            {template.description || t('templates.noDescription')}
+                            {getTemplateDescription(template)}
                           </p>
                           <div className="text-xs text-blue-600 font-medium">
                             {t('dashboard.useTemplate')} →
