@@ -790,7 +790,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                       </svg>
-                      Редактировать
+                      {t('contract.edit')}
                     </button>
                   ) : (
                     <button
@@ -1456,7 +1456,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                     data-testid="save-contract-button"
                     className="flex-1 px-6 py-3 text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                   >
-                    {loading ? 'Загрузка...' : 'Отправить на подпись'}
+                    {loading ? t('common.loading') : t('contract.sendForSigning')}
                   </button>
                   <button
                     type="button"
@@ -1467,7 +1467,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                     data-testid="cancel-button"
                     className="px-6 py-3 text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 hover:border-red-400 transition-all font-medium"
                   >
-                    Отмена
+                    {t('common.cancel')}
                   </button>
                 </div>
               </form>
