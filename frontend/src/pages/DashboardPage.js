@@ -39,6 +39,36 @@ const DashboardPage = () => {
     fetchActiveNotification();
   }, []);
 
+  // Fetch active notification for user
+  const fetchActiveNotification = async () => {
+    try {
+      const response = await axios.get(`${API}/notifications/active`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.data && response.data.id) {
+        setNotification(response.data);
+        setShowNotificationPopup(true);
+      }
+    } catch (error) {
+      // No active notification or already viewed - this is normal
+      console.log('No active notification');
+    }
+  };
+
+  // Mark notification as viewed
+  const handleDismissNotification = async () => {
+    if (notification) {
+      try {
+        await axios.post(`${API}/notifications/${notification.id}/mark-viewed`, {}, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      } catch (error) {
+        console.error('Error marking notification as viewed:', error);
+      }
+    }
+    setShowNotificationPopup(false);
+  };
+
   // Load favorite templates for modal
   const loadFavoriteTemplates = async () => {
     setLoadingFavorites(true);
