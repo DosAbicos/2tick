@@ -5003,16 +5003,21 @@ class BackendTester:
         
         success = True
         
-        # Test GET /api/notifications - get active notifications
-        self.log("   📋 Testing GET /api/notifications")
-        response = self.session.get(f"{BASE_URL}/notifications")
+        # Test GET /api/notifications/active - get active notifications
+        self.log("   📋 Testing GET /api/notifications/active")
+        response = self.session.get(f"{BASE_URL}/notifications/active")
         
         if response.status_code == 200:
-            notifications = response.json()
-            self.log(f"   ✅ Notifications retrieved successfully. Count: {len(notifications)}")
+            notification_data = response.json()
+            self.log(f"   ✅ Notification data retrieved successfully")
             
-            # Check if notifications have required fields for popup
-            for notification in notifications:
+            # Check if notification data has required fields for popup
+            notification = notification_data.get("notification")
+            show_popup = notification_data.get("show_popup", False)
+            
+            self.log(f"      📢 Show popup: {show_popup}")
+            
+            if notification:
                 notification_id = notification.get("id")
                 title = notification.get("title")
                 message = notification.get("message")
@@ -5029,6 +5034,8 @@ class BackendTester:
                     success = False
                 else:
                     self.log(f"      ✅ Notification {notification_id} has required fields")
+            else:
+                self.log("      ℹ️ No active notification found (this is normal)")
         else:
             self.log(f"   ❌ Failed to get notifications: {response.status_code} - {response.text}")
             success = False
