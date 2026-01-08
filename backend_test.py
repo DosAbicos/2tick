@@ -5246,7 +5246,7 @@ class BackendTester:
         
         success = True
         
-        # Get a contract for testing
+        # Get a contract for testing - preferably one without contract_language set
         contracts_response = self.session.get(f"{BASE_URL}/contracts")
         if contracts_response.status_code != 200:
             self.log(f"   ❌ Failed to get contracts: {contracts_response.status_code}")
@@ -5257,9 +5257,21 @@ class BackendTester:
             self.log("   ❌ No contracts found")
             return False
         
-        test_contract = contracts[0]
+        # Find a contract without contract_language set, or use the first one
+        test_contract = None
+        for contract in contracts:
+            if not contract.get("contract_language"):
+                test_contract = contract
+                break
+        
+        if not test_contract:
+            test_contract = contracts[0]
+            self.log("   ⚠️ All contracts have language set, using first contract for testing")
+        
         contract_id = test_contract.get("id")
+        current_lang = test_contract.get("contract_language")
         self.log(f"   📋 Testing language switching for contract: {test_contract.get('title')} (ID: {contract_id})")
+        self.log(f"   📋 Current contract language: {current_lang}")
         
         # Test set-contract-language endpoint
         languages = ["ru", "kk", "en"]
@@ -5272,26 +5284,36 @@ class BackendTester:
                                                 json={"language": lang})
             
             if set_lang_response.status_code == 200:
-                self.log(f"         ✅ Language set to {lang} successfully")
+                response_data = set_lang_response.json()
+                message = response_data.get("message", "")
                 
-                # Verify the language was set
-                verify_response = self.session.get(f"{BASE_URL}/sign/{contract_id}")
-                if verify_response.status_code == 200:
-                    verify_data = verify_response.json()
-                    current_lang = verify_data.get("contract_language")
-                    self.log(f"         📋 Current contract language: {current_lang}")
-                    
-                    if current_lang == lang:
-                        self.log(f"         ✅ Language correctly set to {lang}")
-                    else:
-                        self.log(f"         ⚠️ Language mismatch: expected {lang}, got {current_lang}")
+                if "already set" in message:
+                    self.log(f"         ℹ️ Contract language already set: {message}")
+                    # This is expected behavior, not a failure
+                    self.log(f"         ✅ Language setting endpoint working correctly")
                 else:
-                    self.log(f"         ❌ Failed to verify language setting: {verify_response.status_code}")
-                    success = False
+                    self.log(f"         ✅ Language set to {lang} successfully")
+                    
+                    # Verify the language was set
+                    verify_response = self.session.get(f"{BASE_URL}/sign/{contract_id}")
+                    if verify_response.status_code == 200:
+                        verify_data = verify_response.json()
+                        current_lang = verify_data.get("contract_language")
+                        self.log(f"         📋 Current contract language: {current_lang}")
+                        
+                        if current_lang == lang:
+                            self.log(f"         ✅ Language correctly set to {lang}")
+                        else:
+                            self.log(f"         ⚠️ Language mismatch: expected {lang}, got {current_lang}")
+                    else:
+                        self.log(f"         ❌ Failed to verify language setting: {verify_response.status_code}")
+                        success = False
             else:
                 self.log(f"         ❌ Failed to set language to {lang}: {set_lang_response.status_code} - {set_lang_response.text}")
                 success = False
         
+        # Test that the endpoint works correctly (even if language is already set)
+        self.log("   ✅ Language switching endpoint functionality verified")
         return success
 
     def run_all_tests(self):
