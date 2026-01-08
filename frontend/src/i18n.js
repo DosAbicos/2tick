@@ -1092,6 +1092,7 @@ const resources = {
       "contract.fillDataHint": "Оң жақта деректерді толтырыңыз, келісімшарт сол жақта жаңартылады",
       "contract.fillData": "Деректерді толтырыңыз",
       "contract.docSelected": "Құжат таңдалды",
+      "contract.sendForSigning": "Қол қоюға жіберу",
       
       // ===== CONTRACT DETAILS =====
       "contractDetails.title": "Келісімшарт мәліметтері",
@@ -1926,6 +1927,7 @@ const resources = {
       "contract.fillDataHint": "Fill in the data on the right, contract will update on the left",
       "contract.fillData": "Fill in data",
       "contract.docSelected": "Document selected",
+      "contract.sendForSigning": "Send for signing",
       
       // ===== CONTRACT DETAILS =====
       "contractDetails.title": "Contract Details",
