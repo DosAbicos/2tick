@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import Header from '@/components/Header';
 import Loader from '@/components/Loader';
-import { FileText, Clock, CheckCircle, Plus, Eye, Trash2, Download, XCircle, AlertCircle, Upload } from 'lucide-react';
+import { FileText, Clock, CheckCircle, Plus, Eye, Trash2, Download, XCircle, AlertCircle, Upload, Bell, X } from 'lucide-react';
 import { format } from 'date-fns';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -24,6 +24,10 @@ const DashboardPage = () => {
   const [stats, setStats] = useState({ total: 0, signed: 0, pending: 0, draft: 0 });
   const [limitInfo, setLimitInfo] = useState(null);
   
+  // Notification popup state
+  const [notification, setNotification] = useState(null);
+  const [showNotificationPopup, setShowNotificationPopup] = useState(false);
+  
   // Modal for selecting favorite template
   const [showTemplateModal, setShowTemplateModal] = useState(false);
   const [favoriteTemplates, setFavoriteTemplates] = useState([]);
@@ -32,6 +36,7 @@ const DashboardPage = () => {
   useEffect(() => {
     fetchContracts();
     fetchLimitInfo();
+    fetchActiveNotification();
   }, []);
 
   // Load favorite templates for modal
