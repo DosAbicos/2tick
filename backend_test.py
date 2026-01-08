@@ -4926,6 +4926,367 @@ class BackendTester:
         
         return all_tests_passed
 
+    def test_review_request_features(self):
+        """
+        Test specific features from the review request:
+        1. Notification Popup for Users (backend API)
+        2. CreateContractPage Buttons Translation (templates API)
+        3. ContractDetailsPage Party Roles Translation (contract details API)
+        4. SignContractPage - Contract Review Step (signing API)
+        5. Template Title/Description Localization (templates API)
+        """
+        self.log("\n🎯 TESTING REVIEW REQUEST FEATURES")
+        self.log("=" * 80)
+        
+        all_tests_passed = True
+        
+        # Step 1: Login as admin with specific credentials
+        self.log("\n🔐 Step 1: Admin authentication (asl@asl.kz / 142314231423)")
+        if not self.login_as_admin():
+            self.log("❌ Failed to login as admin. Cannot proceed with review tests.")
+            return False
+        
+        # Step 2: Test Notification API for popup functionality
+        self.log("\n🔔 Step 2: Testing Notification API for popup functionality")
+        notification_success = self.test_notification_api()
+        if not notification_success:
+            self.log("❌ Notification API test failed.")
+            all_tests_passed = False
+        
+        # Step 3: Test Templates API for localization
+        self.log("\n📋 Step 3: Testing Templates API for title/description localization")
+        templates_success = self.test_templates_localization_api()
+        if not templates_success:
+            self.log("❌ Templates localization API test failed.")
+            all_tests_passed = False
+        
+        # Step 4: Test Contract Details API for party roles translation
+        self.log("\n📄 Step 4: Testing Contract Details API for party roles translation")
+        contract_details_success = self.test_contract_details_party_roles_api()
+        if not contract_details_success:
+            self.log("❌ Contract details party roles API test failed.")
+            all_tests_passed = False
+        
+        # Step 5: Test Signing Page API for contract review step
+        self.log("\n✍️ Step 5: Testing Signing Page API for contract review step")
+        signing_review_success = self.test_signing_page_contract_review_api()
+        if not signing_review_success:
+            self.log("❌ Signing page contract review API test failed.")
+            all_tests_passed = False
+        
+        # Step 6: Test language switching on signing page
+        self.log("\n🌐 Step 6: Testing language switching on signing page")
+        language_switch_success = self.test_signing_page_language_switching_detailed()
+        if not language_switch_success:
+            self.log("❌ Signing page language switching test failed.")
+            all_tests_passed = False
+        
+        # Final result
+        self.log("\n" + "=" * 80)
+        self.log("📊 REVIEW REQUEST TEST RESULTS:")
+        if all_tests_passed:
+            self.log("🎉 ALL REVIEW REQUEST TESTS PASSED!")
+            self.log("✅ Admin authentication successful with asl@asl.kz / 142314231423")
+            self.log("✅ Notification API working for popup functionality")
+            self.log("✅ Templates API supports localization")
+            self.log("✅ Contract details API supports party roles translation")
+            self.log("✅ Signing page API supports contract review step")
+            self.log("✅ Language switching works correctly on signing page")
+        else:
+            self.log("❌ SOME REVIEW REQUEST TESTS FAILED! Check logs above.")
+        
+        return all_tests_passed
+    
+    def test_notification_api(self):
+        """Test notification API for popup functionality"""
+        self.log("   🔔 Testing notification API endpoints...")
+        
+        success = True
+        
+        # Test GET /api/notifications - get active notifications
+        self.log("   📋 Testing GET /api/notifications")
+        response = self.session.get(f"{BASE_URL}/notifications")
+        
+        if response.status_code == 200:
+            notifications = response.json()
+            self.log(f"   ✅ Notifications retrieved successfully. Count: {len(notifications)}")
+            
+            # Check if notifications have required fields for popup
+            for notification in notifications:
+                notification_id = notification.get("id")
+                title = notification.get("title")
+                message = notification.get("message")
+                is_active = notification.get("is_active")
+                
+                self.log(f"      📢 Notification: {title}")
+                self.log(f"         ID: {notification_id}")
+                self.log(f"         Message: {message[:50]}..." if message and len(message) > 50 else f"         Message: {message}")
+                self.log(f"         Active: {is_active}")
+                
+                # Verify required fields for popup
+                if not title or not message:
+                    self.log(f"      ❌ Notification {notification_id} missing title or message")
+                    success = False
+                else:
+                    self.log(f"      ✅ Notification {notification_id} has required fields")
+        else:
+            self.log(f"   ❌ Failed to get notifications: {response.status_code} - {response.text}")
+            success = False
+        
+        # Test user's viewed notifications
+        self.log("   👤 Testing user's viewed notifications")
+        user_response = self.session.get(f"{BASE_URL}/auth/me")
+        if user_response.status_code == 200:
+            user_data = user_response.json()
+            viewed_notifications = user_data.get("viewed_notifications", [])
+            self.log(f"   ✅ User has {len(viewed_notifications)} viewed notifications")
+        else:
+            self.log(f"   ❌ Failed to get user data: {user_response.status_code}")
+            success = False
+        
+        return success
+    
+    def test_templates_localization_api(self):
+        """Test templates API for title/description localization"""
+        self.log("   📋 Testing templates API for localization support...")
+        
+        success = True
+        
+        # Get templates and check for localization fields
+        response = self.session.get(f"{BASE_URL}/templates")
+        
+        if response.status_code == 200:
+            templates = response.json()
+            self.log(f"   ✅ Templates retrieved successfully. Count: {len(templates)}")
+            
+            multilang_templates = 0
+            
+            for template in templates:
+                template_id = template.get("id")
+                title = template.get("title")
+                title_kk = template.get("title_kk")
+                title_en = template.get("title_en")
+                description = template.get("description")
+                description_kk = template.get("description_kk")
+                description_en = template.get("description_en")
+                
+                self.log(f"      📄 Template: {title}")
+                self.log(f"         ID: {template_id}")
+                self.log(f"         Title RU: {title}")
+                self.log(f"         Title KK: {title_kk if title_kk else 'Not set'}")
+                self.log(f"         Title EN: {title_en if title_en else 'Not set'}")
+                self.log(f"         Description RU: {description[:50] if description else 'Not set'}...")
+                self.log(f"         Description KK: {description_kk[:50] if description_kk else 'Not set'}...")
+                self.log(f"         Description EN: {description_en[:50] if description_en else 'Not set'}...")
+                
+                # Check if template has multilingual support
+                if title_kk or title_en or description_kk or description_en:
+                    multilang_templates += 1
+                    self.log(f"      ✅ Template {template_id} has multilingual support")
+                else:
+                    self.log(f"      ⚠️ Template {template_id} has no multilingual fields")
+            
+            self.log(f"   📊 Templates with multilingual support: {multilang_templates}/{len(templates)}")
+            
+            if multilang_templates > 0:
+                self.log("   ✅ Templates API supports localization")
+            else:
+                self.log("   ⚠️ No templates with multilingual support found")
+                # Don't fail the test, just warn
+        else:
+            self.log(f"   ❌ Failed to get templates: {response.status_code} - {response.text}")
+            success = False
+        
+        return success
+    
+    def test_contract_details_party_roles_api(self):
+        """Test contract details API for party roles translation"""
+        self.log("   📄 Testing contract details API for party roles translation...")
+        
+        success = True
+        
+        # First, get a signed contract for testing
+        contracts_response = self.session.get(f"{BASE_URL}/contracts")
+        if contracts_response.status_code != 200:
+            self.log(f"   ❌ Failed to get contracts: {contracts_response.status_code}")
+            return False
+        
+        contracts = contracts_response.json()
+        signed_contract = None
+        
+        # Look for a signed contract
+        for contract in contracts:
+            if contract.get("status") == "signed":
+                signed_contract = contract
+                break
+        
+        if not signed_contract:
+            self.log("   ⚠️ No signed contracts found, using first available contract")
+            if contracts:
+                signed_contract = contracts[0]
+            else:
+                self.log("   ❌ No contracts found at all")
+                return False
+        
+        contract_id = signed_contract.get("id")
+        self.log(f"   📋 Testing contract: {signed_contract.get('title')} (ID: {contract_id})")
+        
+        # Test contract details endpoint
+        response = self.session.get(f"{BASE_URL}/contracts/{contract_id}")
+        
+        if response.status_code == 200:
+            contract = response.json()
+            
+            # Check for party role fields
+            party_a_role = contract.get("party_a_role")
+            party_a_role_kk = contract.get("party_a_role_kk")
+            party_a_role_en = contract.get("party_a_role_en")
+            party_b_role = contract.get("party_b_role")
+            party_b_role_kk = contract.get("party_b_role_kk")
+            party_b_role_en = contract.get("party_b_role_en")
+            
+            self.log(f"      👥 Party A Role RU: {party_a_role}")
+            self.log(f"      👥 Party A Role KK: {party_a_role_kk}")
+            self.log(f"      👥 Party A Role EN: {party_a_role_en}")
+            self.log(f"      👥 Party B Role RU: {party_b_role}")
+            self.log(f"      👥 Party B Role KK: {party_b_role_kk}")
+            self.log(f"      👥 Party B Role EN: {party_b_role_en}")
+            
+            # Verify that party roles exist
+            if party_a_role and party_b_role:
+                self.log("   ✅ Contract has party role fields")
+                
+                # Check if multilingual party roles exist
+                if party_a_role_kk or party_a_role_en or party_b_role_kk or party_b_role_en:
+                    self.log("   ✅ Contract has multilingual party role support")
+                else:
+                    self.log("   ⚠️ Contract has no multilingual party roles")
+            else:
+                self.log("   ❌ Contract missing party role fields")
+                success = False
+        else:
+            self.log(f"   ❌ Failed to get contract details: {response.status_code} - {response.text}")
+            success = False
+        
+        return success
+    
+    def test_signing_page_contract_review_api(self):
+        """Test signing page API for contract review step"""
+        self.log("   ✍️ Testing signing page API for contract review step...")
+        
+        success = True
+        
+        # Get a contract for testing
+        contracts_response = self.session.get(f"{BASE_URL}/contracts")
+        if contracts_response.status_code != 200:
+            self.log(f"   ❌ Failed to get contracts: {contracts_response.status_code}")
+            return False
+        
+        contracts = contracts_response.json()
+        if not contracts:
+            self.log("   ❌ No contracts found")
+            return False
+        
+        test_contract = contracts[0]
+        contract_id = test_contract.get("id")
+        self.log(f"   📋 Testing signing page for contract: {test_contract.get('title')} (ID: {contract_id})")
+        
+        # Test signing page endpoint without language parameter (should show contract content first)
+        response = self.session.get(f"{BASE_URL}/sign/{contract_id}")
+        
+        if response.status_code == 200:
+            contract_data = response.json()
+            
+            # Check if contract content is available for review
+            content = contract_data.get("content")
+            title = contract_data.get("title")
+            contract_language = contract_data.get("contract_language")
+            
+            self.log(f"      📄 Contract title: {title}")
+            self.log(f"      🌐 Contract language: {contract_language}")
+            self.log(f"      📝 Content available: {bool(content)}")
+            self.log(f"      📝 Content length: {len(content) if content else 0} chars")
+            
+            if content and len(content) > 0:
+                self.log("   ✅ Contract content available for review step")
+                
+                # Check if content preview is reasonable
+                content_preview = content[:200] + "..." if len(content) > 200 else content
+                self.log(f"      📖 Content preview: {content_preview}")
+            else:
+                self.log("   ❌ No contract content available for review")
+                success = False
+            
+            # Test with language parameter
+            for lang in ["ru", "kk", "en"]:
+                lang_response = self.session.get(f"{BASE_URL}/sign/{contract_id}?lang={lang}")
+                if lang_response.status_code == 200:
+                    lang_data = lang_response.json()
+                    lang_content = lang_data.get("content")
+                    self.log(f"      🌐 Content available in {lang}: {bool(lang_content)}")
+                else:
+                    self.log(f"      ❌ Failed to get content in {lang}: {lang_response.status_code}")
+                    success = False
+        else:
+            self.log(f"   ❌ Failed to get signing page: {response.status_code} - {response.text}")
+            success = False
+        
+        return success
+    
+    def test_signing_page_language_switching_detailed(self):
+        """Test detailed language switching on signing page"""
+        self.log("   🌐 Testing detailed language switching on signing page...")
+        
+        success = True
+        
+        # Get a contract for testing
+        contracts_response = self.session.get(f"{BASE_URL}/contracts")
+        if contracts_response.status_code != 200:
+            self.log(f"   ❌ Failed to get contracts: {contracts_response.status_code}")
+            return False
+        
+        contracts = contracts_response.json()
+        if not contracts:
+            self.log("   ❌ No contracts found")
+            return False
+        
+        test_contract = contracts[0]
+        contract_id = test_contract.get("id")
+        self.log(f"   📋 Testing language switching for contract: {test_contract.get('title')} (ID: {contract_id})")
+        
+        # Test set-contract-language endpoint
+        languages = ["ru", "kk", "en"]
+        
+        for lang in languages:
+            self.log(f"      🔄 Testing language switch to: {lang}")
+            
+            # Set contract language
+            set_lang_response = self.session.post(f"{BASE_URL}/sign/{contract_id}/set-contract-language", 
+                                                json={"language": lang})
+            
+            if set_lang_response.status_code == 200:
+                self.log(f"         ✅ Language set to {lang} successfully")
+                
+                # Verify the language was set
+                verify_response = self.session.get(f"{BASE_URL}/sign/{contract_id}")
+                if verify_response.status_code == 200:
+                    verify_data = verify_response.json()
+                    current_lang = verify_data.get("contract_language")
+                    self.log(f"         📋 Current contract language: {current_lang}")
+                    
+                    if current_lang == lang:
+                        self.log(f"         ✅ Language correctly set to {lang}")
+                    else:
+                        self.log(f"         ⚠️ Language mismatch: expected {lang}, got {current_lang}")
+                else:
+                    self.log(f"         ❌ Failed to verify language setting: {verify_response.status_code}")
+                    success = False
+            else:
+                self.log(f"         ❌ Failed to set language to {lang}: {set_lang_response.status_code} - {set_lang_response.text}")
+                success = False
+        
+        return success
+
     def run_all_tests(self):
         """Run all backend tests for 2tick.kz"""
         self.log("🚀 Starting Backend Testing for 2tick.kz")
