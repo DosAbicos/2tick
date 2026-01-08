@@ -5294,14 +5294,20 @@ class BackendTester:
         
         all_passed = True
         
-        # PRIORITY TEST: Specific contract PDF signature verification (from review request)
+        # PRIORITY TEST 1: Review Request Features (from current review request)
+        self.log("\n🎯 PRIORITY TEST 1: Review Request Features")
+        review_request_passed = self.test_review_request_features()
+        all_passed = all_passed and review_request_passed
+        
+        # PRIORITY TEST 2: Specific contract PDF signature verification (from previous review request)
         specific_test_passed = self.test_specific_contract_pdf_signature_verification()
         all_passed = all_passed and specific_test_passed
         
-        # Login as admin first for other tests
-        if not self.login_as_admin():
-            self.log("❌ Cannot proceed without admin login for remaining tests")
-            return specific_test_passed  # Return result of priority test only
+        # Login as admin first for other tests (if not already logged in)
+        if not self.token:
+            if not self.login_as_admin():
+                self.log("❌ Cannot proceed without admin login for remaining tests")
+                return review_request_passed and specific_test_passed  # Return result of priority tests only
         
         # NEW CRITICAL TEST: Bilingual/Trilingual PDF Generation and Placeholder Separation
         bilingual_test_passed = self.test_bilingual_trilingual_pdf_generation()
