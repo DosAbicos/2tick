@@ -191,17 +191,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Обработка всех сообщений"""
     print(f"📩 Message from {update.effective_user.username}: {update.message.text}")
 
-async def copy_code_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Обработка нажатия на кнопку Copy Code"""
-    query = update.callback_query
-    
-    # Extract the code from callback_data
-    code = query.data.replace("copy_", "")
-    
-    # Show popup alert with the code (user can copy from alert)
-    await query.answer(text=f"📋 {code}", show_alert=True)
-    print(f"📋 User viewed code in popup: {code}")
-
 def main():
     """Запуск бота"""
     print("🤖 Starting Telegram Bot for Signify KZ...")
@@ -211,7 +200,6 @@ def main():
     
     # Handlers
     application.add_handler(CommandHandler("start", start))
-    application.add_handler(CallbackQueryHandler(copy_code_callback, pattern="^copy_"))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
     
     print("✅ Bot is running. Press Ctrl+C to stop.")
