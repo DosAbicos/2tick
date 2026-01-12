@@ -522,12 +522,12 @@ const DashboardPage = () => {
                 {contracts.map((contract) => (
                   <div 
                     key={contract.id} 
-                    className="minimal-card p-4 hover:shadow-lg transition-all"
+                    className="minimal-card p-4"
                   >
                     {/* Верхняя строка: код и статус */}
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-sm">
+                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-sm flex-shrink-0">
                           <FileText className="w-4 h-4 text-white" />
                         </div>
                         <code className="text-xs font-mono text-blue-600 font-semibold">
@@ -545,35 +545,34 @@ const DashboardPage = () => {
                     {/* Нижняя строка: дата и действия */}
                     <div className="flex items-center justify-between pt-3 border-t border-gray-100">
                       <div className="flex items-center gap-1.5 text-gray-400">
-                        <Clock className="w-3.5 h-3.5" />
+                        <Clock className="w-3.5 h-3.5 flex-shrink-0" />
                         <span className="text-xs">
                           {format(new Date(contract.created_at), 'dd.MM.yyyy')}
                         </span>
                       </div>
                       
-                      {/* Кнопки действий */}
-                      <div className="flex items-center gap-2">
+                      {/* Кнопки действий - inline-flex для горизонтального расположения */}
+                      <div className="inline-flex items-center gap-2 flex-shrink-0">
                         <button
                           onClick={() => navigate(`/contracts/${contract.id}`)}
-                          className="px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors flex items-center gap-1.5"
+                          className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
                         >
-                          <Eye className="w-3.5 h-3.5" />
-                          <span className="hidden xs:inline">{t('common.view')}</span>
+                          <Eye className="w-3.5 h-3.5 flex-shrink-0" />
                         </button>
                         {contract.status === 'signed' && (
                           <button
                             onClick={() => window.open(`${API}/contracts/${contract.id}/download-pdf`, '_blank')}
-                            className="p-1.5 text-green-600 bg-green-50 hover:bg-green-100 rounded-lg transition-colors"
+                            className="inline-flex items-center p-1.5 text-green-600 bg-green-50 hover:bg-green-100 rounded-lg transition-colors"
                           >
-                            <Download className="w-4 h-4" />
+                            <Download className="w-4 h-4 flex-shrink-0" />
                           </button>
                         )}
                         {contract.status === 'draft' && (
                           <button
                             onClick={() => handleDeleteContract(contract.id)}
-                            className="p-1.5 text-red-500 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
+                            className="inline-flex items-center p-1.5 text-red-500 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="w-4 h-4 flex-shrink-0" />
                           </button>
                         )}
                       </div>
