@@ -36,7 +36,7 @@ import socket
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://localize-ui-1.preview.emergentagent.com/api"
+BASE_URL = "https://docsphere-global.preview.emergentagent.com/api"
 ADMIN_EMAIL = "asl@asl.kz"
 ADMIN_PASSWORD = "142314231423"
 
