@@ -518,53 +518,66 @@ const DashboardPage = () => {
               </div>
 
               {/* Мобильные карточки */}
-              <div className="lg:hidden divide-y divide-gray-100">
-                {contracts.map((contract) => (
-                  <div key={contract.id} className="p-4 hover:bg-gray-50 transition-colors">
-                    {/* Верхняя часть: название и статус */}
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="flex-1 min-w-0 pr-3">
-                        <h3 className="text-sm font-medium text-gray-900 mb-1 truncate">{contract.title}</h3>
-                        <code className="text-xs font-mono text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
+              <div className="lg:hidden">
+                {contracts.map((contract, index) => (
+                  <div 
+                    key={contract.id} 
+                    className={`p-4 ${index !== contracts.length - 1 ? 'border-b border-gray-100' : ''}`}
+                  >
+                    {/* Карточка договора */}
+                    <div className="bg-gradient-to-r from-gray-50 to-white rounded-xl p-4 border border-gray-100 shadow-sm">
+                      {/* Верхняя строка: ID и статус */}
+                      <div className="flex items-center justify-between mb-3">
+                        <code className="text-xs font-mono text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg font-semibold">
                           {contract.contract_code || 'N/A'}
                         </code>
-                      </div>
-                      <div className="flex-shrink-0">
                         {getStatusBadge(contract.status)}
                       </div>
-                    </div>
-                    
-                    {/* Нижняя часть: дата и кнопки */}
-                    <div className="flex items-center justify-between mt-3 pt-2 border-t border-gray-100">
-                      <p className="text-xs text-gray-500">
-                        {format(new Date(contract.created_at), 'dd.MM.yyyy')}
-                      </p>
-                      <div className="flex items-center gap-1">
-                        <button
-                          onClick={() => navigate(`/contracts/${contract.id}`)}
-                          className="p-2.5 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
-                          title={t('dashboard.view')}
-                        >
-                          <Eye className="w-4 h-4" />
-                        </button>
-                        {contract.status === 'signed' && (
+                      
+                      {/* Название договора */}
+                      <h3 className="text-sm font-semibold text-gray-900 mb-3 line-clamp-2">
+                        {contract.title}
+                      </h3>
+                      
+                      {/* Нижняя строка: дата и действия */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1.5 text-gray-500">
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                          <span className="text-xs font-medium">
+                            {format(new Date(contract.created_at), 'dd.MM.yyyy')}
+                          </span>
+                        </div>
+                        
+                        {/* Кнопки действий */}
+                        <div className="flex items-center gap-2">
                           <button
-                            onClick={() => window.open(`${API}/contracts/${contract.id}/download-pdf`, '_blank')}
-                            className="p-2.5 text-green-600 bg-green-50 hover:bg-green-100 rounded-lg transition-colors"
-                            title={t('dashboard.download')}
+                            onClick={() => navigate(`/contracts/${contract.id}`)}
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
                           >
-                            <Download className="w-4 h-4" />
+                            <Eye className="w-3.5 h-3.5" />
+                            <span>{t('dashboard.view')}</span>
                           </button>
-                        )}
-                        {contract.status === 'draft' && (
-                          <button
-                            onClick={() => handleDeleteContract(contract.id)}
-                            className="p-2.5 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
-                            title={t('dashboard.delete')}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        )}
+                          {contract.status === 'signed' && (
+                            <button
+                              onClick={() => window.open(`${API}/contracts/${contract.id}/download-pdf`, '_blank')}
+                              className="p-1.5 text-green-600 bg-green-50 hover:bg-green-100 rounded-lg transition-colors"
+                              title={t('dashboard.download')}
+                            >
+                              <Download className="w-4 h-4" />
+                            </button>
+                          )}
+                          {contract.status === 'draft' && (
+                            <button
+                              onClick={() => handleDeleteContract(contract.id)}
+                              className="p-1.5 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
+                              title={t('dashboard.delete')}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
