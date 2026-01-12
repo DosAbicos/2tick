@@ -2053,6 +2053,7 @@ const resources = {
       "signing.finalReviewDescription": "Please review all details carefully before signing",
       "signing.clientDocument": "Client ID document",
       "signing.allCorrectSign": "Everything is correct, sign the contract",
+      "signing.confirmed": "Confirmed",
       "signing.confirmSignature": "Confirm signature",
       "signing.selectVerificationMethod": "Select a convenient verification method",
       "signing.sms": "SMS",
