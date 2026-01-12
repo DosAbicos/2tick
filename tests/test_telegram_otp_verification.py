@@ -47,9 +47,10 @@ class TestTelegramOTPVerificationFlow:
     
     def test_api_health_check(self, api_client):
         """Test API is accessible"""
-        response = api_client.get(f"{BASE_URL}/api/")
+        # Use templates endpoint as health check since /api/ doesn't exist
+        response = api_client.get(f"{BASE_URL}/api/templates")
         assert response.status_code == 200
-        print(f"✅ API health check passed: {response.json()}")
+        print(f"✅ API health check passed - templates endpoint accessible")
     
     @pytest.mark.asyncio
     async def test_verification_collection_exists(self, mongo_client):
