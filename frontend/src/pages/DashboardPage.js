@@ -521,33 +521,37 @@ const DashboardPage = () => {
               <div className="lg:hidden divide-y divide-gray-100">
                 {contracts.map((contract) => (
                   <div key={contract.id} className="p-4 hover:bg-gray-50 transition-colors">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex-1 min-w-0">
+                    {/* Верхняя часть: название и статус */}
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1 min-w-0 pr-3">
                         <h3 className="text-sm font-medium text-gray-900 mb-1 truncate">{contract.title}</h3>
                         <code className="text-xs font-mono text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
                           {contract.contract_code || 'N/A'}
                         </code>
                       </div>
-                      <div className="ml-2">
+                      <div className="flex-shrink-0">
                         {getStatusBadge(contract.status)}
                       </div>
                     </div>
                     
-                    <div className="flex items-center justify-between">
+                    {/* Нижняя часть: дата и кнопки */}
+                    <div className="flex items-center justify-between mt-3 pt-2 border-t border-gray-100">
                       <p className="text-xs text-gray-500">
                         {format(new Date(contract.created_at), 'dd.MM.yyyy')}
                       </p>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1">
                         <button
                           onClick={() => navigate(`/contracts/${contract.id}`)}
-                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          className="p-2.5 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                          title={t('dashboard.view')}
                         >
                           <Eye className="w-4 h-4" />
                         </button>
                         {contract.status === 'signed' && (
                           <button
                             onClick={() => window.open(`${API}/contracts/${contract.id}/download-pdf`, '_blank')}
-                            className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                            className="p-2.5 text-green-600 bg-green-50 hover:bg-green-100 rounded-lg transition-colors"
+                            title={t('dashboard.download')}
                           >
                             <Download className="w-4 h-4" />
                           </button>
@@ -555,7 +559,8 @@ const DashboardPage = () => {
                         {contract.status === 'draft' && (
                           <button
                             onClick={() => handleDeleteContract(contract.id)}
-                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            className="p-2.5 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
+                            title={t('dashboard.delete')}
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
