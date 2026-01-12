@@ -109,13 +109,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await db.verifications.insert_one(verification_data)
                 print(f"🗑️ Deleted old verifications for registration {registration_id}")
                 
-                # Send the code
-                if is_first_time:
-                    message = f"Your code is {new_otp_code}"
-                else:
-                    message = f"Your code is {new_otp_code}"
+                # Send the code with inline button
+                message = f"Your code is `{new_otp_code}`"
+                keyboard = [[InlineKeyboardButton("📋 Copy Code", callback_data=f"copy_{new_otp_code}")]]
+                reply_markup = InlineKeyboardMarkup(keyboard)
                 
-                await update.message.reply_text(message, parse_mode='Markdown')
+                await update.message.reply_text(message, parse_mode='Markdown', reply_markup=reply_markup)
                 print(f"✅ Generated and sent NEW OTP {new_otp_code} to {username} for registration {registration_id} (Request #{existing_codes_count + 1})")
                 
             else:
