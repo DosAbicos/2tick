@@ -848,7 +848,7 @@ const ContractDetailsPage = () => {
                       )}
                       <div>
                         <span className="text-neutral-500">{t('contractDetails.signingTime')}:</span>
-                        <p className="font-medium">{signature.signed_at ? format(new Date(signature.signed_at), 'dd MMM yyyy HH:mm') : 'N/A'}</p>
+                        <p className="font-medium">{signature.signed_at ? formatLocalizedDate(signature.signed_at) : 'N/A'}</p>
                       </div>
                       <div>
                         <span className="text-neutral-500">{t('contractDetails.contractLanguage')}:</span>
