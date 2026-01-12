@@ -36,11 +36,41 @@ const ContractDetailsPage = () => {
   const [sendingContract, setSendingContract] = useState(false);
   const [approving, setApproving] = useState(false);
   const [justCopied, setJustCopied] = useState(false);
+  const [selectedContentLang, setSelectedContentLang] = useState('ru'); // Language for contract content display
   const token = localStorage.getItem('token');
   
   // Check if readonly mode (for admin)
   const searchParams = new URLSearchParams(window.location.search);
   const isReadOnly = searchParams.get('readonly') === 'true';
+
+  // Get available content languages based on signing language
+  const getAvailableContentLanguages = () => {
+    if (!contract) return ['ru', 'kk'];
+    const signingLang = contract.contract_language || contract.signing_language || 'ru';
+    
+    if (signingLang === 'en') {
+      return ['ru', 'kk', 'en']; // English signing: show all 3 languages
+    }
+    return ['ru', 'kk']; // Russian or Kazakh signing: show only RU and KK
+  };
+
+  // Get content for selected language
+  const getContentForLanguage = (lang) => {
+    if (!contract) return '';
+    if (lang === 'kk') return contract.content_kk || contract.content || '';
+    if (lang === 'en') return contract.content_en || contract.content || '';
+    return contract.content || ''; // Default to Russian
+  };
+
+  // Get language display name
+  const getLanguageDisplayName = (lang) => {
+    const names = {
+      ru: { ru: 'Русский', kk: 'Орысша', en: 'Russian' },
+      kk: { ru: 'Казахский', kk: 'Қазақша', en: 'Kazakh' },
+      en: { ru: 'Английский', kk: 'Ағылшынша', en: 'English' }
+    };
+    return names[lang]?.[i18n.language] || names[lang]?.ru || lang.toUpperCase();
+  };
 
   // Function to get party role based on current language
   const getPartyRole = (type) => {
