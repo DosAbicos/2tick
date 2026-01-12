@@ -755,7 +755,7 @@ const ContractDetailsPage = () => {
                           {contract.approved_at && (
                             <div>
                               <span className="text-neutral-500">{t('contractDetails.approvalTime')}:</span>
-                              <p className="font-medium">{format(new Date(contract.approved_at), 'dd MMM yyyy HH:mm')}</p>
+                              <p className="font-medium">{formatLocalizedDate(contract.approved_at)}</p>
                             </div>
                           )}
                           <div>
