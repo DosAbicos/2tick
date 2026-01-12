@@ -424,11 +424,11 @@ const ContractDetailsPage = () => {
                   )}
                   {getStatusBadge(contract.status)}
                   <span className="text-xs sm:text-sm text-gray-500 hidden sm:inline">
-                    {format(new Date(contract.updated_at), 'dd MMM yyyy HH:mm')}
+                    {formatLocalizedDate(contract.updated_at)}
                   </span>
                 </div>
                 <span className="text-xs text-gray-500 mt-2 block sm:hidden">
-                  {format(new Date(contract.updated_at), 'dd MMM yyyy HH:mm')}
+                  {formatLocalizedDate(contract.updated_at)}
                 </span>
               </div>
               
