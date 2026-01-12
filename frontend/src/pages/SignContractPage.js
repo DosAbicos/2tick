@@ -1153,7 +1153,7 @@ const SignContractPage = () => {
                     className="flex-1 py-3 px-4 text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/20"
                     data-testid="save-signer-info-button"
                   >
-                    {t('signing.saveAndContinue')} →
+                    {t('signing.saveAndContinue')}
                   </button>
                 </div>
               </motion.div>
