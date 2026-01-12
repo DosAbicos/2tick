@@ -415,7 +415,7 @@ const ContractDetailsPage = () => {
             )}
             <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4 lg:gap-6">
               <div className="flex-1">
-                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-3 break-words" data-testid="contract-title">{contract.title}</h1>
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-3 break-words" data-testid="contract-title">{getContractTitle()}</h1>
                 <div className="flex gap-2 sm:gap-3 items-center flex-wrap">
                   {contract.contract_code && (
                     <div className="px-3 sm:px-4 py-1.5 sm:py-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-xs sm:text-sm font-bold rounded-lg sm:rounded-xl shadow-lg shadow-blue-500/20">
