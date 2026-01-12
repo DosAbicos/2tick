@@ -58,12 +58,40 @@ const SignContractPage = () => {
   const [signatureHash, setSignatureHash] = useState('');
   
   // Language states
-  const { i18n } = useTranslation();
   const [contractLanguage, setContractLanguage] = useState(null); // ФИКСИРОВАННЫЙ язык договора
   const [contractLanguageLocked, setContractLanguageLocked] = useState(false);
   const [showLanguageSelector, setShowLanguageSelector] = useState(false);
   const [showEnglishWarning, setShowEnglishWarning] = useState(false);
   const [englishDisclaimerAccepted, setEnglishDisclaimerAccepted] = useState(false);
+
+  // Get localized contract title
+  const getLocalizedTitle = () => {
+    if (!contract) return '';
+    const lang = i18n.language;
+    
+    // If contract has localized titles, use them
+    if (lang === 'kk' && contract.title_kk) return contract.title_kk;
+    if (lang === 'en' && contract.title_en) return contract.title_en;
+    
+    // Otherwise, try to translate the title pattern "Договор № XXX от YYYY-MM-DD"
+    const title = contract.title || '';
+    const contractMatch = title.match(/^Договор\s*№?\s*(\S+)\s*от\s*(\d{4}-\d{2}-\d{2})$/);
+    
+    if (contractMatch) {
+      const contractNum = contractMatch[1];
+      const dateStr = contractMatch[2];
+      // Format date as dd-mm-yyyy
+      const [year, month, day] = dateStr.split('-');
+      const formattedDate = `${day}-${month}-${year}`;
+      
+      // Return translated title
+      if (lang === 'kk') return `Келісімшарт № ${contractNum} ${formattedDate} күні`;
+      if (lang === 'en') return `Contract № ${contractNum} dated ${formattedDate}`;
+      return `Договор № ${contractNum} от ${formattedDate}`;
+    }
+    
+    return title;
+  };
   
   // Check if contract language is already set
   useEffect(() => {
