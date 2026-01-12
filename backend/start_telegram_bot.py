@@ -66,6 +66,34 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 registration_id = link_param[4:]  # Remove "reg_" prefix
                 print(f"📝 Registration verification: registration_id={registration_id}")
                 
+                # Get language from registration
+                registration = await db.registrations.find_one({"id": registration_id})
+                language = 'ru'
+                if registration and registration.get('language'):
+                    language = registration.get('language', 'ru').lower()
+                
+                if language not in ['ru', 'kk', 'en']:
+                    language = 'ru'
+                
+                # Translations for registration
+                translations = {
+                    'ru': {
+                        'welcome': "✅ *Добро пожаловать в Signify KZ!*\n\nПодтверждение регистрации через Telegram.\n\nСейчас я отправлю вам код...",
+                        'message': 'Ваш код',
+                        'button': '📋 Скопировать код'
+                    },
+                    'kk': {
+                        'welcome': "✅ *Signify KZ-ге қош келдіңіз!*\n\nTelegram арқылы тіркелуді растау.\n\nМен сізге кодты жіберемін...",
+                        'message': 'Сіздің кодыңыз',
+                        'button': '📋 Кодты көшіру'
+                    },
+                    'en': {
+                        'welcome': "✅ *Welcome to Signify KZ!*\n\nRegistration confirmation via Telegram.\n\nI will send you a code now...",
+                        'message': 'Your code is',
+                        'button': '📋 Copy Code'
+                    }
+                }
+                
                 # Check if user has received codes for this registration before
                 existing_codes_count = await db.verifications.count_documents({
                     "registration_id": registration_id,
@@ -74,14 +102,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 
                 is_first_time = (existing_codes_count == 0)
                 
-                print(f"📊 Registration {registration_id}: existing codes = {existing_codes_count}, is_first_time = {is_first_time}")
+                print(f"📊 Registration {registration_id}: existing codes = {existing_codes_count}, is_first_time = {is_first_time}, language = {language}")
                 
                 # Send welcome message on first time only
                 if is_first_time:
                     await update.message.reply_text(
-                        "✅ *Добро пожаловать в Signify KZ!*\n\n"
-                        "Подтверждение регистрации через Telegram.\n\n"
-                        "Сейчас я отправлю вам код...",
+                        translations[language]['welcome'],
                         parse_mode='Markdown'
                     )
                     await asyncio.sleep(1)
@@ -109,9 +135,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await db.verifications.insert_one(verification_data)
                 print(f"🗑️ Deleted old verifications for registration {registration_id}")
                 
-                # Send the code with inline button for copying
-                message = f"Your code is `{new_otp_code}`"
-                keyboard = [[InlineKeyboardButton("📋 Copy Code", copy_text=CopyTextButton(text=new_otp_code))]]
+                # Send the code with inline button for copying (localized)
+                msg_text = translations[language]['message']
+                btn_text = translations[language]['button']
+                
+                message = f"{msg_text} `{new_otp_code}`"
+                keyboard = [[InlineKeyboardButton(btn_text, copy_text=CopyTextButton(text=new_otp_code))]]
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 
                 await update.message.reply_text(message, parse_mode='Markdown', reply_markup=reply_markup)
