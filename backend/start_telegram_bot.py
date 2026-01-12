@@ -193,8 +193,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 def main():
     """Запуск бота"""
-    print("🤖 Starting Telegram Bot for Signify KZ...")
-    print(f"🔑 Token: {TELEGRAM_BOT_TOKEN[:20]}...")
+    print("🤖 Starting Telegram Bot for Signify KZ...", flush=True)
+    print(f"🔑 Token: {TELEGRAM_BOT_TOKEN[:20]}...", flush=True)
     
     application = Application.builder().token(TELEGRAM_BOT_TOKEN).build()
     
@@ -202,8 +202,8 @@ def main():
     application.add_handler(CommandHandler("start", start))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
     
-    print("✅ Bot is running. Press Ctrl+C to stop.")
-    application.run_polling(allowed_updates=Update.ALL_TYPES)
+    print("✅ Bot is running. Press Ctrl+C to stop.", flush=True)
+    application.run_polling(allowed_updates=Update.ALL_TYPES, drop_pending_updates=True)
 
 if __name__ == '__main__':
     main()
