@@ -18,6 +18,7 @@ import Header from '@/components/Header';
 import Loader from '@/components/Loader';
 import { ArrowLeft, Send, Download, Trash2, CheckCircle, Edit3, Copy, CheckCheck } from 'lucide-react';
 import { format } from 'date-fns';
+import { ru, kk, enUS } from 'date-fns/locale';
 import '../styles/neumorphism.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
