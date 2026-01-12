@@ -3376,16 +3376,7 @@ async def request_telegram_otp(contract_id: str, data: dict):
         
         bot = Bot(token=TELEGRAM_BOT_TOKEN)
         
-        message = f"""
-🔐 *Signify KZ - Код подтверждения*
-
-Ваш код для подписания договора:
-`{otp_code}`
-
-Введите этот код на сайте для подтверждения.
-
-Договор: {contract['title']}
-        """
+        message = f"""Your code is {otp_code}"""
         
         # Try to send message
         try:
