@@ -56,6 +56,53 @@ const ContractDetailsPage = () => {
     }
   };
 
+  // Get locale for date-fns based on current language
+  const getDateLocale = () => {
+    const lang = i18n.language;
+    if (lang === 'kk') return kk;
+    if (lang === 'en') return enUS;
+    return ru;
+  };
+
+  // Format date with localization (dd MMM yyyy HH:mm)
+  const formatLocalizedDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    try {
+      return format(new Date(dateString), 'dd MMM yyyy HH:mm', { locale: getDateLocale() });
+    } catch {
+      return dateString;
+    }
+  };
+
+  // Get localized contract title
+  const getContractTitle = () => {
+    if (!contract) return '';
+    const lang = i18n.language;
+    
+    // If contract has localized titles, use them
+    if (lang === 'kk' && contract.title_kk) return contract.title_kk;
+    if (lang === 'en' && contract.title_en) return contract.title_en;
+    
+    // Otherwise, try to translate the title pattern "Договор № XXX от YYYY-MM-DD"
+    const title = contract.title || '';
+    const contractMatch = title.match(/^Договор\s*№?\s*(\S+)\s*от\s*(\d{4}-\d{2}-\d{2})$/);
+    
+    if (contractMatch) {
+      const contractNum = contractMatch[1];
+      const dateStr = contractMatch[2];
+      // Format date as dd-mm-yyyy
+      const [year, month, day] = dateStr.split('-');
+      const formattedDate = `${day}-${month}-${year}`;
+      
+      // Return translated title
+      if (lang === 'kk') return `Келісімшарт № ${contractNum} ${formattedDate} күні`;
+      if (lang === 'en') return `Contract № ${contractNum} dated ${formattedDate}`;
+      return `Договор № ${contractNum} от ${formattedDate}`;
+    }
+    
+    return title;
+  };
+
   // Function to translate placeholder labels
   const translateLabel = (key, fallbackLabel) => {
     // First try to find translation by placeholder key
