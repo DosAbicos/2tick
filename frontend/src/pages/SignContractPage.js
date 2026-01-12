@@ -1403,7 +1403,7 @@ const SignContractPage = () => {
                     }`}
                     data-testid="sign-button"
                   >
-                    {t('signing.allCorrectSign')} →
+                    {t('signing.confirmed')}
                   </button>
                 </div>
               </motion.div>
