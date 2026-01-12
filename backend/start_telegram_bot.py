@@ -5,8 +5,8 @@ Telegram Bot для Signify KZ - запуск
 """
 
 import asyncio
-from telegram import Bot, Update
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
+from telegram import Bot, Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import Application, CommandHandler, MessageHandler, CallbackQueryHandler, filters, ContextTypes
 import os
 import json
 from dotenv import load_dotenv
