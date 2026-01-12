@@ -522,56 +522,92 @@ const DashboardPage = () => {
                 {contracts.map((contract, index) => (
                   <div 
                     key={contract.id} 
-                    className={`p-4 ${index !== contracts.length - 1 ? 'border-b border-gray-100' : ''}`}
+                    className={`p-3 ${index !== contracts.length - 1 ? 'border-b border-gray-100' : ''}`}
                   >
                     {/* Карточка договора */}
-                    <div className="bg-gradient-to-r from-gray-50 to-white rounded-xl p-4 border border-gray-100 shadow-sm">
+                    <div className="bg-white rounded-xl p-3 border border-gray-200 shadow-sm">
                       {/* Верхняя строка: ID и статус */}
-                      <div className="flex items-center justify-between mb-3">
-                        <code className="text-xs font-mono text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg font-semibold">
+                      <div className="flex items-center justify-between mb-2">
+                        <code className="text-xs font-mono text-blue-600 bg-blue-50 px-2 py-0.5 rounded font-semibold">
                           {contract.contract_code || 'N/A'}
                         </code>
                         {getStatusBadge(contract.status)}
                       </div>
                       
                       {/* Название договора */}
-                      <h3 className="text-sm font-semibold text-gray-900 mb-3 line-clamp-2">
+                      <h3 className="text-sm font-semibold text-gray-900 mb-2 line-clamp-1">
                         {contract.title}
                       </h3>
                       
-                      {/* Нижняя строка: дата и действия */}
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1.5 text-gray-500">
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      {/* Нижняя строка: дата и действия в одну линию */}
+                      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#6b7280' }}>
+                          <svg style={{ width: '14px', height: '14px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                           </svg>
-                          <span className="text-xs font-medium">
+                          <span style={{ fontSize: '12px', fontWeight: '500' }}>
                             {format(new Date(contract.created_at), 'dd.MM.yyyy')}
                           </span>
                         </div>
                         
-                        {/* Кнопки действий */}
-                        <div className="flex items-center gap-2">
+                        {/* Кнопки действий в горизонтальную линию */}
+                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px' }}>
                           <button
                             onClick={() => navigate(`/contracts/${contract.id}`)}
-                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-lg transition-colors shadow-sm"
+                            style={{ 
+                              padding: '6px 12px', 
+                              fontSize: '12px', 
+                              fontWeight: '500',
+                              color: 'white',
+                              backgroundColor: '#3b82f6',
+                              borderRadius: '6px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                              border: 'none',
+                              cursor: 'pointer'
+                            }}
                           >
-                            <Eye className="w-3.5 h-3.5" />
+                            <Eye style={{ width: '14px', height: '14px' }} />
                           </button>
                           {contract.status === 'signed' && (
                             <button
                               onClick={() => window.open(`${API}/contracts/${contract.id}/download-pdf`, '_blank')}
-                              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-green-500 hover:bg-green-600 rounded-lg transition-colors shadow-sm"
+                              style={{ 
+                                padding: '6px 12px', 
+                                fontSize: '12px', 
+                                fontWeight: '500',
+                                color: 'white',
+                                backgroundColor: '#22c55e',
+                                borderRadius: '6px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                border: 'none',
+                                cursor: 'pointer'
+                              }}
                             >
-                              <Download className="w-3.5 h-3.5" />
+                              <Download style={{ width: '14px', height: '14px' }} />
                             </button>
                           )}
                           {contract.status === 'draft' && (
                             <button
                               onClick={() => handleDeleteContract(contract.id)}
-                              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors shadow-sm"
+                              style={{ 
+                                padding: '6px 12px', 
+                                fontSize: '12px', 
+                                fontWeight: '500',
+                                color: 'white',
+                                backgroundColor: '#ef4444',
+                                borderRadius: '6px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                border: 'none',
+                                cursor: 'pointer'
+                              }}
                             >
-                              <Trash2 className="w-3.5 h-3.5" />
+                              <Trash2 style={{ width: '14px', height: '14px' }} />
                             </button>
                           )}
                         </div>
