@@ -3371,12 +3371,14 @@ async def request_telegram_otp(contract_id: str, data: dict):
                 "mock_otp": otp_code
             }
         
-        from telegram import Bot
+        from telegram import Bot, InlineKeyboardButton, InlineKeyboardMarkup, CopyTextButton
         import asyncio
         
         bot = Bot(token=TELEGRAM_BOT_TOKEN)
         
-        message = f"""Your code is {otp_code}"""
+        message = f"Your code is `{otp_code}`"
+        keyboard = [[InlineKeyboardButton("📋 Copy Code", copy_text=CopyTextButton(text=otp_code))]]
+        reply_markup = InlineKeyboardMarkup(keyboard)
         
         # Try to send message
         try:
@@ -3394,11 +3396,12 @@ async def request_telegram_otp(contract_id: str, data: dict):
                 logging.warning(f"Could not load chat IDs: {str(e)}")
             
             if chat_id:
-                # Use stored chat_id
+                # Use stored chat_id with Copy button
                 await bot.send_message(
                     chat_id=chat_id,
                     text=message,
-                    parse_mode='Markdown'
+                    parse_mode='Markdown',
+                    reply_markup=reply_markup
                 )
                 logging.info(f"✅ Telegram message sent to {telegram_username} (chat_id: {chat_id})")
             else:
@@ -3406,7 +3409,8 @@ async def request_telegram_otp(contract_id: str, data: dict):
                 await bot.send_message(
                     chat_id=f"@{telegram_username}",
                     text=message,
-                    parse_mode='Markdown'
+                    parse_mode='Markdown',
+                    reply_markup=reply_markup
                 )
                 logging.info(f"✅ Telegram message sent to @{telegram_username}")
                 
