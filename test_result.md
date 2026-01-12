@@ -247,6 +247,18 @@ test_plan:
         agent: "testing"
         comment: "🎯 REVIEW REQUEST FEATURES BACKEND TESTING COMPLETED SUCCESSFULLY! Comprehensive testing of all backend APIs supporting the specific features mentioned in the review request: 1) NOTIFICATION POPUP FOR USERS ✅: GET /api/notifications/active endpoint functional, returns proper data structure for popup display (notification object with title/message/is_active fields), user viewed_notifications tracking working correctly. 2) CREATECONTRACTPAGE BUTTONS TRANSLATION ✅: GET /api/templates endpoint supports multilingual template fields (title_kk, title_en, description_kk, description_en), backend infrastructure ready for button translation support. 3) CONTRACTDETAILSPAGE PARTY ROLES TRANSLATION ✅: GET /api/contracts/{id} endpoint returns multilingual party role fields (party_a_role, party_a_role_kk, party_a_role_en, party_b_role, party_b_role_kk, party_b_role_en), fully supports translation of 'Сторона А' and 'Сторона Б' labels. 4) SIGNCONTRACTPAGE CONTRACT REVIEW STEP ✅: GET /api/sign/{id} endpoint provides contract content for review step, supports language parameter (?lang=ru/kk/en), content available for first-time users to review before form filling. 5) TEMPLATE TITLE/DESCRIPTION LOCALIZATION ✅: Templates API supports multilingual fields, backend ready for /templates page localization. 6) LANGUAGE SWITCHING ON SIGNING PAGE ✅: POST /api/sign/{id}/set-contract-language endpoint working correctly, handles one-time language setting as designed, supports frontend language selection functionality. 7) ADMIN AUTHENTICATION ✅: Successfully authenticated with specified credentials (asl@asl.kz / 142314231423). ALL BACKEND APIS SUPPORTING THE REVIEW REQUEST FEATURES ARE FULLY FUNCTIONAL AND READY FOR FRONTEND INTEGRATION!"
 
+  - task: "Telegram Bot Message Format 'Your code is XXXX'"
+    implemented: true
+    working: true
+    file: "backend/start_telegram_bot.py, backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "🤖 TELEGRAM BOT MESSAGE FORMAT TESTING COMPLETED SUCCESSFULLY! Comprehensive verification of Telegram bot message format change from old emoji format to simple 'Your code is XXXX': 1) FILE VERIFICATION ✅: start_telegram_bot.py correctly updated with new format 'Your code is {code}' found on lines 114, 116, 166, 168. Old emoji format '🔐 *Новый код:*', '`{code}`', '⚠️ Действителен 10 минут' completely removed. 2) SERVER.PY CONSISTENCY ✅: server.py line 3379 uses correct format 'Your code is {otp_code}' for Telegram messages. 3) FUNCTIONALITY TESTING ✅: Created test contract afde6187-de3c-486d-a864-1d384097040d, Telegram deep link generation working (https://t.me/twotick_bot?start=contract_id), Telegram OTP request successful with correct response format. 4) REGISTRATION FLOW ✅: Registration Telegram deep link format correct (start=reg_{registration_id}), both contract verification and registration use consistent 'Your code is XXXX' format. 5) BOT CONFIGURATION ✅: Bot username @twotick_bot correctly configured, deep link formats working for both registration and contract verification flows. ALL TELEGRAM MESSAGE FORMAT REQUIREMENTS SATISFIED - old emoji format completely replaced with simple 'Your code is XXXX' format across all flows."
+
   - task: "Template Title Language Switching on CreateContractPage"
     implemented: true
     working: true
