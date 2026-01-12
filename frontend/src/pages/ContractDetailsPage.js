@@ -679,7 +679,36 @@ const ContractDetailsPage = () => {
             
             {/* Content */}
             <div className="minimal-card p-4 sm:p-6">
-              <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-gray-900">{t('contractDetails.content')}</h3>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900">{t('contractDetails.content')}</h3>
+                
+                {/* Language Switcher for Content */}
+                <div className="flex items-center gap-2 flex-wrap" data-testid="content-language-switcher">
+                  {getAvailableContentLanguages().map((lang) => (
+                    <button
+                      key={lang}
+                      onClick={() => setSelectedContentLang(lang)}
+                      className={`px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg transition-all duration-200 ${
+                        selectedContentLang === lang
+                          ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-md'
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                      data-testid={`content-lang-${lang}`}
+                    >
+                      {getLanguageDisplayName(lang)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Language indicator */}
+              <div className="mb-3 text-xs text-gray-500 flex items-center gap-2">
+                <span className="inline-block w-2 h-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-500"></span>
+                {selectedContentLang === 'ru' && (i18n.language === 'ru' ? 'Текст договора на русском языке' : i18n.language === 'kk' ? 'Келісімшарт мәтіні орыс тілінде' : 'Contract text in Russian')}
+                {selectedContentLang === 'kk' && (i18n.language === 'ru' ? 'Текст договора на казахском языке' : i18n.language === 'kk' ? 'Келісімшарт мәтіні қазақ тілінде' : 'Contract text in Kazakh')}
+                {selectedContentLang === 'en' && (i18n.language === 'ru' ? 'Текст договора на английском языке' : i18n.language === 'kk' ? 'Келісімшарт мәтіні ағылшын тілінде' : 'Contract text in English')}
+              </div>
+              
               <div className="bg-gradient-to-br from-white to-gray-50 p-4 sm:p-6 rounded-xl border border-gray-100 shadow-inner">
                 <div 
                   className="whitespace-pre-wrap text-xs sm:text-sm leading-relaxed text-gray-800 break-words overflow-x-auto"
@@ -688,7 +717,7 @@ const ContractDetailsPage = () => {
                     fontSize: 'clamp(12px, 2.5vw, 14px)',
                     lineHeight: '1.6'
                   }}
-                  dangerouslySetInnerHTML={{ __html: replacePlaceholders(contract.content) }}
+                  dangerouslySetInnerHTML={{ __html: replacePlaceholders(getContentForLanguage(selectedContentLang)) }}
                   data-testid="contract-content"
                 />
               </div>
