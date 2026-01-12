@@ -1216,6 +1216,7 @@ const resources = {
       "signing.finalReviewDescription": "Қол қоймас бұрын барлық деректерді мұқият тексеріңіз",
       "signing.clientDocument": "Клиенттің жеке куәлігі",
       "signing.allCorrectSign": "Бәрі дұрыс, қол қою",
+      "signing.confirmed": "Растау",
       "signing.confirmSignature": "Қол қоюды растау",
       "signing.selectVerificationMethod": "Ыңғайлы тексеру әдісін таңдаңыз",
       "signing.sms": "SMS",
