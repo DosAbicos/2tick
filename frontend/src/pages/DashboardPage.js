@@ -554,27 +554,24 @@ const DashboardPage = () => {
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => navigate(`/contracts/${contract.id}`)}
-                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-lg transition-colors shadow-sm"
                           >
                             <Eye className="w-3.5 h-3.5" />
-                            <span>{t('dashboard.view')}</span>
                           </button>
                           {contract.status === 'signed' && (
                             <button
                               onClick={() => window.open(`${API}/contracts/${contract.id}/download-pdf`, '_blank')}
-                              className="p-1.5 text-green-600 bg-green-50 hover:bg-green-100 rounded-lg transition-colors"
-                              title={t('dashboard.download')}
+                              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-green-500 hover:bg-green-600 rounded-lg transition-colors shadow-sm"
                             >
-                              <Download className="w-4 h-4" />
+                              <Download className="w-3.5 h-3.5" />
                             </button>
                           )}
                           {contract.status === 'draft' && (
                             <button
                               onClick={() => handleDeleteContract(contract.id)}
-                              className="p-1.5 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
-                              title={t('dashboard.delete')}
+                              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-red-500 hover:bg-red-600 rounded-lg transition-colors shadow-sm"
                             >
-                              <Trash2 className="w-4 h-4" />
+                              <Trash2 className="w-3.5 h-3.5" />
                             </button>
                           )}
                         </div>
