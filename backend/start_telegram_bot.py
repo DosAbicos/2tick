@@ -191,6 +191,21 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Обработка всех сообщений"""
     print(f"📩 Message from {update.effective_user.username}: {update.message.text}")
 
+async def copy_code_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Обработка нажатия на кнопку Copy Code"""
+    query = update.callback_query
+    await query.answer()
+    
+    # Extract the code from callback_data
+    code = query.data.replace("copy_", "")
+    
+    # Send the code as a separate message that's easy to copy
+    await query.message.reply_text(
+        f"`{code}`",
+        parse_mode='Markdown'
+    )
+    print(f"📋 User requested to copy code: {code}")
+
 def main():
     """Запуск бота"""
     print("🤖 Starting Telegram Bot for Signify KZ...")
