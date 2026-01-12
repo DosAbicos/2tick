@@ -960,7 +960,7 @@ const SignContractPage = () => {
                   {contract.contract_code}
                 </div>
               )}
-              <p className="text-gray-600 font-medium">{contract.title}</p>
+              <p className="text-gray-600 font-medium">{getLocalizedTitle()}</p>
             </div>
           </div>
           <div className="space-y-6">
