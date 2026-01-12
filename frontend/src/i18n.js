@@ -379,6 +379,7 @@ const resources = {
       "signing.finalReviewDescription": "Внимательно проверьте все данные перед подписанием",
       "signing.clientDocument": "Удостоверение личности клиента",
       "signing.allCorrectSign": "Всё верно, подписать договор",
+      "signing.confirmed": "Подтвердить",
       "signing.confirmSignature": "Подтверждение подписи",
       "signing.selectVerificationMethod": "Выберите удобный способ верификации",
       "signing.sms": "SMS",
