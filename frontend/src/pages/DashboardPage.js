@@ -518,99 +518,64 @@ const DashboardPage = () => {
               </div>
 
               {/* Мобильные карточки */}
-              <div className="lg:hidden">
-                {contracts.map((contract, index) => (
+              <div className="lg:hidden space-y-3 p-3">
+                {contracts.map((contract) => (
                   <div 
                     key={contract.id} 
-                    className={`p-3 ${index !== contracts.length - 1 ? 'border-b border-gray-100' : ''}`}
+                    className="minimal-card p-4 hover:shadow-lg transition-all"
                   >
-                    {/* Карточка договора */}
-                    <div className="bg-white rounded-xl p-3 border border-gray-200 shadow-sm">
-                      {/* Верхняя строка: ID и статус */}
-                      <div className="flex items-center justify-between mb-2">
-                        <code className="text-xs font-mono text-blue-600 bg-blue-50 px-2 py-0.5 rounded font-semibold">
+                    {/* Верхняя строка: код и статус */}
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-sm">
+                          <FileText className="w-4 h-4 text-white" />
+                        </div>
+                        <code className="text-xs font-mono text-blue-600 font-semibold">
                           {contract.contract_code || 'N/A'}
                         </code>
-                        {getStatusBadge(contract.status)}
+                      </div>
+                      {getStatusBadge(contract.status)}
+                    </div>
+                    
+                    {/* Название договора */}
+                    <h3 className="text-sm font-semibold text-gray-900 mb-3 leading-snug">
+                      {contract.title}
+                    </h3>
+                    
+                    {/* Нижняя строка: дата и действия */}
+                    <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                      <div className="flex items-center gap-1.5 text-gray-400">
+                        <Clock className="w-3.5 h-3.5" />
+                        <span className="text-xs">
+                          {format(new Date(contract.created_at), 'dd.MM.yyyy')}
+                        </span>
                       </div>
                       
-                      {/* Название договора */}
-                      <h3 className="text-sm font-semibold text-gray-900 mb-2 line-clamp-1">
-                        {contract.title}
-                      </h3>
-                      
-                      {/* Нижняя строка: дата и действия в одну линию */}
-                      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#6b7280' }}>
-                          <svg style={{ width: '14px', height: '14px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                          </svg>
-                          <span style={{ fontSize: '12px', fontWeight: '500' }}>
-                            {format(new Date(contract.created_at), 'dd.MM.yyyy')}
-                          </span>
-                        </div>
-                        
-                        {/* Кнопки действий в горизонтальную линию */}
-                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '8px' }}>
+                      {/* Кнопки действий */}
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => navigate(`/contracts/${contract.id}`)}
+                          className="px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors flex items-center gap-1.5"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                          <span className="hidden xs:inline">{t('common.view')}</span>
+                        </button>
+                        {contract.status === 'signed' && (
                           <button
-                            onClick={() => navigate(`/contracts/${contract.id}`)}
-                            style={{ 
-                              padding: '6px 12px', 
-                              fontSize: '12px', 
-                              fontWeight: '500',
-                              color: 'white',
-                              backgroundColor: '#3b82f6',
-                              borderRadius: '6px',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: '4px',
-                              border: 'none',
-                              cursor: 'pointer'
-                            }}
+                            onClick={() => window.open(`${API}/contracts/${contract.id}/download-pdf`, '_blank')}
+                            className="p-1.5 text-green-600 bg-green-50 hover:bg-green-100 rounded-lg transition-colors"
                           >
-                            <Eye style={{ width: '14px', height: '14px' }} />
+                            <Download className="w-4 h-4" />
                           </button>
-                          {contract.status === 'signed' && (
-                            <button
-                              onClick={() => window.open(`${API}/contracts/${contract.id}/download-pdf`, '_blank')}
-                              style={{ 
-                                padding: '6px 12px', 
-                                fontSize: '12px', 
-                                fontWeight: '500',
-                                color: 'white',
-                                backgroundColor: '#22c55e',
-                                borderRadius: '6px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '4px',
-                                border: 'none',
-                                cursor: 'pointer'
-                              }}
-                            >
-                              <Download style={{ width: '14px', height: '14px' }} />
-                            </button>
-                          )}
-                          {contract.status === 'draft' && (
-                            <button
-                              onClick={() => handleDeleteContract(contract.id)}
-                              style={{ 
-                                padding: '6px 12px', 
-                                fontSize: '12px', 
-                                fontWeight: '500',
-                                color: 'white',
-                                backgroundColor: '#ef4444',
-                                borderRadius: '6px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '4px',
-                                border: 'none',
-                                cursor: 'pointer'
-                              }}
-                            >
-                              <Trash2 style={{ width: '14px', height: '14px' }} />
-                            </button>
-                          )}
-                        </div>
+                        )}
+                        {contract.status === 'draft' && (
+                          <button
+                            onClick={() => handleDeleteContract(contract.id)}
+                            className="p-1.5 text-red-500 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
