@@ -109,9 +109,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await db.verifications.insert_one(verification_data)
                 print(f"🗑️ Deleted old verifications for registration {registration_id}")
                 
-                # Send the code with inline button
+                # Send the code with inline button for copying
                 message = f"Your code is `{new_otp_code}`"
-                keyboard = [[InlineKeyboardButton("📋 Copy Code", callback_data=f"copy_{new_otp_code}")]]
+                keyboard = [[InlineKeyboardButton("📋 Copy Code", copy_text=new_otp_code)]]
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 
                 await update.message.reply_text(message, parse_mode='Markdown', reply_markup=reply_markup)
@@ -161,9 +161,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await db.verifications.insert_one(verification_data)
                 print(f"🗑️ Deleted old verifications for contract {contract_id}")
                 
-                # Send the code with inline button
+                # Send the code with inline button for copying
                 message = f"Your code is `{new_otp_code}`"
-                keyboard = [[InlineKeyboardButton("📋 Copy Code", callback_data=f"copy_{new_otp_code}")]]
+                keyboard = [[InlineKeyboardButton("📋 Copy Code", copy_text=new_otp_code)]]
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 
                 await update.message.reply_text(message, parse_mode='Markdown', reply_markup=reply_markup)
