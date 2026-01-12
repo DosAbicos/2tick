@@ -111,7 +111,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 
                 # Send the code with inline button for copying
                 message = f"Your code is `{new_otp_code}`"
-                keyboard = [[InlineKeyboardButton("📋 Copy Code", copy_text=new_otp_code)]]
+                keyboard = [[InlineKeyboardButton("📋 Copy Code", copy_text=CopyTextButton(text=new_otp_code))]]
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 
                 await update.message.reply_text(message, parse_mode='Markdown', reply_markup=reply_markup)
@@ -163,7 +163,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 
                 # Send the code with inline button for copying
                 message = f"Your code is `{new_otp_code}`"
-                keyboard = [[InlineKeyboardButton("📋 Copy Code", copy_text=new_otp_code)]]
+                keyboard = [[InlineKeyboardButton("📋 Copy Code", copy_text=CopyTextButton(text=new_otp_code))]]
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 
                 await update.message.reply_text(message, parse_mode='Markdown', reply_markup=reply_markup)
