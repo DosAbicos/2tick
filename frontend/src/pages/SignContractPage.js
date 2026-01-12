@@ -954,13 +954,13 @@ const SignContractPage = () => {
         <div className="minimal-card p-6 sm:p-8 animate-fade-in" data-testid="sign-contract-card">
           <div className="mb-6">
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3" data-testid="signing-title">{t('signing.title')}</h1>
-            <div className="flex items-center gap-3 flex-wrap">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
               {contract.contract_code && (
-                <div className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-sm font-bold rounded-xl shadow-lg shadow-blue-500/20">
+                <div className="inline-flex px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-sm font-bold rounded-xl shadow-lg shadow-blue-500/20 self-start">
                   {contract.contract_code}
                 </div>
               )}
-              <p className="text-gray-600 font-medium">{getLocalizedTitle()}</p>
+              <p className="text-gray-600 font-medium whitespace-nowrap">{getLocalizedTitle()}</p>
             </div>
           </div>
           <div className="space-y-6">
