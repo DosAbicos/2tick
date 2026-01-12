@@ -3341,6 +3341,18 @@ async def request_telegram_otp(contract_id: str, data: dict):
     if not telegram_username:
         raise HTTPException(status_code=400, detail="Telegram username required")
     
+    # Get language for message translation
+    language = data.get('language', 'ru').lower()
+    if language not in ['ru', 'kk', 'en']:
+        language = 'ru'
+    
+    # Translations for OTP message
+    translations = {
+        'ru': {'message': 'Ваш код', 'button': '📋 Скопировать код'},
+        'kk': {'message': 'Сіздің кодыңыз', 'button': '📋 Кодты көшіру'},
+        'en': {'message': 'Your code is', 'button': '📋 Copy Code'}
+    }
+    
     # Generate 6-digit OTP
     import random
     otp_code = f"{random.randint(100000, 999999)}"
@@ -3376,8 +3388,12 @@ async def request_telegram_otp(contract_id: str, data: dict):
         
         bot = Bot(token=TELEGRAM_BOT_TOKEN)
         
-        message = f"Your code is `{otp_code}`"
-        keyboard = [[InlineKeyboardButton("📋 Copy Code", copy_text=CopyTextButton(text=otp_code))]]
+        # Create localized message and button
+        msg_text = translations[language]['message']
+        btn_text = translations[language]['button']
+        
+        message = f"{msg_text} `{otp_code}`"
+        keyboard = [[InlineKeyboardButton(btn_text, copy_text=CopyTextButton(text=otp_code))]]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
         # Try to send message
