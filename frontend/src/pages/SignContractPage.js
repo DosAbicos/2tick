@@ -753,7 +753,8 @@ const SignContractPage = () => {
     setRequestingTelegram(true);
     try {
       const response = await axios.post(`${API}/sign/${id}/request-telegram-otp`, {
-        telegram_username: telegramUsername
+        telegram_username: telegramUsername,
+        language: i18n.language
       });
       toast.success(response.data.message);
       setVerificationMethod('telegram');
