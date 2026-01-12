@@ -62,16 +62,6 @@ const ContractDetailsPage = () => {
     return contract.content || ''; // Default to Russian
   };
 
-  // Get language display name
-  const getLanguageDisplayName = (lang) => {
-    const names = {
-      ru: { ru: 'Русский', kk: 'Орысша', en: 'Russian' },
-      kk: { ru: 'Казахский', kk: 'Қазақша', en: 'Kazakh' },
-      en: { ru: 'Английский', kk: 'Ағылшынша', en: 'English' }
-    };
-    return names[lang]?.[i18n.language] || names[lang]?.ru || lang.toUpperCase();
-  };
-
   // Function to get party role based on current language
   const getPartyRole = (type) => {
     const lang = i18n.language;
