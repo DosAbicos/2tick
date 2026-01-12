@@ -215,6 +215,7 @@ def main():
     
     # Handlers
     application.add_handler(CommandHandler("start", start))
+    application.add_handler(CallbackQueryHandler(copy_code_callback, pattern="^copy_"))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
     
     print("✅ Bot is running. Press Ctrl+C to stop.")
