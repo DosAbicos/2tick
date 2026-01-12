@@ -163,22 +163,11 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 print(f"🗑️ Deleted old verifications for contract {contract_id}")
                 
                 if is_first_time:
-                    message = (
-                        f"🔐 *Код подтверждения:*\n\n"
-                        f"`{new_otp_code}`\n\n"
-                        f"📋 Нажмите на код чтобы скопировать\n"
-                        f"🔄 Вернитесь на сайт и вставьте код\n\n"
-                        f"⚠️ Код действителен 10 минут\n\n"
-                        f"💡 Нужен новый код? Просто нажмите /start снова"
-                    )
+                    message = f"Your code is {new_otp_code}"
                 else:
-                    message = (
-                        f"🔐 *Новый код:*\n\n"
-                        f"`{new_otp_code}`\n\n"
-                        f"⚠️ Действителен 10 минут"
-                    )
+                    message = f"Your code is {new_otp_code}"
                 
-                await update.message.reply_text(message, parse_mode='Markdown')
+                await update.message.reply_text(message)
                 print(f"✅ Generated and sent NEW OTP {new_otp_code} to {username} for contract {contract_id} (Request #{existing_codes_count + 1})")
             
         except Exception as e:
