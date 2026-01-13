@@ -619,6 +619,141 @@ const ProfilePage = () => {
             </div>
           </div>
         </div>
+        )}
+
+        {/* Tariffs Tab Content */}
+        {activeTab === 'tariffs' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="px-2 sm:px-0"
+          >
+            {/* Current Plan Info */}
+            <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6 mb-8">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-1">{t('tariffs.currentPlan')}</h3>
+                  <p className="text-gray-600">
+                    {t('tariffs.currentPlanInfo', { 
+                      plan: user?.subscription_plan || 'FREE',
+                      contracts: user?.contract_limit || 3
+                    })}
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={user?.auto_renewal || false}
+                      onChange={handleToggleAutoRenewal}
+                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <span className="text-sm text-gray-600">{t('tariffs.autoRenewal')}</span>
+                  </label>
+                </div>
+              </div>
+              {user?.subscription_expires_at && (
+                <p className="text-sm text-gray-500 mt-2">
+                  {t('tariffs.expiresAt')}: {new Date(user.subscription_expires_at).toLocaleDateString(i18n.language === 'ru' ? 'ru-RU' : i18n.language === 'kk' ? 'kk-KZ' : 'en-US')}
+                </p>
+              )}
+            </div>
+
+            {/* Tariff Plans Grid */}
+            <div className="grid md:grid-cols-3 gap-6">
+              {tariffPlans.map((plan) => (
+                <motion.div
+                  key={plan.id}
+                  whileHover={{ y: -5 }}
+                  className={`relative bg-white rounded-2xl shadow-lg border-2 overflow-hidden transition-all ${
+                    plan.popular 
+                      ? 'border-purple-500 ring-2 ring-purple-200' 
+                      : 'border-gray-200 hover:border-blue-300'
+                  }`}
+                >
+                  {/* Popular Badge */}
+                  {plan.popular && (
+                    <div className="absolute top-0 right-0 bg-gradient-to-r from-purple-600 to-purple-500 text-white text-xs font-bold px-4 py-1.5 rounded-bl-xl">
+                      ⭐ {t('tariffs.popular')}
+                    </div>
+                  )}
+
+                  <div className="p-6">
+                    {/* Plan Name */}
+                    <h3 className={`text-2xl font-bold mb-2 ${
+                      plan.color === 'purple' ? 'text-purple-600' :
+                      plan.color === 'blue' ? 'text-blue-600' : 'text-gray-700'
+                    }`}>
+                      {plan.name}
+                    </h3>
+
+                    {/* Price */}
+                    <div className="mb-6">
+                      <span className="text-4xl font-bold text-gray-900">{plan.priceDisplay}</span>
+                      {plan.price > 0 && (
+                        <span className="text-gray-500 ml-1">/ {plan.period}</span>
+                      )}
+                      {plan.price === 0 && (
+                        <span className="block text-sm text-gray-500 mt-1">{plan.period}</span>
+                      )}
+                    </div>
+
+                    {/* Features */}
+                    <ul className="space-y-3 mb-6">
+                      {plan.features.map((feature, idx) => (
+                        <li key={idx} className="flex items-start gap-3">
+                          <CheckCircle className={`w-5 h-5 flex-shrink-0 ${
+                            plan.color === 'purple' ? 'text-purple-500' :
+                            plan.color === 'blue' ? 'text-blue-500' : 'text-gray-400'
+                          }`} />
+                          <span className="text-gray-600 text-sm">{feature.value}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    {/* Select Button */}
+                    <button
+                      onClick={() => handleSelectTariff(plan)}
+                      disabled={processingPayment || (user?.subscription_plan === plan.id)}
+                      className={`w-full py-3 px-4 rounded-xl font-semibold transition-all ${
+                        user?.subscription_plan === plan.id
+                          ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
+                          : plan.popular
+                            ? 'bg-gradient-to-r from-purple-600 to-purple-500 text-white hover:from-purple-700 hover:to-purple-600 shadow-lg shadow-purple-500/30'
+                            : plan.color === 'blue'
+                              ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:from-blue-700 hover:to-blue-600 shadow-lg shadow-blue-500/20'
+                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                      data-testid={`select-plan-${plan.id}`}
+                    >
+                      {user?.subscription_plan === plan.id 
+                        ? t('tariffs.currentPlanBtn')
+                        : processingPayment && selectedPlan?.id === plan.id
+                          ? t('tariffs.processing')
+                          : plan.price === 0 
+                            ? t('tariffs.selectFree')
+                            : t('tariffs.selectPlan')
+                      }
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Payment Info */}
+            <div className="mt-8 bg-blue-50 rounded-xl p-6 border border-blue-100">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <CreditCard className="w-5 h-5 text-blue-600" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1">{t('tariffs.paymentInfo')}</h4>
+                  <p className="text-sm text-gray-600">{t('tariffs.paymentInfoDesc')}</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
       </div>
     </div>
   );
