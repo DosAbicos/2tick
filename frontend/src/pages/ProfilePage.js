@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -15,6 +15,7 @@ const API = `${BACKEND_URL}/api`;
 const ProfilePage = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const token = localStorage.getItem('token');
   const [user, setUser] = useState(null);
   const [stats, setStats] = useState(null);
@@ -22,7 +23,10 @@ const ProfilePage = () => {
   const [editing, setEditing] = useState(false);
   const [editedUser, setEditedUser] = useState({});
   const [changingPassword, setChangingPassword] = useState(false);
-  const [activeTab, setActiveTab] = useState('profile'); // 'profile' or 'tariffs'
+  
+  // Check URL param for initial tab
+  const initialTab = searchParams.get('tab') === 'tariffs' ? 'tariffs' : 'profile';
+  const [activeTab, setActiveTab] = useState(initialTab); // 'profile' or 'tariffs'
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [processingPayment, setProcessingPayment] = useState(false);
   const [passwordData, setPasswordData] = useState({
