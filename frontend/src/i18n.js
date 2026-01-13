@@ -1934,6 +1934,7 @@ const resources = {
       "dashboard.errorLoadingFavorites": "Error loading favorite templates",
       "dashboard.errorLoadingContracts": "Error loading contracts",
       "dashboard.errorDeletingContract": "Error deleting contract",
+      "dashboard.limitReached": "Contract limit reached! Select a plan to continue.",
       
       // ===== CONTRACT =====
       "contract.create.title": "Create Contract",
