@@ -2180,6 +2180,8 @@ const resources = {
       "profile.address": "Legal Address",
       "profile.title": "Profile",
       "profile.subtitle": "Manage your account",
+      "profile.profileTab": "Profile",
+      "profile.tariffsTab": "Tariffs",
       "profile.personalInfo": "Personal Information",
       "profile.fullName": "Full Name",
       "profile.email": "Email",
