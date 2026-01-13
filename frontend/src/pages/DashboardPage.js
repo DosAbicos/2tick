@@ -359,19 +359,7 @@ const DashboardPage = () => {
         </div>
 
         {/* Статистика */}
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6 sm:mb-8">
-          <div className="minimal-card p-4 sm:p-6">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                <FileText className="w-5 h-5 text-white" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-xs sm:text-sm text-gray-600">{t('dashboard.stats.total')}</p>
-                <p className="text-xl sm:text-2xl font-bold text-gray-900">{stats.total}</p>
-              </div>
-            </div>
-          </div>
-
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 sm:mb-8">
           <div className="minimal-card p-4 sm:p-6">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center flex-shrink-0">
