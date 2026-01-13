@@ -196,6 +196,7 @@ const resources = {
       "dashboard.errorLoadingFavorites": "Ошибка загрузки избранных шаблонов",
       "dashboard.errorLoadingContracts": "Ошибка загрузки договоров",
       "dashboard.errorDeletingContract": "Ошибка удаления договора",
+      "dashboard.limitReached": "Лимит договоров исчерпан! Выберите тариф для продолжения.",
       
       // ===== CONTRACT =====
       "contract.create.title": "Создать контракт",
