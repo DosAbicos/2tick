@@ -153,6 +153,56 @@ const ProfilePage = () => {
     }
   };
 
+  // Handle tariff selection - prepared for payment integration
+  const handleSelectTariff = async (plan) => {
+    if (plan.id === 'free') {
+      // Free plan - no payment needed
+      toast.info(t('tariffs.freeSelected'));
+      return;
+    }
+    
+    setSelectedPlan(plan);
+    setProcessingPayment(true);
+    
+    try {
+      // TODO: Integrate with acquiring service
+      // This will be replaced with actual payment gateway integration
+      const response = await axios.post(`${API}/subscriptions/create-payment`, {
+        plan_id: plan.id,
+        amount: plan.price,
+        auto_renewal: true
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      // Redirect to payment page or open payment modal
+      if (response.data.payment_url) {
+        window.location.href = response.data.payment_url;
+      } else {
+        toast.success(t('tariffs.paymentInitiated'));
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
+      // For now, show info that payment integration is coming soon
+      toast.info(t('tariffs.paymentComingSoon'));
+    } finally {
+      setProcessingPayment(false);
+    }
+  };
+
+  // Handle auto-renewal toggle
+  const handleToggleAutoRenewal = async () => {
+    try {
+      await axios.post(`${API}/subscriptions/toggle-auto-renewal`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success(t('tariffs.autoRenewalToggled'));
+      fetchUserProfile();
+    } catch (error) {
+      toast.info(t('tariffs.paymentComingSoon'));
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen gradient-bg flex items-center justify-center">
