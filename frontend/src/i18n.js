@@ -435,6 +435,8 @@ const resources = {
       // ===== PROFILE =====
       "profile.title": "Профиль",
       "profile.subtitle": "Управляйте своей учетной записью",
+      "profile.profileTab": "Профиль",
+      "profile.tariffsTab": "Тарифы",
       "profile.statistics": "Статистика",
       "profile.emailCannotChange": "Email нельзя изменить",
       "profile.totalContracts": "Всего договоров",
