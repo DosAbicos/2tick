@@ -1764,6 +1764,25 @@ async def get_me_stats(current_user: dict = Depends(get_current_user)):
         "contracts_used": total_contracts
     }
 
+@api_router.get("/users/me/contract-limit")
+async def get_my_contract_limit(current_user: dict = Depends(get_current_user)):
+    """Get current user's contract limit info"""
+    user_doc = await db.users.find_one({"id": current_user['user_id']})
+    if not user_doc:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    contract_limit = user_doc.get('contract_limit', 10)
+    contracts_used = await db.contracts.count_documents({
+        "creator_id": current_user['user_id'], 
+        "deleted": {"$ne": True}
+    })
+    
+    return {
+        "contract_limit": contract_limit,
+        "contracts_used": contracts_used,
+        "remaining": max(contract_limit - contracts_used, 0)
+    }
+
 @api_router.post("/auth/change-password")
 async def change_password(
     change_pwd: ChangePassword,
