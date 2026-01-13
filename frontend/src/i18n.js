@@ -163,6 +163,7 @@ const resources = {
       "dashboard.stats.total": "Всего",
       "dashboard.stats.signedTotal": "Подписано",
       "dashboard.stats.drafts": "Черновики",
+      "dashboard.stats.remaining": "Осталось",
       "dashboard.stats.active": "Активные контракты",
       "dashboard.stats.pending": "Ожидают подписи",
       "dashboard.stats.signed": "Подписано за неделю",
