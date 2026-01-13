@@ -235,6 +235,38 @@ const ProfilePage = () => {
           </div>
         </motion.div>
 
+        {/* Tabs Navigation */}
+        <div className="mb-6 px-2 sm:px-0">
+          <div className="inline-flex items-center bg-gray-100 rounded-xl p-1.5 shadow-inner">
+            <button
+              onClick={() => setActiveTab('profile')}
+              className={`px-6 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 ${
+                activeTab === 'profile'
+                  ? 'bg-white text-blue-600 shadow-md'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+              data-testid="tab-profile"
+            >
+              <User className="w-4 h-4 inline-block mr-2" />
+              {t('profile.profileTab')}
+            </button>
+            <button
+              onClick={() => setActiveTab('tariffs')}
+              className={`px-6 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 ${
+                activeTab === 'tariffs'
+                  ? 'bg-white text-blue-600 shadow-md'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+              data-testid="tab-tariffs"
+            >
+              <CreditCard className="w-4 h-4 inline-block mr-2" />
+              {t('profile.tariffsTab')}
+            </button>
+          </div>
+        </div>
+
+        {/* Profile Tab Content */}
+        {activeTab === 'profile' && (
         <div className="grid lg:grid-cols-3 gap-3 sm:gap-6">
           {/* Левая колонка - Статистика */}
           <div className="lg:col-span-1 space-y-3 sm:space-y-6">
