@@ -102,8 +102,15 @@ const DashboardPage = () => {
     }
   };
 
-  // Open modal and load favorites
+  // Open modal and load favorites - check limit first
   const handleCreateContract = () => {
+    // Check if user has reached their contract limit
+    if (limitInfo && limitInfo.contracts_used >= limitInfo.contract_limit) {
+      toast.error(t('dashboard.limitReached'));
+      // Redirect to profile tariffs tab
+      navigate('/profile?tab=tariffs');
+      return;
+    }
     setShowTemplateModal(true);
     loadFavoriteTemplates();
   };
