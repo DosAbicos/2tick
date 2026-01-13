@@ -1034,6 +1034,7 @@ const resources = {
       "dashboard.stats.total": "Барлығы",
       "dashboard.stats.signedTotal": "Қол қойылды",
       "dashboard.stats.drafts": "Жобалар",
+      "dashboard.stats.remaining": "Қалды",
       "dashboard.stats.active": "Белсенді келісімшарттар",
       "dashboard.stats.pending": "Қол қоюды күтуде",
       "dashboard.stats.signed": "Аптада қол қойылды",
