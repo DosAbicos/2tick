@@ -1302,6 +1302,8 @@ const resources = {
       // ===== PROFILE =====
       "profile.title": "Профиль",
       "profile.subtitle": "Тіркелгіңізді басқарыңыз",
+      "profile.profileTab": "Профиль",
+      "profile.tariffsTab": "Тарифтер",
       "profile.statistics": "Статистика",
       "profile.emailCannotChange": "Email-ді өзгерту мүмкін емес",
       "profile.totalContracts": "Барлық келісімшарттар",
