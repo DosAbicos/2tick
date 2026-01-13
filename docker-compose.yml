@@ -1,0 +1,102 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: signify_mongodb
+    restart: always
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=signify_db
+    networks:
+      - signify_network
+
+  # FastAPI Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: signify_backend
+    restart: always
+    environment:
+      - MONGO_URL=mongodb://mongodb:27017/signify_db
+      - DB_NAME=signify_db
+      - JWT_SECRET=${JWT_SECRET:-your-super-secret-jwt-key-change-in-production}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
+      - TWILIO_PHONE_NUMBER=${TWILIO_PHONE_NUMBER}
+    depends_on:
+      - mongodb
+    networks:
+      - signify_network
+    volumes:
+      - uploads_data:/app/uploads
+
+  # Telegram Bot (separate service)
+  telegram_bot:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.bot
+    container_name: signify_telegram_bot
+    restart: always
+    environment:
+      - MONGO_URL=mongodb://mongodb:27017/signify_db
+      - DB_NAME=signify_db
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+    depends_on:
+      - mongodb
+    networks:
+      - signify_network
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - REACT_APP_BACKEND_URL=${REACT_APP_BACKEND_URL:-https://yourdomain.kz}
+    container_name: signify_frontend
+    restart: always
+    networks:
+      - signify_network
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: signify_nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - certbot_data:/var/www/certbot:ro
+      - letsencrypt_data:/etc/letsencrypt:ro
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - signify_network
+
+  # Certbot for SSL
+  certbot:
+    image: certbot/certbot
+    container_name: signify_certbot
+    volumes:
+      - certbot_data:/var/www/certbot
+      - letsencrypt_data:/etc/letsencrypt
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+
+networks:
+  signify_network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+  uploads_data:
+  certbot_data:
+  letsencrypt_data:
