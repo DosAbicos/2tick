@@ -1066,6 +1066,7 @@ const resources = {
       "dashboard.errorLoadingFavorites": "Таңдаулы үлгілерді жүктеу қатесі",
       "dashboard.errorLoadingContracts": "Келісімшарттарды жүктеу қатесі",
       "dashboard.errorDeletingContract": "Келісімшартты жою қатесі",
+      "dashboard.limitReached": "Келісімшарттар лимиті таусылды! Жалғастыру үшін тарифті таңдаңыз.",
       
       // ===== CONTRACT =====
       "contract.create.title": "Келісімшарт құру",
