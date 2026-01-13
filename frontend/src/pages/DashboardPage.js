@@ -403,9 +403,9 @@ const DashboardPage = () => {
                   ? 'bg-red-500' 
                   : limitInfo && (limitInfo.contract_limit - limitInfo.contracts_used) <= 2 
                     ? 'bg-amber-500' 
-                    : 'bg-purple-500'
+                    : 'bg-blue-500'
               }`}>
-                <Plus className="w-5 h-5 text-white" />
+                <FileText className="w-5 h-5 text-white" />
               </div>
               <div className="min-w-0">
                 <p className="text-xs sm:text-sm text-gray-600">{t('dashboard.stats.remaining')}</p>
@@ -414,7 +414,7 @@ const DashboardPage = () => {
                     ? 'text-red-600' 
                     : limitInfo && (limitInfo.contract_limit - limitInfo.contracts_used) <= 2 
                       ? 'text-amber-600' 
-                      : 'text-purple-600'
+                      : 'text-blue-600'
                 }`}>
                   {limitInfo ? Math.max(limitInfo.contract_limit - limitInfo.contracts_used, 0) : '—'}
                 </p>
@@ -422,37 +422,6 @@ const DashboardPage = () => {
             </div>
           </div>
         </div>
-
-        {/* Лимит договоров */}
-        {limitInfo && (
-          <div className="minimal-card p-4 sm:p-6 mb-6 sm:mb-8">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div className="flex-1">
-                <h3 className="text-sm font-medium text-gray-700 mb-2">{t('dashboard.contractLimit')}</h3>
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-2xl font-bold text-blue-600">{limitInfo.used}</span>
-                  <span className="text-gray-400">/</span>
-                  <span className="text-2xl font-bold text-gray-400">{limitInfo.limit}</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                  <div 
-                    className="bg-gradient-to-r from-blue-600 to-blue-500 h-2.5 rounded-full transition-all"
-                    style={{ width: `${Math.min((limitInfo.used / limitInfo.limit) * 100, 100)}%` }}
-                  ></div>
-                </div>
-                <p className="text-xs text-gray-500 mt-2">
-                  {t('dashboard.contractsRemaining', { count: limitInfo.remaining })}
-                </p>
-              </div>
-              {limitInfo.remaining <= 2 && (
-                <div className="flex items-center gap-2 px-4 py-2 bg-amber-50 rounded-lg border border-amber-200">
-                  <AlertCircle className="w-4 h-4 text-amber-600 flex-shrink-0" />
-                  <span className="text-xs sm:text-sm text-amber-700">{t('dashboard.limitAlmostReached')}</span>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
 
         {/* Список договоров */}
         <div className="minimal-card overflow-hidden">
