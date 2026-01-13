@@ -744,7 +744,17 @@ Email: ${templateData.tenant_email || '[Email]'}
       sessionStorage.removeItem('selectedTemplateId');
       navigate(`/contracts/${contractId}`);
     } catch (error) {
-      toast.error(error.response?.data?.detail || t('common.error'));
+      const errorMessage = error.response?.data?.detail || '';
+      
+      // Check if it's a contract limit error
+      if (errorMessage.toLowerCase().includes('contract limit') || 
+          errorMessage.toLowerCase().includes('upgrade your subscription') ||
+          errorMessage.toLowerCase().includes('лимит договоров')) {
+        toast.error(t('dashboard.limitReached'));
+        navigate('/profile?tab=tariffs');
+      } else {
+        toast.error(errorMessage || t('common.error'));
+      }
     } finally {
       setLoading(false);
     }
