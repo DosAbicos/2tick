@@ -359,7 +359,7 @@ const DashboardPage = () => {
         </div>
 
         {/* Статистика */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 sm:mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6 sm:mb-8">
           <div className="minimal-card p-4 sm:p-6">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -404,6 +404,32 @@ const DashboardPage = () => {
               <div className="min-w-0">
                 <p className="text-xs sm:text-sm text-gray-600">{t('dashboard.stats.drafts')}</p>
                 <p className="text-xl sm:text-2xl font-bold text-gray-900">{stats.draft}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="minimal-card p-4 sm:p-6">
+            <div className="flex items-center gap-3 mb-2">
+              <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                limitInfo && (limitInfo.limit - limitInfo.used) <= 0 
+                  ? 'bg-red-500' 
+                  : limitInfo && (limitInfo.limit - limitInfo.used) <= 2 
+                    ? 'bg-amber-500' 
+                    : 'bg-purple-500'
+              }`}>
+                <Plus className="w-5 h-5 text-white" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs sm:text-sm text-gray-600">{t('dashboard.stats.remaining')}</p>
+                <p className={`text-xl sm:text-2xl font-bold ${
+                  limitInfo && (limitInfo.limit - limitInfo.used) <= 0 
+                    ? 'text-red-600' 
+                    : limitInfo && (limitInfo.limit - limitInfo.used) <= 2 
+                      ? 'text-amber-600' 
+                      : 'text-purple-600'
+                }`}>
+                  {limitInfo ? Math.max(limitInfo.limit - limitInfo.used, 0) : '—'}
+                </p>
               </div>
             </div>
           </div>
