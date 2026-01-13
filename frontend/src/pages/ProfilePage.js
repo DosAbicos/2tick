@@ -13,7 +13,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const ProfilePage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
   const [user, setUser] = useState(null);
@@ -22,11 +22,67 @@ const ProfilePage = () => {
   const [editing, setEditing] = useState(false);
   const [editedUser, setEditedUser] = useState({});
   const [changingPassword, setChangingPassword] = useState(false);
+  const [activeTab, setActiveTab] = useState('profile'); // 'profile' or 'tariffs'
+  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [processingPayment, setProcessingPayment] = useState(false);
   const [passwordData, setPasswordData] = useState({
     old_password: '',
     new_password: '',
     confirm_password: ''
   });
+
+  // Tariff plans data
+  const tariffPlans = [
+    {
+      id: 'free',
+      name: 'FREE',
+      price: 0,
+      priceDisplay: '0 ₸',
+      period: t('tariffs.testPlan'),
+      contracts: 3,
+      features: [
+        { key: 'contracts', value: t('tariffs.upToContracts', { count: 3 }) },
+        { key: 'templates', value: t('tariffs.basicTemplates') },
+        { key: 'signing', value: t('tariffs.signingMethods') },
+        { key: 'branding', value: t('tariffs.noBranding') },
+      ],
+      popular: false,
+      color: 'gray'
+    },
+    {
+      id: 'start',
+      name: 'START',
+      price: 5990,
+      priceDisplay: '5 990 ₸',
+      period: t('tariffs.perMonth'),
+      contracts: 20,
+      features: [
+        { key: 'contracts', value: t('tariffs.upToContracts', { count: 20 }) },
+        { key: 'templates', value: t('tariffs.marketTemplates') },
+        { key: 'signing', value: t('tariffs.signingMethods') },
+        { key: 'support', value: t('tariffs.standardSupport') },
+      ],
+      popular: false,
+      color: 'blue'
+    },
+    {
+      id: 'business',
+      name: 'BUSINESS',
+      price: 14990,
+      priceDisplay: '14 990 ₸',
+      period: t('tariffs.perMonth'),
+      contracts: 50,
+      features: [
+        { key: 'contracts', value: t('tariffs.upToContracts', { count: 50 }) },
+        { key: 'templates', value: t('tariffs.allTemplates') },
+        { key: 'signing', value: t('tariffs.signingMethods') },
+        { key: 'branding', value: t('tariffs.contractBranding') },
+        { key: 'support', value: t('tariffs.prioritySupport') },
+      ],
+      popular: true,
+      color: 'purple'
+    }
+  ];
 
   useEffect(() => {
     fetchUserProfile();
