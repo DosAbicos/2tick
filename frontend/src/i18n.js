@@ -1903,6 +1903,7 @@ const resources = {
       "dashboard.stats.total": "Total",
       "dashboard.stats.signedTotal": "Signed",
       "dashboard.stats.drafts": "Drafts",
+      "dashboard.stats.remaining": "Remaining",
       "dashboard.stats.active": "Active Contracts",
       "dashboard.stats.pending": "Pending Signatures",
       "dashboard.stats.signed": "Signed This Week",
