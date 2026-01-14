@@ -25,6 +25,8 @@ import OfferPage from './pages/OfferPage';
 import PrivacyPage from './pages/PrivacyPage';
 import RefundPage from './pages/RefundPage';
 import ContactsPage from './pages/ContactsPage';
+import PaymentSuccessPage from './pages/PaymentSuccessPage';
+import PaymentFailurePage from './pages/PaymentFailurePage';
 
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem('token');
@@ -65,6 +67,8 @@ function App() {
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/refund" element={<RefundPage />} />
           <Route path="/contacts" element={<ContactsPage />} />
+          <Route path="/payment/success" element={<PaymentSuccessPage />} />
+          <Route path="/payment/failure" element={<PaymentFailurePage />} />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" />
