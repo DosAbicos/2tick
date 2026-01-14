@@ -4824,6 +4824,410 @@ async def upload_notification_image(
     return {"image_url": image_url}
 
 
+# ==================== FREEDOMPAY PAYMENT INTEGRATION ====================
+
+# FreedomPay Configuration
+FREEDOMPAY_MERCHANT_ID = os.environ.get('FREEDOMPAY_MERCHANT_ID', '581401')
+FREEDOMPAY_SECRET_KEY = os.environ.get('FREEDOMPAY_SECRET_KEY', 'h8pdepQhoWNM0bGT')
+FREEDOMPAY_API_URL = 'https://api.freedompay.kz'
+FREEDOMPAY_TESTING_MODE = os.environ.get('FREEDOMPAY_TESTING_MODE', '1')  # 1 = test, 0 = live
+
+def generate_freedompay_signature(params: dict, secret_key: str) -> str:
+    """Generate FreedomPay signature (pg_sig)"""
+    # Sort params alphabetically by key
+    sorted_params = sorted(params.items())
+    # Create string for signing: script_name;param1;param2;...;secret_key
+    # For init_payment, script_name is 'init_payment.php' or just 'init_payment'
+    script_name = 'init_payment.php'
+    values = [script_name] + [str(v) for k, v in sorted_params] + [secret_key]
+    sign_string = ';'.join(values)
+    # MD5 hash
+    return hashlib.md5(sign_string.encode('utf-8')).hexdigest()
+
+def verify_freedompay_signature(params: dict, signature: str, secret_key: str, script_name: str = 'result') -> bool:
+    """Verify FreedomPay callback signature"""
+    # Remove pg_sig from params
+    params_copy = {k: v for k, v in params.items() if k != 'pg_sig'}
+    # Sort params alphabetically by key
+    sorted_params = sorted(params_copy.items())
+    # Create string for signing
+    values = [script_name] + [str(v) for k, v in sorted_params] + [secret_key]
+    sign_string = ';'.join(values)
+    # MD5 hash
+    calculated_sig = hashlib.md5(sign_string.encode('utf-8')).hexdigest()
+    return calculated_sig == signature
+
+class PaymentCreate(BaseModel):
+    plan_id: str  # 'start' or 'business'
+    amount: int
+    auto_renewal: bool = False
+
+class Payment(BaseModel):
+    """Payment record in database"""
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    plan_id: str
+    amount: int
+    currency: str = "KZT"
+    status: str = "pending"  # pending, success, failed, refunded
+    pg_payment_id: Optional[str] = None
+    pg_order_id: str = ""
+    auto_renewal: bool = False
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    paid_at: Optional[datetime] = None
+    expires_at: Optional[datetime] = None
+
+class Subscription(BaseModel):
+    """User subscription"""
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    plan_id: str  # 'free', 'start', 'business'
+    status: str = "active"  # active, expired, cancelled
+    contract_limit: int = 3
+    auto_renewal: bool = False
+    started_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    expires_at: Optional[datetime] = None
+    payment_id: Optional[str] = None
+
+# Plan configuration
+TARIFF_PLANS = {
+    'free': {'contracts': 3, 'price': 0},
+    'start': {'contracts': 20, 'price': 5990},
+    'business': {'contracts': 50, 'price': 14990}
+}
+
+@api_router.post("/payment/create")
+async def create_payment(
+    payment_data: PaymentCreate,
+    current_user: dict = Depends(get_current_user)
+):
+    """Create payment and get FreedomPay redirect URL"""
+    import httpx
+    
+    plan = TARIFF_PLANS.get(payment_data.plan_id)
+    if not plan:
+        raise HTTPException(status_code=400, detail="Invalid plan")
+    
+    if plan['price'] == 0:
+        raise HTTPException(status_code=400, detail="Free plan doesn't require payment")
+    
+    # Create payment record
+    payment = Payment(
+        user_id=current_user['user_id'],
+        plan_id=payment_data.plan_id,
+        amount=plan['price'],
+        auto_renewal=payment_data.auto_renewal,
+        pg_order_id=f"2tick_{current_user['user_id']}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
+    )
+    
+    payment_dict = payment.model_dump()
+    payment_dict['created_at'] = payment_dict['created_at'].isoformat() if payment_dict.get('created_at') else None
+    await db.payments.insert_one(payment_dict)
+    
+    # Prepare FreedomPay request
+    pg_salt = str(uuid.uuid4())[:16]
+    
+    # Get APP_URL for callbacks
+    app_url = os.environ.get('APP_URL', 'https://2tick.kz')
+    
+    # Plan description
+    plan_names = {
+        'start': 'Тариф START - 20 договоров/месяц',
+        'business': 'Тариф BUSINESS - 50 договоров/месяц'
+    }
+    
+    params = {
+        'pg_merchant_id': FREEDOMPAY_MERCHANT_ID,
+        'pg_order_id': payment.pg_order_id,
+        'pg_amount': str(plan['price']),
+        'pg_currency': 'KZT',
+        'pg_description': plan_names.get(payment_data.plan_id, f'Подписка {payment_data.plan_id}'),
+        'pg_salt': pg_salt,
+        'pg_testing_mode': FREEDOMPAY_TESTING_MODE,
+        'pg_result_url': f'{app_url}/api/payment/result',
+        'pg_success_url': f'{app_url}/payment/success',
+        'pg_failure_url': f'{app_url}/payment/failure',
+        'pg_language': 'ru',
+        'pg_user_id': current_user['user_id'],
+    }
+    
+    # Generate signature
+    params['pg_sig'] = generate_freedompay_signature(params, FREEDOMPAY_SECRET_KEY)
+    
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                f'{FREEDOMPAY_API_URL}/init_payment.php',
+                data=params,
+                timeout=30.0
+            )
+            
+            # Parse XML response
+            import xml.etree.ElementTree as ET
+            root = ET.fromstring(response.text)
+            
+            pg_status = root.find('pg_status')
+            if pg_status is not None and pg_status.text == 'ok':
+                pg_redirect_url = root.find('pg_redirect_url')
+                pg_payment_id = root.find('pg_payment_id')
+                
+                if pg_redirect_url is not None:
+                    # Update payment with pg_payment_id
+                    if pg_payment_id is not None:
+                        await db.payments.update_one(
+                            {"id": payment.id},
+                            {"$set": {"pg_payment_id": pg_payment_id.text}}
+                        )
+                    
+                    return {
+                        "payment_id": payment.id,
+                        "payment_url": pg_redirect_url.text
+                    }
+            
+            # Error handling
+            pg_error_description = root.find('pg_error_description')
+            error_msg = pg_error_description.text if pg_error_description is not None else 'Payment initialization failed'
+            
+            await db.payments.update_one(
+                {"id": payment.id},
+                {"$set": {"status": "failed"}}
+            )
+            
+            raise HTTPException(status_code=400, detail=error_msg)
+            
+    except httpx.RequestError as e:
+        logging.error(f"FreedomPay request error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Payment service unavailable")
+
+@api_router.post("/payment/result")
+async def payment_result(request: Request):
+    """FreedomPay webhook callback (Result URL)"""
+    # Get form data
+    form_data = await request.form()
+    params = dict(form_data)
+    
+    logging.info(f"Payment result callback: {params}")
+    
+    # Verify signature
+    pg_sig = params.get('pg_sig', '')
+    if not verify_freedompay_signature(params, pg_sig, FREEDOMPAY_SECRET_KEY, 'result'):
+        logging.error("Invalid signature in payment callback")
+        return Response(
+            content='<?xml version="1.0" encoding="UTF-8"?><response><pg_status>error</pg_status><pg_description>Invalid signature</pg_description></response>',
+            media_type="application/xml"
+        )
+    
+    pg_order_id = params.get('pg_order_id', '')
+    pg_result = params.get('pg_result', '')
+    pg_payment_id = params.get('pg_payment_id', '')
+    
+    # Find payment
+    payment = await db.payments.find_one({"pg_order_id": pg_order_id})
+    if not payment:
+        logging.error(f"Payment not found: {pg_order_id}")
+        return Response(
+            content='<?xml version="1.0" encoding="UTF-8"?><response><pg_status>error</pg_status><pg_description>Order not found</pg_description></response>',
+            media_type="application/xml"
+        )
+    
+    if pg_result == '1':  # Success
+        # Activate subscription
+        plan = TARIFF_PLANS.get(payment['plan_id'])
+        expires_at = datetime.now(timezone.utc) + timedelta(days=30)
+        
+        # Create or update subscription
+        subscription = Subscription(
+            user_id=payment['user_id'],
+            plan_id=payment['plan_id'],
+            contract_limit=plan['contracts'],
+            auto_renewal=payment.get('auto_renewal', False),
+            expires_at=expires_at,
+            payment_id=payment['id']
+        )
+        
+        sub_dict = subscription.model_dump()
+        sub_dict['started_at'] = sub_dict['started_at'].isoformat() if sub_dict.get('started_at') else None
+        sub_dict['expires_at'] = sub_dict['expires_at'].isoformat() if sub_dict.get('expires_at') else None
+        
+        # Upsert subscription
+        await db.subscriptions.update_one(
+            {"user_id": payment['user_id']},
+            {"$set": sub_dict},
+            upsert=True
+        )
+        
+        # Update user's contract limit
+        await db.users.update_one(
+            {"id": payment['user_id']},
+            {"$set": {"contract_limit": plan['contracts']}}
+        )
+        
+        # Update payment status
+        await db.payments.update_one(
+            {"id": payment['id']},
+            {"$set": {
+                "status": "success",
+                "pg_payment_id": pg_payment_id,
+                "paid_at": datetime.now(timezone.utc).isoformat(),
+                "expires_at": expires_at.isoformat()
+            }}
+        )
+        
+        await log_audit("payment_success", user_id=payment['user_id'], 
+                       details=f"Plan: {payment['plan_id']}, Amount: {payment['amount']} KZT")
+        
+        logging.info(f"Payment successful: {pg_order_id}")
+        
+        return Response(
+            content='<?xml version="1.0" encoding="UTF-8"?><response><pg_status>ok</pg_status><pg_description>Payment accepted</pg_description></response>',
+            media_type="application/xml"
+        )
+    else:  # Failed
+        await db.payments.update_one(
+            {"id": payment['id']},
+            {"$set": {"status": "failed", "pg_payment_id": pg_payment_id}}
+        )
+        
+        await log_audit("payment_failed", user_id=payment['user_id'], 
+                       details=f"Plan: {payment['plan_id']}, Order: {pg_order_id}")
+        
+        logging.info(f"Payment failed: {pg_order_id}")
+        
+        return Response(
+            content='<?xml version="1.0" encoding="UTF-8"?><response><pg_status>ok</pg_status><pg_description>Failure recorded</pg_description></response>',
+            media_type="application/xml"
+        )
+
+@api_router.post("/payment/check")
+async def payment_check(request: Request):
+    """FreedomPay check URL callback"""
+    form_data = await request.form()
+    params = dict(form_data)
+    
+    logging.info(f"Payment check callback: {params}")
+    
+    pg_order_id = params.get('pg_order_id', '')
+    
+    # Find payment
+    payment = await db.payments.find_one({"pg_order_id": pg_order_id})
+    if not payment:
+        return Response(
+            content='<?xml version="1.0" encoding="UTF-8"?><response><pg_status>rejected</pg_status><pg_description>Order not found</pg_description></response>',
+            media_type="application/xml"
+        )
+    
+    # Check if already paid
+    if payment.get('status') == 'success':
+        return Response(
+            content='<?xml version="1.0" encoding="UTF-8"?><response><pg_status>rejected</pg_status><pg_description>Already paid</pg_description></response>',
+            media_type="application/xml"
+        )
+    
+    return Response(
+        content='<?xml version="1.0" encoding="UTF-8"?><response><pg_status>ok</pg_status><pg_description>Check passed</pg_description></response>',
+        media_type="application/xml"
+    )
+
+@api_router.get("/payment/status/{payment_id}")
+async def get_payment_status(
+    payment_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Get payment status"""
+    payment = await db.payments.find_one({
+        "id": payment_id,
+        "user_id": current_user['user_id']
+    })
+    
+    if not payment:
+        raise HTTPException(status_code=404, detail="Payment not found")
+    
+    return {
+        "id": payment['id'],
+        "status": payment['status'],
+        "plan_id": payment['plan_id'],
+        "amount": payment['amount'],
+        "created_at": payment.get('created_at'),
+        "paid_at": payment.get('paid_at')
+    }
+
+@api_router.get("/subscriptions/current")
+async def get_current_subscription(current_user: dict = Depends(get_current_user)):
+    """Get user's current subscription"""
+    subscription = await db.subscriptions.find_one({"user_id": current_user['user_id']})
+    
+    if not subscription:
+        # Return free plan by default
+        return {
+            "plan_id": "free",
+            "status": "active",
+            "contract_limit": 3,
+            "auto_renewal": False,
+            "expires_at": None
+        }
+    
+    # Check if expired
+    if subscription.get('expires_at'):
+        expires_at = subscription['expires_at']
+        if isinstance(expires_at, str):
+            expires_at = datetime.fromisoformat(expires_at.replace('Z', '+00:00'))
+        
+        if expires_at < datetime.now(timezone.utc):
+            # Expired - revert to free
+            await db.subscriptions.update_one(
+                {"user_id": current_user['user_id']},
+                {"$set": {"status": "expired"}}
+            )
+            await db.users.update_one(
+                {"id": current_user['user_id']},
+                {"$set": {"contract_limit": 3}}
+            )
+            return {
+                "plan_id": "free",
+                "status": "expired",
+                "contract_limit": 3,
+                "auto_renewal": False,
+                "expires_at": subscription.get('expires_at')
+            }
+    
+    return {
+        "plan_id": subscription.get('plan_id', 'free'),
+        "status": subscription.get('status', 'active'),
+        "contract_limit": subscription.get('contract_limit', 3),
+        "auto_renewal": subscription.get('auto_renewal', False),
+        "expires_at": subscription.get('expires_at'),
+        "started_at": subscription.get('started_at')
+    }
+
+@api_router.post("/subscriptions/toggle-auto-renewal")
+async def toggle_auto_renewal(current_user: dict = Depends(get_current_user)):
+    """Toggle auto-renewal for subscription"""
+    subscription = await db.subscriptions.find_one({"user_id": current_user['user_id']})
+    
+    if not subscription:
+        raise HTTPException(status_code=404, detail="No active subscription")
+    
+    new_value = not subscription.get('auto_renewal', False)
+    
+    await db.subscriptions.update_one(
+        {"user_id": current_user['user_id']},
+        {"$set": {"auto_renewal": new_value}}
+    )
+    
+    return {"auto_renewal": new_value}
+
+# Backward compatibility endpoint
+@api_router.post("/subscriptions/create-payment")
+async def create_subscription_payment(
+    payment_data: PaymentCreate,
+    current_user: dict = Depends(get_current_user)
+):
+    """Alias for /payment/create for backward compatibility"""
+    return await create_payment(payment_data, current_user)
+
+
 # ==================== UPLOAD PDF CONTRACT ====================
 
 @api_router.post("/contracts/upload-pdf")
