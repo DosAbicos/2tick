@@ -4951,15 +4951,19 @@ async def create_payment(
     }
     
     # Generate signature
-    params['pg_sig'] = generate_freedompay_signature(params, FREEDOMPAY_SECRET_KEY)
+    params['pg_sig'] = generate_freedompay_signature('init_payment.php', params, FREEDOMPAY_SECRET_KEY)
+    
+    logging.info(f"FreedomPay request params: {params}")
     
     try:
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
+        async with httpx.AsyncClient() as http_client:
+            response = await http_client.post(
                 f'{FREEDOMPAY_API_URL}/init_payment.php',
                 data=params,
                 timeout=30.0
             )
+            
+            logging.info(f"FreedomPay response: {response.text}")
             
             # Parse XML response
             import xml.etree.ElementTree as ET
