@@ -5013,7 +5013,7 @@ async def payment_result(request: Request):
     
     # Verify signature
     pg_sig = params.get('pg_sig', '')
-    if not verify_freedompay_signature(params, pg_sig, FREEDOMPAY_SECRET_KEY, 'result'):
+    if not verify_freedompay_signature('result', params, pg_sig, FREEDOMPAY_SECRET_KEY):
         logging.error("Invalid signature in payment callback")
         return Response(
             content='<?xml version="1.0" encoding="UTF-8"?><response><pg_status>error</pg_status><pg_description>Invalid signature</pg_description></response>',
