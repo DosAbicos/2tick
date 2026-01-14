@@ -198,28 +198,28 @@ const NewLandingPage = () => {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {/* Free Plan */}
             <div className="minimal-card p-8 space-y-6">
               <div>
-                <h3 className="text-2xl font-bold text-gray-900">{t('landing.pricing.free.title')}</h3>
+                <h3 className="text-2xl font-bold text-gray-900">FREE</h3>
+                <p className="text-sm text-gray-500 mt-1">{t('landing.pricing.free.desc', 'Для тестирования')}</p>
                 <div className="mt-4 flex items-baseline">
-                  <span className="text-4xl font-bold text-gray-900">{t('landing.pricing.free.price')}</span>
-                  <span className="ml-2 text-gray-500">/ {t('landing.pricing.free.period')}</span>
+                  <span className="text-4xl font-bold text-gray-900">0 ₸</span>
                 </div>
               </div>
               <ul className="space-y-4">
                 <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-gray-600">{t('landing.pricing.free.feature1')}</span>
+                  <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <span className="text-gray-600">{t('landing.pricing.free.feature1', 'До 3 договоров')}</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-gray-600">{t('landing.pricing.free.feature2')}</span>
+                  <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <span className="text-gray-600">{t('landing.pricing.free.feature2', 'Все способы верификации')}</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-gray-600">{t('landing.pricing.free.feature3')}</span>
+                  <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <span className="text-gray-600">{t('landing.pricing.free.feature3', 'Базовые шаблоны')}</span>
                 </li>
               </ul>
               <Link to="/register" className="block">
@@ -229,38 +229,74 @@ const NewLandingPage = () => {
               </Link>
             </div>
             
-            {/* Pro Plan */}
+            {/* Start Plan */}
             <div className="minimal-card p-8 space-y-6 border-2 border-blue-500 relative">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-500 text-white px-4 py-1 rounded-full text-sm font-medium">
-                {t('landing.pricing.pro.title')}
+                {t('landing.pricing.popular', 'Популярный')}
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-gray-900">{t('landing.pricing.pro.title')}</h3>
+                <h3 className="text-2xl font-bold text-gray-900">START</h3>
+                <p className="text-sm text-gray-500 mt-1">{t('landing.pricing.start.desc', 'Для малого бизнеса')}</p>
                 <div className="mt-4 flex items-baseline">
-                  <span className="text-4xl font-bold text-gray-900">{t('landing.pricing.pro.price')}</span>
-                  <span className="ml-2 text-gray-500">/ {t('landing.pricing.pro.period')}</span>
+                  <span className="text-4xl font-bold text-gray-900">5 990 ₸</span>
+                  <span className="ml-2 text-gray-500">/ {t('landing.pricing.month', 'месяц')}</span>
                 </div>
               </div>
               <ul className="space-y-4">
                 <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-gray-600">{t('landing.pricing.pro.feature1')}</span>
+                  <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <span className="text-gray-600">{t('landing.pricing.start.feature1', 'До 20 договоров')}</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-gray-600">{t('landing.pricing.pro.feature2')}</span>
+                  <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <span className="text-gray-600">{t('landing.pricing.start.feature2', 'Все способы верификации')}</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-gray-600">{t('landing.pricing.pro.feature3')}</span>
+                  <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <span className="text-gray-600">{t('landing.pricing.start.feature3', 'Все шаблоны')}</span>
                 </li>
                 <li className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span className="text-gray-600">{t('landing.pricing.pro.feature4')}</span>
+                  <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <span className="text-gray-600">{t('landing.pricing.start.feature4', 'Приоритетная поддержка')}</span>
                 </li>
               </ul>
               <Link to="/register" className="block">
                 <button className="w-full py-4 font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30">
+                  {t('landing.pricing.choosePlan')}
+                </button>
+              </Link>
+            </div>
+
+            {/* Business Plan */}
+            <div className="minimal-card p-8 space-y-6">
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900">BUSINESS</h3>
+                <p className="text-sm text-gray-500 mt-1">{t('landing.pricing.business.desc', 'Для компаний')}</p>
+                <div className="mt-4 flex items-baseline">
+                  <span className="text-4xl font-bold text-gray-900">14 990 ₸</span>
+                  <span className="ml-2 text-gray-500">/ {t('landing.pricing.month', 'месяц')}</span>
+                </div>
+              </div>
+              <ul className="space-y-4">
+                <li className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <span className="text-gray-600">{t('landing.pricing.business.feature1', 'До 50 договоров')}</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <span className="text-gray-600">{t('landing.pricing.business.feature2', 'Все способы верификации')}</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <span className="text-gray-600">{t('landing.pricing.business.feature3', 'Все шаблоны')}</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <span className="text-gray-600">{t('landing.pricing.business.feature4', 'Персональный менеджер')}</span>
+                </li>
+              </ul>
+              <Link to="/register" className="block">
+                <button className="w-full py-4 font-medium text-blue-600 bg-blue-50 rounded-xl hover:bg-blue-100 transition-all">
                   {t('landing.pricing.choosePlan')}
                 </button>
               </Link>
@@ -288,18 +324,75 @@ const NewLandingPage = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-4 bg-gray-900">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-gray-400 text-sm">
-            {t('landing.footer.copyright')}
-          </p>
-          <div className="flex gap-6">
-            <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
-              {t('landing.footer.privacy')}
-            </a>
-            <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
-              {t('landing.footer.terms')}
-            </a>
+      <footer className="py-12 px-4 bg-gray-900">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-4 gap-8 mb-8">
+            {/* Company Info */}
+            <div className="md:col-span-2">
+              <h3 className="text-white font-bold text-lg mb-4">2tick.kz</h3>
+              <p className="text-gray-400 text-sm mb-4">
+                {t('landing.footer.companyDesc', 'Сервис электронного подписания договоров для бизнеса в Казахстане')}
+              </p>
+              <div className="text-gray-500 text-sm space-y-1">
+                <p>ИП «AN Venture»</p>
+                <p>БИН: 040825501172</p>
+              </div>
+            </div>
+            
+            {/* Legal Links */}
+            <div>
+              <h4 className="text-white font-semibold mb-4">{t('landing.footer.legal', 'Юридическая информация')}</h4>
+              <ul className="space-y-2">
+                <li>
+                  <Link to="/offer" className="text-gray-400 hover:text-white text-sm transition-colors">
+                    {t('landing.footer.offer', 'Публичная оферта')}
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors">
+                    {t('landing.footer.privacy', 'Политика конфиденциальности')}
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/refund" className="text-gray-400 hover:text-white text-sm transition-colors">
+                    {t('landing.footer.refund', 'Правила возврата')}
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            
+            {/* Contacts */}
+            <div>
+              <h4 className="text-white font-semibold mb-4">{t('landing.footer.contacts', 'Контакты')}</h4>
+              <ul className="space-y-2 text-sm">
+                <li>
+                  <a href="mailto:admin@2tick.kz" className="text-gray-400 hover:text-white transition-colors">
+                    admin@2tick.kz
+                  </a>
+                </li>
+                <li>
+                  <a href="tel:+77074003201" className="text-gray-400 hover:text-white transition-colors">
+                    +7 707 400 3201
+                  </a>
+                </li>
+                <li>
+                  <Link to="/contacts" className="text-gray-400 hover:text-white transition-colors">
+                    {t('landing.footer.allContacts', 'Все контакты')}
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+          
+          {/* Bottom */}
+          <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-gray-500 text-sm">
+              © {new Date().getFullYear()} 2tick.kz — {t('landing.footer.copyright', 'Все права защищены')}
+            </p>
+            <div className="flex items-center gap-4">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" className="h-6 opacity-50" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" className="h-6 opacity-50" />
+            </div>
           </div>
         </div>
       </footer>
