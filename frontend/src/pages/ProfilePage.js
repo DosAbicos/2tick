@@ -157,7 +157,7 @@ const ProfilePage = () => {
     }
   };
 
-  // Handle tariff selection - prepared for payment integration
+  // Handle tariff selection - FreedomPay integration
   const handleSelectTariff = async (plan) => {
     if (plan.id === 'free') {
       // Free plan - no payment needed
@@ -169,26 +169,24 @@ const ProfilePage = () => {
     setProcessingPayment(true);
     
     try {
-      // TODO: Integrate with acquiring service
-      // This will be replaced with actual payment gateway integration
-      const response = await axios.post(`${API}/subscriptions/create-payment`, {
+      const response = await axios.post(`${API}/payment/create`, {
         plan_id: plan.id,
         amount: plan.price,
-        auto_renewal: true
+        auto_renewal: false
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      // Redirect to payment page or open payment modal
+      // Redirect to FreedomPay payment page
       if (response.data.payment_url) {
         window.location.href = response.data.payment_url;
       } else {
-        toast.success(t('tariffs.paymentInitiated'));
+        toast.error(t('tariffs.paymentError', 'Ошибка инициализации платежа'));
       }
     } catch (error) {
       console.error('Payment error:', error);
-      // For now, show info that payment integration is coming soon
-      toast.info(t('tariffs.paymentComingSoon'));
+      const errorMsg = error.response?.data?.detail || t('tariffs.paymentError', 'Ошибка при создании платежа');
+      toast.error(errorMsg);
     } finally {
       setProcessingPayment(false);
     }
