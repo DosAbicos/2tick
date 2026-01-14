@@ -4832,29 +4832,26 @@ FREEDOMPAY_SECRET_KEY = os.environ.get('FREEDOMPAY_SECRET_KEY', 'h8pdepQhoWNM0bG
 FREEDOMPAY_API_URL = 'https://api.freedompay.kz'
 FREEDOMPAY_TESTING_MODE = os.environ.get('FREEDOMPAY_TESTING_MODE', '1')  # 1 = test, 0 = live
 
-def generate_freedompay_signature(params: dict, secret_key: str) -> str:
-    """Generate FreedomPay signature (pg_sig)"""
-    # Sort params alphabetically by key
-    sorted_params = sorted(params.items())
-    # Create string for signing: script_name;param1;param2;...;secret_key
-    # For init_payment, script_name is 'init_payment.php' or just 'init_payment'
-    script_name = 'init_payment.php'
-    values = [script_name] + [str(v) for k, v in sorted_params] + [secret_key]
+def generate_freedompay_signature(script_name: str, params: dict, secret_key: str) -> str:
+    """Generate FreedomPay signature (pg_sig)
+    
+    Signature is MD5 hash of: script_name;param1_value;param2_value;...;secret_key
+    Parameters are sorted alphabetically by key name
+    """
+    # Sort params alphabetically by key (only params starting with pg_)
+    sorted_keys = sorted([k for k in params.keys() if k.startswith('pg_') and k != 'pg_sig'])
+    values = [script_name]
+    for key in sorted_keys:
+        values.append(str(params[key]))
+    values.append(secret_key)
+    
     sign_string = ';'.join(values)
-    # MD5 hash
+    logging.debug(f"Signature string: {sign_string}")
     return hashlib.md5(sign_string.encode('utf-8')).hexdigest()
 
-def verify_freedompay_signature(params: dict, signature: str, secret_key: str, script_name: str = 'result') -> bool:
+def verify_freedompay_signature(script_name: str, params: dict, signature: str, secret_key: str) -> bool:
     """Verify FreedomPay callback signature"""
-    # Remove pg_sig from params
-    params_copy = {k: v for k, v in params.items() if k != 'pg_sig'}
-    # Sort params alphabetically by key
-    sorted_params = sorted(params_copy.items())
-    # Create string for signing
-    values = [script_name] + [str(v) for k, v in sorted_params] + [secret_key]
-    sign_string = ';'.join(values)
-    # MD5 hash
-    calculated_sig = hashlib.md5(sign_string.encode('utf-8')).hexdigest()
+    calculated_sig = generate_freedompay_signature(script_name, params, secret_key)
     return calculated_sig == signature
 
 class PaymentCreate(BaseModel):
