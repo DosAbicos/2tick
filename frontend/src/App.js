@@ -21,6 +21,10 @@ import ProfilePage from './pages/ProfilePage';
 import TemplatesPage from './pages/TemplatesPage';
 import UploadPdfContractPage from './pages/UploadPdfContractPage';
 import AdminTemplatesPage from './pages/AdminTemplatesPage';
+import OfferPage from './pages/OfferPage';
+import PrivacyPage from './pages/PrivacyPage';
+import RefundPage from './pages/RefundPage';
+import ContactsPage from './pages/ContactsPage';
 
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem('token');
@@ -57,6 +61,10 @@ function App() {
           <Route path="/admin/notifications" element={<PrivateRoute><NotificationsAdminPage /></PrivateRoute>} />
           <Route path="/admin/logs/:userId" element={<PrivateRoute><UserLogsPage /></PrivateRoute>} />
           <Route path="/admin/templates" element={<PrivateRoute><AdminTemplatesPage /></PrivateRoute>} />
+          <Route path="/offer" element={<OfferPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/refund" element={<RefundPage />} />
+          <Route path="/contacts" element={<ContactsPage />} />
         </Routes>
       </BrowserRouter>
       <Toaster position="top-right" />
