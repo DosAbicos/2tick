@@ -75,3 +75,5 @@ sendgrid==6.12.5
 python-telegram-bot==21.8
 psutil==5.9.8
 httpx==0.28.1
+twilio
+httpx
