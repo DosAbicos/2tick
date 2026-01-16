@@ -34,6 +34,7 @@ const ProfilePage = () => {
     new_password: '',
     confirm_password: ''
   });
+  const [subscription, setSubscription] = useState(null);
 
   // Tariff plans data
   const tariffPlans = [
