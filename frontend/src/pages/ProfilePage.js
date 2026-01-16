@@ -93,6 +93,7 @@ const ProfilePage = () => {
   useEffect(() => {
     fetchUserProfile();
     fetchSubscription();
+    fetchPaymentHistory();
   }, []);
 
   const fetchSubscription = async () => {
@@ -103,6 +104,17 @@ const ProfilePage = () => {
       setSubscription(response.data);
     } catch (error) {
       console.error('Error fetching subscription:', error);
+    }
+  };
+
+  const fetchPaymentHistory = async () => {
+    try {
+      const response = await axios.get(`${API}/payment/history`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setPaymentHistory(response.data);
+    } catch (error) {
+      console.error('Error fetching payment history:', error);
     }
   };
 
