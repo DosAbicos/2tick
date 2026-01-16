@@ -66,7 +66,7 @@ const ProfilePage = () => {
         { key: 'signing', value: t('tariffs.signingMethods') },
         { key: 'support', value: t('tariffs.standardSupport') },
       ],
-      popular: false,
+      popular: true,
       color: 'blue'
     },
     {
@@ -83,7 +83,7 @@ const ProfilePage = () => {
         { key: 'branding', value: t('tariffs.contractBranding') },
         { key: 'support', value: t('tariffs.prioritySupport') },
       ],
-      popular: true,
+      popular: false,
       color: 'purple'
     }
   ];
