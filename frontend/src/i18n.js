@@ -5,13 +5,13 @@ const resources = {
   ru: {
     translation: {
       // ===== LANDING PAGE =====
-      "landing.hero.title": "Подписывайте договоры",
-      "landing.hero.subtitle": "за 2 клика",
-      "landing.hero.description": "Современная платформа для электронного подписания договоров в Казахстане. Быстро, безопасно, юридически значимо.",
+      "landing.hero.title": "Электронное подписание",
+      "landing.hero.subtitle": "договоров в Казахстане",
+      "landing.hero.description": "Создавайте, отправляйте и подписывайте договоры онлайн. Верификация через SMS, звонок или Telegram. Юридически значимо и безопасно.",
       "landing.hero.cta": "Создать контракт",
       "landing.hero.ctaSecondary": "Узнать больше",
-      "landing.hero.startFree": "Начать бесплатно",
-      "landing.hero.badge": "Быстро как колибри",
+      "landing.hero.startFree": "Попробовать бесплатно",
+      "landing.hero.badge": "Цифровая подпись для бизнеса",
       "landing.hero.stat1": "на подпись",
       "landing.hero.stat2": "безопасно",
       "landing.hero.stat3": "доступность",
