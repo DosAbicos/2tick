@@ -703,6 +703,29 @@ const RegisterPage = () => {
                   )}
                 </div>
 
+                {/* Согласие с офертой */}
+                <div className="space-y-2 pt-2">
+                  <label className="flex items-start gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={agreeToTerms}
+                      onChange={(e) => setAgreeToTerms(e.target.checked)}
+                      className="mt-1 w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                      data-testid="agree-terms-checkbox"
+                    />
+                    <span className="text-sm text-gray-600 leading-relaxed">
+                      {t('auth.register.agreeToTerms')}{' '}
+                      <Link to="/offer" target="_blank" className="text-blue-600 hover:text-blue-700 underline">
+                        {t('auth.register.publicOffer')}
+                      </Link>
+                      {' '}{t('auth.register.and')}{' '}
+                      <Link to="/privacy" target="_blank" className="text-blue-600 hover:text-blue-700 underline">
+                        {t('auth.register.privacyPolicy')}
+                      </Link>
+                    </span>
+                  </label>
+                </div>
+
                 <div className="flex gap-3 pt-2">
                   <button
                     type="button"
