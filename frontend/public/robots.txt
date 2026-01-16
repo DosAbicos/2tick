@@ -1,0 +1,22 @@
+# robots.txt for 2tick.kz
+# Электронное подписание договоров в Казахстане
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://2tick.kz/sitemap.xml
+
+# Disallow admin and API routes
+Disallow: /api/
+Disallow: /admin/
+
+# Allow all crawlers to index main pages
+User-agent: Googlebot
+Allow: /
+
+User-agent: Yandex
+Allow: /
+
+User-agent: Mail.RU
+Allow: /
