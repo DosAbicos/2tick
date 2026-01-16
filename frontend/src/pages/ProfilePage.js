@@ -779,6 +779,142 @@ const ProfilePage = () => {
             </div>
           </motion.div>
         )}
+
+        {/* Payment History Tab */}
+        {activeTab === 'history' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="px-2 sm:px-0"
+          >
+            <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                <Receipt className="w-6 h-6 text-blue-600" />
+                {t('profile.paymentHistory', 'История покупок')}
+              </h2>
+
+              {paymentHistory.length === 0 ? (
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Receipt className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <p className="text-gray-500">{t('profile.noPayments', 'У вас пока нет покупок')}</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {paymentHistory.map((payment) => (
+                    <div 
+                      key={payment.id}
+                      className={`border rounded-xl p-5 transition-all ${
+                        payment.status === 'success' 
+                          ? 'border-green-200 bg-green-50/50' 
+                          : payment.status === 'pending'
+                            ? 'border-yellow-200 bg-yellow-50/50'
+                            : 'border-red-200 bg-red-50/50'
+                      }`}
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div className="flex items-start gap-4">
+                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                            payment.status === 'success' 
+                              ? 'bg-green-100' 
+                              : payment.status === 'pending'
+                                ? 'bg-yellow-100'
+                                : 'bg-red-100'
+                          }`}>
+                            {payment.status === 'success' ? (
+                              <CheckCircle className="w-6 h-6 text-green-600" />
+                            ) : payment.status === 'pending' ? (
+                              <Clock className="w-6 h-6 text-yellow-600" />
+                            ) : (
+                              <XCircle className="w-6 h-6 text-red-600" />
+                            )}
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-gray-900">
+                              {t('tariffs.plan', 'Тариф')} {payment.plan_id?.toUpperCase()}
+                            </h3>
+                            <p className="text-sm text-gray-500 mt-1">
+                              {payment.created_at && new Date(payment.created_at).toLocaleDateString(
+                                i18n.language === 'ru' ? 'ru-RU' : i18n.language === 'kk' ? 'kk-KZ' : 'en-US',
+                                { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }
+                              )}
+                            </p>
+                            <p className="text-xs text-gray-400 mt-1">
+                              {t('profile.orderId', 'Номер заказа')}: {payment.pg_order_id || payment.id}
+                            </p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-4">
+                          <div className="text-right">
+                            <p className="text-xl font-bold text-gray-900">
+                              {payment.amount?.toLocaleString()} ₸
+                            </p>
+                            <p className={`text-sm font-medium ${
+                              payment.status === 'success' 
+                                ? 'text-green-600' 
+                                : payment.status === 'pending'
+                                  ? 'text-yellow-600'
+                                  : 'text-red-600'
+                            }`}>
+                              {payment.status === 'success' 
+                                ? t('profile.statusPaid', 'Оплачено')
+                                : payment.status === 'pending'
+                                  ? t('profile.statusPending', 'Ожидает оплаты')
+                                  : t('profile.statusFailed', 'Не оплачено')
+                              }
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Receipt details for successful payments */}
+                      {payment.status === 'success' && (
+                        <div className="mt-4 pt-4 border-t border-green-200">
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
+                            <div>
+                              <p className="text-gray-500">{t('profile.paymentDate', 'Дата оплаты')}</p>
+                              <p className="font-medium text-gray-900">
+                                {payment.paid_at && new Date(payment.paid_at).toLocaleDateString(
+                                  i18n.language === 'ru' ? 'ru-RU' : 'en-US'
+                                )}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-gray-500">{t('profile.validUntil', 'Действует до')}</p>
+                              <p className="font-medium text-gray-900">
+                                {payment.expires_at && new Date(payment.expires_at).toLocaleDateString(
+                                  i18n.language === 'ru' ? 'ru-RU' : 'en-US'
+                                )}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-gray-500">{t('profile.contractLimit', 'Лимит договоров')}</p>
+                              <p className="font-medium text-gray-900">
+                                {payment.plan_id === 'start' ? '20' : payment.plan_id === 'business' ? '50' : '3'} / {t('tariffs.perMonth', 'мес')}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-gray-500">{t('profile.paymentMethod', 'Способ оплаты')}</p>
+                              <p className="font-medium text-gray-900">
+                                <span className="inline-flex items-center gap-1">
+                                  <CreditCard className="w-4 h-4" />
+                                  FreedomPay
+                                </span>
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
       </div>
     </div>
   );
