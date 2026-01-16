@@ -5154,6 +5154,16 @@ async def get_payment_status(
         "paid_at": payment.get('paid_at')
     }
 
+@api_router.get("/payment/history")
+async def get_payment_history(current_user: dict = Depends(get_current_user)):
+    """Get user's payment history"""
+    payments = await db.payments.find(
+        {"user_id": current_user['user_id']},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    
+    return payments
+
 @api_router.get("/subscriptions/current")
 async def get_current_subscription(current_user: dict = Depends(get_current_user)):
     """Get user's current subscription"""
