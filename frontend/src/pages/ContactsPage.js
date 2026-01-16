@@ -58,9 +58,7 @@ const ContactsPage = () => {
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-1">{t('legal.contacts.address')}</h3>
                   <p className="text-gray-700">
-                    Казахстан, г. Алматы,<br />
-                    микрорайон Таугуль, дом 13,<br />
-                    кв/офис 64
+                    {t('legal.contacts.addressValue')}
                   </p>
                 </div>
               </div>
