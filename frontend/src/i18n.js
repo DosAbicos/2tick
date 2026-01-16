@@ -2123,6 +2123,12 @@ const resources = {
       "landing.footer.copyright": "© 2025 Two Tick. All rights reserved.",
       "landing.footer.privacy": "Privacy Policy",
       "landing.footer.terms": "Terms of Service",
+      "landing.footer.companyDesc": "Electronic contract signing service for business in Kazakhstan",
+      "landing.footer.legal": "Legal Information",
+      "landing.footer.offer": "Public Offer",
+      "landing.footer.refund": "Refund Policy",
+      "landing.footer.contacts": "Contacts",
+      "landing.footer.allContacts": "All Contacts",
       
       // ===== AUTH =====
       "auth.login.title": "Log In",
