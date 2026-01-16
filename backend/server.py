@@ -105,7 +105,7 @@ class User(BaseModel):
     legal_address: Optional[str] = None  # Юридический адрес
     document_upload: Optional[str] = None  # Landlord's ID/passport
     document_filename: Optional[str] = None
-    contract_limit: int = 5  # Лимит на количество договоров (по умолчанию 5)
+    contract_limit: int = 3  # Лимит на количество договоров (по умолчанию 3)
     is_admin: bool = False  # Администратор
     favorite_templates: List[str] = []  # ID избранных шаблонов
     viewed_notifications: List[str] = []  # ID просмотренных оповещений
@@ -1771,7 +1771,7 @@ async def get_my_contract_limit(current_user: dict = Depends(get_current_user)):
     if not user_doc:
         raise HTTPException(status_code=404, detail="User not found")
     
-    contract_limit = user_doc.get('contract_limit', 10)
+    contract_limit = user_doc.get('contract_limit', 3)
     contracts_used = await db.contracts.count_documents({
         "creator_id": current_user['user_id'], 
         "deleted": {"$ne": True}
@@ -2448,7 +2448,7 @@ async def create_contract(contract_data: ContractCreate, current_user: dict = De
         "creator_id": current_user['user_id'],
         "status": "signed"
     })
-    contract_limit = user.get('contract_limit', 10) if user else 10
+    contract_limit = user.get('contract_limit', 3) if user else 3
     
     if signed_contract_count >= contract_limit:
         raise HTTPException(
