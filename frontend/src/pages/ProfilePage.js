@@ -718,19 +718,19 @@ const ProfilePage = () => {
                     {/* Select Button */}
                     <button
                       onClick={() => handleSelectTariff(plan)}
-                      disabled={processingPayment || (user?.subscription_plan === plan.id)}
+                      disabled={processingPayment || (subscription?.plan_id === plan.id)}
                       className={`w-full py-3 px-4 rounded-xl font-semibold transition-all ${
-                        user?.subscription_plan === plan.id
+                        subscription?.plan_id === plan.id
                           ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
                           : plan.popular
-                            ? 'bg-gradient-to-r from-purple-600 to-purple-500 text-white hover:from-purple-700 hover:to-purple-600 shadow-lg shadow-purple-500/30'
-                            : plan.color === 'blue'
-                              ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:from-blue-700 hover:to-blue-600 shadow-lg shadow-blue-500/20'
+                            ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:from-blue-700 hover:to-blue-600 shadow-lg shadow-blue-500/30'
+                            : plan.color === 'purple'
+                              ? 'bg-gradient-to-r from-purple-600 to-purple-500 text-white hover:from-purple-700 hover:to-purple-600 shadow-lg shadow-purple-500/20'
                               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                       data-testid={`select-plan-${plan.id}`}
                     >
-                      {user?.subscription_plan === plan.id 
+                      {subscription?.plan_id === plan.id 
                         ? t('tariffs.currentPlanBtn')
                         : processingPayment && selectedPlan?.id === plan.id
                           ? t('tariffs.processing')
