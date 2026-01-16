@@ -305,6 +305,85 @@ const NewLandingPage = () => {
         </div>
       </section>
 
+      {/* FAQ Section */}
+      <section id="faq" className="py-20 px-4 bg-gray-50">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              {t('faq.title')}
+            </h2>
+          </div>
+          
+          <div className="space-y-4">
+            {/* FAQ Item 1 */}
+            <details className="group bg-white rounded-xl shadow-sm border border-gray-200">
+              <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
+                <span className="font-semibold text-gray-900">{t('faq.q1')}</span>
+                <ChevronDown className="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" />
+              </summary>
+              <div className="px-6 pb-6 text-gray-600">
+                {t('faq.a1')}
+              </div>
+            </details>
+
+            {/* FAQ Item 2 */}
+            <details className="group bg-white rounded-xl shadow-sm border border-gray-200">
+              <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
+                <span className="font-semibold text-gray-900">{t('faq.q2')}</span>
+                <ChevronDown className="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" />
+              </summary>
+              <div className="px-6 pb-6 text-gray-600">
+                {t('faq.a2')}
+              </div>
+            </details>
+
+            {/* FAQ Item 3 */}
+            <details className="group bg-white rounded-xl shadow-sm border border-gray-200">
+              <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
+                <span className="font-semibold text-gray-900">{t('faq.q3')}</span>
+                <ChevronDown className="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" />
+              </summary>
+              <div className="px-6 pb-6 text-gray-600">
+                {t('faq.a3')}
+              </div>
+            </details>
+
+            {/* FAQ Item 4 */}
+            <details className="group bg-white rounded-xl shadow-sm border border-gray-200">
+              <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
+                <span className="font-semibold text-gray-900">{t('faq.q4')}</span>
+                <ChevronDown className="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" />
+              </summary>
+              <div className="px-6 pb-6 text-gray-600">
+                {t('faq.a4')}
+              </div>
+            </details>
+
+            {/* FAQ Item 5 */}
+            <details className="group bg-white rounded-xl shadow-sm border border-gray-200">
+              <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
+                <span className="font-semibold text-gray-900">{t('faq.q5')}</span>
+                <ChevronDown className="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" />
+              </summary>
+              <div className="px-6 pb-6 text-gray-600">
+                {t('faq.a5')}
+              </div>
+            </details>
+
+            {/* FAQ Item 6 */}
+            <details className="group bg-white rounded-xl shadow-sm border border-gray-200">
+              <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
+                <span className="font-semibold text-gray-900">{t('faq.q6')}</span>
+                <ChevronDown className="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" />
+              </summary>
+              <div className="px-6 pb-6 text-gray-600">
+                {t('faq.a6')}
+              </div>
+            </details>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-20 px-4 bg-gradient-to-r from-blue-600 to-blue-500">
         <div className="max-w-4xl mx-auto text-center">
