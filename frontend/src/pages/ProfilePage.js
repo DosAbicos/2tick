@@ -112,7 +112,9 @@ const ProfilePage = () => {
       const response = await axios.get(`${API}/payment/history`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setPaymentHistory(response.data);
+      // Показываем только оплаченные платежи
+      const successfulPayments = response.data.filter(p => p.status === 'success');
+      setPaymentHistory(successfulPayments);
     } catch (error) {
       console.error('Error fetching payment history:', error);
     }
