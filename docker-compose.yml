@@ -4,21 +4,21 @@ services:
   # MongoDB Database
   mongodb:
     image: mongo:7.0
-    container_name: signify_mongodb
+    container_name: 2tick_mongodb
     restart: always
     volumes:
       - mongodb_data:/data/db
     environment:
       - MONGO_INITDB_DATABASE=signify_db
     networks:
-      - signify_network
+      - 2tick_network
 
   # FastAPI Backend
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: signify_backend
+    container_name: 2tick_backend
     restart: always
     environment:
       - MONGO_URL=mongodb://mongodb:27017/signify_db
@@ -28,10 +28,11 @@ services:
       - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
       - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
       - TWILIO_PHONE_NUMBER=${TWILIO_PHONE_NUMBER}
+      - APP_URL=https://2tick.kz
     depends_on:
       - mongodb
     networks:
-      - signify_network
+      - 2tick_network
     volumes:
       - uploads_data:/app/uploads
 
@@ -40,7 +41,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile.bot
-    container_name: signify_telegram_bot
+    container_name: 2tick_telegram_bot
     restart: always
     environment:
       - MONGO_URL=mongodb://mongodb:27017/signify_db
@@ -49,7 +50,7 @@ services:
     depends_on:
       - mongodb
     networks:
-      - signify_network
+      - 2tick_network
 
   # React Frontend
   frontend:
@@ -57,16 +58,16 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        - REACT_APP_BACKEND_URL=${REACT_APP_BACKEND_URL:-https://yourdomain.kz}
-    container_name: signify_frontend
+        - REACT_APP_BACKEND_URL=${REACT_APP_BACKEND_URL:-https://2tick.kz}
+    container_name: 2tick_frontend
     restart: always
     networks:
-      - signify_network
+      - 2tick_network
 
   # Nginx Reverse Proxy
   nginx:
     image: nginx:alpine
-    container_name: signify_nginx
+    container_name: 2tick_nginx
     restart: always
     ports:
       - "80:80"
@@ -80,19 +81,21 @@ services:
       - backend
       - frontend
     networks:
-      - signify_network
+      - 2tick_network
 
   # Certbot for SSL
   certbot:
     image: certbot/certbot
-    container_name: signify_certbot
+    container_name: 2tick_certbot
     volumes:
       - certbot_data:/var/www/certbot
       - letsencrypt_data:/etc/letsencrypt
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    networks:
+      - 2tick_network
 
 networks:
-  signify_network:
+  2tick_network:
     driver: bridge
 
 volumes:
