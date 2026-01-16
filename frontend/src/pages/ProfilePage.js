@@ -752,7 +752,11 @@ const ProfilePage = () => {
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-1">{t('tariffs.paymentInfo')}</h4>
-                  <p className="text-sm text-gray-600">{t('tariffs.paymentInfoDesc')}</p>
+                  <p className="text-sm text-gray-600 mb-2">{t('tariffs.paymentInfoDesc')}</p>
+                  <div className="flex items-center gap-3 mt-3">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" className="h-5" />
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" className="h-5" />
+                  </div>
                 </div>
               </div>
             </div>
