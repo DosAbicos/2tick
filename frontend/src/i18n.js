@@ -73,6 +73,12 @@ const resources = {
       "landing.footer.copyright": "© 2025 Two Tick. Все права защищены.",
       "landing.footer.privacy": "Политика конфиденциальности",
       "landing.footer.terms": "Условия использования",
+      "landing.footer.companyDesc": "Сервис электронного подписания договоров для бизнеса в Казахстане",
+      "landing.footer.legal": "Юридическая информация",
+      "landing.footer.offer": "Публичная оферта",
+      "landing.footer.refund": "Правила возврата",
+      "landing.footer.contacts": "Контакты",
+      "landing.footer.allContacts": "Все контакты",
       
       // ===== AUTH =====
       "auth.login.title": "Вход в аккаунт",
