@@ -91,7 +91,19 @@ const ProfilePage = () => {
 
   useEffect(() => {
     fetchUserProfile();
+    fetchSubscription();
   }, []);
+
+  const fetchSubscription = async () => {
+    try {
+      const response = await axios.get(`${API}/subscriptions/current`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setSubscription(response.data);
+    } catch (error) {
+      console.error('Error fetching subscription:', error);
+    }
+  };
 
   const fetchUserProfile = async () => {
     try {
