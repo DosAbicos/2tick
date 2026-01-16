@@ -70,8 +70,8 @@ const NewLandingPage = () => {
             <div className="relative">
               <div className="minimal-card p-8 animate-float">
                 <img 
-                  src="https://images.unsplash.com/photo-1580982330720-bd5e0fed108b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzB8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMHRlY2hub2xvZ3l8ZW58MHx8fGJsdWV8MTc2Mjg2NDQ3M3ww&ixlib=rb-4.1.0&q=85"
-                  alt="Digital Contract"
+                  src="https://images.unsplash.com/photo-1652992714070-4b1c488ec7cc?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODF8MHwxfHNlYXJjaHwzfHxzbWFydHBob25lJTIwZGlnaXRhbCUyMGRvY3VtZW50JTIwYnVzaW5lc3N8ZW58MHx8fHwxNzY4NTYxMjAwfDA&ixlib=rb-4.1.0&q=85"
+                  alt="Электронное подписание договоров онлайн - 2tick.kz"
                   className="rounded-xl w-full"
                 />
               </div>
