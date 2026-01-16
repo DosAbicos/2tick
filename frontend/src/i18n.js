@@ -1102,6 +1102,12 @@ const resources = {
       "landing.footer.copyright": "© 2025 Two Tick. Барлық құқықтар қорғалған.",
       "landing.footer.privacy": "Құпиялылық саясаты",
       "landing.footer.terms": "Пайдалану шарттары",
+      "landing.footer.companyDesc": "Қазақстандағы бизнес үшін келісімшарттарды электрондық қол қою сервисі",
+      "landing.footer.legal": "Заңды ақпарат",
+      "landing.footer.offer": "Жария оферта",
+      "landing.footer.refund": "Қайтару ережелері",
+      "landing.footer.contacts": "Байланыс",
+      "landing.footer.allContacts": "Барлық байланыстар",
       
       // ===== AUTH =====
       "auth.login.title": "Жүйеге кіру",
