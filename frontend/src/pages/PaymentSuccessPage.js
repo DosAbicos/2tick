@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { CheckCircle, ArrowRight, FileText, Sparkles } from 'lucide-react';
+import { CheckCircle, Home, Sparkles } from 'lucide-react';
 import axios from 'axios';
 import '../styles/neumorphism.css';
 
@@ -87,16 +87,8 @@ const PaymentSuccessPage = () => {
               to="/dashboard"
               className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium"
             >
-              <FileText className="w-5 h-5" />
-              {t('payment.goToDashboard', 'Перейти к договорам')}
-            </Link>
-            
-            <Link 
-              to="/contracts/create"
-              className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors font-medium"
-            >
-              {t('payment.createContract', 'Создать договор')}
-              <ArrowRight className="w-5 h-5" />
+              <Home className="w-5 h-5" />
+              {t('payment.goToHome', 'Перейти на главную')}
             </Link>
           </div>
         </div>
