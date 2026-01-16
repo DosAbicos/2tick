@@ -4311,7 +4311,7 @@ async def get_user_details(user_id: str, current_user: dict = Depends(get_curren
         'total_contracts': len(user_contracts),
         'signed_contracts': signed_count,
         'pending_contracts': pending_count,
-        'contract_limit': user.get('contract_limit', 10)
+        'contract_limit': user.get('contract_limit', 3)
     }
     
     return user
@@ -4380,7 +4380,7 @@ async def add_contracts_to_limit(user_id: str, contracts_to_add: int, current_us
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    current_limit = user.get('contract_limit', 10)
+    current_limit = user.get('contract_limit', 3)
     new_limit = current_limit + contracts_to_add
     
     await db.users.update_one(
