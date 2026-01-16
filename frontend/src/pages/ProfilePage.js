@@ -650,26 +650,15 @@ const ProfilePage = () => {
                   <h3 className="text-lg font-bold text-gray-900 mb-1">{t('tariffs.currentPlan')}</h3>
                   <p className="text-gray-600">
                     {t('tariffs.currentPlanInfo', { 
-                      plan: user?.subscription_plan || 'FREE',
-                      contracts: user?.contract_limit || 3
+                      plan: subscription?.plan_id?.toUpperCase() || 'FREE',
+                      contracts: subscription?.contract_limit || 3
                     })}
                   </p>
                 </div>
-                <div className="flex items-center gap-3">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={user?.auto_renewal || false}
-                      onChange={handleToggleAutoRenewal}
-                      className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                    />
-                    <span className="text-sm text-gray-600">{t('tariffs.autoRenewal')}</span>
-                  </label>
-                </div>
               </div>
-              {user?.subscription_expires_at && (
+              {subscription?.expires_at && (
                 <p className="text-sm text-gray-500 mt-2">
-                  {t('tariffs.expiresAt')}: {new Date(user.subscription_expires_at).toLocaleDateString(i18n.language === 'ru' ? 'ru-RU' : i18n.language === 'kk' ? 'kk-KZ' : 'en-US')}
+                  {t('tariffs.expiresAt')}: {new Date(subscription.expires_at).toLocaleDateString(i18n.language === 'ru' ? 'ru-RU' : i18n.language === 'kk' ? 'kk-KZ' : 'en-US')}
                 </p>
               )}
             </div>
