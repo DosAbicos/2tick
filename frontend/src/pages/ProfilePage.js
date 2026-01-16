@@ -663,84 +663,76 @@ const ProfilePage = () => {
               )}
             </div>
 
-            {/* Tariff Plans Grid */}
-            <div className="grid md:grid-cols-3 gap-6">
+            {/* Tariff Plans Grid - Landing Page Style */}
+            <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
               {tariffPlans.map((plan) => (
-                <motion.div
+                <div
                   key={plan.id}
-                  whileHover={{ y: -5 }}
-                  className={`relative bg-white rounded-2xl shadow-lg border-2 overflow-hidden transition-all ${
-                    plan.popular 
-                      ? 'border-purple-500 ring-2 ring-purple-200' 
-                      : 'border-gray-200 hover:border-blue-300'
+                  className={`minimal-card p-8 space-y-6 relative ${
+                    plan.popular ? 'border-2 border-blue-500' : ''
                   }`}
                 >
                   {/* Popular Badge */}
                   {plan.popular && (
-                    <div className="absolute top-0 right-0 bg-gradient-to-r from-purple-600 to-purple-500 text-white text-xs font-bold px-4 py-1.5 rounded-bl-xl">
-                      ⭐ {t('tariffs.popular')}
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-500 text-white px-4 py-1 rounded-full text-sm font-medium">
+                      {t('tariffs.popular')}
                     </div>
                   )}
 
-                  <div className="p-6">
-                    {/* Plan Name */}
-                    <h3 className={`text-2xl font-bold mb-2 ${
+                  <div>
+                    <h3 className={`text-2xl font-bold ${
                       plan.color === 'purple' ? 'text-purple-600' :
-                      plan.color === 'blue' ? 'text-blue-600' : 'text-gray-700'
+                      plan.color === 'blue' ? 'text-blue-600' : 'text-gray-900'
                     }`}>
                       {plan.name}
                     </h3>
-
-                    {/* Price */}
-                    <div className="mb-6">
+                    <p className="text-sm text-gray-500 mt-1">{plan.period}</p>
+                    <div className="mt-4 flex items-baseline">
                       <span className="text-4xl font-bold text-gray-900">{plan.priceDisplay}</span>
                       {plan.price > 0 && (
-                        <span className="text-gray-500 ml-1">/ {plan.period}</span>
-                      )}
-                      {plan.price === 0 && (
-                        <span className="block text-sm text-gray-500 mt-1">{plan.period}</span>
+                        <span className="ml-2 text-gray-500">/ {t('tariffs.perMonth')}</span>
                       )}
                     </div>
-
-                    {/* Features */}
-                    <ul className="space-y-3 mb-6">
-                      {plan.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-start gap-3">
-                          <CheckCircle className={`w-5 h-5 flex-shrink-0 ${
-                            plan.color === 'purple' ? 'text-purple-500' :
-                            plan.color === 'blue' ? 'text-blue-500' : 'text-gray-400'
-                          }`} />
-                          <span className="text-gray-600 text-sm">{feature.value}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    {/* Select Button */}
-                    <button
-                      onClick={() => handleSelectTariff(plan)}
-                      disabled={processingPayment || (subscription?.plan_id === plan.id)}
-                      className={`w-full py-3 px-4 rounded-xl font-semibold transition-all ${
-                        subscription?.plan_id === plan.id
-                          ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
-                          : plan.popular
-                            ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:from-blue-700 hover:to-blue-600 shadow-lg shadow-blue-500/30'
-                            : plan.color === 'purple'
-                              ? 'bg-gradient-to-r from-purple-600 to-purple-500 text-white hover:from-purple-700 hover:to-purple-600 shadow-lg shadow-purple-500/20'
-                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                      }`}
-                      data-testid={`select-plan-${plan.id}`}
-                    >
-                      {subscription?.plan_id === plan.id 
-                        ? t('tariffs.currentPlanBtn')
-                        : processingPayment && selectedPlan?.id === plan.id
-                          ? t('tariffs.processing')
-                          : plan.price === 0 
-                            ? t('tariffs.selectFree')
-                            : t('tariffs.selectPlan')
-                      }
-                    </button>
                   </div>
-                </motion.div>
+
+                  {/* Features */}
+                  <ul className="space-y-4">
+                    {plan.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-center gap-3">
+                        <CheckCircle className={`w-5 h-5 flex-shrink-0 ${
+                          plan.color === 'purple' ? 'text-purple-500' :
+                          plan.color === 'blue' ? 'text-blue-500' : 'text-green-500'
+                        }`} />
+                        <span className="text-gray-600">{feature.value}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* Select Button */}
+                  <button
+                    onClick={() => handleSelectTariff(plan)}
+                    disabled={processingPayment || (subscription?.plan_id === plan.id)}
+                    className={`w-full py-4 font-medium rounded-xl transition-all ${
+                      subscription?.plan_id === plan.id
+                        ? 'bg-gray-100 text-gray-500 cursor-not-allowed'
+                        : plan.popular
+                          ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:from-blue-700 hover:to-blue-600 shadow-lg shadow-blue-500/30'
+                          : plan.color === 'purple'
+                            ? 'bg-gradient-to-r from-purple-600 to-purple-500 text-white hover:from-purple-700 hover:to-purple-600'
+                            : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+                    }`}
+                    data-testid={`select-plan-${plan.id}`}
+                  >
+                    {subscription?.plan_id === plan.id 
+                      ? t('tariffs.currentPlanBtn')
+                      : processingPayment && selectedPlan?.id === plan.id
+                        ? t('tariffs.processing')
+                        : plan.price === 0 
+                          ? t('tariffs.selectFree')
+                          : t('tariffs.selectPlan')
+                    }
+                  </button>
+                </div>
               ))}
             </div>
 
