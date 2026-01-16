@@ -1,9 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Mail, Phone, MapPin, Clock } from 'lucide-react';
 import '../styles/neumorphism.css';
 
 const ContactsPage = () => {
+  const { t } = useTranslation();
+  
   return (
     <div className="min-h-screen gradient-bg py-8 px-4">
       <div className="max-w-4xl mx-auto">
@@ -12,13 +15,14 @@ const ContactsPage = () => {
           className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-6"
         >
           <ArrowLeft className="w-4 h-4" />
-          На главную
+          {t('legal.backToHome')}
         </Link>
 
         <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-10">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-8 text-center">
-            КОНТАКТЫ
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 text-center">
+            {t('legal.contacts.title')}
           </h1>
+          <p className="text-gray-500 text-center mb-8">{t('legal.contacts.subtitle')}</p>
           
           <div className="grid md:grid-cols-2 gap-8">
             {/* Contact Info */}
@@ -28,11 +32,10 @@ const ContactsPage = () => {
                   <Mail className="w-6 h-6 text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">Email</h3>
+                  <h3 className="font-semibold text-gray-900 mb-1">{t('legal.contacts.email')}</h3>
                   <a href="mailto:admin@2tick.kz" className="text-blue-600 hover:text-blue-700">
                     admin@2tick.kz
                   </a>
-                  <p className="text-sm text-gray-500 mt-1">Для вопросов и обращений</p>
                 </div>
               </div>
 
@@ -41,11 +44,10 @@ const ContactsPage = () => {
                   <Phone className="w-6 h-6 text-green-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">Телефон</h3>
+                  <h3 className="font-semibold text-gray-900 mb-1">{t('legal.contacts.phone')}</h3>
                   <a href="tel:+77074003201" className="text-blue-600 hover:text-blue-700">
                     +7 707 400 3201
                   </a>
-                  <p className="text-sm text-gray-500 mt-1">Пн-Пт: 9:00 - 18:00</p>
                 </div>
               </div>
 
@@ -54,7 +56,7 @@ const ContactsPage = () => {
                   <MapPin className="w-6 h-6 text-purple-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">Адрес</h3>
+                  <h3 className="font-semibold text-gray-900 mb-1">{t('legal.contacts.address')}</h3>
                   <p className="text-gray-700">
                     Казахстан, г. Алматы,<br />
                     микрорайон Таугуль, дом 13,<br />
@@ -68,36 +70,29 @@ const ContactsPage = () => {
                   <Clock className="w-6 h-6 text-amber-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">Режим работы</h3>
-                  <p className="text-gray-700">
-                    Понедельник - Пятница: 9:00 - 18:00<br />
-                    Суббота - Воскресенье: Выходной
-                  </p>
+                  <h3 className="font-semibold text-gray-900 mb-1">{t('legal.contacts.workingHours')}</h3>
+                  <p className="text-gray-700">{t('legal.contacts.workingHoursValue')}</p>
                 </div>
               </div>
             </div>
 
             {/* Company Info */}
             <div className="bg-gray-50 rounded-xl p-6">
-              <h2 className="text-lg font-bold text-gray-900 mb-4">Реквизиты</h2>
+              <h2 className="text-lg font-bold text-gray-900 mb-4">{t('legal.contacts.companyName')}</h2>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Наименование:</span>
+                  <span className="text-gray-500">{t('legal.contacts.companyName')}:</span>
                   <span className="text-gray-900 font-medium">ИП «AN Venture»</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500">БИН/ИИН:</span>
+                  <span className="text-gray-500">{t('legal.contacts.bin')}:</span>
                   <span className="text-gray-900 font-medium">040825501172</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Директор:</span>
-                  <span className="text-gray-900 font-medium">Нұрғожа Ә.Н.</span>
                 </div>
               </div>
 
               <hr className="my-4" />
 
-              <h3 className="font-semibold text-gray-900 mb-3">Мессенджеры</h3>
+              <h3 className="font-semibold text-gray-900 mb-3">{t('legal.contacts.socialMedia')}</h3>
               <div className="flex gap-3">
                 <a 
                   href="https://t.me/twotick_bot" 
@@ -127,16 +122,15 @@ const ContactsPage = () => {
 
           {/* Links */}
           <div className="mt-8 pt-6 border-t border-gray-200">
-            <h3 className="font-semibold text-gray-900 mb-4">Юридическая информация</h3>
             <div className="flex flex-wrap gap-4">
               <Link to="/offer" className="text-blue-600 hover:text-blue-700 text-sm">
-                Публичная оферта
+                {t('landing.footer.offer')}
               </Link>
               <Link to="/privacy" className="text-blue-600 hover:text-blue-700 text-sm">
-                Политика конфиденциальности
+                {t('landing.footer.privacy')}
               </Link>
               <Link to="/refund" className="text-blue-600 hover:text-blue-700 text-sm">
-                Правила возврата
+                {t('landing.footer.refund')}
               </Link>
             </div>
           </div>
