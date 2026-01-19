@@ -200,41 +200,60 @@ const DashboardPage = () => {
     <div className="min-h-screen gradient-bg">
       <Header />
       
-      {/* Notification Popup */}
+      {/* Push-style Notification Popup */}
       {showNotificationPopup && notification && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden animate-fade-in">
-            {/* Header with gradient */}
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-4 text-white">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl max-w-sm w-full overflow-hidden animate-fade-in border border-white/20">
+            {/* iOS-style Header */}
+            <div className="p-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                  <Bell className="w-5 h-5" />
+                <div className="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/30">
+                  <CheckCircle className="w-6 h-6 text-white" />
                 </div>
-                <h3 className="text-lg font-bold">{notification.title}</h3>
+                <span className="text-sm font-semibold text-gray-800">2tick.kz</span>
               </div>
+              <button
+                onClick={handleDismissNotification}
+                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+              >
+                <X className="w-5 h-5 text-gray-400" />
+              </button>
             </div>
             
-            {/* Content */}
-            <div className="p-6">
-              {notification.image_url && (
-                <div className="mb-4 rounded-lg overflow-hidden">
-                  <img 
-                    src={notification.image_url} 
-                    alt={notification.title}
-                    className="w-full h-48 object-cover"
-                  />
-                </div>
-              )}
-              <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+            {/* Main Content */}
+            <div className="px-6 pb-2">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                {notification.title}
+              </h2>
+              <p className="text-gray-500 text-sm leading-relaxed">
                 {notification.message}
               </p>
             </div>
+
+            {/* Image if present */}
+            {notification.image_url && (
+              <div className="px-6 py-3">
+                <div className="rounded-xl overflow-hidden">
+                  <img 
+                    src={notification.image_url} 
+                    alt={notification.title}
+                    className="w-full h-40 object-cover"
+                  />
+                </div>
+              </div>
+            )}
             
-            {/* Footer */}
-            <div className="px-6 pb-6">
+            {/* Action Buttons */}
+            <div className="p-4 flex gap-3">
               <button
                 onClick={handleDismissNotification}
-                className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg shadow-blue-500/30"
+                className="flex-1 py-3.5 px-6 bg-gray-100 text-gray-700 font-semibold rounded-full hover:bg-gray-200 transition-all text-sm"
+              >
+                {t('common.close') || 'ЗАКРЫТЬ'}
+              </button>
+              <button
+                onClick={handleDismissNotification}
+                className="flex-1 py-3.5 px-6 bg-blue-500 text-white font-semibold rounded-full hover:bg-blue-600 transition-all shadow-lg shadow-blue-500/30 text-sm"
               >
                 OK
               </button>
