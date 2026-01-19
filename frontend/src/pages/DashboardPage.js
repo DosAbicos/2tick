@@ -244,16 +244,10 @@ const DashboardPage = () => {
             )}
             
             {/* Action Buttons */}
-            <div className="p-4 flex gap-3">
+            <div className="p-4">
               <button
                 onClick={handleDismissNotification}
-                className="flex-1 py-3.5 px-6 bg-gray-100 text-gray-700 font-semibold rounded-full hover:bg-gray-200 transition-all text-sm"
-              >
-                {t('common.close') || 'ЗАКРЫТЬ'}
-              </button>
-              <button
-                onClick={handleDismissNotification}
-                className="flex-1 py-3.5 px-6 bg-blue-500 text-white font-semibold rounded-full hover:bg-blue-600 transition-all shadow-lg shadow-blue-500/30 text-sm"
+                className="w-full py-3.5 px-6 bg-blue-500 text-white font-semibold rounded-full hover:bg-blue-600 transition-all shadow-lg shadow-blue-500/30 text-sm"
               >
                 OK
               </button>
