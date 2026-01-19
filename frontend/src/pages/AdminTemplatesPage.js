@@ -1012,21 +1012,108 @@ const AdminTemplatesPageNew = () => {
                 </p>
               </div>
 
-              {/* Настройка требования документа нанимателя */}
-              <div className="flex items-start space-x-3 p-4 border border-amber-200 rounded-lg bg-amber-50/30">
-                <Checkbox 
-                  id="requires_tenant_document"
-                  checked={formData.requires_tenant_document}
-                  onCheckedChange={(checked) => setFormData({...formData, requires_tenant_document: checked})}
-                />
-                <div className="flex-1">
-                  <label htmlFor="requires_tenant_document" className="text-sm font-medium text-neutral-900 cursor-pointer">
-                    Требуется удостоверение личности нанимателя
-                  </label>
-                  <p className="text-xs text-neutral-600 mt-1">
-                    При подписании договора наниматель должен будет загрузить копию своего удостоверения личности
-                  </p>
+              {/* Настройка требования документа сторон */}
+              <div className="minimal-card p-4 border border-amber-200 bg-amber-50/30">
+                <div className="flex items-start space-x-3">
+                  <Checkbox 
+                    id="requires_tenant_document"
+                    checked={formData.requires_tenant_document}
+                    onCheckedChange={(checked) => setFormData({...formData, requires_tenant_document: checked})}
+                  />
+                  <div className="flex-1">
+                    <label htmlFor="requires_tenant_document" className="text-sm font-medium text-neutral-900 cursor-pointer">
+                      Требуется удостоверение личности сторон
+                    </label>
+                    <p className="text-xs text-neutral-600 mt-1">
+                      При подписании договора стороны должны будут указать данные своих удостоверений личности
+                    </p>
+                  </div>
                 </div>
+
+                {/* Формы для вставки данных удостоверения личности - показываются когда галочка активна */}
+                {formData.requires_tenant_document && (
+                  <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Данные УД Стороны А */}
+                    <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                      <h4 className="font-semibold text-purple-900 mb-3 flex items-center gap-2">
+                        <Building className="h-4 w-4" />
+                        Удостоверение {formData.party_a_role || 'Стороны А'}
+                      </h4>
+                      <div className="space-y-2 text-xs text-purple-700">
+                        <p>📋 <code className="bg-purple-100 px-1 rounded">{'{{'} PARTY_A_ID_NUMBER {'}}'}</code> - Номер удостоверения</p>
+                        <p>📋 <code className="bg-purple-100 px-1 rounded">{'{{'} PARTY_A_ID_ISSUED {'}}'}</code> - Кем выдано</p>
+                        <p>📋 <code className="bg-purple-100 px-1 rounded">{'{{'} PARTY_A_ID_DATE {'}}'}</code> - Дата выдачи</p>
+                      </div>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        className="mt-3 w-full text-xs"
+                        onClick={() => {
+                          // Auto-add Party A ID placeholders
+                          const partyAIdPlaceholders = [
+                            { name: 'PARTY_A_ID_NUMBER', label: `Номер удостоверения ${formData.party_a_role}`, type: 'text', owner: 'landlord', required: true },
+                            { name: 'PARTY_A_ID_ISSUED', label: `Кем выдано УД ${formData.party_a_role}`, type: 'text', owner: 'landlord', required: true },
+                            { name: 'PARTY_A_ID_DATE', label: `Дата выдачи УД ${formData.party_a_role}`, type: 'date', owner: 'landlord', required: true }
+                          ];
+                          let newPlaceholders = { ...formData.placeholders };
+                          let newOrder = [...placeholderOrder];
+                          partyAIdPlaceholders.forEach(p => {
+                            if (!newPlaceholders[p.name]) {
+                              newPlaceholders[p.name] = { label: p.label, type: p.type, owner: p.owner, required: p.required, showInContractDetails: true, showInContent: true, showInSignatureInfo: true };
+                              newOrder.push(p.name);
+                            }
+                          });
+                          setFormData({ ...formData, placeholders: newPlaceholders });
+                          setPlaceholderOrder(newOrder);
+                          toast.success(`Плейсхолдеры УД ${formData.party_a_role} добавлены`);
+                        }}
+                      >
+                        + Добавить плейсхолдеры УД
+                      </Button>
+                    </div>
+
+                    {/* Данные УД Стороны Б */}
+                    <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                      <h4 className="font-semibold text-green-900 mb-3 flex items-center gap-2">
+                        <User className="h-4 w-4" />
+                        Удостоверение {formData.party_b_role || 'Стороны Б'}
+                      </h4>
+                      <div className="space-y-2 text-xs text-green-700">
+                        <p>📋 <code className="bg-green-100 px-1 rounded">{'{{'} PARTY_B_ID_NUMBER {'}}'}</code> - Номер удостоверения</p>
+                        <p>📋 <code className="bg-green-100 px-1 rounded">{'{{'} PARTY_B_ID_ISSUED {'}}'}</code> - Кем выдано</p>
+                        <p>📋 <code className="bg-green-100 px-1 rounded">{'{{'} PARTY_B_ID_DATE {'}}'}</code> - Дата выдачи</p>
+                      </div>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        className="mt-3 w-full text-xs"
+                        onClick={() => {
+                          // Auto-add Party B ID placeholders
+                          const partyBIdPlaceholders = [
+                            { name: 'PARTY_B_ID_NUMBER', label: `Номер удостоверения ${formData.party_b_role}`, type: 'text', owner: 'signer', required: true },
+                            { name: 'PARTY_B_ID_ISSUED', label: `Кем выдано УД ${formData.party_b_role}`, type: 'text', owner: 'signer', required: true },
+                            { name: 'PARTY_B_ID_DATE', label: `Дата выдачи УД ${formData.party_b_role}`, type: 'date', owner: 'signer', required: true }
+                          ];
+                          let newPlaceholders = { ...formData.placeholders };
+                          let newOrder = [...placeholderOrder];
+                          partyBIdPlaceholders.forEach(p => {
+                            if (!newPlaceholders[p.name]) {
+                              newPlaceholders[p.name] = { label: p.label, type: p.type, owner: p.owner, required: p.required, showInContractDetails: true, showInContent: true, showInSignatureInfo: true };
+                              newOrder.push(p.name);
+                            }
+                          });
+                          setFormData({ ...formData, placeholders: newPlaceholders });
+                          setPlaceholderOrder(newOrder);
+                          toast.success(`Плейсхолдеры УД ${formData.party_b_role} добавлены`);
+                        }}
+                      >
+                        + Добавить плейсхолдеры УД
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Beautiful Placeholder Constructor */}
