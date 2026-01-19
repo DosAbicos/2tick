@@ -75,100 +75,85 @@ const CALCULATOR_OPERATIONS = [
   { value: 'days_between', label: '📅  Разница в днях (для дат)', symbol: 'days' }
 ];
 
-// Predefined placeholder templates for quick insertion
-const PRESET_PLACEHOLDERS = [
+// Predefined placeholder templates for quick insertion - organized by categories
+const PRESET_PLACEHOLDER_CATEGORIES = [
   {
-    name: 'CONTRACT_DATE',
-    label: 'Дата составления договора',
-    type: 'date',
-    owner: 'landlord',
-    required: true
+    id: 'dates',
+    label: '📅 Даты',
+    placeholders: [
+      { name: 'CONTRACT_DATE', label: 'Дата составления договора', type: 'date', owner: 'landlord', required: true },
+      { name: 'SIGNING_DATE', label: 'Дата подписания', type: 'date', owner: 'landlord', required: true },
+      { name: 'SIGNING_TIME', label: 'Время подписания', type: 'time', owner: 'landlord', required: false },
+      { name: 'START_DATE', label: 'Дата начала действия', type: 'date', owner: 'landlord', required: true },
+      { name: 'END_DATE', label: 'Дата окончания действия', type: 'date', owner: 'landlord', required: true },
+      { name: 'PAYMENT_DATE', label: 'Дата оплаты', type: 'date', owner: 'landlord', required: false },
+      { name: 'HANDOVER_DATE', label: 'Дата передачи', type: 'date', owner: 'landlord', required: false },
+      { name: 'RETURN_DATE', label: 'Дата возврата', type: 'date', owner: 'landlord', required: false },
+      { name: 'CHECK_IN_DATE', label: 'Дата заезда', type: 'date', owner: 'landlord', required: false },
+      { name: 'CHECK_OUT_DATE', label: 'Дата выезда', type: 'date', owner: 'landlord', required: false },
+      { name: 'CHECK_IN_TIME', label: 'Время заезда', type: 'time', owner: 'landlord', required: false },
+      { name: 'CHECK_OUT_TIME', label: 'Время выезда', type: 'time', owner: 'landlord', required: false },
+    ]
   },
   {
-    name: 'SIGNING_DATETIME',
-    label: 'Дата и время подписания',
-    type: 'text',
-    owner: 'tenant',
-    required: false
+    id: 'party_a',
+    label: '🏢 Сторона А',
+    placeholders: [
+      { name: 'PARTY_A_NAME', label: 'Наименование/ФИО стороны А', type: 'text', owner: 'landlord', required: true },
+      { name: 'PARTY_A_IIN', label: 'ИИН/БИН стороны А', type: 'text', owner: 'landlord', required: true },
+      { name: 'PARTY_A_ADDRESS', label: 'Адрес стороны А', type: 'text', owner: 'landlord', required: true },
+      { name: 'PARTY_A_PHONE', label: 'Телефон стороны А', type: 'phone', owner: 'landlord', required: true },
+      { name: 'PARTY_A_EMAIL', label: 'Email стороны А', type: 'email', owner: 'landlord', required: false },
+      { name: 'PARTY_A_BANK', label: 'Банк стороны А', type: 'text', owner: 'landlord', required: false },
+      { name: 'PARTY_A_IBAN', label: 'IBAN/Счёт стороны А', type: 'text', owner: 'landlord', required: false },
+      { name: 'PARTY_A_ID_NUMBER', label: 'Номер удостоверения стороны А', type: 'text', owner: 'landlord', required: false },
+      { name: 'PARTY_A_ID_ISSUED', label: 'Кем выдано УД стороны А', type: 'text', owner: 'landlord', required: false },
+      { name: 'PARTY_A_ID_DATE', label: 'Дата выдачи УД стороны А', type: 'date', owner: 'landlord', required: false },
+    ]
   },
   {
-    name: 'COMPANY_NAME',
-    label: 'Наименование компании',
-    type: 'text',
-    owner: 'landlord',
-    required: true
+    id: 'party_b',
+    label: '👤 Сторона Б',
+    placeholders: [
+      { name: 'PARTY_B_NAME', label: 'ФИО/Наименование стороны Б', type: 'text', owner: 'signer', required: true },
+      { name: 'PARTY_B_IIN', label: 'ИИН/БИН стороны Б', type: 'text', owner: 'signer', required: true },
+      { name: 'PARTY_B_ADDRESS', label: 'Адрес стороны Б', type: 'text', owner: 'signer', required: true },
+      { name: 'PARTY_B_PHONE', label: 'Телефон стороны Б', type: 'phone', owner: 'signer', required: true },
+      { name: 'PARTY_B_EMAIL', label: 'Email стороны Б', type: 'email', owner: 'signer', required: false },
+      { name: 'PARTY_B_BANK', label: 'Банк стороны Б', type: 'text', owner: 'signer', required: false },
+      { name: 'PARTY_B_IBAN', label: 'IBAN/Счёт стороны Б', type: 'text', owner: 'signer', required: false },
+      { name: 'PARTY_B_ID_NUMBER', label: 'Номер удостоверения стороны Б', type: 'text', owner: 'signer', required: false },
+      { name: 'PARTY_B_ID_ISSUED', label: 'Кем выдано УД стороны Б', type: 'text', owner: 'signer', required: false },
+      { name: 'PARTY_B_ID_DATE', label: 'Дата выдачи УД стороны Б', type: 'date', owner: 'signer', required: false },
+    ]
   },
   {
-    name: 'COMPANY_IIN',
-    label: 'ИИН/БИН компании',
-    type: 'text',
-    owner: 'landlord',
-    required: true
+    id: 'financial',
+    label: '💰 Финансы',
+    placeholders: [
+      { name: 'AMOUNT', label: 'Сумма договора', type: 'number', owner: 'landlord', required: true },
+      { name: 'PRICE_PER_DAY', label: 'Цена за день', type: 'number', owner: 'landlord', required: false },
+      { name: 'PRICE_PER_MONTH', label: 'Цена за месяц', type: 'number', owner: 'landlord', required: false },
+      { name: 'DEPOSIT', label: 'Залог/Депозит', type: 'number', owner: 'landlord', required: false },
+      { name: 'PREPAYMENT', label: 'Предоплата', type: 'number', owner: 'landlord', required: false },
+      { name: 'PENALTY', label: 'Штраф/Пеня', type: 'number', owner: 'landlord', required: false },
+    ]
   },
   {
-    name: 'CITY',
-    label: 'Город',
-    type: 'text',
-    owner: 'landlord',
-    required: true
-  },
-  {
-    name: 'ADDRESS',
-    label: 'Адрес',
-    type: 'text',
-    owner: 'landlord',
-    required: true
-  },
-  {
-    name: 'TENANT_FULL_NAME',
-    label: 'ФИО нанимателя',
-    type: 'text',
-    owner: 'tenant',
-    required: true
-  },
-  {
-    name: 'TENANT_PHONE',
-    label: 'Телефон нанимателя',
-    type: 'phone',
-    owner: 'tenant',
-    required: true
-  },
-  {
-    name: 'TENANT_EMAIL',
-    label: 'Email нанимателя',
-    type: 'email',
-    owner: 'tenant',
-    required: false
-  },
-  {
-    name: 'TENANT_IIN',
-    label: 'ИИН нанимателя',
-    type: 'text',
-    owner: 'tenant',
-    required: true
-  },
-  {
-    name: 'START_DATE',
-    label: 'Дата начала',
-    type: 'date',
-    owner: 'landlord',
-    required: true
-  },
-  {
-    name: 'END_DATE',
-    label: 'Дата окончания',
-    type: 'date',
-    owner: 'landlord',
-    required: true
-  },
-  {
-    name: 'AMOUNT',
-    label: 'Сумма',
-    type: 'number',
-    owner: 'landlord',
-    required: true
+    id: 'object',
+    label: '🏠 Объект договора',
+    placeholders: [
+      { name: 'OBJECT_NAME', label: 'Наименование объекта', type: 'text', owner: 'landlord', required: true },
+      { name: 'OBJECT_ADDRESS', label: 'Адрес объекта', type: 'text', owner: 'landlord', required: true },
+      { name: 'OBJECT_AREA', label: 'Площадь объекта', type: 'number', owner: 'landlord', required: false },
+      { name: 'OBJECT_DESCRIPTION', label: 'Описание объекта', type: 'textarea', owner: 'landlord', required: false },
+      { name: 'CITY', label: 'Город', type: 'text', owner: 'landlord', required: true },
+    ]
   }
 ];
+
+// Flatten for backward compatibility
+const PRESET_PLACEHOLDERS = PRESET_PLACEHOLDER_CATEGORIES.flatMap(cat => cat.placeholders);
 
 
 // Sortable Placeholder Item Component
