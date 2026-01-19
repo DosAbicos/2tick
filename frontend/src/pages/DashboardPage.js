@@ -258,10 +258,10 @@ const DashboardPage = () => {
       
       {/* Modal for selecting favorite template */}
       <Dialog open={showTemplateModal} onOpenChange={setShowTemplateModal}>
-        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold">{t('dashboard.new_contract')}</DialogTitle>
-            <DialogDescription>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto mx-2 sm:mx-auto p-4 sm:p-6">
+          <DialogHeader className="space-y-1 sm:space-y-2">
+            <DialogTitle className="text-xl sm:text-2xl font-bold pr-8">{t('dashboard.new_contract')}</DialogTitle>
+            <DialogDescription className="text-sm">
               {t('dashboard.selectTemplate')}
             </DialogDescription>
           </DialogHeader>
