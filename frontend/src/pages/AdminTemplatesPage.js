@@ -1496,20 +1496,20 @@ const AdminTemplatesPageNew = () => {
                       owner: value
                     })}
                   >
-                    <SelectTrigger className="mt-1">
+                    <SelectTrigger className="mt-1 bg-white">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-white">
                       <SelectItem value="landlord">
                         <div className="flex items-center gap-2">
                           <Building className="h-4 w-4" />
-                          Наймодатель
+                          {formData.party_a_role || 'Сторона А'}
                         </div>
                       </SelectItem>
                       <SelectItem value="signer">
                         <div className="flex items-center gap-2">
                           <User className="h-4 w-4" />
-                          Наниматель
+                          {formData.party_b_role || 'Сторона Б'}
                         </div>
                       </SelectItem>
                     </SelectContent>
@@ -1532,11 +1532,11 @@ const AdminTemplatesPageNew = () => {
                       className="h-4 w-4"
                     />
                     <Label htmlFor="required" className="cursor-pointer font-medium">
-                      Обязательное поле для наймодателя
+                      Обязательное поле для {formData.party_a_role || 'стороны А'}
                     </Label>
                   </div>
                   <p className="text-xs text-blue-700 ml-6">
-                    ℹ️ Если не обязательно для наймодателя, наниматель всё равно должен заполнить
+                    ℹ️ Если не обязательно для {formData.party_a_role || 'стороны А'}, {formData.party_b_role || 'сторона Б'} всё равно должен заполнить
                   </p>
                 </div>
               )}
