@@ -937,10 +937,10 @@ const AdminTemplatesPageNew = () => {
                   <div>
                     <Label className="text-sm font-medium text-gray-700">Категория *</Label>
                     <Select value={formData.category} onValueChange={handleCategoryChange}>
-                      <SelectTrigger className="mt-1 minimal-input">
+                      <SelectTrigger className="mt-1 minimal-input bg-white">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-white">
                         {CATEGORIES.map((cat) => (
                           <SelectItem key={cat.value} value={cat.value}>
                             {cat.label}
