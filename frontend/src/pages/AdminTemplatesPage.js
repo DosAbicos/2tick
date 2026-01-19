@@ -157,7 +157,7 @@ const PRESET_PLACEHOLDERS = PRESET_PLACEHOLDER_CATEGORIES.flatMap(cat => cat.pla
 
 
 // Sortable Placeholder Item Component
-const SortablePlaceholder = ({ id, placeholder, config, onInsert, onRemove }) => {
+const SortablePlaceholder = ({ id, placeholder, config, onInsert, onRemove, partyARole, partyBRole }) => {
   const {
     attributes,
     listeners,
@@ -207,7 +207,7 @@ const SortablePlaceholder = ({ id, placeholder, config, onInsert, onRemove }) =>
                 <span>{FIELD_TYPES.find(t => t.value === config.type)?.label}</span>
               </div>
 
-              {/* Owner Badge */}
+              {/* Owner Badge - Dynamic based on selected roles */}
               <div className={`flex items-center gap-1 px-2 py-1 rounded text-xs ${
                 config.owner === 'landlord'
                   ? 'bg-purple-100 text-purple-700'
@@ -216,12 +216,12 @@ const SortablePlaceholder = ({ id, placeholder, config, onInsert, onRemove }) =>
                 {config.owner === 'landlord' ? (
                   <>
                     <Building className="h-3 w-3" />
-                    <span>Наймодатель</span>
+                    <span>{partyARole || 'Сторона А'}</span>
                   </>
                 ) : (
                   <>
                     <User className="h-3 w-3" />
-                    <span>Наниматель</span>
+                    <span>{partyBRole || 'Сторона Б'}</span>
                   </>
                 )}
               </div>
