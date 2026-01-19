@@ -1702,97 +1702,123 @@ const AdminTemplatesPageNew = () => {
           </DialogContent>
         </Dialog>
 
-        {/* Preset Placeholders Dialog */}
+        {/* Preset Placeholders Dialog - with categories */}
         <Dialog open={showPresetDialog} onOpenChange={setShowPresetDialog}>
-          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+          <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="text-xl">⚡ Быстрая вставка готовых плейсхолдеров</DialogTitle>
               <DialogDescription>
-                Выберите готовый плейсхолдер для быстрой вставки в шаблон
+                Выберите готовый плейсхолдер для быстрой вставки в шаблон. Разбито по категориям для удобства.
               </DialogDescription>
             </DialogHeader>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {PRESET_PLACEHOLDERS.map((preset) => {
-                const isAlreadyAdded = formData.placeholders[preset.name];
-                
+            <div className="space-y-6">
+              {PRESET_PLACEHOLDER_CATEGORIES.map((category) => {
+                // Dynamic label replacement based on selected roles
+                const getCategoryLabel = () => {
+                  if (category.id === 'party_a') return `🏢 ${formData.party_a_role || 'Сторона А'}`;
+                  if (category.id === 'party_b') return `👤 ${formData.party_b_role || 'Сторона Б'}`;
+                  return category.label;
+                };
+
                 return (
-                  <div
-                    key={preset.name}
-                    className={`p-4 text-left border-2 rounded-lg transition-all ${
-                      isAlreadyAdded 
-                        ? 'border-neutral-200 bg-neutral-50' 
-                        : 'border-blue-200 bg-blue-50/50'
-                    }`}
-                  >
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className="font-semibold text-neutral-900">{preset.label}</h3>
-                      <div className="flex gap-2">
-                        {isAlreadyAdded ? (
-                          <>
-                            <Button
-                              type="button"
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => handleEditPreset(preset)}
-                              className="h-6 px-2 text-xs text-blue-600 hover:text-blue-700"
-                            >
-                              <Edit className="h-3 w-3 mr-1" />
-                              Редактировать
-                            </Button>
-                            <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded">
-                              ✓ Добавлен
-                            </span>
-                          </>
-                        ) : (
-                          <Button
-                            type="button"
-                            size="sm"
-                            onClick={() => {
-                              handleInsertPreset(preset);
-                            }}
-                            className="h-6 px-2 text-xs"
-                          >
-                            Добавить
-                          </Button>
-                        )}
-                      </div>
+                  <div key={category.id} className="border rounded-lg overflow-hidden">
+                    <div className={`px-4 py-2 font-semibold text-sm ${
+                      category.id === 'dates' ? 'bg-purple-100 text-purple-900' :
+                      category.id === 'party_a' ? 'bg-blue-100 text-blue-900' :
+                      category.id === 'party_b' ? 'bg-green-100 text-green-900' :
+                      category.id === 'financial' ? 'bg-amber-100 text-amber-900' :
+                      'bg-gray-100 text-gray-900'
+                    }`}>
+                      {getCategoryLabel()}
                     </div>
                     
-                    <div className="space-y-1">
-                      <p className="text-xs text-neutral-600 font-mono">
-                        {'{{'}{preset.name}{'}}'}
-                      </p>
-                      
-                      <div className="flex gap-2 flex-wrap">
-                        <span className={`text-xs px-2 py-0.5 rounded ${
-                          preset.type === 'date' ? 'bg-purple-100 text-purple-700' :
-                          preset.type === 'number' ? 'bg-blue-100 text-blue-700' :
-                          preset.type === 'phone' ? 'bg-green-100 text-green-700' :
-                          preset.type === 'email' ? 'bg-orange-100 text-orange-700' :
-                          'bg-neutral-100 text-neutral-700'
-                        }`}>
-                          {preset.type === 'date' ? '📅 Дата' :
-                           preset.type === 'number' ? '🔢 Число' :
-                           preset.type === 'phone' ? '📞 Телефон' :
-                           preset.type === 'email' ? '📧 Email' :
-                           '✏️ Текст'}
-                        </span>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 p-3">
+                      {category.placeholders.map((preset) => {
+                        const isAlreadyAdded = formData.placeholders[preset.name];
                         
-                        <span className={`text-xs px-2 py-0.5 rounded ${
-                          preset.owner === 'landlord' 
-                            ? 'bg-blue-100 text-blue-700' 
-                            : 'bg-amber-100 text-amber-700'
-                        }`}>
-                          {preset.owner === 'landlord' ? '🏢 Наймодатель' : '👤 Наниматель'}
-                        </span>
+                        // Dynamic label for party placeholders
+                        const getPresetLabel = () => {
+                          let label = preset.label;
+                          if (label.includes('стороны А')) {
+                            label = label.replace('стороны А', formData.party_a_role || 'стороны А');
+                          }
+                          if (label.includes('стороны Б')) {
+                            label = label.replace('стороны Б', formData.party_b_role || 'стороны Б');
+                          }
+                          return label;
+                        };
                         
-                        {preset.required && (
-                          <span className="text-xs px-2 py-0.5 rounded bg-red-100 text-red-700">
-                            * Обязательное
-                          </span>
-                        )}
-                      </div>
+                        return (
+                          <div
+                            key={preset.name}
+                            className={`p-3 text-left border rounded-lg transition-all text-sm ${
+                              isAlreadyAdded 
+                                ? 'border-neutral-200 bg-neutral-50 opacity-60' 
+                                : 'border-blue-200 bg-white hover:bg-blue-50/50'
+                            }`}
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex-1 min-w-0">
+                                <p className="font-medium text-neutral-900 truncate">{getPresetLabel()}</p>
+                                <p className="text-xs text-neutral-500 font-mono mt-0.5">
+                                  {'{{'}{preset.name}{'}}'}
+                                </p>
+                              </div>
+                              <div className="flex-shrink-0">
+                                {isAlreadyAdded ? (
+                                  <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded whitespace-nowrap">
+                                    ✓
+                                  </span>
+                                ) : (
+                                  <Button
+                                    type="button"
+                                    size="sm"
+                                    onClick={() => handleInsertPreset(preset)}
+                                    className="h-6 px-2 text-xs"
+                                  >
+                                    +
+                                  </Button>
+                                )}
+                              </div>
+                            </div>
+                            
+                            <div className="flex gap-1 flex-wrap mt-2">
+                              <span className={`text-xs px-1.5 py-0.5 rounded ${
+                                preset.type === 'date' ? 'bg-purple-100 text-purple-700' :
+                                preset.type === 'time' ? 'bg-indigo-100 text-indigo-700' :
+                                preset.type === 'number' ? 'bg-blue-100 text-blue-700' :
+                                preset.type === 'phone' ? 'bg-green-100 text-green-700' :
+                                preset.type === 'email' ? 'bg-orange-100 text-orange-700' :
+                                preset.type === 'textarea' ? 'bg-pink-100 text-pink-700' :
+                                'bg-neutral-100 text-neutral-700'
+                              }`}>
+                                {preset.type === 'date' ? '📅' :
+                                 preset.type === 'time' ? '🕐' :
+                                 preset.type === 'number' ? '🔢' :
+                                 preset.type === 'phone' ? '📞' :
+                                 preset.type === 'email' ? '📧' :
+                                 preset.type === 'textarea' ? '📝' :
+                                 '✏️'}
+                              </span>
+                              
+                              <span className={`text-xs px-1.5 py-0.5 rounded ${
+                                preset.owner === 'landlord' 
+                                  ? 'bg-blue-100 text-blue-700' 
+                                  : 'bg-amber-100 text-amber-700'
+                              }`}>
+                                {preset.owner === 'landlord' ? formData.party_a_role || 'А' : formData.party_b_role || 'Б'}
+                              </span>
+                              
+                              {preset.required && (
+                                <span className="text-xs px-1.5 py-0.5 rounded bg-red-100 text-red-700">
+                                  *
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 );
