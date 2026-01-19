@@ -53,10 +53,13 @@ const CATEGORIES = [
   { value: 'other', label: '📄 Другое' }
 ];
 
+import { Clock } from 'lucide-react';
+
 const FIELD_TYPES = [
   { value: 'text', label: 'Текст', icon: Type },
   { value: 'number', label: 'Число', icon: Hash },
   { value: 'date', label: 'Дата', icon: Calendar },
+  { value: 'time', label: 'Время', icon: Clock },
   { value: 'phone', label: 'Телефон', icon: Phone },
   { value: 'email', label: 'Email', icon: Mail },
   { value: 'textarea', label: 'Длинный текст', icon: FileText },
