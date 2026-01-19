@@ -924,17 +924,17 @@ Email: ${templateData.tenant_email || '[Email]'}
             </div>
 
             {/* Right: Form */}
-            <div className="minimal-card">
-              <div className="p-4 border-b border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                  <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="minimal-card overflow-hidden">
+              <div className="p-3 sm:p-4 border-b border-gray-200">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 flex items-center gap-2">
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
                   {t('contract.fillData')}
                 </h3>
               </div>
-              <div className="p-6">
-              <form onSubmit={handleSubmit} className="space-y-8" data-testid="create-contract-form">
+              <div className="p-4 sm:p-6 overflow-x-hidden">
+              <form onSubmit={handleSubmit} className="space-y-8 overflow-hidden" data-testid="create-contract-form">
                 {/* Show loading indicator while template is loading */}
                 {loadingTemplate ? (
                   <div className="text-center py-12">
