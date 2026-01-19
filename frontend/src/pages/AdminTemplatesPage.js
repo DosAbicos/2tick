@@ -1471,10 +1471,10 @@ const AdminTemplatesPageNew = () => {
                         formula: { ...currentPlaceholder.formula, operand1: value }
                       })}
                     >
-                      <SelectTrigger className="mt-1">
+                      <SelectTrigger className="mt-1 bg-white">
                         <SelectValue placeholder="Выберите плейсхолдер" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-white">
                         {placeholderOrder
                           .filter(name => {
                             const ph = formData.placeholders[name];
@@ -1509,10 +1509,10 @@ const AdminTemplatesPageNew = () => {
                         }
                       })}
                     >
-                      <SelectTrigger className="mt-1">
+                      <SelectTrigger className="mt-1 bg-white">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-white">
                         {CALCULATOR_OPERATIONS.map((op) => (
                           <SelectItem key={op.value} value={op.value}>
                             {op.label}
@@ -1532,10 +1532,10 @@ const AdminTemplatesPageNew = () => {
                         formula: { ...currentPlaceholder.formula, operand2: value }
                       })}
                     >
-                      <SelectTrigger className="mt-1">
+                      <SelectTrigger className="mt-1 bg-white">
                         <SelectValue placeholder="Выберите плейсхолдер" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-white">
                         {placeholderOrder
                           .filter(name => {
                             const ph = formData.placeholders[name];
