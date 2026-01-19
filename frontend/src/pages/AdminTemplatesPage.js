@@ -1339,10 +1339,10 @@ const AdminTemplatesPageNew = () => {
                     isCalculated: value === 'calculated'
                   })}
                 >
-                  <SelectTrigger className="mt-1">
+                  <SelectTrigger className="mt-1 bg-white">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white">
                     {FIELD_TYPES.map(type => (
                       <SelectItem key={type.value} value={type.value}>
                         <div className="flex items-center gap-2">
