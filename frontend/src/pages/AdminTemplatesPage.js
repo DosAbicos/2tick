@@ -1088,6 +1088,8 @@ const AdminTemplatesPageNew = () => {
                             config={{...formData.placeholders[name], onEdit: handleEditPlaceholder}}
                             onInsert={insertPlaceholderToContent}
                             onRemove={handleRemovePlaceholder}
+                            partyARole={formData.party_a_role}
+                            partyBRole={formData.party_b_role}
                           />
                         ))}
                       </div>
