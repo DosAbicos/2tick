@@ -999,7 +999,7 @@ const AdminTemplatesPageNew = () => {
                   <SelectTrigger className="bg-white">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white">
                     {rolePairs.map((pair, idx) => (
                       <SelectItem key={idx} value={`${pair.a}|${pair.b}`}>
                         {pair.a} / {pair.b}
