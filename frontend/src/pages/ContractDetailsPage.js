@@ -555,7 +555,7 @@ const ContractDetailsPage = () => {
                         <AlertDialogHeader>
                           <AlertDialogTitle>{t('contract.deleteTitle')}</AlertDialogTitle>
                           <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete the contract.
+                            {t('contract.deleteConfirmation', 'Это действие необратимо. Договор будет удалён навсегда.')}
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
