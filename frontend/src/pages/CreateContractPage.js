@@ -705,10 +705,10 @@ Email: ${templateData.tenant_email || '[Email]'}
         content_type: selectedTemplate ? selectedTemplate.content_type : (isHtmlContent ? 'html' : 'plain'),
         source_type: selectedTemplate ? 'template' : 'manual',
         template_id: selectedTemplate ? selectedTemplate.id : undefined,
-        placeholder_values: selectedTemplate ? placeholderValues : undefined,
-        signer_name: signerName || '',
-        signer_phone: signerPhone || '',
-        signer_email: signerEmail || '',
+        placeholder_values: selectedTemplate ? cleanedPlaceholderValues : undefined,
+        signer_name: signerName || '',  // Пусто если Сторона А не вводила данные Стороны Б
+        signer_phone: signerPhone || '',  // Пусто если Сторона А не вводила данные Стороны Б
+        signer_email: signerEmail || '',  // Пусто если Сторона А не вводила данные Стороны Б
         move_in_date: templateData.move_in_date,
         move_out_date: templateData.move_out_date,
         property_address: templateData.property_address,
