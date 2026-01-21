@@ -604,6 +604,24 @@ const DashboardPage = () => {
           )}
         </div>
       </div>
+      
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('contract.deleteTitle', 'Удалить договор?')}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('contract.deleteConfirmation', 'Это действие необратимо. Договор будет удалён навсегда.')}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('common.cancel', 'Отмена')}</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDeleteContract}>
+              {t('contract.delete', 'Удалить')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
