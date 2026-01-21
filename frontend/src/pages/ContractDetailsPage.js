@@ -229,9 +229,34 @@ const ContractDetailsPage = () => {
     // Get placeholder values from contract
     const pv = contract.placeholder_values || {};
     
+    // Get signer data for Party B
+    const signerName = contract.signer_name || '';
+    const signerPhone = contract.signer_phone || '';
+    const signerEmail = contract.signer_email || '';
+    const signerIin = contract.signer_iin || pv['PARTY_B_IIN'] || pv['ID_CARD'] || '';
+    
+    // Map PARTY_B placeholders to signer data
+    const partyBMapping = {
+      'PARTY_B_NAME': signerName,
+      'PARTY_B_IIN': signerIin,
+      'PARTY_B_PHONE': signerPhone,
+      'PARTY_B_EMAIL': signerEmail,
+      'PARTY_B_ADDRESS': pv['PARTY_B_ADDRESS'] || '',
+      'PARTY_B_BANK': pv['PARTY_B_BANK'] || '',
+      'PARTY_B_IBAN': pv['PARTY_B_IBAN'] || '',
+      'PARTY_B_ID_NUMBER': pv['PARTY_B_ID_NUMBER'] || '',
+      'PARTY_B_ID_ISSUED': pv['PARTY_B_ID_ISSUED'] || '',
+      'PARTY_B_ID_DATE': pv['PARTY_B_ID_DATE'] || '',
+    };
+    
     // First replace {{KEY}} format placeholders
     const templatePlaceholderRegex = /\{\{([^}]+)\}\}/g;
     result = result.replace(templatePlaceholderRegex, (match, key) => {
+      // Check PARTY_B mapping first
+      if (partyBMapping[key]) {
+        return `<span class="inline-block px-2 py-0.5 rounded-md border bg-emerald-50 border-emerald-200 text-emerald-700 font-medium transition-all duration-300 shadow-sm">${partyBMapping[key]}</span>`;
+      }
+      
       const value = pv[key];
       
       if (value) {
@@ -253,21 +278,39 @@ const ContractDetailsPage = () => {
       const labelLower = label.toLowerCase();
       
       // Map placeholder labels to contract fields AND placeholder_values (case-insensitive)
-      if (labelLower.includes('фио') && labelLower.includes('нанимателя')) {
-        value = contract.signer_name || pv['NAME2'] || pv['SIGNER_NAME'] || match;
-        isFilled = !!(contract.signer_name || pv['NAME2'] || pv['SIGNER_NAME']);
+      // Handle PARTY_B specific placeholders first
+      if (labelLower.includes('сторон') && labelLower.includes('б')) {
+        if (labelLower.includes('фио') || labelLower.includes('наименование') || labelLower.includes('name')) {
+          value = signerName || pv['PARTY_B_NAME'] || match;
+          isFilled = !!(signerName || pv['PARTY_B_NAME']);
+        } else if (labelLower.includes('иин') || labelLower.includes('бин') || labelLower.includes('iin')) {
+          value = signerIin || pv['PARTY_B_IIN'] || match;
+          isFilled = !!(signerIin || pv['PARTY_B_IIN']);
+        } else if (labelLower.includes('телефон') || labelLower.includes('phone')) {
+          value = signerPhone || pv['PARTY_B_PHONE'] || match;
+          isFilled = !!(signerPhone || pv['PARTY_B_PHONE']);
+        } else if (labelLower.includes('email') || labelLower.includes('почта')) {
+          value = signerEmail || pv['PARTY_B_EMAIL'] || match;
+          isFilled = !!(signerEmail || pv['PARTY_B_EMAIL']);
+        } else if (labelLower.includes('адрес') || labelLower.includes('address')) {
+          value = pv['PARTY_B_ADDRESS'] || match;
+          isFilled = !!pv['PARTY_B_ADDRESS'];
+        }
+      } else if (labelLower.includes('фио') && labelLower.includes('нанимателя')) {
+        value = signerName || pv['NAME2'] || pv['SIGNER_NAME'] || match;
+        isFilled = !!(signerName || pv['NAME2'] || pv['SIGNER_NAME']);
       } else if (labelLower === 'фио' || labelLower.includes('имя') || labelLower.includes('name') || labelLower.includes('атыңыз') || labelLower.includes('аты')) {
-        value = contract.signer_name || pv['NAME2'] || pv['SIGNER_NAME'] || match;
-        isFilled = !!(contract.signer_name || pv['NAME2'] || pv['SIGNER_NAME']);
+        value = signerName || pv['NAME2'] || pv['SIGNER_NAME'] || match;
+        isFilled = !!(signerName || pv['NAME2'] || pv['SIGNER_NAME']);
       } else if (labelLower.includes('телефон') || labelLower.includes('phone') || labelLower.includes('нөмір')) {
-        value = contract.signer_phone || pv['PHONE_NUM'] || pv['PHONE'] || match;
-        isFilled = !!(contract.signer_phone || pv['PHONE_NUM'] || pv['PHONE']);
+        value = signerPhone || pv['PHONE_NUM'] || pv['PHONE'] || match;
+        isFilled = !!(signerPhone || pv['PHONE_NUM'] || pv['PHONE']);
       } else if (labelLower.includes('email') || labelLower.includes('почта') || labelLower.includes('пошта')) {
-        value = contract.signer_email || pv['EMAIL'] || match;
-        isFilled = !!(contract.signer_email || pv['EMAIL']);
-      } else if (labelLower.includes('иин') || labelLower.includes('iin')) {
-        value = pv['ID_CARD'] || pv['IIN'] || match;
-        isFilled = !!(pv['ID_CARD'] || pv['IIN']);
+        value = signerEmail || pv['EMAIL'] || match;
+        isFilled = !!(signerEmail || pv['EMAIL']);
+      } else if (labelLower.includes('иин') || labelLower.includes('iin') || labelLower.includes('бин')) {
+        value = signerIin || pv['ID_CARD'] || pv['IIN'] || match;
+        isFilled = !!(signerIin || pv['ID_CARD'] || pv['IIN']);
       } else if (labelLower.includes('дата заселения')) {
         value = contract.move_in_date || match;
         isFilled = !!contract.move_in_date;
