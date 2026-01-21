@@ -1186,34 +1186,6 @@ Email: ${templateData.tenant_email || '[Email]'}
                           </div>
                         </div>
                       )}
-
-                      {/* Submit button */}
-                                    />
-                                    {tenantDocument && (
-                                      <button
-                                        type="button"
-                                        onClick={() => {
-                                          setTenantDocument(null);
-                                          setTenantDocPreview(null);
-                                        }}
-                                        className="px-3 py-2 text-sm font-medium text-red-600 bg-white border border-red-200 rounded-lg hover:bg-red-50 transition-all"
-                                      >
-                                        {t('contract.delete')}
-                                      </button>
-                                    )}
-                                  </div>
-                                  
-                                  {tenantDocPreview && (
-                                    <div className="mt-2">
-                                      <p className="text-xs text-green-600">✓ {t('contract.docUploaded')}: {tenantDocument.name}</p>
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </details>
-                      )}
                     </div>
                   </>
                 )}
