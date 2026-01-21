@@ -28,8 +28,8 @@ import json
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://contract-admin-4.preview.emergentagent.com')
 
 # Test credentials
-TEST_EMAIL = "test-admin@emergent.com"
-TEST_PASSWORD = "password"
+TEST_EMAIL = "testadmin@test.kz"
+TEST_PASSWORD = "admin123"
 
 # Template with landlord/signer separation
 TEMPLATE_ID = "8223caf4-e8b3-42dc-af7c-df0225cae57a"
