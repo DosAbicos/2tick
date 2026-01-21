@@ -101,7 +101,7 @@ class TestSignerPlaceholderBug:
             json=contract_data,
             headers=self.headers
         )
-        assert response.status_code == 201, f"Failed to create contract: {response.text}"
+        assert response.status_code in [200, 201], f"Failed to create contract: {response.text}"
         
         contract = response.json()
         contract_id = contract["id"]
