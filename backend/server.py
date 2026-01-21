@@ -3037,10 +3037,20 @@ async def update_signer_info(contract_id: str, data: SignerInfoUpdate):
                         current_content = field_content
                         
                         # Replace values in content using ONLY {{KEY}} pattern
-                        # This prevents confusion when multiple placeholders have the same label
+                        # КРИТИЧНО: НЕ заменяем плейсхолдеры стороны Б (owner=signer/tenant) 
+                        # если договор ещё не подписан - они должны заполняться стороной Б
+                        contract_status = contract.get('status', 'draft')
+                        
                         for key, config in template['placeholders'].items():
                             if key in placeholder_values:
                                 new_value = placeholder_values[key]
+                                
+                                # ИСПРАВЛЕНИЕ БАГА: Не заменяем signer плейсхолдеры при создании/редактировании стороной А
+                                # Только при подписании (status меняется на signed) или если это signer заполняет
+                                owner = config.get('owner', 'landlord')
+                                if owner in ['signer', 'tenant'] and contract_status != 'signed':
+                                    print(f"⏭️ [{field_name}] Skipping signer placeholder {{{{{key}}}}} (owner={owner}, status={contract_status})")
+                                    continue
                                 
                                 if new_value:  # Replace if we have a new value
                                     # Format dates to DD.MM.YYYY
