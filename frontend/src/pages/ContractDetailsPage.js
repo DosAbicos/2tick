@@ -229,11 +229,14 @@ const ContractDetailsPage = () => {
     // Get placeholder values from contract
     const pv = contract.placeholder_values || {};
     
-    // Get signer data for Party B
-    const signerName = contract.signer_name || '';
-    const signerPhone = contract.signer_phone || '';
-    const signerEmail = contract.signer_email || '';
-    const signerIin = contract.signer_iin || pv['PARTY_B_IIN'] || pv['ID_CARD'] || '';
+    // Get signer data for Party B - fallback to placeholder_values
+    const signerName = contract.signer_name || pv['PARTY_B_NAME'] || pv['NAME2'] || pv['SIGNER_NAME'] || pv['1NAME'] || '';
+    const signerPhone = contract.signer_phone || pv['PARTY_B_PHONE'] || pv['PHONE_NUM'] || pv['PHONE'] || '';
+    const signerEmail = contract.signer_email || pv['PARTY_B_EMAIL'] || pv['EMAIL'] || '';
+    const signerIin = contract.signer_iin || pv['PARTY_B_IIN'] || pv['ID_CARD'] || pv['IIN'] || '';
+    
+    console.log('📋 Signer data:', { signerName, signerPhone, signerEmail, signerIin });
+    console.log('📋 Placeholder values:', pv);
     
     // Map PARTY_B placeholders to signer data
     const partyBMapping = {
@@ -247,25 +250,36 @@ const ContractDetailsPage = () => {
       'PARTY_B_ID_NUMBER': pv['PARTY_B_ID_NUMBER'] || '',
       'PARTY_B_ID_ISSUED': pv['PARTY_B_ID_ISSUED'] || '',
       'PARTY_B_ID_DATE': pv['PARTY_B_ID_DATE'] || '',
+      // Also map legacy keys
+      'NAME2': signerName,
+      'SIGNER_NAME': signerName,
+      '1NAME': signerName,
+      'PHONE_NUM': signerPhone,
+      'PHONE': signerPhone,
+      'ID_CARD': signerIin,
+      'IIN': signerIin,
+      'EMAIL': signerEmail,
     };
     
     // First replace {{KEY}} format placeholders
     const templatePlaceholderRegex = /\{\{([^}]+)\}\}/g;
     result = result.replace(templatePlaceholderRegex, (match, key) => {
+      const trimmedKey = key.trim();
+      
       // Check PARTY_B mapping first
-      if (partyBMapping[key]) {
-        return `<span class="inline-block px-2 py-0.5 rounded-md border bg-emerald-50 border-emerald-200 text-emerald-700 font-medium transition-all duration-300 shadow-sm">${partyBMapping[key]}</span>`;
+      if (partyBMapping[trimmedKey]) {
+        return `<span class="inline-block px-2 py-0.5 rounded-md border bg-emerald-50 border-emerald-200 text-emerald-700 font-medium transition-all duration-300 shadow-sm">${partyBMapping[trimmedKey]}</span>`;
       }
       
-      const value = pv[key];
-      
+      // Check placeholder_values
+      const value = pv[trimmedKey];
       if (value) {
         return `<span class="inline-block px-2 py-0.5 rounded-md border bg-emerald-50 border-emerald-200 text-emerald-700 font-medium transition-all duration-300 shadow-sm">${value}</span>`;
       }
       
       // Try to get label from template
-      const config = template?.placeholders?.[key];
-      const label = config?.label || key;
+      const config = template?.placeholders?.[trimmedKey];
+      const label = config?.label || trimmedKey;
       return `<span class="inline-block px-2 py-0.5 rounded-md border bg-amber-50 border-amber-200 text-amber-700 font-medium transition-all duration-300 shadow-sm">[${label}]</span>`;
     });
     
