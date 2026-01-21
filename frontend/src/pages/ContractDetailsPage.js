@@ -229,8 +229,8 @@ const ContractDetailsPage = () => {
     // Get placeholder values from contract
     const pv = contract.placeholder_values || {};
     
-    // Get signer data for Party B - fallback to placeholder_values
-    const signerName = contract.signer_name || pv['PARTY_B_NAME'] || pv['NAME2'] || pv['SIGNER_NAME'] || pv['1NAME'] || '';
+    // Get signer data for Party B - FIXED: removed pv['1NAME'] (that's landlord field!)
+    const signerName = contract.signer_name || pv['PARTY_B_NAME'] || pv['NAME2'] || pv['SIGNER_NAME'] || '';
     const signerPhone = contract.signer_phone || pv['PARTY_B_PHONE'] || pv['PHONE_NUM'] || pv['PHONE'] || '';
     const signerEmail = contract.signer_email || pv['PARTY_B_EMAIL'] || pv['EMAIL'] || '';
     const signerIin = contract.signer_iin || pv['PARTY_B_IIN'] || pv['ID_CARD'] || pv['IIN'] || '';
@@ -238,7 +238,7 @@ const ContractDetailsPage = () => {
     console.log('📋 Signer data:', { signerName, signerPhone, signerEmail, signerIin });
     console.log('📋 Placeholder values:', pv);
     
-    // Map PARTY_B placeholders to signer data
+    // Map PARTY_B placeholders to signer data - FIXED: removed '1NAME' (landlord field)
     const partyBMapping = {
       'PARTY_B_NAME': signerName,
       'PARTY_B_IIN': signerIin,
@@ -250,11 +250,10 @@ const ContractDetailsPage = () => {
       'PARTY_B_ID_NUMBER': pv['PARTY_B_ID_NUMBER'] || '',
       'PARTY_B_ID_ISSUED': pv['PARTY_B_ID_ISSUED'] || '',
       'PARTY_B_ID_DATE': pv['PARTY_B_ID_DATE'] || '',
-      // Also map legacy keys
+      // Map legacy signer keys (owner='signer') only
       'NAME2': signerName,
       'SIGNER_NAME': signerName,
-      '1NAME': signerName,
-      'PHONE_NUM': signerPhone,
+      'PHONE_NUM': signerPhone,  // This is signer field in template
       'PHONE': signerPhone,
       'ID_CARD': signerIin,
       'IIN': signerIin,
@@ -266,12 +265,12 @@ const ContractDetailsPage = () => {
     result = result.replace(templatePlaceholderRegex, (match, key) => {
       const trimmedKey = key.trim();
       
-      // Check PARTY_B mapping first
+      // Check PARTY_B mapping first (for signer fields)
       if (partyBMapping[trimmedKey]) {
         return `<span class="inline-block px-2 py-0.5 rounded-md border bg-emerald-50 border-emerald-200 text-emerald-700 font-medium transition-all duration-300 shadow-sm">${partyBMapping[trimmedKey]}</span>`;
       }
       
-      // Check placeholder_values
+      // Check placeholder_values (for landlord fields like 1NAME, ADDRESS)
       const value = pv[trimmedKey];
       if (value) {
         return `<span class="inline-block px-2 py-0.5 rounded-md border bg-emerald-50 border-emerald-200 text-emerald-700 font-medium transition-all duration-300 shadow-sm">${value}</span>`;
