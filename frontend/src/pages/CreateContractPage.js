@@ -651,20 +651,46 @@ Email: ${templateData.tenant_email || '[Email]'}
       const isHtmlContent = false;
       
       // Extract tenant info from placeholders or templateData
-      let signerName = templateData.tenant_name;
-      let signerPhone = templateData.tenant_phone;
-      let signerEmail = templateData.tenant_email;
+      // КРИТИЧНО: Берём ТОЛЬКО данные из полей с owner='signer' или owner='tenant'
+      let signerName = templateData.tenant_name || '';
+      let signerPhone = templateData.tenant_phone || '';
+      let signerEmail = templateData.tenant_email || '';
       
       if (selectedTemplate && selectedTemplate.placeholders) {
-        // Try to find tenant info in placeholders
+        // Try to find tenant info ONLY from signer/tenant owned placeholders
         Object.entries(selectedTemplate.placeholders).forEach(([key, config]) => {
+          const owner = config.owner || 'landlord';
+          // ВАЖНО: Берём данные ТОЛЬКО из полей стороны Б (signer/tenant)
+          if (owner !== 'signer' && owner !== 'tenant') {
+            return; // Пропускаем поля стороны А
+          }
+          
           const value = placeholderValues[key];
-          if (config.type === 'text' && (key.toLowerCase().includes('tenant') || key.toLowerCase().includes('наниматель'))) {
-            signerName = value || signerName;
+          if (!value) return; // Пропускаем пустые значения
+          
+          if (config.type === 'text' && (key.toLowerCase().includes('name') || key.toLowerCase().includes('фио') || key.toLowerCase().includes('tenant') || key.toLowerCase().includes('наниматель'))) {
+            signerName = value;
           } else if (config.type === 'phone') {
-            signerPhone = value || signerPhone;
+            signerPhone = value;
           } else if (config.type === 'email') {
-            signerEmail = value || signerEmail;
+            signerEmail = value;
+          }
+        });
+      }
+      
+      // КРИТИЧНО: Очищаем placeholderValues от данных стороны Б, чтобы они не сохранялись преждевременно
+      // Сторона Б заполняет их сама при подписании
+      const cleanedPlaceholderValues = {};
+      if (selectedTemplate && selectedTemplate.placeholders) {
+        Object.entries(placeholderValues).forEach(([key, value]) => {
+          const config = selectedTemplate.placeholders[key];
+          if (config) {
+            const owner = config.owner || 'landlord';
+            // Сохраняем ТОЛЬКО данные стороны А (landlord)
+            if (owner === 'landlord') {
+              cleanedPlaceholderValues[key] = value;
+            }
+            // Поля стороны Б оставляем пустыми - они заполняются при подписании
           }
         });
       }
