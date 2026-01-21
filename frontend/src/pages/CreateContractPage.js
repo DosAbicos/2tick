@@ -654,16 +654,16 @@ Email: ${templateData.tenant_email || '[Email]'}
       const isHtmlContent = false;
       
       // Extract tenant info from placeholders or templateData
-      // КРИТИЧНО: Берём ТОЛЬКО данные из полей с owner='signer' или owner='tenant'
+      // Берём данные из полей с owner='signer' или owner='tenant'
       let signerName = templateData.tenant_name || '';
       let signerPhone = templateData.tenant_phone || '';
       let signerEmail = templateData.tenant_email || '';
       
       if (selectedTemplate && selectedTemplate.placeholders) {
-        // Try to find tenant info ONLY from signer/tenant owned placeholders
+        // Try to find tenant info from signer/tenant owned placeholders
         Object.entries(selectedTemplate.placeholders).forEach(([key, config]) => {
           const owner = config.owner || 'landlord';
-          // ВАЖНО: Берём данные ТОЛЬКО из полей стороны Б (signer/tenant)
+          // Берём данные из полей стороны Б (signer/tenant)
           if (owner !== 'signer' && owner !== 'tenant') {
             return; // Пропускаем поля стороны А
           }
@@ -681,19 +681,23 @@ Email: ${templateData.tenant_email || '[Email]'}
         });
       }
       
-      // КРИТИЧНО: Очищаем placeholderValues от данных стороны Б, чтобы они не сохранялись преждевременно
-      // Сторона Б заполняет их сама при подписании
+      // Подготавливаем placeholderValues для отправки
+      // Если showSignerFields=true, включаем все данные (и landlord, и signer)
+      // Если showSignerFields=false, включаем только landlord данные
       const cleanedPlaceholderValues = {};
       if (selectedTemplate && selectedTemplate.placeholders) {
         Object.entries(placeholderValues).forEach(([key, value]) => {
           const config = selectedTemplate.placeholders[key];
-          if (config) {
+          if (config && value) {  // Only include non-empty values
             const owner = config.owner || 'landlord';
-            // Сохраняем ТОЛЬКО данные стороны А (landlord)
+            // Включаем landlord поля всегда
             if (owner === 'landlord') {
               cleanedPlaceholderValues[key] = value;
             }
-            // Поля стороны Б оставляем пустыми - они заполняются при подписании
+            // Включаем signer/tenant поля только если showSignerFields включён
+            else if ((owner === 'signer' || owner === 'tenant') && showSignerFields) {
+              cleanedPlaceholderValues[key] = value;
+            }
           }
         });
       }
