@@ -1501,16 +1501,16 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
         logging.error(f"Error processing KK content: {str(e)}")
         content_kk = contract.get('content_kk', contract.get('content', ''))
     
-    y_position = draw_content_section(p, content_kk, y_position, width, height, "ҚАЗАҚША / KAZAKH", start_new_page=False)
+    y_position = draw_content_section(p, content_kk, y_position, width, height, "ҚАЗАҚША / KAZAKH", start_new_page=False, page_info=page_info)
     
     # Kazakh signature block
     y_position = draw_signature_block(p, y_position, width, height, contract, signature, landlord, template, 'kk')
     
-    # ========== PAGE 3: ENGLISH VERSION (if selected) ==========
+    # ========== ENGLISH VERSION (if selected) ==========
     if include_english:
         p.showPage()
-        current_page = 3
-        draw_page_header_footer(p, width, height, current_page, total_pages, contract_code, logo_path, qr_data)
+        page_info['current_page'] += 1
+        _draw_simple_header(p, width, height, contract_code, logo_path, qr_data)
         
         y_position = height - 120
         
@@ -1525,7 +1525,7 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             logging.error(f"Error processing EN content: {str(e)}")
             content_en = contract.get('content_en', contract.get('content', ''))
         
-        y_position = draw_content_section(p, content_en, y_position, width, height, "ENGLISH", is_translation=True, start_new_page=False)
+        y_position = draw_content_section(p, content_en, y_position, width, height, "ENGLISH", is_translation=True, start_new_page=False, page_info=page_info)
         
         # English signature block
         y_position = draw_signature_block(p, y_position, width, height, contract, signature, landlord, template, 'en')
@@ -1533,8 +1533,8 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
     # ========== LAST PAGE: ID DOCUMENT (if available) ==========
     if signature and signature.get('document_upload'):
         p.showPage()
-        current_page = total_pages
-        draw_page_header_footer(p, width, height, current_page, total_pages, contract_code, logo_path, qr_data)
+        page_info['current_page'] += 1
+        _draw_simple_header(p, width, height, contract_code, logo_path, qr_data)
         
         y_position = height - 120
         
