@@ -1148,42 +1148,129 @@ Email: ${templateData.tenant_email || '[Email]'}
                         </div>
                       )}
 
-                      {/* Tenant/Signer Fields - READ ONLY for Party A */}
+                      {/* Tenant/Signer Fields - Optionally fillable by Party A */}
                       {Object.entries(selectedTemplate.placeholders).some(([_, config]) => 
                         (config.owner === 'tenant' || config.owner === 'signer') && config.type !== 'calculated'
                       ) && (
                         <div className="p-4 bg-purple-50 border border-purple-200 rounded-xl">
-                          <div className="flex items-center gap-3 mb-4">
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-600 to-purple-500 flex items-center justify-center text-white font-bold shadow-lg">
-                              2
+                          <div className="flex items-center justify-between gap-3 mb-4">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-600 to-purple-500 flex items-center justify-center text-white font-bold shadow-lg">
+                                2
+                              </div>
+                              <div className="flex-1">
+                                <h3 className="text-lg font-semibold text-gray-900">
+                                  {selectedTemplate.party_b_role || t('contract.clientData')}
+                                </h3>
+                                <p className="text-sm text-purple-700 font-medium">
+                                  {showSignerFields 
+                                    ? t('contract.fillForClient', 'Заполните данные клиента (опционально)')
+                                    : t('contract.clientWillFillThese', 'Эти поля заполняет клиент при подписании договора')
+                                  }
+                                </p>
+                              </div>
                             </div>
-                            <div className="flex-1">
-                              <h3 className="text-lg font-semibold text-gray-900">
-                                {selectedTemplate.party_b_role || t('contract.clientData')}
-                              </h3>
-                              <p className="text-sm text-purple-700 font-medium">
-                                ⚠️ {t('contract.clientWillFillThese', 'Эти поля заполняет клиент при подписании договора')}
-                              </p>
-                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setShowSignerFields(!showSignerFields)}
+                              className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-all ${
+                                showSignerFields 
+                                  ? 'bg-purple-600 text-white' 
+                                  : 'bg-white text-purple-600 border border-purple-300 hover:bg-purple-50'
+                              }`}
+                            >
+                              {showSignerFields ? t('common.hide', 'Скрыть') : t('contract.fillNow', 'Заполнить сейчас')}
+                            </button>
                           </div>
                           
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            {Object.entries(selectedTemplate.placeholders).map(([key, config]) => {
-                              // Only show tenant/signer fields
-                              if (config.type === 'calculated' || (config.owner !== 'tenant' && config.owner !== 'signer')) return null;
-                              
-                              return (
-                                <div key={key} className="bg-white/60 rounded-lg px-3 py-2 border border-purple-100">
-                                  <span className="text-xs font-medium text-purple-600 uppercase tracking-wide">
-                                    {getPlaceholderLabel(config)}
-                                  </span>
-                                  <p className="text-sm text-gray-500 italic mt-0.5">
-                                    {t('contract.filledByClient', 'Заполняется клиентом')}
-                                  </p>
-                                </div>
-                              );
-                            })}
-                          </div>
+                          {showSignerFields ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              {Object.entries(selectedTemplate.placeholders).map(([key, config]) => {
+                                // Only show tenant/signer fields
+                                if (config.type === 'calculated' || (config.owner !== 'tenant' && config.owner !== 'signer')) return null;
+                                
+                                return (
+                                  <div key={key} className={config.type === 'text' ? 'md:col-span-2' : ''}>
+                                    <label htmlFor={`placeholder_signer_${key}`} className="block text-sm font-medium text-gray-700 mb-2">
+                                      {getPlaceholderLabel(config)} <span className="text-gray-400">(опционально)</span>
+                                    </label>
+                                    
+                                    {config.type === 'text' && (
+                                      <input
+                                        id={`placeholder_signer_${key}`}
+                                        value={placeholderValues[key] || ''}
+                                        onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
+                                        className="minimal-input w-full"
+                                        placeholder={`${t('common.enter')} ${getPlaceholderLabel(config).toLowerCase()}`}
+                                      />
+                                    )}
+                                    
+                                    {config.type === 'number' && (
+                                      <input
+                                        id={`placeholder_signer_${key}`}
+                                        type="number"
+                                        value={placeholderValues[key] || ''}
+                                        onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
+                                        className="minimal-input w-full"
+                                        placeholder={`Введите ${getPlaceholderLabel(config).toLowerCase()}`}
+                                      />
+                                    )}
+                                    
+                                    {config.type === 'date' && (
+                                      <input
+                                        id={`placeholder_signer_${key}`}
+                                        type="date"
+                                        value={placeholderValues[key] || ''}
+                                        onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
+                                        className="minimal-input w-full"
+                                      />
+                                    )}
+                                    
+                                    {config.type === 'phone' && (
+                                      <IMaskInput
+                                        mask="+7 (000) 000-00-00"
+                                        value={placeholderValues[key] || ''}
+                                        onAccept={(value) => setPlaceholderValues({...placeholderValues, [key]: value})}
+                                        placeholder="+7 (___) ___-__-__"
+                                        className="minimal-input w-full"
+                                        id={`placeholder_signer_${key}`}
+                                        type="tel"
+                                      />
+                                    )}
+                                    
+                                    {config.type === 'email' && (
+                                      <input
+                                        id={`placeholder_signer_${key}`}
+                                        type="email"
+                                        value={placeholderValues[key] || ''}
+                                        onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
+                                        className="minimal-input w-full"
+                                        placeholder={`Введите ${getPlaceholderLabel(config).toLowerCase()}`}
+                                      />
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              {Object.entries(selectedTemplate.placeholders).map(([key, config]) => {
+                                // Only show tenant/signer fields
+                                if (config.type === 'calculated' || (config.owner !== 'tenant' && config.owner !== 'signer')) return null;
+                                
+                                return (
+                                  <div key={key} className="bg-white/60 rounded-lg px-3 py-2 border border-purple-100">
+                                    <span className="text-xs font-medium text-purple-600 uppercase tracking-wide">
+                                      {getPlaceholderLabel(config)}
+                                    </span>
+                                    <p className="text-sm text-gray-500 italic mt-0.5">
+                                      {t('contract.filledByClient', 'Заполняется клиентом')}
+                                    </p>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
