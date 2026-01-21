@@ -1146,22 +1146,25 @@ def draw_signature_block(p, y_position, width, height, contract, signature, land
     return min(left_col_end_y, right_col_end_y) - 20
 
 
-def draw_content_section(p, content_text, y_position, width, height, language_label=None, is_translation=False, start_new_page=False):
+def draw_content_section(p, content_text, y_position, width, height, language_label=None, is_translation=False, start_new_page=False, page_info=None):
     """Helper function to draw a content section in PDF
     
     Args:
         start_new_page: If True, starts content on a new page
+        page_info: Dict with 'current_page', 'contract_code', 'logo_path', 'qr_data' for proper headers
     """
     from reportlab.lib.colors import HexColor
     
     left_margin = 55
     right_margin = width - 55
-    max_chars_per_line = 95
+    usable_width = right_margin - left_margin  # ~485 points for A4
     
     # Start new page if requested
     if start_new_page:
         p.showPage()
         y_position = height - 120  # Leave space for header
+        if page_info:
+            page_info['current_page'] += 1
     
     # Add language header if provided
     if language_label:
@@ -1189,40 +1192,96 @@ def draw_content_section(p, content_text, y_position, width, height, language_la
         y_position -= 35
     
     # Set content font
+    font_name = "DejaVu"
+    font_size = 10
     try:
-        p.setFont("DejaVu", 10)
+        p.setFont(font_name, font_size)
     except:
-        p.setFont("Helvetica", 10)
+        font_name = "Helvetica"
+        p.setFont(font_name, font_size)
     
     lines = content_text.split('\n')
     
+    def get_text_width(text, font, size):
+        """Calculate text width in points"""
+        try:
+            return p.stringWidth(text, font, size)
+        except:
+            # Fallback: estimate width (average 6 points per char for 10pt font)
+            return len(text) * 6
+    
+    def wrap_line_by_width(line, max_width, font, size):
+        """Wrap line by actual pixel width, not character count"""
+        if not line.strip():
+            return ['']
+        
+        words = line.split()
+        wrapped_lines = []
+        current_line = ""
+        
+        for word in words:
+            test_line = current_line + (" " if current_line else "") + word
+            test_width = get_text_width(test_line, font, size)
+            
+            if test_width <= max_width:
+                current_line = test_line
+            else:
+                # Current line is full, save it
+                if current_line:
+                    wrapped_lines.append(current_line)
+                
+                # Check if word itself is too long
+                word_width = get_text_width(word, font, size)
+                if word_width > max_width:
+                    # Break long word
+                    chars = ""
+                    for char in word:
+                        test_chars = chars + char
+                        if get_text_width(test_chars, font, size) <= max_width:
+                            chars = test_chars
+                        else:
+                            if chars:
+                                wrapped_lines.append(chars)
+                            chars = char
+                    current_line = chars
+                else:
+                    current_line = word
+        
+        if current_line:
+            wrapped_lines.append(current_line)
+        
+        return wrapped_lines if wrapped_lines else ['']
+    
     for line in lines:
+        # Check for page break
         if y_position < 120:
             p.showPage()
+            if page_info:
+                page_info['current_page'] += 1
             try:
-                p.setFont("DejaVu", 10)
+                p.setFont(font_name, font_size)
             except:
-                p.setFont("Helvetica", 10)
+                p.setFont("Helvetica", font_size)
             p.setFillColor(HexColor('#000000'))
             y_position = height - 120
         
-        if len(line) > max_chars_per_line:
-            words = line.split()
-            current_line = ""
-            for word in words:
-                if len(current_line + word) < max_chars_per_line:
-                    current_line += word + " "
-                else:
-                    if current_line.strip():
-                        p.drawString(left_margin, y_position, current_line.strip())
-                        y_position -= 14
-                    current_line = word + " "
-            if current_line.strip():
-                p.drawString(left_margin, y_position, current_line.strip())
-                y_position -= 14
-        else:
-            if line.strip():
-                p.drawString(left_margin, y_position, line.strip())
+        # Wrap line by actual width
+        wrapped = wrap_line_by_width(line, usable_width, font_name, font_size)
+        
+        for wrapped_line in wrapped:
+            if y_position < 120:
+                p.showPage()
+                if page_info:
+                    page_info['current_page'] += 1
+                try:
+                    p.setFont(font_name, font_size)
+                except:
+                    p.setFont("Helvetica", font_size)
+                p.setFillColor(HexColor('#000000'))
+                y_position = height - 120
+            
+            if wrapped_line.strip():
+                p.drawString(left_margin, y_position, wrapped_line.strip())
                 y_position -= 14
             else:
                 y_position -= 7
