@@ -1159,75 +1159,8 @@ Email: ${templateData.tenant_email || '[Email]'}
                           </div>
                         </div>
                       )}
-                                        onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
-                                        className="minimal-input w-full"
-                                        placeholder={t('common.client_will_fill')}
-                                      />
-                                    )}
-                                    
-                                    {config.type === 'date' && (
-                                      <input
-                                        id={`placeholder_${key}`}
-                                        type="date"
-                                        value={placeholderValues[key] || ''}
-                                        onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
-                                        className="minimal-input w-full"
-                                      />
-                                    )}
-                                    
-                                    {config.type === 'phone' && (
-                                      <IMaskInput
-                                        mask="+7 (000) 000-00-00"
-                                        value={placeholderValues[key] || ''}
-                                        onAccept={(value) => setPlaceholderValues({...placeholderValues, [key]: value})}
-                                        placeholder="+7 (___) ___-__-__"
-                                        className="minimal-input w-full"
-                                        id={`placeholder_${key}`}
-                                        type="tel"
-                                      />
-                                    )}
-                                    
-                                    {config.type === 'email' && (
-                                      <input
-                                        id={`placeholder_${key}`}
-                                        type="email"
-                                        value={placeholderValues[key] || ''}
-                                        onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
-                                        className="minimal-input w-full"
-                                        placeholder={t('common.client_will_fill')}
-                                      />
-                                    )}
-                                  </div>
-                                );
-                              })}
-                            </div>
-                            
-                            {/* Tenant Document Upload inside tenant fields */}
-                            {selectedTemplate.requires_tenant_document && (
-                              <div className="mt-6 pt-6 border-t border-slate-200">
-                                <div className="p-4 bg-gradient-to-br from-indigo-50 to-blue-50 border-2 border-indigo-200 rounded-xl">
-                                  <label className="font-semibold text-indigo-900 flex items-center gap-2 mb-2">
-                                    {t('contract.tenantDocument')}
-                                  </label>
-                                  <p className="text-xs text-indigo-700 mt-1 mb-3">
-                                    {t('contract.tenantDocumentHint')}
-                                  </p>
-                                  
-                                  <div className="flex gap-2 items-center">
-                                    <input
-                                      type="file"
-                                      accept="image/*,application/pdf"
-                                      onChange={(e) => {
-                                        const file = e.target.files[0];
-                                        if (file) {
-                                          setTenantDocument(file);
-                                          const reader = new FileReader();
-                                          reader.onload = () => setTenantDocPreview(reader.result);
-                                          reader.readAsDataURL(file);
-                                          toast.success(t('contract.docSelected'));
-                                        }
-                                      }}
-                                      className="flex-1 minimal-input"
+
+                      {/* Submit button */}
                                     />
                                     {tenantDocument && (
                                       <button
