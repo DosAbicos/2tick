@@ -527,9 +527,17 @@ Email: ${templateData.tenant_email || '[Email]'}
     
     let processedContent = content;
     
-    // First replace regular placeholders
+    // First replace regular placeholders - BUT SKIP SIGNER PLACEHOLDERS!
     Object.entries(placeholders).forEach(([key, config]) => {
       if (config.type !== 'calculated') {
+        // КРИТИЧНО: Пропускаем плейсхолдеры стороны Б - они заполняются при подписании
+        const owner = config.owner || 'landlord';
+        if (owner === 'signer' || owner === 'tenant') {
+          // Сохраняем плейсхолдер как есть для заполнения стороной Б
+          console.log(`⏭️ Skipping signer placeholder: {{${key}}} (owner=${owner})`);
+          return;
+        }
+        
         let value = values[key] || `[${config.label}]`;
         
         // Format dates to DD.MM.YYYY
