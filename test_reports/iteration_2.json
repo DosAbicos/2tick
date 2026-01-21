@@ -1,0 +1,59 @@
+{
+  "summary": "Tested CRITICAL BUG: Signer placeholders (owner='signer') being filled with Party A data. Found ROOT CAUSE in ContractDetailsPage.js line 233 - fallback chain incorrectly includes landlord's 1NAME field.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/contracts POST", "issue": "Backend accepts signer fields (owner='signer') when Party A fills them during contract creation. Should validate and reject or ignore signer fields from Party A.", "priority": "MEDIUM"}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "ContractDetailsPage.js",
+        "issue": "BUG LINE 233: signerName fallback chain includes pv['1NAME'] (landlord field). When signer fields are empty, it incorrectly shows landlord's name as signer's name.",
+        "selector": "replacePlaceholders function",
+        "priority": "HIGH"
+      },
+      {
+        "component": "ContractDetailsPage.js", 
+        "issue": "BUG LINE 256: partyBMapping incorrectly maps '1NAME' to signerName, creating circular reference",
+        "selector": "partyBMapping object",
+        "priority": "HIGH"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/tests/test_signer_placeholder_bug.py",
+    "/app/test_reports/pytest/pytest_results_iteration2.xml"
+  ],
+  "action_items": [
+    "FIX ContractDetailsPage.js line 233: Remove pv['1NAME'] from signerName fallback chain. Should be: const signerName = contract.signer_name || pv['PARTY_B_NAME'] || pv['NAME2'] || pv['SIGNER_NAME'] || '';",
+    "FIX ContractDetailsPage.js line 256: Remove '1NAME': signerName from partyBMapping - 1NAME is landlord field, not signer",
+    "OPTIONAL: Backend validation to reject/ignore signer fields (owner='signer') when Party A creates contract"
+  ],
+  "critical_code_review_comments": [
+    "ROOT CAUSE FOUND: ContractDetailsPage.js replacePlaceholders() function has incorrect fallback logic",
+    "Line 233: signerName = contract.signer_name || pv['PARTY_B_NAME'] || pv['NAME2'] || pv['SIGNER_NAME'] || pv['1NAME'] - the pv['1NAME'] is LANDLORD field!",
+    "Line 256: '1NAME': signerName - maps landlord field to signer data, causing circular reference",
+    "CreateContractPage.js correctly separates landlord/signer fields in UI (collapsible section for signer)",
+    "SignContractPage.js correctly shows empty signer fields for Party B to fill",
+    "Template placeholders correctly configured with owner='landlord' and owner='signer'"
+  ],
+  "updated_files": [
+    "/app/tests/test_signer_placeholder_bug.py"
+  ],
+  "success_rate": {
+    "backend": "100% (5/5 tests passed)",
+    "frontend": "Form separation working, but display bug in ContractDetailsPage"
+  },
+  "test_credentials": {
+    "email": "testadmin@test.kz",
+    "password": "admin123"
+  },
+  "seed_data_creation": "Created test contracts via API and UI for bug verification",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "BUG ROOT CAUSE: ContractDetailsPage.js line 233 has incorrect fallback chain that includes landlord's 1NAME field in signerName. Fix by removing pv['1NAME'] from the fallback. Also remove '1NAME': signerName from partyBMapping on line 256. Template ID 8223caf4-e8b3-42dc-af7c-df0225cae57a has correct owner configuration. Twilio SMS is MOCKED."
+}
