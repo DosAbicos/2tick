@@ -525,20 +525,22 @@ Email: ${templateData.tenant_email || '[Email]'}
   };
 
   // Helper function to process content with placeholder replacements
-  const processContentWithPlaceholders = (content, placeholders, values) => {
+  const processContentWithPlaceholders = (content, placeholders, values, includeSignerFields = false) => {
     if (!content || !placeholders || !values) return content;
     
     let processedContent = content;
     
-    // First replace regular placeholders - BUT SKIP SIGNER PLACEHOLDERS!
+    // Replace placeholders
     Object.entries(placeholders).forEach(([key, config]) => {
       if (config.type !== 'calculated') {
-        // КРИТИЧНО: Пропускаем плейсхолдеры стороны Б - они заполняются при подписании
         const owner = config.owner || 'landlord';
+        
+        // Для полей стороны Б - заменяем только если includeSignerFields=true И значение есть
         if (owner === 'signer' || owner === 'tenant') {
-          // Сохраняем плейсхолдер как есть для заполнения стороной Б
-          console.log(`⏭️ Skipping signer placeholder: {{${key}}} (owner=${owner})`);
-          return;
+          if (!includeSignerFields || !values[key]) {
+            // Сохраняем плейсхолдер как есть для заполнения стороной Б
+            return;
+          }
         }
         
         let value = values[key] || `[${config.label}]`;
