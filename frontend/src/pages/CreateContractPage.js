@@ -633,13 +633,14 @@ Email: ${templateData.tenant_email || '[Email]'}
       let contentEnToSave = selectedTemplate?.content_en || null;
       
       // Replace placeholders with actual values for all language versions
+      // Если showSignerFields=true, включаем данные Стороны Б
       if (selectedTemplate && placeholderValues && selectedTemplate.placeholders) {
-        contentToSave = processContentWithPlaceholders(contentToSave, selectedTemplate.placeholders, placeholderValues);
+        contentToSave = processContentWithPlaceholders(contentToSave, selectedTemplate.placeholders, placeholderValues, showSignerFields);
         if (contentKkToSave) {
-          contentKkToSave = processContentWithPlaceholders(contentKkToSave, selectedTemplate.placeholders, placeholderValues);
+          contentKkToSave = processContentWithPlaceholders(contentKkToSave, selectedTemplate.placeholders, placeholderValues, showSignerFields);
         }
         if (contentEnToSave) {
-          contentEnToSave = processContentWithPlaceholders(contentEnToSave, selectedTemplate.placeholders, placeholderValues);
+          contentEnToSave = processContentWithPlaceholders(contentEnToSave, selectedTemplate.placeholders, placeholderValues, showSignerFields);
         }
       }
       
