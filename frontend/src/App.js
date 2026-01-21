@@ -72,7 +72,7 @@ function App() {
           <Route path="/payment/failure" element={<PaymentFailurePage />} />
         </Routes>
       </BrowserRouter>
-      <Toaster position="top-right" />
+      {/* Toast notifications disabled - they were interfering with UX */}
     </div>
   );
 }
