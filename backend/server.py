@@ -2665,9 +2665,16 @@ async def update_contract(contract_id: str, update_data: dict, current_user: dic
                 placeholder_values = filtered_data['placeholder_values']
                 
                 # Replace ONLY placeholders that have values (keep empty ones as {{key}})
+                # КРИТИЧНО: НЕ заменяем плейсхолдеры стороны Б (owner=signer) при редактировании
                 for key, value in placeholder_values.items():
                     if key in template['placeholders'] and value:  # Only replace if value is not empty
                         config = template['placeholders'][key]
+                        
+                        # ИСПРАВЛЕНИЕ: Пропускаем signer плейсхолдеры
+                        owner = config.get('owner', 'landlord')
+                        if owner in ['signer', 'tenant']:
+                            print(f"⏭️ Skipping signer placeholder {key} in update_contract (owner={owner})")
+                            continue
                         
                         # Format dates to DD.MM.YYYY
                         if config.get('type') == 'date':
