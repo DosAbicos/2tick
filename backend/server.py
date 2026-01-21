@@ -1255,14 +1255,37 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
     if signature and signature.get('document_upload'):
         total_pages += 1
     
-    # Register fonts
-    try:
-        dejavu_path = '/usr/share/fonts/truetype/dejavu/'
-        pdfmetrics.registerFont(TTFont('DejaVu', dejavu_path + 'DejaVuSans.ttf'))
-        pdfmetrics.registerFont(TTFont('DejaVu-Bold', dejavu_path + 'DejaVuSans-Bold.ttf'))
-        pdfmetrics.registerFont(TTFont('DejaVu-Mono', dejavu_path + 'DejaVuSansMono.ttf'))
-    except:
-        pass
+    # Register fonts - try multiple locations
+    font_registered = False
+    font_paths = [
+        '/usr/share/fonts/truetype/dejavu/',
+        '/usr/share/fonts/truetype/freefont/',
+        '/usr/share/fonts/',
+        '/app/backend/fonts/',
+    ]
+    
+    for dejavu_path in font_paths:
+        try:
+            if os.path.exists(dejavu_path + 'DejaVuSans.ttf'):
+                pdfmetrics.registerFont(TTFont('DejaVu', dejavu_path + 'DejaVuSans.ttf'))
+                pdfmetrics.registerFont(TTFont('DejaVu-Bold', dejavu_path + 'DejaVuSans-Bold.ttf'))
+                pdfmetrics.registerFont(TTFont('DejaVu-Mono', dejavu_path + 'DejaVuSansMono.ttf'))
+                font_registered = True
+                logging.info(f"✅ PDF fonts registered from: {dejavu_path}")
+                break
+            elif os.path.exists(dejavu_path + 'FreeSans.ttf'):
+                pdfmetrics.registerFont(TTFont('DejaVu', dejavu_path + 'FreeSans.ttf'))
+                pdfmetrics.registerFont(TTFont('DejaVu-Bold', dejavu_path + 'FreeSansBold.ttf'))
+                pdfmetrics.registerFont(TTFont('DejaVu-Mono', dejavu_path + 'FreeMono.ttf'))
+                font_registered = True
+                logging.info(f"✅ PDF fonts registered from FreeFonts: {dejavu_path}")
+                break
+        except Exception as e:
+            logging.warning(f"Failed to register fonts from {dejavu_path}: {str(e)}")
+            continue
+    
+    if not font_registered:
+        logging.warning("⚠️ No TTF fonts found, using Helvetica fallback (may have encoding issues)")
     
     # Create PDF
     pdf_buffer = BytesIO()
