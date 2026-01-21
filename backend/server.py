@@ -2867,38 +2867,67 @@ async def get_contract_for_signing(contract_id: str):
     
     # If signature doesn't exist, create it automatically (for direct signing links)
     if not signature:
-        # ИСПРАВЛЕНИЕ #3: Автоматическое сохранение signer_phone перед верификацией
-        # Извлекаем телефон из placeholder_values если он не установлен в contract
+        # ИСПРАВЛЕНИЕ: Извлекаем телефон ТОЛЬКО из полей принадлежащих Стороне Б
         signer_phone = contract.get('signer_phone', '')
+        signer_name = contract.get('signer_name', '')
         
-        if not signer_phone and contract.get('placeholder_values'):
+        # Если данные не установлены, ищем в placeholder_values с учётом владельца поля
+        if not signer_phone or not signer_name:
+            # Получаем шаблон чтобы узнать владельцев полей
+            template = None
+            if contract.get('template_id'):
+                template = await db.templates.find_one({"id": contract['template_id']}, {"_id": 0})
+            
             placeholder_values = contract.get('placeholder_values', {})
-            # Поиск по ключам: tenant_phone, signer_phone, client_phone, phone, НОМЕР_КЛИЕНТА
-            for key in ['tenant_phone', 'signer_phone', 'client_phone', 'phone', 'НОМЕР_КЛИЕНТА']:
-                if key in placeholder_values and placeholder_values[key]:
-                    signer_phone = placeholder_values[key]
-                    print(f"🔧 Extracted signer_phone from placeholder_values[{key}]: {signer_phone}")
-                    break
+            template_placeholders = template.get('placeholders', {}) if template else {}
+            
+            for key, value in placeholder_values.items():
+                if not value:
+                    continue
+                    
+                # Проверяем владельца поля в шаблоне
+                config = template_placeholders.get(key, {})
+                owner = config.get('owner', 'landlord')
+                
+                # КРИТИЧНО: Берём данные ТОЛЬКО из полей Стороны Б
+                if owner not in ['signer', 'tenant']:
+                    continue
+                
+                field_type = config.get('type', '')
+                
+                if not signer_phone and field_type == 'phone':
+                    signer_phone = value
+                    print(f"🔧 Extracted signer_phone from placeholder_values[{key}] (owner={owner}): {signer_phone}")
+                elif not signer_name and field_type == 'text' and ('name' in key.lower() or 'фио' in key.lower()):
+                    signer_name = value
+                    print(f"🔧 Extracted signer_name from placeholder_values[{key}] (owner={owner}): {signer_name}")
         
-        # ИСПРАВЛЕНИЕ #4: Автоматическое создание signature для прямых ссылок
+        # ИСПРАВЛЕНИЕ: Автоматическое создание signature для прямых ссылок
         initial_signature = {
             "contract_id": contract_id,
             "signer_phone": signer_phone,
-            "signer_name": contract.get('signer_name', ''),
+            "signer_name": signer_name,
             "verification_method": None,
             "verified": False,
             "created_at": datetime.now(timezone.utc).isoformat()
         }
         await db.signatures.insert_one(initial_signature)
         
-        # Также обновляем contract.signer_phone если он был извлечен из placeholder_values
+        # Обновляем contract если данные были извлечены
+        updates = {}
         if signer_phone and not contract.get('signer_phone'):
+            updates['signer_phone'] = signer_phone
+            contract['signer_phone'] = signer_phone
+        if signer_name and not contract.get('signer_name'):
+            updates['signer_name'] = signer_name
+            contract['signer_name'] = signer_name
+            
+        if updates:
             await db.contracts.update_one(
                 {"id": contract_id},
-                {"$set": {"signer_phone": signer_phone}}
+                {"$set": updates}
             )
-            contract['signer_phone'] = signer_phone  # Update local copy
-            print(f"🔧 Updated contract.signer_phone: {signer_phone}")
+            print(f"🔧 Updated contract with signer info: {updates}")
         
         signature = await db.signatures.find_one({"contract_id": contract_id}, {"_id": 0})
     
