@@ -2966,8 +2966,30 @@ async def update_signer_info(contract_id: str, data: SignerInfoUpdate):
         existing_values = contract.get('placeholder_values', {})
         update_data['placeholder_values'] = {**existing_values, **data.placeholder_values}
         
-        # КРИТИЧНО: Копируем email из placeholder_values в signer_email
-        for key in ['EMAIL_КЛИЕНТА', 'EMAIL_НАНИМАТЕЛЯ', 'email', 'Email', 'signer_email', 'tenant_email', 'client_email']:
+        # КРИТИЧНО: Автоматически копируем данные стороны Б из placeholder_values
+        # Имя стороны Б
+        for key in ['PARTY_B_NAME', 'NAME2', 'SIGNER_NAME', '1NAME', 'ФИО', 'ФИО_НАНИМАТЕЛЯ', 'TENANT_NAME']:
+            if key in data.placeholder_values and data.placeholder_values[key]:
+                update_data['signer_name'] = data.placeholder_values[key]
+                print(f"👤 Имя найдено в placeholder_values[{key}]: {data.placeholder_values[key]}")
+                break
+        
+        # Телефон стороны Б
+        for key in ['PARTY_B_PHONE', 'PHONE_NUM', 'PHONE', 'ТЕЛЕФОН', 'TENANT_PHONE']:
+            if key in data.placeholder_values and data.placeholder_values[key]:
+                update_data['signer_phone'] = data.placeholder_values[key]
+                print(f"📱 Телефон найден в placeholder_values[{key}]: {data.placeholder_values[key]}")
+                break
+        
+        # ИИН стороны Б  
+        for key in ['PARTY_B_IIN', 'ID_CARD', 'IIN', 'ИИН', 'TENANT_IIN']:
+            if key in data.placeholder_values and data.placeholder_values[key]:
+                update_data['signer_iin'] = data.placeholder_values[key]
+                print(f"🆔 ИИН найден в placeholder_values[{key}]: {data.placeholder_values[key]}")
+                break
+        
+        # Email стороны Б
+        for key in ['PARTY_B_EMAIL', 'EMAIL_КЛИЕНТА', 'EMAIL_НАНИМАТЕЛЯ', 'EMAIL', 'email', 'TENANT_EMAIL']:
             if key in data.placeholder_values and data.placeholder_values[key]:
                 update_data['signer_email'] = data.placeholder_values[key]
                 print(f"📧 Email найден в placeholder_values[{key}]: {data.placeholder_values[key]}")
