@@ -644,6 +644,74 @@ def html_to_text_for_pdf(html_content: str) -> str:
     
     return text.strip()
 
+def _draw_simple_header(p, width, height, contract_code, logo_path='/app/backend/logo.png', qr_data=None):
+    """Draw header with logo and QR code (no page numbers - those are added later)"""
+    from reportlab.lib.colors import HexColor
+    from reportlab.lib.utils import ImageReader
+    
+    # ===== HEADER =====
+    # Logo
+    if os.path.exists(logo_path):
+        try:
+            img_reader = ImageReader(logo_path)
+            p.drawImage(img_reader, 40, height - 50, width=40, height=40, mask='auto')
+        except Exception as e:
+            logging.error(f"Error loading logo: {str(e)}")
+    
+    # Company name
+    try:
+        p.setFont("DejaVu-Bold", 14)
+    except:
+        p.setFont("Helvetica-Bold", 14)
+    
+    p.setFillColor(HexColor('#3b82f6'))
+    p.drawString(90, height - 30, "2tick.kz")
+    
+    try:
+        p.setFont("DejaVu", 8)
+    except:
+        p.setFont("Helvetica", 8)
+    p.setFillColor(HexColor('#64748b'))
+    p.drawString(90, height - 42, "Электронная подпись договоров")
+    
+    # Contract code on right
+    p.setFillColor(HexColor('#64748b'))
+    p.drawRightString(width - 40, height - 30, f"№ {contract_code}")
+    p.drawRightString(width - 40, height - 42, datetime.now().strftime('%d.%m.%Y'))
+    
+    # ===== QR CODE (top right corner) =====
+    if qr_data:
+        try:
+            import qrcode
+            from io import BytesIO
+            
+            qr = qrcode.QRCode(version=1, box_size=3, border=1)
+            qr.add_data(qr_data)
+            qr.make(fit=True)
+            qr_img = qr.make_image(fill_color="black", back_color="white")
+            
+            # Save to bytes
+            qr_buffer = BytesIO()
+            qr_img.save(qr_buffer, format='PNG')
+            qr_buffer.seek(0)
+            
+            # Draw QR code
+            qr_reader = ImageReader(qr_buffer)
+            p.drawImage(qr_reader, width - 100, height - 100, width=50, height=50)
+            
+            # QR label
+            try:
+                p.setFont("DejaVu", 6)
+            except:
+                p.setFont("Helvetica", 6)
+            p.setFillColor(HexColor('#94a3b8'))
+            p.drawCentredString(width - 75, height - 105, "Проверить")
+        except Exception as e:
+            logging.error(f"Error creating QR code: {str(e)}")
+    
+    # Reset color
+    p.setFillColor(HexColor('#000000'))
+
 def draw_page_header_footer(p, width, height, page_num, total_pages, contract_code, logo_path='/app/backend/logo.png', qr_data=None):
     """Draw header with logo, footer with page number, and QR code on every page"""
     from reportlab.lib.colors import HexColor
