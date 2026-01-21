@@ -70,6 +70,9 @@ const CreateContractPage = () => {
   // Optional fields visibility
   const [showOptionalFields, setShowOptionalFields] = useState(false);
   
+  // Toggle for Party A to fill Party B fields
+  const [showSignerFields, setShowSignerFields] = useState(false);
+  
   // Tenant document upload (optional for landlord to upload)
   const [tenantDocument, setTenantDocument] = useState(null);
   const [tenantDocPreview, setTenantDocPreview] = useState(null);
