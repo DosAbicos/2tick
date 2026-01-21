@@ -1449,6 +1449,32 @@ def replace_placeholders_in_content(content: str, contract: dict, template: dict
     # Get placeholder values from contract
     pv = contract.get('placeholder_values', {})
     
+    # Get signature data for Party B (signer)
+    signer_name = contract.get('signer_name', '')
+    signer_phone = contract.get('signer_phone', '')
+    signer_email = contract.get('signer_email', '')
+    signer_iin = contract.get('signer_iin', '') or pv.get('PARTY_B_IIN', '') or pv.get('ID_CARD', '')
+    
+    # Map PARTY_B placeholders to signer data
+    party_b_mapping = {
+        'PARTY_B_NAME': signer_name,
+        'PARTY_B_IIN': signer_iin,
+        'PARTY_B_PHONE': signer_phone,
+        'PARTY_B_EMAIL': signer_email,
+        'PARTY_B_ADDRESS': pv.get('PARTY_B_ADDRESS', ''),
+        'PARTY_B_BANK': pv.get('PARTY_B_BANK', ''),
+        'PARTY_B_IBAN': pv.get('PARTY_B_IBAN', ''),
+        'PARTY_B_ID_NUMBER': pv.get('PARTY_B_ID_NUMBER', ''),
+        'PARTY_B_ID_ISSUED': pv.get('PARTY_B_ID_ISSUED', ''),
+        'PARTY_B_ID_DATE': pv.get('PARTY_B_ID_DATE', ''),
+    }
+    
+    # Replace PARTY_B placeholders first (before general template processing)
+    for key, value in party_b_mapping.items():
+        if value:
+            pattern = re.compile(f'{{{{\\s*{key}\\s*}}}}')
+            content = pattern.sub(str(value), content)
+    
     # Handle new {{placeholder}} format with template
     if template and template.get('placeholders'):
         for key, config in template['placeholders'].items():
@@ -1456,8 +1482,8 @@ def replace_placeholders_in_content(content: str, contract: dict, template: dict
             if config.get('showInContent') == False:
                 continue
             
-            # Get value from contract placeholder_values
-            value = pv.get(key, '')
+            # Get value from contract placeholder_values OR party_b_mapping
+            value = pv.get(key, '') or party_b_mapping.get(key, '')
             if value:
                 # Replace {{key}} with value
                 pattern = re.compile(f'{{{{\\s*{key}\\s*}}}}')
@@ -1478,26 +1504,35 @@ def replace_placeholders_in_content(content: str, contract: dict, template: dict
     # Handle [Label] format placeholders using placeholder_values mapping
     # Map common labels to their placeholder keys
     label_to_key_map = {
-        # Russian labels
-        'имя': ['NAME2', 'SIGNER_NAME', '1NAME'],
-        'фио': ['NAME2', 'SIGNER_NAME'],
-        'фио нанимателя': ['NAME2', 'SIGNER_NAME'],
-        'телефон': ['PHONE_NUM', 'PHONE'],
-        'номер телефона': ['PHONE_NUM', 'PHONE'],
-        'почта': ['EMAIL'],
-        'email': ['EMAIL'],
-        'иин': ['ID_CARD', 'IIN'],
-        'адрес': ['ADDRESS'],
+        # Russian labels - Party B (Signer)
+        'имя': ['NAME2', 'SIGNER_NAME', '1NAME', 'PARTY_B_NAME'],
+        'фио': ['NAME2', 'SIGNER_NAME', 'PARTY_B_NAME'],
+        'фио нанимателя': ['NAME2', 'SIGNER_NAME', 'PARTY_B_NAME'],
+        'фио/наименование стороны б': ['PARTY_B_NAME', 'NAME2', 'SIGNER_NAME'],
+        'наименование стороны б': ['PARTY_B_NAME', 'NAME2'],
+        'иин/бин стороны б': ['PARTY_B_IIN', 'ID_CARD', 'IIN'],
+        'иин стороны б': ['PARTY_B_IIN', 'ID_CARD'],
+        'телефон стороны б': ['PARTY_B_PHONE', 'PHONE_NUM', 'PHONE'],
+        'адрес стороны б': ['PARTY_B_ADDRESS'],
+        'телефон': ['PHONE_NUM', 'PHONE', 'PARTY_B_PHONE'],
+        'номер телефона': ['PHONE_NUM', 'PHONE', 'PARTY_B_PHONE'],
+        'почта': ['EMAIL', 'PARTY_B_EMAIL'],
+        'email': ['EMAIL', 'PARTY_B_EMAIL'],
+        'email стороны б': ['PARTY_B_EMAIL', 'EMAIL'],
+        'иин': ['ID_CARD', 'IIN', 'PARTY_B_IIN'],
+        'адрес': ['ADDRESS', 'PARTY_B_ADDRESS'],
         # Kazakh labels
-        'аты': ['NAME2', 'SIGNER_NAME'],
-        'атыңыз': ['NAME2', 'SIGNER_NAME'],
-        'нөмір': ['PHONE_NUM', 'PHONE'],
-        'пошта': ['EMAIL'],
-        'мекенжай': ['ADDRESS'],
+        'аты': ['NAME2', 'SIGNER_NAME', 'PARTY_B_NAME'],
+        'атыңыз': ['NAME2', 'SIGNER_NAME', 'PARTY_B_NAME'],
+        'нөмір': ['PHONE_NUM', 'PHONE', 'PARTY_B_PHONE'],
+        'пошта': ['EMAIL', 'PARTY_B_EMAIL'],
+        'мекенжай': ['ADDRESS', 'PARTY_B_ADDRESS'],
         # English labels
-        'name': ['NAME2', 'SIGNER_NAME'],
-        'phone': ['PHONE_NUM', 'PHONE'],
-        'address': ['ADDRESS'],
+        'name': ['NAME2', 'SIGNER_NAME', 'PARTY_B_NAME'],
+        'phone': ['PHONE_NUM', 'PHONE', 'PARTY_B_PHONE'],
+        'address': ['ADDRESS', 'PARTY_B_ADDRESS'],
+        'party b name': ['PARTY_B_NAME', 'NAME2'],
+        'party b iin': ['PARTY_B_IIN', 'ID_CARD'],
     }
     
     # Find and replace all [Label] format placeholders
@@ -1511,11 +1546,15 @@ def replace_placeholders_in_content(content: str, contract: dict, template: dict
         for label_pattern, keys in label_to_key_map.items():
             if label_pattern in label_lower:
                 for key in keys:
+                    # First check party_b_mapping
+                    if party_b_mapping.get(key):
+                        return str(party_b_mapping[key])
+                    # Then check placeholder_values
                     if pv.get(key):
                         return str(pv[key])
         
         # Also try signer fields from contract
-        if 'имя' in label_lower or 'фио' in label_lower or 'name' in label_lower or 'аты' in label_lower:
+        if 'имя' in label_lower or 'фио' in label_lower or 'name' in label_lower or 'аты' in label_lower or 'сторон' in label_lower:
             if contract.get('signer_name'):
                 return str(contract['signer_name'])
         if 'телефон' in label_lower or 'phone' in label_lower or 'нөмір' in label_lower:
@@ -1524,6 +1563,9 @@ def replace_placeholders_in_content(content: str, contract: dict, template: dict
         if 'почта' in label_lower or 'email' in label_lower or 'пошта' in label_lower:
             if contract.get('signer_email'):
                 return str(contract['signer_email'])
+        if 'иин' in label_lower or 'iin' in label_lower or 'бин' in label_lower:
+            if signer_iin:
+                return str(signer_iin)
         
         # Keep original if no value found
         return match.group(0)
