@@ -1361,15 +1361,17 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
         'current_page': 1,
         'contract_code': contract_code,
         'logo_path': logo_path,
-        'qr_data': qr_data,
-        'pages_data': []  # Store data for each page to add headers/footers later
+        'qr_data': qr_data
     }
     
-    # ========== PAGE 1: RUSSIAN VERSION ==========
-    current_page = 1
+    # ========== FIRST PASS: Generate content without page numbers ==========
+    # We'll add headers/footers with correct page numbers in a second pass
     
-    # Draw header/footer
-    draw_page_header_footer(p, width, height, current_page, total_pages, contract_code, logo_path, qr_data)
+    # ========== PAGE 1: RUSSIAN VERSION ==========
+    
+    # Draw header (without page numbers yet - we'll add them later)
+    # For now, draw a simple header
+    _draw_simple_header(p, width, height, contract_code, logo_path, qr_data)
     
     # Title
     y_position = height - 140
@@ -1408,15 +1410,15 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
         logging.error(f"Error processing RU content: {str(e)}")
         content_ru = contract.get('content', 'Error loading content')
     
-    y_position = draw_content_section(p, content_ru, y_position, width, height, "РУССКИЙ / RUSSIAN", start_new_page=False)
+    y_position = draw_content_section(p, content_ru, y_position, width, height, "РУССКИЙ / RUSSIAN", start_new_page=False, page_info=page_info)
     
     # Russian signature block
     y_position = draw_signature_block(p, y_position, width, height, contract, signature, landlord, template, 'ru')
     
-    # ========== PAGE 2: KAZAKH VERSION ==========
+    # ========== PAGE N+1: KAZAKH VERSION ==========
     p.showPage()
-    current_page = 2
-    draw_page_header_footer(p, width, height, current_page, total_pages, contract_code, logo_path, qr_data)
+    page_info['current_page'] += 1
+    _draw_simple_header(p, width, height, contract_code, logo_path, qr_data)
     
     y_position = height - 120
     
