@@ -1121,63 +1121,44 @@ Email: ${templateData.tenant_email || '[Email]'}
                         </div>
                       )}
 
-                      {/* Tenant/Signer Fields */}
+                      {/* Tenant/Signer Fields - READ ONLY for Party A */}
                       {Object.entries(selectedTemplate.placeholders).some(([_, config]) => 
                         (config.owner === 'tenant' || config.owner === 'signer') && config.type !== 'calculated'
                       ) && (
-                        <details className="group" open={false}>
-                          <summary className="cursor-pointer list-none">
-                            <div className="flex items-center gap-3 pb-3 border-b border-gray-200 hover:border-blue-400 transition-colors">
-                              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-600 to-purple-500 flex items-center justify-center text-white font-bold shadow-lg">
-                                2
-                              </div>
-                              <div className="flex-1">
-                                <h3 className="text-lg font-semibold text-gray-900">
-                                  {t('contract.clientData')}
-                                </h3>
-                                <p className="text-sm text-gray-500">
-                                  {t('contract.clientDataHint')}
-                                </p>
-                              </div>
-                              <svg className="w-5 h-5 text-gray-400 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                              </svg>
+                        <div className="p-4 bg-purple-50 border border-purple-200 rounded-xl">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-600 to-purple-500 flex items-center justify-center text-white font-bold shadow-lg">
+                              2
                             </div>
-                          </summary>
-                          
-                          <div className="mt-6 space-y-4">
-                            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                              <p className="text-sm text-blue-800">
-                                {t('contract.clientFieldsHint')}
+                            <div className="flex-1">
+                              <h3 className="text-lg font-semibold text-gray-900">
+                                {selectedTemplate.party_b_role || t('contract.clientData')}
+                              </h3>
+                              <p className="text-sm text-purple-700 font-medium">
+                                ⚠️ {t('contract.clientWillFillThese', 'Эти поля заполняет клиент при подписании договора')}
                               </p>
                             </div>
-                            
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              {Object.entries(selectedTemplate.placeholders).map(([key, config]) => {
-                                // Only show tenant/signer fields
-                                if (config.type === 'calculated' || (config.owner !== 'tenant' && config.owner !== 'signer')) return null;
-                                
-                                return (
-                                  <div key={key} className={config.type === 'text' ? 'md:col-span-2' : ''}>
-                                    <label htmlFor={`placeholder_${key}`} className="text-sm font-medium text-gray-700 block mb-2">
-                                      {getPlaceholderLabel(config)} {config.required && <span className="text-amber-500">*</span>}
-                                    </label>
-                                    
-                                    {config.type === 'text' && (
-                                      <input
-                                        id={`placeholder_${key}`}
-                                        value={placeholderValues[key] || ''}
-                                        onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
-                                        className="minimal-input w-full"
-                                        placeholder={`${t('common.client_will_fill')}: ${getPlaceholderLabel(config).toLowerCase()}`}
-                                      />
-                                    )}
-                                    
-                                    {config.type === 'number' && (
-                                      <input
-                                        id={`placeholder_${key}`}
-                                        type="number"
-                                        value={placeholderValues[key] || ''}
+                          </div>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            {Object.entries(selectedTemplate.placeholders).map(([key, config]) => {
+                              // Only show tenant/signer fields
+                              if (config.type === 'calculated' || (config.owner !== 'tenant' && config.owner !== 'signer')) return null;
+                              
+                              return (
+                                <div key={key} className="bg-white/60 rounded-lg px-3 py-2 border border-purple-100">
+                                  <span className="text-xs font-medium text-purple-600 uppercase tracking-wide">
+                                    {getPlaceholderLabel(config)}
+                                  </span>
+                                  <p className="text-sm text-gray-500 italic mt-0.5">
+                                    {t('contract.filledByClient', 'Заполняется клиентом')}
+                                  </p>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
                                         onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
                                         className="minimal-input w-full"
                                         placeholder={t('common.client_will_fill')}
