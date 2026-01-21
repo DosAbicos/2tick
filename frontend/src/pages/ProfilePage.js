@@ -910,6 +910,45 @@ const ProfilePage = () => {
                           </div>
                         </div>
                       )}
+
+                      {/* Refund Information */}
+                      {(payment.refund_amount || payment.status === 'refunded') && (
+                        <div className="mt-4 pt-4 border-t border-orange-200 bg-orange-50/50 -mx-5 -mb-5 px-5 pb-5 rounded-b-xl">
+                          <div className="flex items-center gap-2 mb-3">
+                            <div className="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center">
+                              <svg className="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                              </svg>
+                            </div>
+                            <h4 className="font-semibold text-orange-800">{t('profile.refundInfo', 'Информация о возврате')}</h4>
+                          </div>
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
+                            <div>
+                              <p className="text-orange-700">{t('profile.refundAmount', 'Сумма возврата')}</p>
+                              <p className="font-bold text-orange-900 text-lg">
+                                {(payment.refund_amount || 0).toLocaleString()} ₸
+                              </p>
+                            </div>
+                            {payment.refunded_at && (
+                              <div>
+                                <p className="text-orange-700">{t('profile.refundDate', 'Дата возврата')}</p>
+                                <p className="font-medium text-orange-900">
+                                  {new Date(payment.refunded_at).toLocaleDateString(
+                                    i18n.language === 'ru' ? 'ru-RU' : 'en-US',
+                                    { year: 'numeric', month: 'short', day: 'numeric' }
+                                  )}
+                                </p>
+                              </div>
+                            )}
+                            {payment.refund_reason && (
+                              <div className="col-span-2 sm:col-span-1">
+                                <p className="text-orange-700">{t('profile.refundReason', 'Причина')}</p>
+                                <p className="font-medium text-orange-900">{payment.refund_reason}</p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
