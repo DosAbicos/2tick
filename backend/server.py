@@ -1591,10 +1591,62 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
             logging.error(f"Error adding ID document: {str(e)}")
             p.drawString(50, y_position, "Ошибка загрузки документа")
     
-    # Save PDF
+    # Save first pass PDF (without page numbers)
     p.save()
     pdf_buffer.seek(0)
-    return pdf_buffer.getvalue()
+    first_pass_pdf = pdf_buffer.getvalue()
+    
+    # ========== SECOND PASS: Add page numbers to all pages ==========
+    total_pages = page_info['current_page']
+    logging.info(f"📄 PDF generated with {total_pages} pages. Adding page numbers...")
+    
+    try:
+        from PyPDF2 import PdfReader, PdfWriter
+        
+        # Read the first pass PDF
+        reader = PdfReader(BytesIO(first_pass_pdf))
+        writer = PdfWriter()
+        
+        # Create page number overlays
+        for page_num in range(len(reader.pages)):
+            # Create overlay with page number
+            overlay_buffer = BytesIO()
+            overlay_canvas = canvas.Canvas(overlay_buffer, pagesize=A4)
+            
+            # Set font for page number
+            try:
+                overlay_canvas.setFont("DejaVu", 8)
+            except:
+                overlay_canvas.setFont("Helvetica", 8)
+            
+            overlay_canvas.setFillColor(HexColor('#94a3b8'))
+            
+            # Draw page number in footer
+            overlay_canvas.drawCentredString(width / 2, 25, f"Страница {page_num + 1} из {total_pages}")
+            overlay_canvas.drawString(40, 25, "2tick.kz — Электронная подпись договоров")
+            overlay_canvas.drawRightString(width - 40, 25, f"№ {contract_code}")
+            
+            overlay_canvas.save()
+            overlay_buffer.seek(0)
+            
+            # Merge overlay with page
+            overlay_reader = PdfReader(overlay_buffer)
+            page = reader.pages[page_num]
+            page.merge_page(overlay_reader.pages[0])
+            writer.add_page(page)
+        
+        # Write final PDF
+        final_buffer = BytesIO()
+        writer.write(final_buffer)
+        final_buffer.seek(0)
+        
+        logging.info(f"✅ PDF with page numbers generated successfully ({total_pages} pages)")
+        return final_buffer.getvalue()
+        
+    except Exception as e:
+        logging.error(f"Error adding page numbers: {str(e)}")
+        # Return first pass PDF without page numbers as fallback
+        return first_pass_pdf
 
 def replace_placeholders_in_content(content: str, contract: dict, template: dict = None) -> str:
     """Replace placeholders in contract content with actual values, respecting showInContent flag"""
