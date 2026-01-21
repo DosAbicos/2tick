@@ -1292,14 +1292,14 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
     """Generate full PDF for contract with all content and signatures
     
     PDF Structure:
-    - Page 1: Russian version + signature block (RU)
-    - Page 2: Kazakh version + signature block (KK)
-    - Page 3 (if EN selected): English version + signature block (EN)
+    - Pages 1+: Russian version + signature block (RU) - may span multiple pages
+    - Pages N+: Kazakh version + signature block (KK) - may span multiple pages
+    - Pages M+ (if EN selected): English version + signature block (EN)
     - Last page: ID document photo (if available)
     
     Features:
     - QR code on every page
-    - Page numbers
+    - Dynamic page numbers (calculated after content is rendered)
     - Header with logo
     - Footer with contract info
     """
@@ -1310,9 +1310,6 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
     
     # Determine which languages to include
     include_english = (selected_language == 'en')
-    total_pages = 3 if include_english else 2
-    if signature and signature.get('document_upload'):
-        total_pages += 1
     
     # Register fonts - try multiple locations
     font_registered = False
@@ -1358,6 +1355,15 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
     
     # QR code data - link to verify contract
     qr_data = f"https://2tick.kz/verify/{contract.get('id', '')}"
+    
+    # Track page info for dynamic numbering
+    page_info = {
+        'current_page': 1,
+        'contract_code': contract_code,
+        'logo_path': logo_path,
+        'qr_data': qr_data,
+        'pages_data': []  # Store data for each page to add headers/footers later
+    }
     
     # ========== PAGE 1: RUSSIAN VERSION ==========
     current_page = 1
