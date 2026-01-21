@@ -165,20 +165,24 @@ const DashboardPage = () => {
   };
 
   const handleDeleteContract = async (contractId) => {
-    if (!window.confirm(t('dashboard.confirmDelete'))) {
-      return;
-    }
-
+    setContractToDelete(contractId);
+    setDeleteDialogOpen(true);
+  };
+  
+  const confirmDeleteContract = async () => {
+    if (!contractToDelete) return;
+    
     try {
-      await axios.delete(`${API}/contracts/${contractId}`, {
+      await axios.delete(`${API}/contracts/${contractToDelete}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success(t('contract.deleted'));
       fetchContracts();
       fetchLimitInfo();
     } catch (error) {
       console.error('Error deleting contract:', error);
-      toast.error(t('dashboard.errorDeletingContract'));
+    } finally {
+      setDeleteDialogOpen(false);
+      setContractToDelete(null);
     }
   };
 
