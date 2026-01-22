@@ -665,7 +665,7 @@ async def verify_otp(phone: str, code: str, request_id: str = None) -> dict:
         return {"success": True, "status": "approved"}
 
 def verify_otp_via_twilio(phone: str, code: str) -> dict:
-    """Verify OTP via Twilio Verify API
+    """Verify OTP via Twilio Verify API (fallback provider)
     
     Args:
         phone: Phone number in international format
@@ -711,11 +711,6 @@ def verify_otp_via_twilio(phone: str, code: str) -> dict:
 def send_sms(phone: str, message: str) -> bool:
     """Legacy mocked SMS sending (kept for backward compatibility)"""
     logging.info(f"[MOCK SMS] To: {phone} | Message: {message}")
-    return True
-
-def make_call(phone: str, code: str) -> bool:
-    """Legacy mocked voice call (kept for backward compatibility)"""
-    logging.info(f"[MOCK CALL] To: {phone} | Code: {code}")
     return True
 
 def send_email(to_email: str, subject: str, body: str, attachment: bytes = None, filename: str = None) -> bool:
