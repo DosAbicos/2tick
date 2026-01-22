@@ -839,23 +839,23 @@ Email: ${templateData.tenant_email || '[Email]'}
             {/* Left: Preview */}
             <div className="minimal-card lg:sticky lg:top-4 h-fit overflow-hidden">
               <div className="p-3 sm:p-4 border-b border-gray-200">
-                {/* Header row with title and edit button */}
-                <div className="flex items-center justify-between mb-3 gap-2">
-                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 flex items-center gap-2 min-w-0">
+                {/* Header row with title and edit button on same line */}
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 flex items-center gap-2">
                     <svg className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                     </svg>
-                    <span className="truncate">{manualEditMode ? t('contract.editing') : t('contract.preview')}</span>
+                    <span>{manualEditMode ? t('contract.editing') : t('contract.preview')}</span>
                     {isContentSaved && !manualEditMode && (
-                      <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-lg font-medium whitespace-nowrap">✓</span>
+                      <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-lg font-medium">✓</span>
                     )}
                   </h3>
                   {!manualEditMode ? (
                     <button
                       type="button"
                       onClick={toggleEditMode}
-                      className="p-2 text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-all flex-shrink-0"
+                      className="w-9 h-9 flex items-center justify-center text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-all"
                       title={t('contract.edit')}
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -866,7 +866,7 @@ Email: ${templateData.tenant_email || '[Email]'}
                     <button
                       type="button"
                       onClick={handleSaveContent}
-                      className="px-3 py-1.5 text-sm font-semibold text-white bg-gradient-to-r from-green-600 to-green-500 rounded-lg hover:from-green-700 hover:to-green-600 transition-all shadow-md flex-shrink-0"
+                      className="px-3 py-1.5 text-sm font-semibold text-white bg-gradient-to-r from-green-600 to-green-500 rounded-lg hover:from-green-700 hover:to-green-600 transition-all shadow-md"
                     >
                       {t('common.save')}
                     </button>
