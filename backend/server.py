@@ -75,7 +75,14 @@ SMTP_PASSWORD = os.environ.get('SMTP_PASSWORD', '')
 TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
 TELEGRAM_BOT_USERNAME = os.environ.get('TELEGRAM_BOT_USERNAME', 'twotick_bot')
 
-# Initialize Twilio client
+# KazInfoTech SMS Configuration (primary SMS provider)
+KAZINFOTECH_TOKEN = os.environ.get('KAZINFOTECH_TOKEN', '')  # MobiCheck token
+KAZINFOTECH_LOGIN = os.environ.get('KAZINFOTECH_LOGIN', '')  # JSON API login
+KAZINFOTECH_PASSWORD = os.environ.get('KAZINFOTECH_PASSWORD', '')  # JSON API password
+KAZINFOTECH_SENDER = os.environ.get('KAZINFOTECH_SENDER', '2tick')  # Sender name (alpha-name)
+SMS_PROVIDER = os.environ.get('SMS_PROVIDER', 'kazinfotech')  # 'kazinfotech' or 'twilio'
+
+# Initialize Twilio client (fallback)
 twilio_client = None
 if TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN:
     try:
@@ -85,6 +92,14 @@ if TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN:
         logging.error(f"❌ Failed to initialize Twilio client: {str(e)}")
 else:
     logging.warning("⚠️ Twilio credentials not found, SMS will be mocked")
+
+# Log SMS provider status
+if KAZINFOTECH_TOKEN:
+    logging.info("✅ KazInfoTech MobiCheck configured as primary SMS provider")
+elif KAZINFOTECH_LOGIN and KAZINFOTECH_PASSWORD:
+    logging.info("✅ KazInfoTech JSON API configured as primary SMS provider")
+else:
+    logging.warning("⚠️ KazInfoTech not configured, will use Twilio or mock")
 
 # Create the main app
 app = FastAPI()
