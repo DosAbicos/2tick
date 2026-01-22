@@ -634,9 +634,9 @@ async def verify_otp(phone: str, code: str, stored_otp: str = None) -> dict:
     elif twilio_client and TWILIO_VERIFY_SERVICE_SID:
         return verify_otp_via_twilio(phone, code)
     else:
-        # Mock fallback - accept any code for testing
-        logging.warning(f"[MOCK] No SMS provider configured. Accepting OTP: {code}")
-        return {"success": True, "status": "approved"}
+        # No SMS provider configured - return error
+        logging.error("[SMS] No SMS provider configured for verification")
+        return {"success": False, "error": "SMS provider not configured"}
 
 
 # ============ EMAIL OTP FUNCTIONS ============
