@@ -360,7 +360,7 @@ const ContractDetailsPage = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
-      toast.success(`Contract sent! Mock OTP: ${response.data.mock_otp}`);
+      toast.success(t('contract.sentSuccess', 'Договор отправлен на подписание'));
       fetchContract();
       fetchSignature();
     } catch (error) {
