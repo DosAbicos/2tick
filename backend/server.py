@@ -626,22 +626,22 @@ async def send_otp(phone: str) -> dict:
         # Mock fallback
         otp = generate_otp()
         logging.warning(f"[MOCK] No SMS provider configured. OTP: {otp} for {phone}")
-        return {"success": True, "message": "Mock OTP sent", "mock_otp": otp}
+        return {"success": True, "message": "Mock OTP sent", "mock_otp": otp, "otp_code": otp}
 
 
-async def verify_otp(phone: str, code: str, request_id: str = None) -> dict:
+async def verify_otp(phone: str, code: str, stored_otp: str = None) -> dict:
     """Verify OTP using configured provider
     
     Args:
         phone: Phone number
-        code: OTP code
-        request_id: KazInfoTech request ID (optional)
+        code: OTP code entered by user
+        stored_otp: OTP code that was sent (for KazInfoTech)
     
     Returns:
         dict with 'success' bool and 'status' or 'error'
     """
-    if SMS_PROVIDER == 'kazinfotech' and KAZINFOTECH_TOKEN and request_id:
-        return await verify_otp_via_kazinfotech(request_id, code)
+    if SMS_PROVIDER == 'kazinfotech' and KAZINFOTECH_USERNAME and stored_otp:
+        return await verify_otp_via_kazinfotech(stored_otp, code)
     elif twilio_client and TWILIO_VERIFY_SERVICE_SID:
         return verify_otp_via_twilio(phone, code)
     else:
