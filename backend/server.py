@@ -5030,141 +5030,160 @@ async def get_user_logs(
 @api_router.get("/admin/system/metrics")
 async def get_system_metrics(current_user: dict = Depends(get_current_user)):
     """Получить системные метрики (только админ)"""
-    if current_user.get('role') != 'admin':
+    try:
+        if current_user.get('role') != 'admin':
+            raise HTTPException(status_code=403, detail="Admin access required")
+    except Exception:
         raise HTTPException(status_code=403, detail="Admin access required")
     
-    # Default values
-    cpu_percent = 0
-    memory_info = {"total_gb": 0, "used_gb": 0, "available_gb": 0, "percent": 0}
-    disk_info = {"total_gb": 0, "used_gb": 0, "free_gb": 0, "percent": 0}
-    uptime_days = 0
-    uptime_hours = 0
-    uptime_seconds = 0
-    network_stats = None
-    recent_errors = []
-    db_info = {"size_mb": 0, "collections": 0, "indexes": 0}
-    active_users_count = 0
-    online_users_count = 0
-    status = "healthy"
-    
-    # System metrics (only if psutil is available)
-    if PSUTIL_AVAILABLE and psutil:
-        try:
-            cpu_percent = psutil.cpu_percent(interval=0.1) or 0
-        except Exception:
-            pass
-        
-        try:
-            memory = psutil.virtual_memory()
-            memory_info = {
-                "total_gb": round(memory.total / (1024**3), 2),
-                "used_gb": round(memory.used / (1024**3), 2),
-                "available_gb": round(memory.available / (1024**3), 2),
-                "percent": memory.percent
-            }
-        except Exception:
-            pass
-        
-        try:
-            disk = psutil.disk_usage('/')
-            disk_info = {
-                "total_gb": round(disk.total / (1024**3), 2),
-                "used_gb": round(disk.used / (1024**3), 2),
-                "free_gb": round(disk.free / (1024**3), 2),
-                "percent": disk.percent
-            }
-        except Exception:
-            pass
-        
-        try:
-            boot_time = psutil.boot_time()
-            uptime_seconds = time.time() - boot_time
-            uptime_days = int(uptime_seconds // 86400)
-            uptime_hours = int((uptime_seconds % 86400) // 3600)
-        except Exception:
-            pass
-        
-        try:
-            net_io = psutil.net_io_counters()
-            network_stats = {
-                "bytes_sent": net_io.bytes_sent,
-                "bytes_recv": net_io.bytes_recv,
-                "packets_sent": net_io.packets_sent,
-                "packets_recv": net_io.packets_recv
-            }
-        except Exception:
-            pass
-    else:
-        status = "limited"  # psutil not available
-    
-    # Recent errors from logs
+    # Always return a valid response, never 500
     try:
-        log_paths = [
-            '/var/log/supervisor/backend.err.log',
-            '/var/log/backend.err.log',
-            'backend.err.log'
-        ]
-        for log_path in log_paths:
+        # Default values
+        cpu_percent = 0
+        memory_info = {"total_gb": 0, "used_gb": 0, "available_gb": 0, "percent": 0}
+        disk_info = {"total_gb": 0, "used_gb": 0, "free_gb": 0, "percent": 0}
+        uptime_days = 0
+        uptime_hours = 0
+        uptime_seconds = 0
+        network_stats = None
+        recent_errors = []
+        db_info = {"size_mb": 0, "collections": 0, "indexes": 0}
+        active_users_count = 0
+        online_users_count = 0
+        status = "healthy"
+        
+        # System metrics (only if psutil is available)
+        if PSUTIL_AVAILABLE and psutil:
             try:
-                with open(log_path, 'r') as f:
-                    error_lines = f.readlines()[-100:]
-                    recent_errors = [line.strip() for line in error_lines if 'ERROR' in line or 'Exception' in line][-20:]
-                    break
-            except (FileNotFoundError, PermissionError):
-                continue
-    except Exception:
-        pass
-    
-    # Database stats
-    try:
-        db_stats = await db.command("dbStats")
-        db_info = {
-            "size_mb": round(db_stats.get('dataSize', 0) / (1024**2), 2),
-            "collections": db_stats.get('collections', 0),
-            "indexes": db_stats.get('indexes', 0)
+                cpu_percent = psutil.cpu_percent(interval=0.1) or 0
+            except Exception:
+                pass
+            
+            try:
+                memory = psutil.virtual_memory()
+                memory_info = {
+                    "total_gb": round(memory.total / (1024**3), 2),
+                    "used_gb": round(memory.used / (1024**3), 2),
+                    "available_gb": round(memory.available / (1024**3), 2),
+                    "percent": memory.percent
+                }
+            except Exception:
+                pass
+            
+            try:
+                disk = psutil.disk_usage('/')
+                disk_info = {
+                    "total_gb": round(disk.total / (1024**3), 2),
+                    "used_gb": round(disk.used / (1024**3), 2),
+                    "free_gb": round(disk.free / (1024**3), 2),
+                    "percent": disk.percent
+                }
+            except Exception:
+                pass
+            
+            try:
+                boot_time = psutil.boot_time()
+                uptime_seconds = time.time() - boot_time
+                uptime_days = int(uptime_seconds // 86400)
+                uptime_hours = int((uptime_seconds % 86400) // 3600)
+            except Exception:
+                pass
+            
+            try:
+                net_io = psutil.net_io_counters()
+                network_stats = {
+                    "bytes_sent": net_io.bytes_sent,
+                    "bytes_recv": net_io.bytes_recv,
+                    "packets_sent": net_io.packets_sent,
+                    "packets_recv": net_io.packets_recv
+                }
+            except Exception:
+                pass
+        else:
+            status = "limited"  # psutil not available
+        
+        # Recent errors from logs
+        try:
+            log_paths = [
+                '/var/log/supervisor/backend.err.log',
+                '/var/log/backend.err.log',
+                'backend.err.log'
+            ]
+            for log_path in log_paths:
+                try:
+                    with open(log_path, 'r') as f:
+                        error_lines = f.readlines()[-100:]
+                        recent_errors = [line.strip() for line in error_lines if 'ERROR' in line or 'Exception' in line][-20:]
+                        break
+                except (FileNotFoundError, PermissionError):
+                    continue
+        except Exception:
+            pass
+        
+        # Database stats
+        try:
+            db_stats = await db.command("dbStats")
+            db_info = {
+                "size_mb": round(db_stats.get('dataSize', 0) / (1024**2), 2),
+                "collections": db_stats.get('collections', 0),
+                "indexes": db_stats.get('indexes', 0)
+            }
+        except Exception:
+            pass
+        
+        # Active users (logged in last 24h)
+        try:
+            yesterday = datetime.now(timezone.utc) - timedelta(days=1)
+            active_users_count = await db.user_logs.count_documents({
+                "action": "login_success",
+                "timestamp": {"$gte": yesterday.isoformat()}
+            })
+        except Exception:
+            pass
+        
+        # Online users (any activity in last 15 minutes)
+        try:
+            fifteen_min_ago = datetime.now(timezone.utc) - timedelta(minutes=15)
+            online_pipeline = [
+                {"$match": {"timestamp": {"$gte": fifteen_min_ago.isoformat()}}},
+                {"$group": {"_id": "$user_id"}},
+                {"$count": "unique_users"}
+            ]
+            online_result = await db.user_logs.aggregate(online_pipeline).to_list(1)
+            online_users_count = online_result[0]['unique_users'] if online_result else 0
+        except Exception:
+            pass
+        
+        return {
+            "status": status,
+            "cpu_percent": cpu_percent,
+            "memory": memory_info,
+            "disk": disk_info,
+            "uptime": {
+                "days": uptime_days,
+                "hours": uptime_hours,
+                "total_seconds": int(uptime_seconds)
+            },
+            "network": network_stats,
+            "database": db_info,
+            "active_users_24h": active_users_count,
+            "online_users": online_users_count,
+            "recent_errors": recent_errors[-20:] if recent_errors else []
         }
-    except Exception:
-        pass
-    
-    # Active users (logged in last 24h)
-    try:
-        yesterday = datetime.now(timezone.utc) - timedelta(days=1)
-        active_users_count = await db.user_logs.count_documents({
-            "action": "login_success",
-            "timestamp": {"$gte": yesterday.isoformat()}
-        })
-    except Exception:
-        pass
-    
-    # Online users (any activity in last 15 minutes)
-    try:
-        fifteen_min_ago = datetime.now(timezone.utc) - timedelta(minutes=15)
-        online_pipeline = [
-            {"$match": {"timestamp": {"$gte": fifteen_min_ago.isoformat()}}},
-            {"$group": {"_id": "$user_id"}},
-            {"$count": "unique_users"}
-        ]
-        online_result = await db.user_logs.aggregate(online_pipeline).to_list(1)
-        online_users_count = online_result[0]['unique_users'] if online_result else 0
-    except Exception:
-        pass
-    
-    return {
-        "status": status,
-        "cpu_percent": cpu_percent,
-        "memory": memory_info,
-        "disk": disk_info,
-        "uptime": {
-            "days": uptime_days,
-            "hours": uptime_hours,
-            "total_seconds": int(uptime_seconds)
-        },
-        "network": network_stats,
-        "database": db_info,
-        "active_users_24h": active_users_count,
-        "online_users": online_users_count,
-        "recent_errors": recent_errors[-20:] if recent_errors else []
-    }
+    except Exception as e:
+        # Absolute fallback - NEVER return 500
+        return {
+            "status": "error",
+            "cpu_percent": 0,
+            "memory": {"total_gb": 0, "used_gb": 0, "available_gb": 0, "percent": 0},
+            "disk": {"total_gb": 0, "used_gb": 0, "free_gb": 0, "percent": 0},
+            "uptime": {"days": 0, "hours": 0, "total_seconds": 0},
+            "network": None,
+            "database": {"size_mb": 0, "collections": 0, "indexes": 0},
+            "active_users_24h": 0,
+            "online_users": 0,
+            "recent_errors": [f"Metrics error: {str(e)}"]
+        }
 
 
     
