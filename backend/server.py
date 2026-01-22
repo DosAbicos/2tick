@@ -3850,8 +3850,6 @@ async def request_otp(contract_id: str, method: str = "sms"):
     # Store OTP code for verification
     if "otp_code" in result:
         update_data["otp_code"] = result["otp_code"]
-    elif "mock_otp" in result:
-        update_data["otp_code"] = result["mock_otp"]
     
     await db.signatures.update_one(
         {"contract_id": contract_id},
@@ -3861,12 +3859,7 @@ async def request_otp(contract_id: str, method: str = "sms"):
     
     await log_audit("otp_requested", contract_id=contract_id, details=f"Method: {method}, Target: {target}")
     
-    response = {"message": f"OTP sent via {method}"}
-    # Include mock OTP only in development/fallback mode
-    if "mock_otp" in result:
-        response["mock_otp"] = result["mock_otp"]
-    
-    return response
+    return {"message": f"OTP sent via {method}"}
 
 @api_router.post("/sign/{contract_id}/request-call-otp")
 async def request_call_otp(contract_id: str):
