@@ -918,21 +918,21 @@ Email: ${templateData.tenant_email || '[Email]'}
                 {manualEditMode ? (
                   <div className="editor-container">
                     {/* Toolbar */}
-                    <div className="bg-gray-50 border border-gray-200 rounded-t-lg p-2 mb-2 flex flex-wrap gap-1 items-center">
-                      <button type="button" onClick={(e) => { e.preventDefault(); document.execCommand('bold', false, null); }} className="h-8 w-8 p-0 text-gray-700 hover:bg-gray-200 rounded transition-all" title="Жирный текст">
+                    <div className="bg-gray-50 border border-gray-200 rounded-t-lg p-2 mb-2 flex gap-1 items-center overflow-x-auto">
+                      <button type="button" onClick={(e) => { e.preventDefault(); document.execCommand('bold', false, null); }} className="h-8 w-8 p-0 text-gray-700 hover:bg-gray-200 rounded transition-all flex-shrink-0" title="Жирный текст">
                         <svg className="w-4 h-4 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 4h8a4 4 0 0 1 0 8H6zM6 12h9a4 4 0 0 1 0 8H6z"/>
                         </svg>
                       </button>
-                      <button type="button" onClick={(e) => { e.preventDefault(); document.execCommand('italic', false, null); }} className="h-8 w-8 p-0 text-gray-700 hover:bg-gray-200 rounded transition-all italic font-serif" title="Курсив">I</button>
-                      <button type="button" onClick={(e) => { e.preventDefault(); document.execCommand('underline', false, null); }} className="h-8 w-8 p-0 text-gray-700 hover:bg-gray-200 rounded transition-all underline" title="Подчеркнутый">U</button>
+                      <button type="button" onClick={(e) => { e.preventDefault(); document.execCommand('italic', false, null); }} className="h-8 w-8 p-0 text-gray-700 hover:bg-gray-200 rounded transition-all italic font-serif flex-shrink-0" title="Курсив">I</button>
+                      <button type="button" onClick={(e) => { e.preventDefault(); document.execCommand('underline', false, null); }} className="h-8 w-8 p-0 text-gray-700 hover:bg-gray-200 rounded transition-all underline flex-shrink-0" title="Подчеркнутый">U</button>
                       
-                      <div className="w-px bg-gray-300 h-6 mx-1" />
+                      <div className="w-px bg-gray-300 h-6 mx-1 flex-shrink-0" />
                       
-                      <button type="button" onClick={(e) => { e.preventDefault(); document.execCommand('formatBlock', false, 'h2'); }} className="h-8 px-2 text-base font-bold text-gray-700 hover:bg-gray-200 rounded transition-all" title="Большой заголовок">H2</button>
-                      <button type="button" onClick={(e) => { e.preventDefault(); document.execCommand('formatBlock', false, 'h3'); }} className="h-8 px-2 text-sm font-semibold text-gray-700 hover:bg-gray-200 rounded transition-all" title="Подзаголовок">H3</button>
+                      <button type="button" onClick={(e) => { e.preventDefault(); document.execCommand('formatBlock', false, 'h2'); }} className="h-8 px-2 text-base font-bold text-gray-700 hover:bg-gray-200 rounded transition-all flex-shrink-0" title="Большой заголовок">H2</button>
+                      <button type="button" onClick={(e) => { e.preventDefault(); document.execCommand('formatBlock', false, 'h3'); }} className="h-8 px-2 text-sm font-semibold text-gray-700 hover:bg-gray-200 rounded transition-all flex-shrink-0" title="Подзаголовок">H3</button>
                       
-                      <div className="w-px bg-gray-300 h-6 mx-1" />
+                      <div className="w-px bg-gray-300 h-6 mx-1 flex-shrink-0" />
                       
                       <button type="button" onClick={(e) => { e.preventDefault(); document.execCommand('insertUnorderedList', false, null); }} className="h-8 px-2 text-xs font-medium text-gray-700 hover:bg-gray-200 rounded transition-all" title="Маркированный список">• Список</button>
                     </div>
