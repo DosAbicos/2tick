@@ -2599,15 +2599,26 @@ async def request_registration_otp(registration_id: str, method: str = "sms"):
         raise HTTPException(status_code=400, detail="Registration expired. Please register again.")
     
     phone = registration.get('phone')
-    if not phone:
-        raise HTTPException(status_code=400, detail="Phone number not found")
+    email = registration.get('email')
     
-    # Only SMS verification is supported (call removed)
-    if method not in ["sms", "telegram"]:
+    # Supported verification methods: sms, email, telegram
+    if method not in ["sms", "email", "telegram"]:
         method = "sms"
     
-    # Use unified OTP function (KazInfoTech primary, Twilio fallback)
-    result = await send_otp(phone)
+    # Send OTP based on method
+    if method == "email":
+        if not email:
+            raise HTTPException(status_code=400, detail="Email not found in registration")
+        result = await send_otp_via_email(email)
+    elif method == "sms":
+        if not phone:
+            raise HTTPException(status_code=400, detail="Phone number not found")
+        result = await send_otp(phone)
+    else:
+        # Telegram - handled separately
+        if not phone:
+            raise HTTPException(status_code=400, detail="Phone number not found")
+        result = await send_otp(phone)
     
     if not result["success"]:
         raise HTTPException(status_code=500, detail=f"Failed to send OTP: {result.get('error', 'Unknown error')}")
@@ -2618,11 +2629,7 @@ async def request_registration_otp(registration_id: str, method: str = "sms"):
         "otp_requested_at": datetime.now(timezone.utc).isoformat()
     }
     
-    # Store request_id for KazInfoTech verification
-    if "request_id" in result:
-        update_data["otp_request_id"] = result["request_id"]
-    
-    # Store OTP code for verification (KazInfoTech uses local verification)
+    # Store OTP code for verification
     if "otp_code" in result:
         update_data["otp_code"] = result["otp_code"]
     elif "mock_otp" in result:
@@ -2633,7 +2640,8 @@ async def request_registration_otp(registration_id: str, method: str = "sms"):
         {"$set": update_data}
     )
     
-    await log_audit("registration_otp_requested", details=f"Method: {method}, Phone: {phone}, registration_id: {registration_id}")
+    target = email if method == "email" else phone
+    await log_audit("registration_otp_requested", details=f"Method: {method}, Target: {target}, registration_id: {registration_id}")
     
     response = {"message": f"OTP sent via {method}"}
     # Include mock OTP only in development/fallback mode
