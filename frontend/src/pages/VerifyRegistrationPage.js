@@ -375,11 +375,6 @@ const VerifyRegistrationPage = () => {
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">{t('verification.smsVerification')}</h3>
                   <p className="text-sm text-gray-600 mb-4">{t('verification.enter6DigitSms')}</p>
-                  {mockOtp && (
-                    <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-200 mb-4">
-                      <p className="text-sm text-blue-900 font-medium">{t('verification.testCode')}: <strong className="text-lg">{mockOtp}</strong></p>
-                    </div>
-                  )}
                 </div>
                 
                 <div className="flex justify-center">
