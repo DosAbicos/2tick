@@ -649,6 +649,101 @@ async def verify_otp(phone: str, code: str, stored_otp: str = None) -> dict:
         logging.warning(f"[MOCK] No SMS provider configured. Accepting OTP: {code}")
         return {"success": True, "status": "approved"}
 
+
+# ============ EMAIL OTP FUNCTIONS ============
+
+async def send_otp_via_email(email: str) -> dict:
+    """Send OTP via Email
+    
+    Args:
+        email: Email address
+    
+    Returns:
+        dict with 'success' bool, 'otp_code' and 'message' or 'error'
+    """
+    try:
+        # Generate 6-digit OTP
+        otp_code = generate_otp()
+        
+        # Create beautiful HTML email
+        html_body = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <style>
+                body {{ font-family: 'Segoe UI', Arial, sans-serif; background-color: #f5f5f5; margin: 0; padding: 20px; }}
+                .container {{ max-width: 500px; margin: 0 auto; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }}
+                .header {{ background: linear-gradient(135deg, #2563eb, #1d4ed8); padding: 30px; text-align: center; }}
+                .header h1 {{ color: white; margin: 0; font-size: 24px; }}
+                .content {{ padding: 40px 30px; text-align: center; }}
+                .otp-code {{ font-size: 36px; font-weight: bold; letter-spacing: 8px; color: #1e40af; background: #eff6ff; padding: 20px 30px; border-radius: 12px; display: inline-block; margin: 20px 0; }}
+                .message {{ color: #64748b; font-size: 14px; line-height: 1.6; margin-bottom: 20px; }}
+                .warning {{ color: #f59e0b; font-size: 12px; margin-top: 20px; }}
+                .footer {{ background: #f8fafc; padding: 20px; text-align: center; color: #94a3b8; font-size: 12px; }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h1>🔐 2tick.kz</h1>
+                </div>
+                <div class="content">
+                    <p class="message">Ваш код подтверждения:</p>
+                    <div class="otp-code">{otp_code}</div>
+                    <p class="message">Введите этот код для подтверждения вашего действия.</p>
+                    <p class="warning">⏰ Код действителен 10 минут. Никому не сообщайте этот код.</p>
+                </div>
+                <div class="footer">
+                    © 2024 2tick.kz — Электронные договоры
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+        
+        # Send email
+        success = send_email(
+            to_email=email,
+            subject=f"Код подтверждения: {otp_code} — 2tick.kz",
+            body=html_body
+        )
+        
+        if success:
+            logging.info(f"✅ Email OTP sent to {email}")
+            return {
+                "success": True,
+                "message": "OTP sent via Email",
+                "otp_code": otp_code,
+                "email": email
+            }
+        else:
+            logging.error(f"❌ Failed to send email OTP to {email}")
+            return {"success": False, "error": "Failed to send email"}
+            
+    except Exception as e:
+        logging.error(f"❌ Email OTP error: {str(e)}")
+        return {"success": False, "error": str(e)}
+
+
+async def verify_otp_via_email(stored_otp: str, entered_otp: str) -> dict:
+    """Verify Email OTP by comparing stored and entered codes
+    
+    Args:
+        stored_otp: OTP code that was sent
+        entered_otp: OTP code entered by user
+    
+    Returns:
+        dict with 'success' bool and 'status' or 'error'
+    """
+    if stored_otp and entered_otp and stored_otp == entered_otp:
+        logging.info(f"✅ Email OTP verified successfully")
+        return {"success": True, "status": "approved"}
+    else:
+        logging.warning(f"❌ Email OTP invalid: entered {entered_otp}, expected {stored_otp}")
+        return {"success": False, "error": "Invalid code", "status": "rejected"}
+
+
 def verify_otp_via_twilio(phone: str, code: str) -> dict:
     """Verify OTP via Twilio Verify API (fallback provider)
     
