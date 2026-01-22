@@ -4154,22 +4154,21 @@ async def verify_call_otp(contract_id: str, data: dict):
         raise HTTPException(status_code=400, detail="Неверный код. Проверьте последние 4 цифры номера.")
 
 @api_router.post("/sign/{contract_id}/verify-otp")
-async def verify_otp(contract_id: str, otp_data: OTPVerify):
+async def verify_signature_otp(contract_id: str, otp_data: OTPVerify):
+    """Verify OTP for contract signing"""
     # Find signature
     signature = await db.signatures.find_one({"contract_id": contract_id})
     if not signature:
         raise HTTPException(status_code=404, detail="Signature not found")
     
-    # Verify OTP via Twilio
-    verification_result = verify_otp_via_twilio(otp_data.phone, otp_data.otp_code)
+    # Get stored OTP for KazInfoTech/mock verification
+    stored_otp = signature.get('otp_code')
     
-    # If Twilio verification failed, check if we have a mock OTP stored (fallback mode)
+    # Verify OTP using unified function
+    verification_result = await verify_otp(otp_data.phone, otp_data.otp_code, stored_otp)
+    
     if not verification_result["success"]:
-        if "otp_code" in signature and signature['otp_code'] == otp_data.otp_code:
-            # Accept mock OTP for testing/fallback
-            logging.info(f"✅ Accepted mock OTP for contract {contract_id}")
-        else:
-            raise HTTPException(status_code=400, detail=verification_result.get("error", "Invalid OTP code"))
+        raise HTTPException(status_code=400, detail=verification_result.get("error", "Invalid OTP code"))
     
     # Generate unique signature hash
     signer_phone = signature.get('signer_phone', otp_data.phone)
