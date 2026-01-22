@@ -404,7 +404,7 @@ const DashboardPage = () => {
         </div>
 
         {/* Статистика - сетка 2x2 на мобильных, 4 в ряд на десктопе */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+        <div className="stats-grid grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
           <div className="minimal-card p-3 sm:p-6">
             <div className="flex items-center gap-2 sm:gap-3">
               <div className="w-9 h-9 sm:w-10 sm:h-10 bg-green-500 rounded-xl flex items-center justify-center flex-shrink-0">
