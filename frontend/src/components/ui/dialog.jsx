@@ -28,12 +28,14 @@ const DialogContent = React.forwardRef(({ className, children, ...props }, ref) 
     <DialogOverlay />
     <DialogPrimitive.Content
       ref={ref}
+      style={{ transformOrigin: 'center center' }}
       className={cn(
-        "fixed left-[50%] top-[50%] z-50 w-[95vw] max-w-lg translate-x-[-50%] translate-y-[-50%] bg-white shadow-2xl rounded-3xl overflow-hidden",
-        "duration-300 ease-out",
+        "fixed left-[50%] top-[50%] z-50 w-[95vw] max-w-lg -translate-x-1/2 -translate-y-1/2 bg-white shadow-2xl rounded-3xl overflow-hidden origin-center",
+        "duration-200 ease-out",
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
         "data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0",
-        "data-[state=open]:zoom-in-75 data-[state=closed]:zoom-out-75",
+        "data-[state=open]:scale-100 data-[state=closed]:scale-95",
+        "opacity-0 data-[state=open]:opacity-100",
         className
       )}
       {...props}>
