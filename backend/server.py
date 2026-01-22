@@ -3877,7 +3877,7 @@ async def request_otp(contract_id: str, method: str = "sms"):
         upsert=True
     )
     
-    await log_audit("otp_requested", contract_id=contract_id, details=f"Method: {method}, Phone: {phone_to_use}")
+    await log_audit("otp_requested", contract_id=contract_id, details=f"Method: {method}, Target: {target}")
     
     response = {"message": f"OTP sent via {method}"}
     # Include mock OTP only in development/fallback mode
