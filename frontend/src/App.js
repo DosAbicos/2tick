@@ -34,6 +34,18 @@ const PrivateRoute = ({ children }) => {
   return token ? children : <Navigate to="/login" />;
 };
 
+// Redirect to dashboard if user is already logged in
+const PublicRoute = ({ children }) => {
+  const token = localStorage.getItem('token');
+  return token ? <Navigate to="/dashboard" /> : children;
+};
+
+// Landing page - redirect to dashboard if logged in
+const LandingRoute = () => {
+  const token = localStorage.getItem('token');
+  return token ? <Navigate to="/dashboard" /> : <NewLandingPage />;
+};
+
 function App() {
   const { i18n } = useTranslation();
   
