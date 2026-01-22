@@ -402,6 +402,31 @@ const ProfilePage = () => {
 
           {/* Правая колонка - Информация профиля */}
           <div className="lg:col-span-2 space-y-3 sm:space-y-6">
+            {/* ID пользователя - отдельный блок */}
+            <div className="bg-white rounded-lg sm:shadow-md sm:border sm:border-gray-200 p-4 sm:p-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <Hash className="w-5 h-5 text-gray-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">{t('profile.userId', 'ID пользователя')}</p>
+                    <p className="text-base font-mono font-medium text-gray-900">{user?.id || '—'}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(user?.id || '');
+                    toast.success(t('profile.idCopied', 'ID скопирован'));
+                  }}
+                  className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                  title={t('profile.copyId', 'Копировать ID')}
+                >
+                  <Copy className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
             {/* Основная информация */}
             <div className="bg-white rounded-lg sm:shadow-md sm:border sm:border-gray-200 p-4 sm:p-8 relative">
               <div className="flex items-center justify-between mb-6">
