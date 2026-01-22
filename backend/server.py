@@ -613,10 +613,9 @@ async def send_otp(phone: str) -> dict:
     elif twilio_client and TWILIO_VERIFY_SERVICE_SID:
         return send_otp_via_twilio(phone)
     else:
-        # Mock fallback
-        otp = generate_otp()
-        logging.warning(f"[MOCK] No SMS provider configured. OTP: {otp} for {phone}")
-        return {"success": True, "message": "Mock OTP sent", "mock_otp": otp, "otp_code": otp}
+        # No SMS provider configured - return error
+        logging.error("[SMS] No SMS provider configured - SMS cannot be sent")
+        return {"success": False, "error": "SMS provider not configured"}
 
 
 async def verify_otp(phone: str, code: str, stored_otp: str = None) -> dict:
