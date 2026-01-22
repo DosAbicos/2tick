@@ -59,12 +59,17 @@ function App() {
     <div className="App min-h-screen bg-white">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<NewLandingPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+          {/* Landing - redirect to dashboard if logged in */}
+          <Route path="/" element={<LandingRoute />} />
+          
+          {/* Auth pages - redirect to dashboard if already logged in */}
+          <Route path="/login" element={<PublicRoute><LoginPage /></PublicRoute>} />
+          <Route path="/register" element={<PublicRoute><RegisterPage /></PublicRoute>} />
           <Route path="/verify-registration/:registration_id" element={<VerifyRegistrationPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/forgot-password" element={<PublicRoute><ForgotPasswordPage /></PublicRoute>} />
+          <Route path="/reset-password" element={<PublicRoute><ResetPasswordPage /></PublicRoute>} />
+          
+          {/* Protected routes */}
           <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
           <Route path="/contracts/create" element={<PrivateRoute><CreateContractPage /></PrivateRoute>} />
           <Route path="/contracts/upload-pdf" element={<PrivateRoute><UploadPdfContractPage /></PrivateRoute>} />
@@ -76,6 +81,8 @@ function App() {
           <Route path="/admin/notifications" element={<PrivateRoute><NotificationsAdminPage /></PrivateRoute>} />
           <Route path="/admin/logs/:userId" element={<PrivateRoute><UserLogsPage /></PrivateRoute>} />
           <Route path="/admin/templates" element={<PrivateRoute><AdminTemplatesPage /></PrivateRoute>} />
+          
+          {/* Public info pages */}
           <Route path="/offer" element={<OfferPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/refund" element={<RefundPage />} />
