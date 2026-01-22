@@ -382,18 +382,18 @@ const DashboardPage = () => {
                 <p className="text-sm text-gray-500">{t('dashboard.manageContracts')}</p>
               </div>
               
-              {/* Кнопки действий справа */}
-              <div className="flex flex-wrap gap-2 sm:gap-3">
+              {/* Кнопки действий - 100% на мобильных */}
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
                 <button
                   onClick={() => navigate('/templates')}
-                  className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-md shadow-blue-500/20 flex items-center gap-2"
+                  className="w-full sm:w-auto px-4 py-3 sm:py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-md shadow-blue-500/20 flex items-center justify-center gap-2"
                 >
                   <FileText className="w-4 h-4" />
                   {t('dashboard.templatesMarket')}
                 </button>
                 <button
                   onClick={handleCreateContract}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-blue-400 transition-all shadow-sm flex items-center gap-2"
+                  className="w-full sm:w-auto px-4 py-3 sm:py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-blue-400 transition-all shadow-sm flex items-center justify-center gap-2"
                 >
                   <Plus className="w-4 h-4" />
                   {t('dashboard.new_contract')}
