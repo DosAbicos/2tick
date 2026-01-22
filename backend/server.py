@@ -435,10 +435,9 @@ def send_otp_via_twilio(phone: str, channel: str = "sms") -> dict:
         dict with 'success' bool and 'message' or 'error'
     """
     if not twilio_client or not TWILIO_VERIFY_SERVICE_SID:
-        # Fallback to mock
-        otp = generate_otp()
-        logging.warning(f"[MOCK] Twilio not configured. OTP: {otp} for {phone}")
-        return {"success": True, "message": "Mock OTP sent", "mock_otp": otp}
+        # No Twilio configured - return error
+        logging.error("[Twilio] Not configured - SMS cannot be sent")
+        return {"success": False, "error": "SMS provider not configured"}
     
     try:
         phone = normalize_phone(phone)
@@ -452,15 +451,6 @@ def send_otp_via_twilio(phone: str, channel: str = "sms") -> dict:
     
     except TwilioRestException as e:
         logging.error(f"❌ Twilio error: {e.msg}")
-        
-        # Handle trial account limitations and authentication errors - fallback to mock
-        if ("unverified" in str(e.msg).lower() or 
-            "trial account" in str(e.msg).lower() or 
-            "authenticate" in str(e.msg).lower()):
-            otp = generate_otp()
-            logging.warning(f"[MOCK FALLBACK] Twilio error ({e.msg}). OTP: {otp} for {phone}")
-            return {"success": True, "message": "Mock OTP sent (Twilio fallback)", "mock_otp": otp}
-        
         return {"success": False, "error": str(e.msg)}
     except Exception as e:
         logging.error(f"❌ Error sending OTP: {str(e)}")
