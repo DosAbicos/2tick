@@ -146,7 +146,7 @@ const Header = ({ showAuth = false, hideLanguageSelector = false }) => {
                     setMobileMenuOpen(true);
                   }
                 }}
-                className="md:hidden p-2 text-gray-700 hover:bg-blue-50 rounded-lg transition-all"
+                className="md:hidden p-2 ml-2 text-gray-700 hover:bg-blue-50 rounded-lg transition-all"
                 aria-label="Menu"
                 data-testid="burger-menu-button"
                 style={{cursor: 'pointer', touchAction: 'manipulation'}}
