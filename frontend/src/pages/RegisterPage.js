@@ -821,34 +821,6 @@ const RegisterPage = () => {
                         </div>
                       </motion.button>
                       
-                      {/* Call Button - Neumorphism with rounded corners */}
-                      <motion.button
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.6 }}
-                        whileHover={{ y: -2 }}
-                        whileTap={{ scale: 0.98 }}
-                        type="button"
-                        onClick={handleRequestCall}
-                        className="neuro-card w-full p-6 rounded-2xl transition-all group"
-                        data-testid="call-button"
-                      >
-                        <div className="flex items-center gap-4">
-                          <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center flex-shrink-0 group-hover:from-blue-100 group-hover:to-blue-200 transition-all">
-                            <svg className="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                            </svg>
-                          </div>
-                          <div className="flex-1 text-left">
-                            <h4 className="text-lg font-semibold text-gray-900 mb-1">Звонок</h4>
-                            <p className="text-sm text-gray-600">Вам поступит вызов</p>
-                          </div>
-                          <svg className="w-5 h-5 text-blue-600 flex-shrink-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                          </svg>
-                        </div>
-                      </motion.button>
-                      
                       {/* Telegram Button - Always active */}
                       <motion.button
                         initial={{ opacity: 0, y: 20 }}
