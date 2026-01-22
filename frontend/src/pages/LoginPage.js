@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
-import { toast } from 'sonner';
 import { Mail, Lock, ArrowRight } from 'lucide-react';
 import '../styles/neumorphism.css';
 
@@ -36,7 +35,6 @@ const LoginPage = () => {
     
     if (!validateEmail(formData.email)) {
       setError(t('auth.login.invalidEmail'));
-      toast.error(t('auth.login.invalidEmail'));
       return;
     }
     
@@ -49,16 +47,13 @@ const LoginPage = () => {
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
       
-      toast.success(t('auth.login.welcome', { name: user.full_name }));
       navigate('/dashboard');
     } catch (error) {
       console.error('Login error:', error);
       if (error.response?.status === 401) {
         setError(t('auth.login.invalidCredentials'));
-        toast.error(t('auth.login.invalidCredentials'));
       } else {
         setError(t('auth.login.error'));
-        toast.error(t('auth.login.error'));
       }
     } finally {
       setLoading(false);
