@@ -476,41 +476,49 @@ async def send_otp_via_kazinfotech(phone: str) -> dict:
         phone: Phone number (will be normalized to 7XXXXXXXXXX format)
     
     Returns:
-        dict with 'success' bool, 'request_id' and 'message' or 'error'
+        dict with 'success' bool, 'otp_code' and 'message' or 'error'
     """
-    if not KAZINFOTECH_TOKEN:
-        logging.warning("KazInfoTech token not configured, falling back to Twilio")
+    if not KAZINFOTECH_USERNAME or not KAZINFOTECH_PASSWORD:
+        logging.warning("KazInfoTech not configured, falling back to Twilio")
         return send_otp_via_twilio(phone)
     
     try:
-        # Normalize phone to 7XXXXXXXXXX format (no +)
+        # Normalize phone to 7XXXXXXXXXX format (no + or 8)
         normalized = normalize_phone(phone).replace('+', '')
         if normalized.startswith('8'):
             normalized = '7' + normalized[1:]
         
+        # Generate 6-digit OTP
+        otp_code = generate_otp()
+        
+        # Send SMS via HTTP API
         async with httpx.AsyncClient(timeout=30.0) as client:
-            response = await client.post(
-                "https://isms.center/v1/validation/request",
-                headers={
-                    "Token": KAZINFOTECH_TOKEN,
-                    "Content-Type": "application/json"
-                },
-                json={
-                    "phone": normalized,
-                    "from": KAZINFOTECH_SENDER or "2tick",
-                    "type": "sms",
-                    "msg": "Ваш код для 2tick.kz: [:pin]"
+            response = await client.get(
+                KAZINFOTECH_API_URL,
+                params={
+                    "action": "sendmessage",
+                    "username": KAZINFOTECH_USERNAME,
+                    "password": KAZINFOTECH_PASSWORD,
+                    "recipient": normalized,
+                    "messagetype": "SMS:TEXT",
+                    "originator": KAZINFOTECH_SENDER,
+                    "messagedata": f"Ваш код для 2tick.kz: {otp_code}"
                 }
             )
             
-            if response.status_code == 200:
-                data = response.json()
-                logging.info(f"✅ KazInfoTech OTP sent to {normalized}. Request ID: {data.get('id')}")
+            if response.status_code == 200 and "<statuscode>0</statuscode>" in response.text:
+                # Extract message ID from XML response
+                import re
+                message_id_match = re.search(r'<messageid>([^<]+)</messageid>', response.text)
+                message_id = message_id_match.group(1) if message_id_match else None
+                
+                logging.info(f"✅ KazInfoTech OTP sent to {normalized}. Message ID: {message_id}")
                 return {
                     "success": True,
                     "message": "OTP sent via KazInfoTech",
-                    "request_id": data.get("id"),
-                    "phone": data.get("phone")
+                    "otp_code": otp_code,  # Store OTP for verification
+                    "message_id": message_id,
+                    "phone": normalized
                 }
             else:
                 logging.error(f"❌ KazInfoTech error: {response.status_code} - {response.text}")
@@ -523,53 +531,26 @@ async def send_otp_via_kazinfotech(phone: str) -> dict:
         return send_otp_via_twilio(phone)
 
 
-async def verify_otp_via_kazinfotech(request_id: str, pin: str) -> dict:
-    """Verify OTP via KazInfoTech MobiCheck API
+async def verify_otp_via_kazinfotech(stored_otp: str, entered_otp: str) -> dict:
+    """Verify OTP by comparing stored and entered codes
     
     Args:
-        request_id: Request ID from sendRequest response
-        pin: PIN code entered by user
+        stored_otp: OTP code that was sent
+        entered_otp: OTP code entered by user
     
     Returns:
         dict with 'success' bool and 'status' or 'error'
     """
-    if not KAZINFOTECH_TOKEN:
-        logging.warning("KazInfoTech token not configured")
-        return {"success": False, "error": "KazInfoTech not configured"}
-    
-    try:
-        async with httpx.AsyncClient(timeout=30.0) as client:
-            response = await client.post(
-                "https://isms.center/v1/validation/verify",
-                headers={
-                    "Token": KAZINFOTECH_TOKEN,
-                    "Content-Type": "application/json"
-                },
-                json={
-                    "id": request_id,
-                    "pin": pin
-                }
-            )
-            
-            if response.status_code == 200:
-                data = response.json()
-                if data.get("validated") == True:
-                    logging.info(f"✅ KazInfoTech OTP verified. Phone: {data.get('phone')}")
-                    return {"success": True, "status": "approved", "phone": data.get("phone")}
-                else:
-                    logging.warning(f"❌ KazInfoTech OTP invalid for request {request_id}")
-                    return {"success": False, "error": "Invalid PIN", "status": "rejected"}
-            else:
-                logging.error(f"❌ KazInfoTech verify error: {response.status_code} - {response.text}")
-                return {"success": False, "error": f"Verification failed: {response.status_code}"}
-                
-    except Exception as e:
-        logging.error(f"❌ KazInfoTech verify error: {str(e)}")
-        return {"success": False, "error": str(e)}
+    if stored_otp and entered_otp and stored_otp == entered_otp:
+        logging.info(f"✅ KazInfoTech OTP verified successfully")
+        return {"success": True, "status": "approved"}
+    else:
+        logging.warning(f"❌ KazInfoTech OTP invalid: entered {entered_otp}, expected {stored_otp}")
+        return {"success": False, "error": "Invalid PIN", "status": "rejected"}
 
 
 async def send_sms_via_kazinfotech(phone: str, text: str) -> dict:
-    """Send SMS via KazInfoTech JSON API (for general messages, not OTP)
+    """Send SMS via KazInfoTech HTTP API (for general messages)
     
     Args:
         phone: Phone number
