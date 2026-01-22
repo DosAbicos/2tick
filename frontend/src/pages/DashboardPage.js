@@ -403,58 +403,58 @@ const DashboardPage = () => {
           </div>
         </div>
 
-        {/* Статистика */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6 sm:mb-8">
-          <div className="minimal-card p-4 sm:p-6">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                <CheckCircle className="w-5 h-5 text-white" />
+        {/* Статистика - сетка 2x2 на мобильных, 4 в ряд на десктопе */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+          <div className="minimal-card p-3 sm:p-6">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 bg-green-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
               <div className="min-w-0">
-                <p className="text-xs sm:text-sm text-gray-600">{t('dashboard.stats.signedTotal')}</p>
-                <p className="text-xl sm:text-2xl font-bold text-gray-900">{stats.signed}</p>
+                <p className="text-[11px] sm:text-sm text-gray-500 leading-tight">{t('dashboard.stats.signedTotal')}</p>
+                <p className="text-lg sm:text-2xl font-bold text-gray-900">{stats.signed}</p>
               </div>
             </div>
           </div>
 
-          <div className="minimal-card p-4 sm:p-6">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 bg-amber-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                <Clock className="w-5 h-5 text-white" />
+          <div className="minimal-card p-3 sm:p-6">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 bg-amber-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
               <div className="min-w-0">
-                <p className="text-xs sm:text-sm text-gray-600">{t('dashboard.stats.pending')}</p>
-                <p className="text-xl sm:text-2xl font-bold text-gray-900">{stats.pending}</p>
+                <p className="text-[11px] sm:text-sm text-gray-500 leading-tight">{t('dashboard.stats.pending')}</p>
+                <p className="text-lg sm:text-2xl font-bold text-gray-900">{stats.pending}</p>
               </div>
             </div>
           </div>
 
-          <div className="minimal-card p-4 sm:p-6">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 bg-gray-400 rounded-lg flex items-center justify-center flex-shrink-0">
-                <FileText className="w-5 h-5 text-white" />
+          <div className="minimal-card p-3 sm:p-6">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gray-400 rounded-xl flex items-center justify-center flex-shrink-0">
+                <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
               <div className="min-w-0">
-                <p className="text-xs sm:text-sm text-gray-600">{t('dashboard.stats.drafts')}</p>
-                <p className="text-xl sm:text-2xl font-bold text-gray-900">{stats.draft}</p>
+                <p className="text-[11px] sm:text-sm text-gray-500 leading-tight">{t('dashboard.stats.drafts')}</p>
+                <p className="text-lg sm:text-2xl font-bold text-gray-900">{stats.draft}</p>
               </div>
             </div>
           </div>
 
-          <div className="minimal-card p-4 sm:p-6">
-            <div className="flex items-center gap-3 mb-2">
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
+          <div className="minimal-card p-3 sm:p-6">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
                 limitInfo && (limitInfo.contract_limit - limitInfo.contracts_used) <= 0 
                   ? 'bg-red-500' 
                   : limitInfo && (limitInfo.contract_limit - limitInfo.contracts_used) <= 2 
                     ? 'bg-amber-500' 
                     : 'bg-blue-500'
               }`}>
-                <FileText className="w-5 h-5 text-white" />
+                <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
               <div className="min-w-0">
-                <p className="text-xs sm:text-sm text-gray-600">{t('dashboard.stats.remaining')}</p>
-                <p className={`text-xl sm:text-2xl font-bold ${
+                <p className="text-[11px] sm:text-sm text-gray-500 leading-tight">{t('dashboard.stats.remaining')}</p>
+                <p className={`text-lg sm:text-2xl font-bold ${
                   limitInfo && (limitInfo.contract_limit - limitInfo.contracts_used) <= 0 
                     ? 'text-red-600' 
                     : limitInfo && (limitInfo.contract_limit - limitInfo.contracts_used) <= 2 
