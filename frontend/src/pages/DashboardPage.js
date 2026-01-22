@@ -335,8 +335,8 @@ const DashboardPage = () => {
                 </div>
               ) : (
                 <>
-                  <h3 className="text-sm font-semibold text-gray-600 mb-4 flex items-center gap-2">
-                    <span>❤️</span> {t('dashboard.favoriteTemplates')}
+                  <h3 className="text-base font-semibold text-gray-700 mb-4">
+                    {t('dashboard.favoriteTemplates')}
                   </h3>
                   {/* Скролл только для списка шаблонов */}
                   <div className="max-h-[40vh] overflow-y-auto space-y-3 pr-1">
