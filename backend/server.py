@@ -424,11 +424,11 @@ def normalize_phone(phone: str) -> str:
     return phone
 
 def send_otp_via_twilio(phone: str, channel: str = "sms") -> dict:
-    """Send OTP via Twilio Verify API
+    """Send OTP via Twilio Verify API (fallback provider)
     
     Args:
         phone: Phone number in international format
-        channel: 'sms' or 'call'
+        channel: 'sms' only (call removed)
     
     Returns:
         dict with 'success' bool and 'message' or 'error'
@@ -443,11 +443,11 @@ def send_otp_via_twilio(phone: str, channel: str = "sms") -> dict:
         phone = normalize_phone(phone)
         verification = twilio_client.verify.v2.services(TWILIO_VERIFY_SERVICE_SID).verifications.create(
             to=phone,
-            channel=channel  # 'sms' or 'call'
+            channel="sms"  # Only SMS, no call
         )
         
-        logging.info(f"✅ Twilio OTP sent to {phone} via {channel}. Status: {verification.status}")
-        return {"success": True, "message": f"OTP sent via {channel}", "status": verification.status}
+        logging.info(f"✅ Twilio OTP sent to {phone} via SMS. Status: {verification.status}")
+        return {"success": True, "message": "OTP sent via SMS", "status": verification.status}
     
     except TwilioRestException as e:
         logging.error(f"❌ Twilio error: {e.msg}")
@@ -464,6 +464,205 @@ def send_otp_via_twilio(phone: str, channel: str = "sms") -> dict:
     except Exception as e:
         logging.error(f"❌ Error sending OTP: {str(e)}")
         return {"success": False, "error": str(e)}
+
+
+# ============ KAZINFOTECH SMS INTEGRATION ============
+
+async def send_otp_via_kazinfotech(phone: str) -> dict:
+    """Send OTP via KazInfoTech MobiCheck API
+    
+    Args:
+        phone: Phone number (will be normalized to 7XXXXXXXXXX format)
+    
+    Returns:
+        dict with 'success' bool, 'request_id' and 'message' or 'error'
+    """
+    if not KAZINFOTECH_TOKEN:
+        logging.warning("KazInfoTech token not configured, falling back to Twilio")
+        return send_otp_via_twilio(phone)
+    
+    try:
+        # Normalize phone to 7XXXXXXXXXX format (no +)
+        normalized = normalize_phone(phone).replace('+', '')
+        if normalized.startswith('8'):
+            normalized = '7' + normalized[1:]
+        
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.post(
+                "https://isms.center/v1/validation/request",
+                headers={
+                    "Token": KAZINFOTECH_TOKEN,
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "phone": normalized,
+                    "from": KAZINFOTECH_SENDER or "2tick",
+                    "type": "sms",
+                    "msg": "Ваш код для 2tick.kz: [:pin]"
+                }
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                logging.info(f"✅ KazInfoTech OTP sent to {normalized}. Request ID: {data.get('id')}")
+                return {
+                    "success": True,
+                    "message": "OTP sent via KazInfoTech",
+                    "request_id": data.get("id"),
+                    "phone": data.get("phone")
+                }
+            else:
+                logging.error(f"❌ KazInfoTech error: {response.status_code} - {response.text}")
+                # Fallback to Twilio
+                return send_otp_via_twilio(phone)
+                
+    except Exception as e:
+        logging.error(f"❌ KazInfoTech request error: {str(e)}")
+        # Fallback to Twilio
+        return send_otp_via_twilio(phone)
+
+
+async def verify_otp_via_kazinfotech(request_id: str, pin: str) -> dict:
+    """Verify OTP via KazInfoTech MobiCheck API
+    
+    Args:
+        request_id: Request ID from sendRequest response
+        pin: PIN code entered by user
+    
+    Returns:
+        dict with 'success' bool and 'status' or 'error'
+    """
+    if not KAZINFOTECH_TOKEN:
+        logging.warning("KazInfoTech token not configured")
+        return {"success": False, "error": "KazInfoTech not configured"}
+    
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.post(
+                "https://isms.center/v1/validation/verify",
+                headers={
+                    "Token": KAZINFOTECH_TOKEN,
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "id": request_id,
+                    "pin": pin
+                }
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get("validated") == True:
+                    logging.info(f"✅ KazInfoTech OTP verified. Phone: {data.get('phone')}")
+                    return {"success": True, "status": "approved", "phone": data.get("phone")}
+                else:
+                    logging.warning(f"❌ KazInfoTech OTP invalid for request {request_id}")
+                    return {"success": False, "error": "Invalid PIN", "status": "rejected"}
+            else:
+                logging.error(f"❌ KazInfoTech verify error: {response.status_code} - {response.text}")
+                return {"success": False, "error": f"Verification failed: {response.status_code}"}
+                
+    except Exception as e:
+        logging.error(f"❌ KazInfoTech verify error: {str(e)}")
+        return {"success": False, "error": str(e)}
+
+
+async def send_sms_via_kazinfotech(phone: str, text: str) -> dict:
+    """Send SMS via KazInfoTech JSON API (for general messages, not OTP)
+    
+    Args:
+        phone: Phone number
+        text: Message text
+    
+    Returns:
+        dict with 'success' bool and 'message_id' or 'error'
+    """
+    if not KAZINFOTECH_LOGIN or not KAZINFOTECH_PASSWORD:
+        logging.warning("KazInfoTech JSON API not configured")
+        return {"success": False, "error": "KazInfoTech not configured"}
+    
+    try:
+        # Normalize phone to 7XXXXXXXXXX format
+        normalized = normalize_phone(phone).replace('+', '')
+        if normalized.startswith('8'):
+            normalized = '7' + normalized[1:]
+        
+        # Create Basic auth token
+        auth_string = f"{KAZINFOTECH_LOGIN}:{KAZINFOTECH_PASSWORD}"
+        auth_token = base64.b64encode(auth_string.encode()).decode()
+        
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.post(
+                "https://so.kazinfoteh.org/api/sms/send",
+                headers={
+                    "Authorization": f"Basic {auth_token}",
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "from": KAZINFOTECH_SENDER or "2tick",
+                    "to": normalized,
+                    "text": text
+                }
+            )
+            
+            if response.status_code == 200:
+                data = response.json()
+                logging.info(f"✅ KazInfoTech SMS sent to {normalized}. Message ID: {data.get('message_id')}")
+                return {
+                    "success": True,
+                    "message_id": data.get("message_id"),
+                    "status": data.get("status")
+                }
+            else:
+                logging.error(f"❌ KazInfoTech SMS error: {response.status_code} - {response.text}")
+                return {"success": False, "error": f"SMS failed: {response.status_code}"}
+                
+    except Exception as e:
+        logging.error(f"❌ KazInfoTech SMS error: {str(e)}")
+        return {"success": False, "error": str(e)}
+
+
+# ============ UNIFIED OTP FUNCTIONS ============
+
+async def send_otp(phone: str) -> dict:
+    """Send OTP using configured provider (KazInfoTech primary, Twilio fallback)
+    
+    Args:
+        phone: Phone number
+    
+    Returns:
+        dict with 'success' bool and provider-specific data
+    """
+    if SMS_PROVIDER == 'kazinfotech' and KAZINFOTECH_TOKEN:
+        return await send_otp_via_kazinfotech(phone)
+    elif twilio_client and TWILIO_VERIFY_SERVICE_SID:
+        return send_otp_via_twilio(phone)
+    else:
+        # Mock fallback
+        otp = generate_otp()
+        logging.warning(f"[MOCK] No SMS provider configured. OTP: {otp} for {phone}")
+        return {"success": True, "message": "Mock OTP sent", "mock_otp": otp}
+
+
+async def verify_otp(phone: str, code: str, request_id: str = None) -> dict:
+    """Verify OTP using configured provider
+    
+    Args:
+        phone: Phone number
+        code: OTP code
+        request_id: KazInfoTech request ID (optional)
+    
+    Returns:
+        dict with 'success' bool and 'status' or 'error'
+    """
+    if SMS_PROVIDER == 'kazinfotech' and KAZINFOTECH_TOKEN and request_id:
+        return await verify_otp_via_kazinfotech(request_id, code)
+    elif twilio_client and TWILIO_VERIFY_SERVICE_SID:
+        return verify_otp_via_twilio(phone, code)
+    else:
+        # Mock fallback - accept any code for testing
+        logging.warning(f"[MOCK] No SMS provider configured. Accepting OTP: {code}")
+        return {"success": True, "status": "approved"}
 
 def verify_otp_via_twilio(phone: str, code: str) -> dict:
     """Verify OTP via Twilio Verify API
