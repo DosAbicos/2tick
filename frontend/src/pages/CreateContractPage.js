@@ -877,39 +877,39 @@ Email: ${templateData.tenant_email || '[Email]'}
                 
                 {/* Language buttons for preview */}
                 {!manualEditMode && selectedTemplate && (
-                  <div className="flex gap-1 sm:gap-2 justify-center flex-wrap">
+                  <div className="flex gap-2 justify-center">
                     <button
                       type="button"
                       onClick={() => setPreviewLang('ru')}
-                      className={`px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap ${
+                      className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap ${
                         previewLang === 'ru'
                           ? 'bg-blue-600 text-white shadow-md'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                     >
-                      🇷🇺 <span className="hidden xs:inline">Русский</span><span className="xs:hidden">РУ</span>
+                      🇷🇺 Русский
                     </button>
                     <button
                       type="button"
                       onClick={() => setPreviewLang('kk')}
-                      className={`px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap ${
+                      className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap ${
                         previewLang === 'kk'
                           ? 'bg-blue-600 text-white shadow-md'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                     >
-                      🇰🇿 <span className="hidden xs:inline">Қазақша</span><span className="xs:hidden">ҚАЗ</span>
+                      🇰🇿 Қазақша
                     </button>
                     <button
                       type="button"
                       onClick={() => setPreviewLang('en')}
-                      className={`px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap ${
+                      className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap ${
                         previewLang === 'en'
                           ? 'bg-blue-600 text-white shadow-md'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                     >
-                      🇬🇧 <span className="hidden xs:inline">English</span><span className="xs:hidden">EN</span>
+                      🇬🇧 English
                     </button>
                   </div>
                 )}
