@@ -32,8 +32,10 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
     
     if (!validateEmail(formData.email)) {
+      setError(t('auth.login.invalidEmail'));
       toast.error(t('auth.login.invalidEmail'));
       return;
     }
@@ -52,8 +54,10 @@ const LoginPage = () => {
     } catch (error) {
       console.error('Login error:', error);
       if (error.response?.status === 401) {
+        setError(t('auth.login.invalidCredentials'));
         toast.error(t('auth.login.invalidCredentials'));
       } else {
+        setError(t('auth.login.error'));
         toast.error(t('auth.login.error'));
       }
     } finally {
