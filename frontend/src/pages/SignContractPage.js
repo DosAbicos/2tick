@@ -1287,8 +1287,8 @@ const SignContractPage = () => {
 
                 {/* English Disclaimer Checkbox */}
                 {contractLanguage === 'en' && (
-                  <div className="bg-yellow-50 border-2 border-yellow-400 rounded-lg p-6 space-y-4">
-                    <div className="flex items-start gap-3">
+                  <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-4 space-y-3">
+                    <div className="flex items-start gap-2">
                       <input
                         type="checkbox"
                         id="english-disclaimer"
@@ -1299,25 +1299,25 @@ const SignContractPage = () => {
                             axios.post(`${API}/sign/${id}/accept-english-disclaimer`).catch(console.error);
                           }
                         }}
-                        className="mt-1 w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                        className="mt-0.5 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                       />
-                      <label htmlFor="english-disclaimer" className="text-sm text-gray-900 font-medium">
+                      <label htmlFor="english-disclaimer" className="text-xs text-gray-700 leading-snug">
                         {t('signing.englishDisclaimer')}
                       </label>
                     </div>
                     
                     {/* Dropdown to view original versions */}
-                    <details className="mt-4">
-                      <summary className="cursor-pointer text-blue-600 font-medium text-sm hover:text-blue-700">
-                        📄 {t('signing.viewOriginalVersions')}
+                    <details className="mt-2">
+                      <summary className="cursor-pointer text-blue-600 font-medium text-xs hover:text-blue-700 flex items-center gap-1">
+                        🎬 📄 {t('signing.viewOriginalVersions')}
                       </summary>
-                      <div className="mt-4 space-y-4">
+                      <div className="mt-3 space-y-3">
                         {/* Russian version */}
                         {contract.content && (
-                          <div className="border border-gray-300 rounded-lg p-4 bg-white">
-                            <h5 className="font-semibold text-gray-900 mb-2">🇷🇺 {t('signing.russianVersion')}:</h5>
+                          <div className="border border-gray-200 rounded-lg p-3 bg-white">
+                            <h5 className="font-semibold text-gray-900 mb-2 text-xs">🇷🇺 {t('signing.russianVersion')}:</h5>
                             <div 
-                              className="whitespace-pre-wrap text-xs leading-relaxed text-gray-700 max-h-60 overflow-y-auto"
+                              className="whitespace-pre-wrap text-xs leading-relaxed text-gray-700 max-h-40 overflow-y-auto"
                               dangerouslySetInnerHTML={{ __html: highlightPlaceholders(contract.content) }}
                             />
                           </div>
@@ -1325,10 +1325,10 @@ const SignContractPage = () => {
                         
                         {/* Kazakh version */}
                         {contract.content_kk && (
-                          <div className="border border-gray-300 rounded-lg p-4 bg-white">
-                            <h5 className="font-semibold text-gray-900 mb-2">🇰🇿 {t('signing.kazakhVersion')}:</h5>
+                          <div className="border border-gray-200 rounded-lg p-3 bg-white">
+                            <h5 className="font-semibold text-gray-900 mb-2 text-xs">🇰🇿 {t('signing.kazakhVersion')}:</h5>
                             <div 
-                              className="whitespace-pre-wrap text-xs leading-relaxed text-gray-700 max-h-60 overflow-y-auto"
+                              className="whitespace-pre-wrap text-xs leading-relaxed text-gray-700 max-h-40 overflow-y-auto"
                               dangerouslySetInnerHTML={{ __html: highlightPlaceholders(contract.content_kk) }}
                             />
                           </div>
