@@ -262,11 +262,6 @@ const RegisterPage = () => {
       if (cooldownTime > 0) {
         setSmsCooldown(cooldownTime);
       }
-      
-      // Если есть mock_otp (для тестирования), показываем его
-      if (response.data.mock_otp) {
-        setMockOtp(response.data.mock_otp);
-      }
     } catch (error) {
       toast.error(error.response?.data?.detail || t('auth.register.smsError'));
     } finally {
