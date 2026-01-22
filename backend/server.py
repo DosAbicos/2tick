@@ -3782,92 +3782,11 @@ async def request_otp(contract_id: str, method: str = "sms"):
 
 @api_router.post("/sign/{contract_id}/request-call-otp")
 async def request_call_otp(contract_id: str):
-    """Request phone call verification - user enters last 4 digits of caller ID"""
-    contract = await db.contracts.find_one({"id": contract_id})
-    if not contract:
-        raise HTTPException(status_code=404, detail="Contract not found")
-    
-    # Try to get phone from signer_phone field first
-    phone = contract.get('signer_phone')
-    
-    # If not found and contract has placeholder_values, search there
-    if not phone and contract.get('placeholder_values'):
-        placeholder_values = contract.get('placeholder_values', {})
-        # Try common phone field keys
-        for key in ['tenant_phone', 'signer_phone', 'client_phone', 'phone']:
-            if key in placeholder_values and placeholder_values[key]:
-                phone = placeholder_values[key]
-                break
-    
-    if not phone:
-        raise HTTPException(status_code=400, detail="Signer phone not found")
-    
-    # Normalize phone to E.164 format
-    phone = normalize_phone(phone)
-    
-    try:
-        # Make call via Twilio - phone will ring and disconnect
-        # User will see caller ID and enter last 4 digits
-        from twilio.rest import Client
-        client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
-        
-        # Make a very short call (will appear as missed call)
-        call = client.calls.create(
-            to=phone,
-            from_=TWILIO_PHONE_NUMBER,
-            url="http://demo.twilio.com/docs/voice.xml",  # Empty TwiML - call disconnects immediately
-            timeout=10
-        )
-        
-        # Store call SID and extract last 4 digits from our number
-        caller_number = TWILIO_PHONE_NUMBER.replace('+', '').replace(' ', '').replace('-', '')
-        last_4_digits = caller_number[-4:]
-        
-        # Store verification data in database
-        verification_data = {
-            "contract_id": contract_id,
-            "phone": phone,
-            "call_sid": call.sid,
-            "expected_code": last_4_digits,
-            "method": "call",
-            "created_at": datetime.now(timezone.utc).isoformat(),
-            "expires_at": (datetime.now(timezone.utc) + timedelta(minutes=5)).isoformat(),
-            "verified": False
-        }
-        
-        await db.verifications.insert_one(verification_data)
-        
-        logging.info(f"✅ Call initiated to {phone}, SID: {call.sid}, Last 4 digits: {last_4_digits}")
-        
-        return {
-            "message": "Звонок инициирован. Введите последние 4 цифры входящего номера.",
-            "call_sid": call.sid,
-            "hint": f"Номер заканчивается на: ...{last_4_digits}"
-        }
-        
-    except Exception as e:
-        logging.error(f"Call OTP error: {str(e)}")
-        # Fallback: return mock response for testing
-        last_4_digits = "1334"  # From our Twilio number
-        
-        verification_data = {
-            "contract_id": contract_id,
-            "phone": phone,
-            "call_sid": "MOCK_CALL",
-            "expected_code": last_4_digits,
-            "method": "call",
-            "created_at": datetime.now(timezone.utc).isoformat(),
-            "expires_at": (datetime.now(timezone.utc) + timedelta(minutes=5)).isoformat(),
-            "verified": False
-        }
-        
-        await db.verifications.insert_one(verification_data)
-        
-        return {
-            "message": "[TEST MODE] Введите последние 4 цифры: 1334",
-            "call_sid": "MOCK_CALL",
-            "hint": "Тестовый режим - код: 1334"
-        }
+    """Request phone call verification - DEPRECATED, call verification removed"""
+    raise HTTPException(
+        status_code=410, 
+        detail="Call verification is no longer supported. Please use SMS or Telegram."
+    )
 
 @api_router.get("/sign/{contract_id}/telegram-deep-link")
 async def get_telegram_deep_link(contract_id: str):
