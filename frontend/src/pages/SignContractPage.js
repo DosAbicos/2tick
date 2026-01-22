@@ -1596,68 +1596,6 @@ const SignContractPage = () => {
                       </button>
                     </div>
                   </motion.div>
-                ) : verificationMethod === 'call' ? (
-                  // Call verification - OTP boxes (4 digits)
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="space-y-8"
-                  >
-                    <div className="text-center">
-                      <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('signing.enterVerificationCode')}</h3>
-                      <p className="text-sm text-gray-500">
-                        {!callFirstEntry && !callHint ? t('signing.enterCallCodeHint') : t('signing.enterCallCode')}
-                      </p>
-                    </div>
-                    
-                    {callHint && (
-                      <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-200">
-                        <p className="text-sm text-blue-900 font-medium text-center">📞 Hint: {callHint}</p>
-                      </div>
-                    )}
-                    
-                    <div className="flex justify-center">
-                      <InputOTP maxLength={4} value={verificationCode} onChange={setVerificationCode}>
-                        <InputOTPGroup>
-                          <InputOTPSlot index={0} />
-                          <InputOTPSlot index={1} />
-                          <InputOTPSlot index={2} />
-                          <InputOTPSlot index={3} />
-                        </InputOTPGroup>
-                      </InputOTP>
-                    </div>
-                    
-                    <button
-                      type="button"
-                      onClick={sendCallCode}
-                      disabled={callCooldown > 0 || sendingCode}
-                      className="block w-full text-center py-2 text-sm text-gray-500 hover:text-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      {sendingCode ? t('signing.verifying') : callCooldown > 0 ? `${t('signing.requestCall')} ${Math.floor(callCooldown / 60)}:${(callCooldown % 60).toString().padStart(2, '0')}` : t('signing.requestCall')}
-                    </button>
-                    
-                    <div className="flex gap-3">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setVerificationMethod('');
-                          setVerificationCode('');
-                          setCallHint('');
-                        }}
-                        className="flex-1 py-3 px-6 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all font-medium"
-                      >
-                        {t('signing.back')}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={handleVerifyOTP}
-                        disabled={verifying || verificationCode.length !== 4}
-                        className="flex-1 py-3 px-6 text-white bg-gradient-to-r from-green-600 to-green-500 rounded-xl hover:from-green-700 hover:to-green-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-lg shadow-green-500/20"
-                      >
-                        {verifying ? t('signing.verifying') : t('signing.signContract')}
-                      </button>
-                    </div>
-                  </motion.div>
                 ) : verificationMethod === 'telegram' ? (
                   // Telegram verification - OTP boxes
                   <motion.div
