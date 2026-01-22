@@ -559,9 +559,9 @@ const AdminPage = () => {
                   </TableHeader>
                   <TableBody>
                     {filteredUsers.map((user) => (
-                      <TableRow key={user.id} className="hover:bg-blue-50 transition-colors border-b border-gray-200">
+                      <TableRow key={user.id || user._id} className="hover:bg-blue-50 transition-colors border-b border-gray-200">
                         <TableCell>
-                          <code className="text-xs font-mono bg-gray-100 px-2 py-1 rounded text-gray-700">{user.id.substring(0, 8)}...</code>
+                          <code className="text-xs font-mono bg-gray-100 px-2 py-1 rounded text-gray-700">{(user.id || user._id || '—').substring(0, 8)}...</code>
                         </TableCell>
                         <TableCell className="font-medium text-gray-900">{user.email}</TableCell>
                         <TableCell className="text-gray-700">{user.full_name}</TableCell>
