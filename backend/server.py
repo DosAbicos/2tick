@@ -563,37 +563,40 @@ async def send_sms_via_kazinfotech(phone: str, text: str) -> dict:
         logging.warning("KazInfoTech JSON API not configured")
         return {"success": False, "error": "KazInfoTech not configured"}
     
+    if not KAZINFOTECH_USERNAME or not KAZINFOTECH_PASSWORD:
+        logging.warning("KazInfoTech not configured for SMS")
+        return {"success": False, "error": "KazInfoTech not configured"}
+    
     try:
         # Normalize phone to 7XXXXXXXXXX format
         normalized = normalize_phone(phone).replace('+', '')
         if normalized.startswith('8'):
             normalized = '7' + normalized[1:]
         
-        # Create Basic auth token
-        auth_string = f"{KAZINFOTECH_LOGIN}:{KAZINFOTECH_PASSWORD}"
-        auth_token = base64.b64encode(auth_string.encode()).decode()
-        
         async with httpx.AsyncClient(timeout=30.0) as client:
-            response = await client.post(
-                "https://so.kazinfoteh.org/api/sms/send",
-                headers={
-                    "Authorization": f"Basic {auth_token}",
-                    "Content-Type": "application/json"
-                },
-                json={
-                    "from": KAZINFOTECH_SENDER or "2tick",
-                    "to": normalized,
-                    "text": text
+            response = await client.get(
+                KAZINFOTECH_API_URL,
+                params={
+                    "action": "sendmessage",
+                    "username": KAZINFOTECH_USERNAME,
+                    "password": KAZINFOTECH_PASSWORD,
+                    "recipient": normalized,
+                    "messagetype": "SMS:TEXT",
+                    "originator": KAZINFOTECH_SENDER,
+                    "messagedata": text
                 }
             )
             
-            if response.status_code == 200:
-                data = response.json()
-                logging.info(f"✅ KazInfoTech SMS sent to {normalized}. Message ID: {data.get('message_id')}")
+            if response.status_code == 200 and "<statuscode>0</statuscode>" in response.text:
+                import re
+                message_id_match = re.search(r'<messageid>([^<]+)</messageid>', response.text)
+                message_id = message_id_match.group(1) if message_id_match else None
+                
+                logging.info(f"✅ KazInfoTech SMS sent to {normalized}. Message ID: {message_id}")
                 return {
                     "success": True,
-                    "message_id": data.get("message_id"),
-                    "status": data.get("status")
+                    "message_id": message_id,
+                    "status": "sent"
                 }
             else:
                 logging.error(f"❌ KazInfoTech SMS error: {response.status_code} - {response.text}")
@@ -615,7 +618,7 @@ async def send_otp(phone: str) -> dict:
     Returns:
         dict with 'success' bool and provider-specific data
     """
-    if SMS_PROVIDER == 'kazinfotech' and KAZINFOTECH_TOKEN:
+    if SMS_PROVIDER == 'kazinfotech' and KAZINFOTECH_USERNAME and KAZINFOTECH_PASSWORD:
         return await send_otp_via_kazinfotech(phone)
     elif twilio_client and TWILIO_VERIFY_SERVICE_SID:
         return send_otp_via_twilio(phone)
