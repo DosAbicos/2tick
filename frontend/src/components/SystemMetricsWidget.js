@@ -9,6 +9,7 @@ const API = `${BACKEND_URL}/api`;
 const SystemMetricsWidget = ({ onErrorsClick }) => {
   const [metrics, setMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const token = localStorage.getItem('token');
 
   const fetchMetrics = async () => {
@@ -17,9 +18,21 @@ const SystemMetricsWidget = ({ onErrorsClick }) => {
         headers: { Authorization: `Bearer ${token}` }
       });
       setMetrics(response.data);
+      setError(null);
+    } catch (err) {
+      console.error('Error fetching metrics:', err);
+      setError(err.message || 'Ошибка загрузки метрик');
+      // Set default metrics on error
+      setMetrics({
+        cpu_percent: 0,
+        memory: { percent: 0, used_gb: 0, total_gb: 0 },
+        disk: { percent: 0, used_gb: 0, total_gb: 0 },
+        uptime: { days: 0, hours: 0 },
+        active_users_24h: 0,
+        recent_errors: []
+      });
+    } finally {
       setLoading(false);
-    } catch (error) {
-      console.error('Error fetching metrics:', error);
     }
   };
 
