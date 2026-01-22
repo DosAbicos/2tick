@@ -855,12 +855,13 @@ Email: ${templateData.tenant_email || '[Email]'}
                     <button
                       type="button"
                       onClick={toggleEditMode}
-                      className="w-9 h-9 flex items-center justify-center text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-all"
+                      className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 text-sm font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-all"
                       title={t('contract.edit')}
                     >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                       </svg>
+                      <span className="hidden sm:inline">{t('contract.edit')}</span>
                     </button>
                   ) : (
                     <button
@@ -873,41 +874,41 @@ Email: ${templateData.tenant_email || '[Email]'}
                   )}
                 </div>
                 
-                {/* Language buttons for preview - horizontal row */}
+                {/* Language buttons for preview */}
                 {!manualEditMode && selectedTemplate && (
-                  <div className="flex gap-1.5 justify-center">
+                  <div className="flex gap-1.5 sm:gap-2 justify-center">
                     <button
                       type="button"
                       onClick={() => setPreviewLang('ru')}
-                      className={`px-2 py-1 text-xs font-medium rounded-md transition-all ${
+                      className={`px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-medium rounded-md sm:rounded-lg transition-all ${
                         previewLang === 'ru'
-                          ? 'bg-blue-600 text-white'
+                          ? 'bg-blue-600 text-white shadow-md'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                     >
-                      🇷🇺 РУ
+                      🇷🇺 <span className="hidden sm:inline">Русский</span><span className="sm:hidden">РУ</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => setPreviewLang('kk')}
-                      className={`px-2 py-1 text-xs font-medium rounded-md transition-all ${
+                      className={`px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-medium rounded-md sm:rounded-lg transition-all ${
                         previewLang === 'kk'
-                          ? 'bg-blue-600 text-white'
+                          ? 'bg-blue-600 text-white shadow-md'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                     >
-                      🇰🇿 ҚАЗ
+                      🇰🇿 <span className="hidden sm:inline">Қазақша</span><span className="sm:hidden">ҚАЗ</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => setPreviewLang('en')}
-                      className={`px-2 py-1 text-xs font-medium rounded-md transition-all ${
+                      className={`px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-medium rounded-md sm:rounded-lg transition-all ${
                         previewLang === 'en'
-                          ? 'bg-blue-600 text-white'
+                          ? 'bg-blue-600 text-white shadow-md'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                     >
-                      🇬🇧 EN
+                      🇬🇧 <span className="hidden sm:inline">English</span><span className="sm:hidden">EN</span>
                     </button>
                   </div>
                 )}
