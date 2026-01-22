@@ -48,7 +48,7 @@ const SystemMetricsWidget = ({ onErrorsClick }) => {
     return 'text-red-600 bg-red-50 border-red-200';
   };
 
-  if (loading || !metrics) {
+  if (loading) {
     return (
       <div className="minimal-card p-6">
         <div className="text-center text-gray-500">Загрузка метрик...</div>
@@ -56,70 +56,93 @@ const SystemMetricsWidget = ({ onErrorsClick }) => {
     );
   }
 
+  if (!metrics) {
+    return (
+      <div className="minimal-card p-6">
+        <div className="text-center text-red-500">
+          {error || 'Метрики недоступны'}
+        </div>
+      </div>
+    );
+  }
+
+  // Safe access to metrics with defaults
+  const cpuPercent = metrics.cpu_percent ?? 0;
+  const memoryPercent = metrics.memory?.percent ?? 0;
+  const memoryUsedGb = metrics.memory?.used_gb ?? 0;
+  const memoryTotalGb = metrics.memory?.total_gb ?? 0;
+  const diskPercent = metrics.disk?.percent ?? 0;
+  const diskUsedGb = metrics.disk?.used_gb ?? 0;
+  const diskTotalGb = metrics.disk?.total_gb ?? 0;
+  const uptimeDays = metrics.uptime?.days ?? 0;
+  const uptimeHours = metrics.uptime?.hours ?? 0;
+  const activeUsers = metrics.active_users_24h ?? 0;
+  const recentErrors = metrics.recent_errors ?? [];
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {/* CPU */}
-      <div className={`minimal-card p-6 ${getColorClass(metrics.cpu_percent)} transition-all duration-300`}>
+      <div className={`minimal-card p-6 ${getColorClass(cpuPercent)} transition-all duration-300`}>
         <div className="flex items-center gap-2 mb-4">
           <div className="p-2 bg-white rounded-lg">
             <Cpu className="h-5 w-5" />
           </div>
           <h3 className="text-sm font-semibold">CPU</h3>
         </div>
-        <div className="text-4xl font-bold mb-3">{metrics.cpu_percent.toFixed(1)}%</div>
+        <div className="text-4xl font-bold mb-3">{cpuPercent.toFixed(1)}%</div>
         <div className="w-full bg-gray-200 rounded-full h-3">
           <div
             className={`h-3 rounded-full transition-all duration-500 ${
-              metrics.cpu_percent < 50 ? 'bg-green-500' :
-              metrics.cpu_percent < 80 ? 'bg-yellow-500' : 'bg-red-500'
+              cpuPercent < 50 ? 'bg-green-500' :
+              cpuPercent < 80 ? 'bg-yellow-500' : 'bg-red-500'
             }`}
-            style={{ width: `${metrics.cpu_percent}%` }}
+            style={{ width: `${cpuPercent}%` }}
           />
         </div>
       </div>
 
       {/* Memory */}
-      <div className={`minimal-card p-6 ${getColorClass(metrics.memory.percent)} transition-all duration-300`}>
+      <div className={`minimal-card p-6 ${getColorClass(memoryPercent)} transition-all duration-300`}>
         <div className="flex items-center gap-2 mb-4">
           <div className="p-2 bg-white rounded-lg">
             <Activity className="h-5 w-5" />
           </div>
           <h3 className="text-sm font-semibold">Память</h3>
         </div>
-        <div className="text-4xl font-bold mb-1">{metrics.memory.percent.toFixed(1)}%</div>
+        <div className="text-4xl font-bold mb-1">{memoryPercent.toFixed(1)}%</div>
         <div className="text-sm mb-3">
-          {metrics.memory.used_gb} / {metrics.memory.total_gb} GB
+          {memoryUsedGb} / {memoryTotalGb} GB
         </div>
         <div className="w-full bg-gray-200 rounded-full h-3">
           <div
             className={`h-3 rounded-full transition-all duration-500 ${
-              metrics.memory.percent < 50 ? 'bg-green-500' :
-              metrics.memory.percent < 80 ? 'bg-yellow-500' : 'bg-red-500'
+              memoryPercent < 50 ? 'bg-green-500' :
+              memoryPercent < 80 ? 'bg-yellow-500' : 'bg-red-500'
             }`}
-            style={{ width: `${metrics.memory.percent}%` }}
+            style={{ width: `${memoryPercent}%` }}
           />
         </div>
       </div>
 
       {/* Disk */}
-      <div className={`minimal-card p-6 ${getColorClass(metrics.disk.percent)} transition-all duration-300`}>
+      <div className={`minimal-card p-6 ${getColorClass(diskPercent)} transition-all duration-300`}>
         <div className="flex items-center gap-2 mb-4">
           <div className="p-2 bg-white rounded-lg">
             <HardDrive className="h-5 w-5" />
           </div>
           <h3 className="text-sm font-semibold">Диск</h3>
         </div>
-        <div className="text-4xl font-bold mb-1">{metrics.disk.percent.toFixed(1)}%</div>
+        <div className="text-4xl font-bold mb-1">{diskPercent.toFixed(1)}%</div>
         <div className="text-sm mb-3">
-          {metrics.disk.used_gb} / {metrics.disk.total_gb} GB
+          {diskUsedGb} / {diskTotalGb} GB
         </div>
         <div className="w-full bg-gray-200 rounded-full h-3">
           <div
             className={`h-3 rounded-full transition-all duration-500 ${
-              metrics.disk.percent < 50 ? 'bg-green-500' :
-              metrics.disk.percent < 80 ? 'bg-yellow-500' : 'bg-red-500'
+              diskPercent < 50 ? 'bg-green-500' :
+              diskPercent < 80 ? 'bg-yellow-500' : 'bg-red-500'
             }`}
-            style={{ width: `${metrics.disk.percent}%` }}
+            style={{ width: `${diskPercent}%` }}
           />
         </div>
       </div>
@@ -132,7 +155,7 @@ const SystemMetricsWidget = ({ onErrorsClick }) => {
           </div>
           <h3 className="text-sm font-semibold text-blue-900">Активные пользователи</h3>
         </div>
-        <div className="text-4xl font-bold text-blue-900">{metrics.active_users_24h}</div>
+        <div className="text-4xl font-bold text-blue-900">{activeUsers}</div>
         <div className="text-sm text-blue-700 mt-2">За последние 24 часа</div>
       </div>
 
@@ -145,29 +168,29 @@ const SystemMetricsWidget = ({ onErrorsClick }) => {
           <h3 className="text-sm font-semibold text-purple-900">Uptime</h3>
         </div>
         <div className="text-3xl font-bold text-purple-900">
-          {metrics.uptime.days}д {metrics.uptime.hours}ч
+          {uptimeDays}д {uptimeHours}ч
         </div>
         <div className="text-sm text-purple-700 mt-2">Без перезагрузок</div>
       </div>
 
       {/* Errors */}
       <div 
-        className={`minimal-card p-6 ${metrics.recent_errors.length > 0 ? 'bg-red-50 border-red-100 cursor-pointer hover:shadow-xl' : 'bg-green-50 border-green-100'} transition-all duration-300`}
-        onClick={() => metrics.recent_errors.length > 0 && onErrorsClick && onErrorsClick(metrics.recent_errors)}
+        className={`minimal-card p-6 ${recentErrors.length > 0 ? 'bg-red-50 border-red-100 cursor-pointer hover:shadow-xl' : 'bg-green-50 border-green-100'} transition-all duration-300`}
+        onClick={() => recentErrors.length > 0 && onErrorsClick && onErrorsClick(recentErrors)}
       >
         <div className="flex items-center gap-2 mb-4">
-          <div className={`p-2 rounded-lg ${metrics.recent_errors.length > 0 ? 'bg-red-100' : 'bg-green-100'}`}>
-            <AlertCircle className={`h-5 w-5 ${metrics.recent_errors.length > 0 ? 'text-red-600' : 'text-green-600'}`} />
+          <div className={`p-2 rounded-lg ${recentErrors.length > 0 ? 'bg-red-100' : 'bg-green-100'}`}>
+            <AlertCircle className={`h-5 w-5 ${recentErrors.length > 0 ? 'text-red-600' : 'text-green-600'}`} />
           </div>
-          <h3 className={`text-sm font-semibold ${metrics.recent_errors.length > 0 ? 'text-red-900' : 'text-green-900'}`}>
+          <h3 className={`text-sm font-semibold ${recentErrors.length > 0 ? 'text-red-900' : 'text-green-900'}`}>
             Ошибки
           </h3>
         </div>
-        <div className={`text-4xl font-bold ${metrics.recent_errors.length > 0 ? 'text-red-900' : 'text-green-900'}`}>
-          {metrics.recent_errors.length}
+        <div className={`text-4xl font-bold ${recentErrors.length > 0 ? 'text-red-900' : 'text-green-900'}`}>
+          {recentErrors.length}
         </div>
-        <div className={`text-sm mt-2 ${metrics.recent_errors.length > 0 ? 'text-red-700' : 'text-green-700'}`}>
-          {metrics.recent_errors.length > 0 ? 'Нажмите для просмотра' : 'Нет ошибок'}
+        <div className={`text-sm mt-2 ${recentErrors.length > 0 ? 'text-red-700' : 'text-green-700'}`}>
+          {recentErrors.length > 0 ? 'Нажмите для просмотра' : 'Нет ошибок'}
         </div>
       </div>
     </div>
