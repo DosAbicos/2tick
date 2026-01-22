@@ -179,28 +179,45 @@ const AdminPage = () => {
 
   const fetchAdminData = async () => {
     try {
-      const [statsRes, usersRes, metricsRes] = await Promise.all([
+      // Fetch stats and users first (critical data)
+      const [statsRes, usersRes] = await Promise.all([
         axios.get(`${API}/admin/stats`, { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get(`${API}/admin/users`, { headers: { Authorization: `Bearer ${token}` } }),
-        axios.get(`${API}/admin/system/metrics`, { headers: { Authorization: `Bearer ${token}` } })
+        axios.get(`${API}/admin/users`, { headers: { Authorization: `Bearer ${token}` } })
       ]);
       
       setStats(statsRes.data);
       setUsers(usersRes.data);
       
-      // Format system metrics
-      const metrics = metricsRes.data;
-      setSystemMetrics({
-        cpu_usage: metrics.cpu_percent,
-        memory_usage: metrics.memory.percent,
-        disk_usage: metrics.disk.percent,
-        active_sessions: metrics.active_users_24h,
-        error_rate: metrics.recent_errors?.length || 0,
-        uptime: `${metrics.uptime.days}д ${metrics.uptime.hours}ч`
-      });
-      
-      // Save recent errors for modal
-      setRecentErrors(metrics.recent_errors || []);
+      // Fetch metrics separately (non-critical, may fail in some environments)
+      try {
+        const metricsRes = await axios.get(`${API}/admin/system/metrics`, { 
+          headers: { Authorization: `Bearer ${token}` } 
+        });
+        
+        const metrics = metricsRes.data;
+        setSystemMetrics({
+          cpu_usage: metrics.cpu_percent,
+          memory_usage: metrics.memory.percent,
+          disk_usage: metrics.disk.percent,
+          active_sessions: metrics.active_users_24h,
+          error_rate: metrics.recent_errors?.length || 0,
+          uptime: `${metrics.uptime.days}д ${metrics.uptime.hours}ч`
+        });
+        
+        // Save recent errors for modal
+        setRecentErrors(metrics.recent_errors || []);
+      } catch (metricsError) {
+        console.warn('Metrics not available:', metricsError.message);
+        // Set default metrics when unavailable
+        setSystemMetrics({
+          cpu_usage: 0,
+          memory_usage: 0,
+          disk_usage: 0,
+          active_sessions: 0,
+          error_rate: 0,
+          uptime: 'Н/Д'
+        });
+      }
     } catch (error) {
       toast.error('Ошибка загрузки данных');
       if (error.response?.status === 403) {
