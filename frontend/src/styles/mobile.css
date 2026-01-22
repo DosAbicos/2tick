@@ -120,16 +120,6 @@
     grid-template-columns: 1fr !important;
   }
 
-  /* Action buttons - stack on mobile (only for button containers) */
-  .flex.gap-2:has(> button) {
-    flex-direction: column !important;
-    width: 100% !important;
-  }
-
-  .flex.gap-2:has(> button) > button {
-    width: 100% !important;
-  }
-
   /* Navigation - horizontal scroll */
   nav {
     overflow-x: auto;
