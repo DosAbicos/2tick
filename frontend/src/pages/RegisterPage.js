@@ -910,15 +910,9 @@ const RegisterPage = () => {
                     <div className="text-center">
                       <h3 className="text-2xl font-bold text-gray-900 mb-2">Введите код верификации</h3>
                       <p className="text-sm text-gray-500">
-                        {!smsFirstEntry && !mockOtp ? 'Нажмите кнопку ниже для получения кода' : 'Мы отправили 6-значный код на ваш номер'}
+                        Мы отправили 6-значный код на ваш номер
                       </p>
                     </div>
-                    
-                    {mockOtp && (
-                      <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-xl border border-blue-200">
-                        <p className="text-sm text-blue-900 font-medium text-center">🔐 Тестовый режим: <strong className="text-lg">{mockOtp}</strong></p>
-                      </div>
-                    )}
                     
                     <div className="flex justify-center">
                       <InputOTP maxLength={6} value={verificationCode} onChange={setVerificationCode}>
