@@ -2527,8 +2527,10 @@ async def request_registration_otp(registration_id: str, method: str = "sms"):
     if "request_id" in result:
         update_data["otp_request_id"] = result["request_id"]
     
-    # If mock OTP is present (fallback mode), store it
-    if "mock_otp" in result:
+    # Store OTP code for verification (KazInfoTech uses local verification)
+    if "otp_code" in result:
+        update_data["otp_code"] = result["otp_code"]
+    elif "mock_otp" in result:
         update_data["otp_code"] = result["mock_otp"]
     
     await db.registrations.update_one(
