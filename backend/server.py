@@ -5024,90 +5024,144 @@ async def get_system_metrics(current_user: dict = Depends(get_current_user)):
     if current_user.get('role') != 'admin':
         raise HTTPException(status_code=403, detail="Admin access required")
     
-    import psutil
-    import time
-    
-    # CPU и память
-    cpu_percent = psutil.cpu_percent(interval=1)
-    memory = psutil.virtual_memory()
-    disk = psutil.disk_usage('/')
-    
-    # Uptime
-    boot_time = psutil.boot_time()
-    uptime_seconds = time.time() - boot_time
-    uptime_days = int(uptime_seconds // 86400)
-    uptime_hours = int((uptime_seconds % 86400) // 3600)
-    
-    # Network
     try:
-        net_io = psutil.net_io_counters()
-        network_stats = {
-            "bytes_sent": net_io.bytes_sent,
-            "bytes_recv": net_io.bytes_recv,
-            "packets_sent": net_io.packets_sent,
-            "packets_recv": net_io.packets_recv
-        }
-    except:
-        network_stats = None
-    
-    # Recent errors from logs
-    try:
-        with open('/var/log/supervisor/backend.err.log', 'r') as f:
-            error_lines = f.readlines()[-100:]  # Last 100 lines
-            recent_errors = [line.strip() for line in error_lines if 'ERROR' in line or 'Exception' in line][-20:]  # Last 20 errors
-    except:
+        import psutil
+        import time
+        
+        # CPU и память (with timeout protection)
+        try:
+            cpu_percent = psutil.cpu_percent(interval=0.5)
+        except:
+            cpu_percent = 0
+            
+        try:
+            memory = psutil.virtual_memory()
+            memory_info = {
+                "total_gb": round(memory.total / (1024**3), 2),
+                "used_gb": round(memory.used / (1024**3), 2),
+                "available_gb": round(memory.available / (1024**3), 2),
+                "percent": memory.percent
+            }
+        except:
+            memory_info = {"total_gb": 0, "used_gb": 0, "available_gb": 0, "percent": 0}
+        
+        try:
+            disk = psutil.disk_usage('/')
+            disk_info = {
+                "total_gb": round(disk.total / (1024**3), 2),
+                "used_gb": round(disk.used / (1024**3), 2),
+                "free_gb": round(disk.free / (1024**3), 2),
+                "percent": disk.percent
+            }
+        except:
+            disk_info = {"total_gb": 0, "used_gb": 0, "free_gb": 0, "percent": 0}
+        
+        # Uptime
+        try:
+            boot_time = psutil.boot_time()
+            uptime_seconds = time.time() - boot_time
+            uptime_days = int(uptime_seconds // 86400)
+            uptime_hours = int((uptime_seconds % 86400) // 3600)
+        except:
+            uptime_seconds = 0
+            uptime_days = 0
+            uptime_hours = 0
+        
+        # Network
+        try:
+            net_io = psutil.net_io_counters()
+            network_stats = {
+                "bytes_sent": net_io.bytes_sent,
+                "bytes_recv": net_io.bytes_recv,
+                "packets_sent": net_io.packets_sent,
+                "packets_recv": net_io.packets_recv
+            }
+        except:
+            network_stats = None
+        
+        # Recent errors from logs (with safe file access)
         recent_errors = []
-    
-    # Database stats
-    db_stats = await db.command("dbStats")
-    
-    # Active users (logged in last 24h)
-    yesterday = datetime.now(timezone.utc) - timedelta(days=1)
-    active_users_count = await db.user_logs.count_documents({
-        "action": "login_success",
-        "timestamp": {"$gte": yesterday.isoformat()}
-    })
-    
-    # Online users (any activity in last 15 minutes) - count unique users
-    fifteen_min_ago = datetime.now(timezone.utc) - timedelta(minutes=15)
-    online_pipeline = [
-        {"$match": {"timestamp": {"$gte": fifteen_min_ago.isoformat()}}},
-        {"$group": {"_id": "$user_id"}},
-        {"$count": "unique_users"}
-    ]
-    online_result = await db.user_logs.aggregate(online_pipeline).to_list(1)
-    online_users_count = online_result[0]['unique_users'] if online_result else 0
-    
-    return {
-        "status": "healthy",
-        "cpu_percent": cpu_percent,
-        "memory": {
-            "total_gb": round(memory.total / (1024**3), 2),
-            "used_gb": round(memory.used / (1024**3), 2),
-            "available_gb": round(memory.available / (1024**3), 2),
-            "percent": memory.percent
-        },
-        "disk": {
-            "total_gb": round(disk.total / (1024**3), 2),
-            "used_gb": round(disk.used / (1024**3), 2),
-            "free_gb": round(disk.free / (1024**3), 2),
-            "percent": disk.percent
-        },
-        "uptime": {
-            "days": uptime_days,
-            "hours": uptime_hours,
-            "total_seconds": int(uptime_seconds)
-        },
-        "network": network_stats,
-        "database": {
-            "size_mb": round(db_stats.get('dataSize', 0) / (1024**2), 2),
-            "collections": db_stats.get('collections', 0),
-            "indexes": db_stats.get('indexes', 0)
-        },
-        "active_users_24h": active_users_count,
-        "online_users": online_users_count,
-        "recent_errors": recent_errors[-20:] if recent_errors else []  # Return last 20 errors
-    }
+        try:
+            log_paths = [
+                '/var/log/supervisor/backend.err.log',
+                '/var/log/backend.err.log',
+                'backend.err.log'
+            ]
+            for log_path in log_paths:
+                try:
+                    with open(log_path, 'r') as f:
+                        error_lines = f.readlines()[-100:]
+                        recent_errors = [line.strip() for line in error_lines if 'ERROR' in line or 'Exception' in line][-20:]
+                        break
+                except FileNotFoundError:
+                    continue
+        except:
+            recent_errors = []
+        
+        # Database stats (with fallback)
+        try:
+            db_stats = await db.command("dbStats")
+            db_info = {
+                "size_mb": round(db_stats.get('dataSize', 0) / (1024**2), 2),
+                "collections": db_stats.get('collections', 0),
+                "indexes": db_stats.get('indexes', 0)
+            }
+        except:
+            db_info = {"size_mb": 0, "collections": 0, "indexes": 0}
+        
+        # Active users (logged in last 24h)
+        try:
+            yesterday = datetime.now(timezone.utc) - timedelta(days=1)
+            active_users_count = await db.user_logs.count_documents({
+                "action": "login_success",
+                "timestamp": {"$gte": yesterday.isoformat()}
+            })
+        except:
+            active_users_count = 0
+        
+        # Online users (any activity in last 15 minutes)
+        try:
+            fifteen_min_ago = datetime.now(timezone.utc) - timedelta(minutes=15)
+            online_pipeline = [
+                {"$match": {"timestamp": {"$gte": fifteen_min_ago.isoformat()}}},
+                {"$group": {"_id": "$user_id"}},
+                {"$count": "unique_users"}
+            ]
+            online_result = await db.user_logs.aggregate(online_pipeline).to_list(1)
+            online_users_count = online_result[0]['unique_users'] if online_result else 0
+        except:
+            online_users_count = 0
+        
+        return {
+            "status": "healthy",
+            "cpu_percent": cpu_percent,
+            "memory": memory_info,
+            "disk": disk_info,
+            "uptime": {
+                "days": uptime_days,
+                "hours": uptime_hours,
+                "total_seconds": int(uptime_seconds)
+            },
+            "network": network_stats,
+            "database": db_info,
+            "active_users_24h": active_users_count,
+            "online_users": online_users_count,
+            "recent_errors": recent_errors[-20:] if recent_errors else []
+        }
+    except Exception as e:
+        # Return minimal metrics on any error
+        return {
+            "status": "degraded",
+            "cpu_percent": 0,
+            "memory": {"total_gb": 0, "used_gb": 0, "available_gb": 0, "percent": 0},
+            "disk": {"total_gb": 0, "used_gb": 0, "free_gb": 0, "percent": 0},
+            "uptime": {"days": 0, "hours": 0, "total_seconds": 0},
+            "network": None,
+            "database": {"size_mb": 0, "collections": 0, "indexes": 0},
+            "active_users_24h": 0,
+            "online_users": 0,
+            "recent_errors": [str(e)]
+        }
 
 
     
