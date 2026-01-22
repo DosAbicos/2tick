@@ -106,15 +106,10 @@ const LoginPage = () => {
 
             {/* Пароль */}
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <label htmlFor="password" className="text-gray-700 text-sm font-medium flex items-center gap-2">
-                  <Lock className="w-4 h-4 text-blue-500" />
-                  {t('auth.login.password')}
-                </label>
-                <Link to="/forgot-password" className="text-xs text-blue-600 hover:text-blue-700">
-                  {t('auth.login.forgotPassword')}
-                </Link>
-              </div>
+              <label htmlFor="password" className="text-gray-700 text-sm font-medium flex items-center gap-2">
+                <Lock className="w-4 h-4 text-blue-500" />
+                {t('auth.login.password')}
+              </label>
               <input
                 id="password"
                 name="password"
@@ -125,6 +120,11 @@ const LoginPage = () => {
                 className="minimal-input w-full"
                 placeholder={t('auth.login.passwordPlaceholder')}
               />
+              <div className="text-right">
+                <Link to="/forgot-password" className="text-xs text-blue-600 hover:text-blue-700">
+                  {t('auth.login.forgotPassword')}
+                </Link>
+              </div>
             </div>
 
             <button
