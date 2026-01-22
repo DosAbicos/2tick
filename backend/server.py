@@ -3229,7 +3229,7 @@ async def send_contract(contract_id: str, current_user: dict = Depends(get_curre
         f"Отправлен договор {contract.get('contract_code', contract_id)}"
     )
     
-    return {"message": "Contract sent successfully", "signature_link": signature_link, "mock_otp": otp_code}
+    return {"message": "Contract sent successfully", "signature_link": signature_link}
 
 @api_router.get("/contracts/{contract_id}/signature")
 async def get_signature(contract_id: str, current_user: dict = Depends(get_current_user)):
