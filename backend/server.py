@@ -2522,9 +2522,12 @@ async def request_registration_otp(registration_id: str, method: str = "sms"):
     if not phone:
         raise HTTPException(status_code=400, detail="Phone number not found")
     
-    # Use Twilio Verify API
-    channel = "sms" if method == "sms" else "call"
-    result = send_otp_via_twilio(phone, channel)
+    # Only SMS verification is supported (call removed)
+    if method not in ["sms", "telegram"]:
+        method = "sms"
+    
+    # Use unified OTP function (KazInfoTech primary, Twilio fallback)
+    result = await send_otp(phone)
     
     if not result["success"]:
         raise HTTPException(status_code=500, detail=f"Failed to send OTP: {result.get('error', 'Unknown error')}")
@@ -2534,6 +2537,10 @@ async def request_registration_otp(registration_id: str, method: str = "sms"):
         "verification_method": method,
         "otp_requested_at": datetime.now(timezone.utc).isoformat()
     }
+    
+    # Store request_id for KazInfoTech verification
+    if "request_id" in result:
+        update_data["otp_request_id"] = result["request_id"]
     
     # If mock OTP is present (fallback mode), store it
     if "mock_otp" in result:
