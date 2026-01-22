@@ -2621,8 +2621,6 @@ async def request_registration_otp(registration_id: str, method: str = "sms"):
     # Store OTP code for verification
     if "otp_code" in result:
         update_data["otp_code"] = result["otp_code"]
-    elif "mock_otp" in result:
-        update_data["otp_code"] = result["mock_otp"]
     
     await db.registrations.update_one(
         {"id": registration_id},
@@ -2632,12 +2630,7 @@ async def request_registration_otp(registration_id: str, method: str = "sms"):
     target = email if method == "email" else phone
     await log_audit("registration_otp_requested", details=f"Method: {method}, Target: {target}, registration_id: {registration_id}")
     
-    response = {"message": f"OTP sent via {method}"}
-    # Include mock OTP only in development/fallback mode
-    if "mock_otp" in result:
-        response["mock_otp"] = result["mock_otp"]
-    
-    return response
+    return {"message": f"OTP sent via {method}"}
 
 @api_router.post("/auth/registration/{registration_id}/verify-otp")
 async def verify_registration_otp(registration_id: str, otp_data: dict):
