@@ -4030,8 +4030,7 @@ async def request_telegram_otp(contract_id: str, data: dict):
                 
                 return {
                     "message": f"Код отправлен в Telegram @{telegram_username}",
-                    "telegram_username": telegram_username,
-                    "mock_otp": otp_code
+                    "telegram_username": telegram_username
                 }
             else:
                 # For other errors, still raise exception
