@@ -1610,7 +1610,6 @@ const SignContractPage = () => {
                         onClick={() => {
                           setVerificationMethod('');
                           setVerificationCode('');
-                          setMockOtp('');
                         }}
                         className="flex-1 py-3 px-6 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all font-medium"
                       >
