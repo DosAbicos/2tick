@@ -88,20 +88,10 @@ const LoginPage = () => {
         {/* Форма */}
         <div className="minimal-card p-8">
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Error message */}
-            {error && (
-              <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm flex items-center gap-2">
-                <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                {error}
-              </div>
-            )}
-            
             {/* Email */}
             <div className="space-y-2">
               <label htmlFor="email" className="text-gray-700 text-sm font-medium flex items-center gap-2">
-                <Mail className={`w-4 h-4 ${error ? 'text-red-500' : 'text-blue-500'}`} />
+                <Mail className="w-4 h-4 text-blue-500" />
                 {t('auth.login.email')}
               </label>
               <input
@@ -111,7 +101,7 @@ const LoginPage = () => {
                 required
                 value={formData.email}
                 onChange={handleChange}
-                className={`minimal-input w-full ${error ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : ''}`}
+                className="minimal-input w-full"
                 placeholder="example@company.kz"
               />
             </div>
@@ -119,7 +109,7 @@ const LoginPage = () => {
             {/* Пароль */}
             <div className="space-y-2">
               <label htmlFor="password" className="text-gray-700 text-sm font-medium flex items-center gap-2">
-                <Lock className={`w-4 h-4 ${error ? 'text-red-500' : 'text-blue-500'}`} />
+                <Lock className="w-4 h-4 text-blue-500" />
                 {t('auth.login.password')}
               </label>
               <input
@@ -129,9 +119,13 @@ const LoginPage = () => {
                 required
                 value={formData.password}
                 onChange={handleChange}
-                className={`minimal-input w-full ${error ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : ''}`}
+                className="minimal-input w-full"
                 placeholder={t('auth.login.passwordPlaceholder')}
               />
+              {/* Error message - inline text under password field */}
+              {error && (
+                <p className="text-red-500 text-sm mt-1">{error}</p>
+              )}
               <div className="text-right">
                 <Link to="/forgot-password" className="text-xs text-blue-600 hover:text-blue-700">
                   {t('auth.login.forgotPassword')}
