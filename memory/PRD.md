@@ -146,15 +146,24 @@
 ---
 
 ## Технический стек
-- **Frontend:** React, Tailwind CSS, react-i18next, lucide-react
+- **Frontend:** React, Tailwind CSS, react-i18next, lucide-react, Shadcn/UI
 - **Backend:** FastAPI, Motor (async MongoDB)
 - **Bot:** python-telegram-bot v21.8
+- **SMS:** КазИнфоТех (основной), Twilio (резервный)
+- **Email:** SMTP + SendGrid (fallback)
 - **Деплой:** Docker, Docker Compose, Nginx, Let's Encrypt
 
 ## Ключевые файлы
 - `/app/frontend/src/i18n.js` — все переводы (RU/KK/EN)
 - `/app/frontend/src/pages/NewLandingPage.js` — лендинг с тарифами и FAQ
+- `/app/frontend/src/pages/SignContractPage.js` — страница подписания (Email/SMS/Telegram OTP)
+- `/app/frontend/src/pages/RegisterPage.js` — регистрация с Email OTP
 - `/app/frontend/src/pages/ProfilePage.js` — профиль с тарифами
+- `/app/frontend/src/components/ui/dialog.jsx` — модальные окна (исправлена анимация)
 - `/app/frontend/src/pages/{OfferPage,PrivacyPage,RefundPage,ContactsPage}.js` — юридические страницы
-- `/app/backend/server.py` — API
+- `/app/backend/server.py` — API (OTP, SMS, Email, контракты)
 - `/app/docker-compose.yml` — конфигурация деплоя
+
+## Тестовые файлы
+- `/app/backend/tests/test_email_otp_iteration6.py` — Email OTP тесты (8/8 passed)
+- `/app/test_reports/iteration_6.json` — результаты тестирования
