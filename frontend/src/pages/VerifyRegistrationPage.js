@@ -84,7 +84,6 @@ const VerifyRegistrationPage = () => {
     setLoading(true);
     try {
       const response = await axios.post(`${API}/auth/registration/${registration_id}/request-otp?method=sms`);
-      setMockOtp(response.data.mock_otp || '');
       toast.success(t('verification.smsSent'));
       setVerificationMethod('sms');
       setSmsCooldown(60);
