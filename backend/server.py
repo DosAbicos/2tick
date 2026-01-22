@@ -3814,25 +3814,45 @@ async def request_otp(contract_id: str, method: str = "sms"):
     
     # Try to get phone from signer_phone field first
     phone_to_use = contract.get('signer_phone')
+    email_to_use = contract.get('signer_email')
     
     # If not found and contract has placeholder_values, search there
-    if not phone_to_use and contract.get('placeholder_values'):
+    if (not phone_to_use or not email_to_use) and contract.get('placeholder_values'):
         placeholder_values = contract.get('placeholder_values', {})
         # Try common phone field keys
-        for key in ['tenant_phone', 'signer_phone', 'client_phone', 'phone']:
-            if key in placeholder_values and placeholder_values[key]:
-                phone_to_use = placeholder_values[key]
-                break
+        if not phone_to_use:
+            for key in ['tenant_phone', 'signer_phone', 'client_phone', 'phone']:
+                if key in placeholder_values and placeholder_values[key]:
+                    phone_to_use = placeholder_values[key]
+                    break
+        # Try common email field keys
+        if not email_to_use:
+            for key in ['tenant_email', 'signer_email', 'client_email', 'email']:
+                if key in placeholder_values and placeholder_values[key]:
+                    email_to_use = placeholder_values[key]
+                    break
     
-    if not phone_to_use:
-        raise HTTPException(status_code=400, detail="Signer phone number is required")
-    
-    # Only SMS verification is supported (call removed)
-    if method not in ["sms", "telegram"]:
+    # Supported verification methods: sms, email, telegram
+    if method not in ["sms", "email", "telegram"]:
         method = "sms"
     
-    # Use unified OTP function (KazInfoTech primary, Twilio fallback)
-    result = await send_otp(phone_to_use)
+    # Send OTP based on method
+    if method == "email":
+        if not email_to_use:
+            raise HTTPException(status_code=400, detail="Signer email is required for email verification")
+        result = await send_otp_via_email(email_to_use)
+        target = email_to_use
+    elif method == "sms":
+        if not phone_to_use:
+            raise HTTPException(status_code=400, detail="Signer phone number is required")
+        result = await send_otp(phone_to_use)
+        target = phone_to_use
+    else:
+        # Telegram
+        if not phone_to_use:
+            raise HTTPException(status_code=400, detail="Signer phone number is required")
+        result = await send_otp(phone_to_use)
+        target = phone_to_use
     
     if not result["success"]:
         raise HTTPException(status_code=500, detail=f"Failed to send OTP: {result.get('error', 'Unknown error')}")
@@ -3841,10 +3861,11 @@ async def request_otp(contract_id: str, method: str = "sms"):
     update_data = {
         "verification_method": method,
         "signer_phone": phone_to_use,
+        "signer_email": email_to_use,
         "otp_requested_at": datetime.now(timezone.utc).isoformat()
     }
     
-    # Store OTP code for KazInfoTech/mock verification
+    # Store OTP code for verification
     if "otp_code" in result:
         update_data["otp_code"] = result["otp_code"]
     elif "mock_otp" in result:
