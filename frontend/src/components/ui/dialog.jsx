@@ -30,11 +30,15 @@ const DialogContent = React.forwardRef(({ className, children, ...props }, ref) 
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed left-1/2 top-1/2 z-50 -translate-x-1/2 -translate-y-1/2",
+        "fixed left-1/2 top-1/2 z-50",
         "w-[95vw] max-w-lg",
         "bg-white shadow-2xl rounded-3xl overflow-hidden",
-        "transition-opacity duration-150",
-        "data-[state=open]:opacity-100 data-[state=closed]:opacity-0",
+        // Center with transform - always keep these centered
+        "-translate-x-1/2 -translate-y-1/2",
+        // Simple fade + scale animation from center
+        "transition-all duration-200 ease-out",
+        "data-[state=open]:opacity-100 data-[state=open]:scale-100",
+        "data-[state=closed]:opacity-0 data-[state=closed]:scale-95",
         className
       )}
       {...props}>
