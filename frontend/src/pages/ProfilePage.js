@@ -478,6 +478,31 @@ const ProfilePage = () => {
                   </div>
                 </div>
 
+                {/* User ID */}
+                <div>
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mt-1">
+                      <Hash className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <label className="text-sm font-medium text-gray-500 mb-1 block">{t('profile.userId', 'ID пользователя')}</label>
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-mono font-medium text-gray-900 break-all">{user?.id}</p>
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(user?.id || '');
+                            toast.success(t('profile.idCopied', 'ID скопирован'));
+                          }}
+                          className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-all"
+                          title={t('profile.copyId', 'Копировать ID')}
+                        >
+                          <Copy className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Телефон */}
                 <div>
                   <div className="flex items-start gap-3">
