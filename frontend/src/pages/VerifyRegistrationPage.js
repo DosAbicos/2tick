@@ -25,7 +25,6 @@ const VerifyRegistrationPage = () => {
   
   // SMS OTP
   const [otpValue, setOtpValue] = useState('');
-  const [mockOtp, setMockOtp] = useState('');
   const [smsCooldown, setSmsCooldown] = useState(0);
   
   // Call OTP
