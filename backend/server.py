@@ -76,11 +76,14 @@ TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
 TELEGRAM_BOT_USERNAME = os.environ.get('TELEGRAM_BOT_USERNAME', 'twotick_bot')
 
 # KazInfoTech SMS Configuration (primary SMS provider)
-KAZINFOTECH_TOKEN = os.environ.get('KAZINFOTECH_TOKEN', '')  # MobiCheck token
-KAZINFOTECH_LOGIN = os.environ.get('KAZINFOTECH_LOGIN', '')  # JSON API login
-KAZINFOTECH_PASSWORD = os.environ.get('KAZINFOTECH_PASSWORD', '')  # JSON API password
-KAZINFOTECH_SENDER = os.environ.get('KAZINFOTECH_SENDER', '2tick')  # Sender name (alpha-name)
+KAZINFOTECH_API_URL = os.environ.get('KAZINFOTECH_API_URL', 'http://212.124.121.186:9507/api')
+KAZINFOTECH_USERNAME = os.environ.get('KAZINFOTECH_USERNAME', '')  # HTTP API username
+KAZINFOTECH_PASSWORD = os.environ.get('KAZINFOTECH_PASSWORD', '')  # HTTP API password
+KAZINFOTECH_SENDER = os.environ.get('KAZINFOTECH_SENDER', 'INFO')  # Sender name (alpha-name)
 SMS_PROVIDER = os.environ.get('SMS_PROVIDER', 'kazinfotech')  # 'kazinfotech' or 'twilio'
+
+# Legacy MobiCheck (not used anymore)
+KAZINFOTECH_TOKEN = os.environ.get('KAZINFOTECH_TOKEN', '')
 
 # Initialize Twilio client (fallback)
 twilio_client = None
@@ -94,10 +97,8 @@ else:
     logging.warning("⚠️ Twilio credentials not found, SMS will be mocked")
 
 # Log SMS provider status
-if KAZINFOTECH_TOKEN:
-    logging.info("✅ KazInfoTech MobiCheck configured as primary SMS provider")
-elif KAZINFOTECH_LOGIN and KAZINFOTECH_PASSWORD:
-    logging.info("✅ KazInfoTech JSON API configured as primary SMS provider")
+if KAZINFOTECH_USERNAME and KAZINFOTECH_PASSWORD:
+    logging.info(f"✅ KazInfoTech HTTP API configured as primary SMS provider (sender: {KAZINFOTECH_SENDER})")
 else:
     logging.warning("⚠️ KazInfoTech not configured, will use Twilio or mock")
 
