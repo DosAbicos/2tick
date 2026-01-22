@@ -50,22 +50,3 @@
     text-wrap: balance;
   }
 }
-
-/* Dialog animation - simple fade */
-[data-state="open"][data-radix-dialog-content] {
-  animation: dialogFadeIn 150ms ease-out forwards;
-}
-
-[data-state="closed"][data-radix-dialog-content] {
-  animation: dialogFadeOut 150ms ease-in forwards;
-}
-
-@keyframes dialogFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes dialogFadeOut {
-  from { opacity: 1; }
-  to { opacity: 0; }
-}
