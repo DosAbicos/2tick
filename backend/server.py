@@ -27,6 +27,7 @@ import hashlib
 from twilio.rest import Client
 from twilio.base.exceptions import TwilioRestException
 import time
+import httpx
 
 # psutil for system metrics (optional - may not work in all environments)
 try:
