@@ -39,7 +39,6 @@ const RegisterPage = () => {
   const [verificationMethod, setVerificationMethod] = useState(''); // 'sms', 'call', or 'telegram'
   const [otpValue, setOtpValue] = useState('');
   const [verifying, setVerifying] = useState(false);
-  const [mockOtp, setMockOtp] = useState('');
   
   // Call OTP states
   const [callCode, setCallCode] = useState('');
