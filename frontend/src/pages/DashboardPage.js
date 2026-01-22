@@ -109,7 +109,7 @@ const DashboardPage = () => {
       setFavoriteTemplates(response.data);
     } catch (error) {
       console.error('Error loading favorites:', error);
-      toast.error(t('dashboard.errorLoadingFavorites'));
+      // Toast removed - silently fail
     } finally {
       setLoadingFavorites(false);
     }
@@ -119,8 +119,7 @@ const DashboardPage = () => {
   const handleCreateContract = () => {
     // Check if user has reached their contract limit
     if (limitInfo && limitInfo.contracts_used >= limitInfo.contract_limit) {
-      toast.error(t('dashboard.limitReached'));
-      // Redirect to profile tariffs tab
+      // Toast removed - redirect to profile instead
       navigate('/profile?tab=tariffs');
       return;
     }
@@ -147,7 +146,7 @@ const DashboardPage = () => {
       setStats(stats);
     } catch (error) {
       console.error('Error fetching contracts:', error);
-      toast.error(t('dashboard.errorLoadingContracts'));
+      // Toast removed - silently fail
     } finally {
       setLoading(false);
     }
