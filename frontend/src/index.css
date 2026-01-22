@@ -50,33 +50,22 @@
     text-wrap: balance;
   }
 }
-/* Dialog animation fix - zoom from center */
+
+/* Dialog animation - simple fade */
 [data-state="open"][data-radix-dialog-content] {
-  animation: dialogIn 200ms ease-out;
+  animation: dialogFadeIn 150ms ease-out forwards;
 }
 
 [data-state="closed"][data-radix-dialog-content] {
-  animation: dialogOut 200ms ease-in;
+  animation: dialogFadeOut 150ms ease-in forwards;
 }
 
-@keyframes dialogIn {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
+@keyframes dialogFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-@keyframes dialogOut {
-  from {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-  to {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.95);
-  }
+@keyframes dialogFadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
