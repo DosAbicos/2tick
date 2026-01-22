@@ -839,6 +839,7 @@ Email: ${templateData.tenant_email || '[Email]'}
             {/* Left: Preview */}
             <div className="minimal-card lg:sticky lg:top-4 h-fit overflow-hidden">
               <div className="p-3 sm:p-4 border-b border-gray-200">
+                {/* Header row with title and edit button */}
                 <div className="flex items-center justify-between mb-3 gap-2">
                   <h3 className="text-base sm:text-lg font-semibold text-gray-900 flex items-center gap-2 min-w-0">
                     <svg className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -850,66 +851,63 @@ Email: ${templateData.tenant_email || '[Email]'}
                       <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-lg font-medium whitespace-nowrap">✓</span>
                     )}
                   </h3>
-                  <div className="flex gap-2 flex-shrink-0">
                   {!manualEditMode ? (
                     <button
                       type="button"
                       onClick={toggleEditMode}
-                      className="p-2 sm:px-3 sm:py-1.5 text-sm font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-all flex items-center gap-1"
+                      className="p-2 text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-all flex-shrink-0"
                       title={t('contract.edit')}
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                       </svg>
-                      <span className="hidden sm:inline">{t('contract.edit')}</span>
                     </button>
                   ) : (
                     <button
                       type="button"
                       onClick={handleSaveContent}
-                      className="px-3 py-1.5 text-sm font-semibold text-white bg-gradient-to-r from-green-600 to-green-500 rounded-lg hover:from-green-700 hover:to-green-600 transition-all shadow-md"
+                      className="px-3 py-1.5 text-sm font-semibold text-white bg-gradient-to-r from-green-600 to-green-500 rounded-lg hover:from-green-700 hover:to-green-600 transition-all shadow-md flex-shrink-0"
                     >
                       {t('common.save')}
                     </button>
                   )}
                 </div>
-                </div>
                 
-                {/* Language buttons for preview */}
+                {/* Language buttons for preview - horizontal row */}
                 {!manualEditMode && selectedTemplate && (
-                  <div className="flex gap-2 justify-center">
+                  <div className="flex gap-1.5 justify-center">
                     <button
                       type="button"
                       onClick={() => setPreviewLang('ru')}
-                      className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap ${
+                      className={`px-2 py-1 text-xs font-medium rounded-md transition-all ${
                         previewLang === 'ru'
-                          ? 'bg-blue-600 text-white shadow-md'
+                          ? 'bg-blue-600 text-white'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                     >
-                      🇷🇺 Русский
+                      🇷🇺 РУ
                     </button>
                     <button
                       type="button"
                       onClick={() => setPreviewLang('kk')}
-                      className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap ${
+                      className={`px-2 py-1 text-xs font-medium rounded-md transition-all ${
                         previewLang === 'kk'
-                          ? 'bg-blue-600 text-white shadow-md'
+                          ? 'bg-blue-600 text-white'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                     >
-                      🇰🇿 Қазақша
+                      🇰🇿 ҚАЗ
                     </button>
                     <button
                       type="button"
                       onClick={() => setPreviewLang('en')}
-                      className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all whitespace-nowrap ${
+                      className={`px-2 py-1 text-xs font-medium rounded-md transition-all ${
                         previewLang === 'en'
-                          ? 'bg-blue-600 text-white shadow-md'
+                          ? 'bg-blue-600 text-white'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
                     >
-                      🇬🇧 English
+                      🇬🇧 EN
                     </button>
                   </div>
                 )}
