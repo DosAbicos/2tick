@@ -274,40 +274,41 @@ const DashboardPage = () => {
       
       {/* Modal for selecting favorite template */}
       <Dialog open={showTemplateModal} onOpenChange={setShowTemplateModal}>
-        <DialogContent className="w-[90vw] max-w-xl max-h-[80vh] overflow-y-auto rounded-2xl p-4 sm:p-5 bg-white shadow-2xl">
-          <DialogHeader className="mb-3">
-            <DialogTitle className="text-lg sm:text-xl font-bold">{t('dashboard.new_contract')}</DialogTitle>
-            <DialogDescription className="text-xs sm:text-sm text-gray-500">
-              {t('dashboard.selectTemplate')}
-            </DialogDescription>
-          </DialogHeader>
+        <DialogContent className="w-[95vw] max-w-xl p-0 rounded-2xl bg-white shadow-2xl overflow-hidden">
+          {/* Header - компактный */}
+          <div className="px-4 pt-4 pb-2">
+            <DialogHeader>
+              <DialogTitle className="text-lg font-bold text-center">{t('dashboard.new_contract')}</DialogTitle>
+              <DialogDescription className="text-xs text-gray-500 text-center">
+                {t('dashboard.selectTemplate')}
+              </DialogDescription>
+            </DialogHeader>
+          </div>
           
           {loadingFavorites ? (
-            <div className="py-6 text-center text-gray-600 text-sm">{t('dashboard.loadingTemplates')}</div>
+            <div className="py-8 text-center text-gray-600 text-sm">{t('dashboard.loadingTemplates')}</div>
           ) : (
-            <>
-              {/* Кнопка загрузить PDF */}
+            <div className="px-4 pb-4">
+              {/* Кнопка загрузить PDF - компактная */}
               <button
                 onClick={() => {
                   setShowTemplateModal(false);
                   navigate('/contracts/upload-pdf');
                 }}
-                className="w-full px-4 py-3 text-sm font-medium text-blue-700 bg-blue-50 rounded-xl hover:bg-blue-100 transition-all border border-blue-200 flex items-center justify-center gap-2 mb-3"
+                className="w-full py-2.5 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-all border border-blue-200 flex items-center justify-center gap-2"
               >
                 <Upload className="w-4 h-4" />
                 {t('dashboard.uploadPdf')}
               </button>
 
-              <p className="text-xs text-gray-400 text-center mb-4">
+              <p className="text-xs text-gray-400 text-center my-3">
                 {t('dashboard.orSelectTemplate')}
               </p>
 
               {favoriteTemplates.length === 0 ? (
-                <div className="py-6 text-center">
-                  <p className="text-gray-600 mb-3 text-sm">{t('dashboard.noFavoriteTemplates')}</p>
-                  <p className="text-xs text-gray-400 mb-4">
-                    {t('dashboard.goToTemplatesMarket')}
-                  </p>
+                <div className="py-4 text-center">
+                  <p className="text-gray-600 mb-2 text-sm">{t('dashboard.noFavoriteTemplates')}</p>
+                  <p className="text-xs text-gray-400 mb-3">{t('dashboard.goToTemplatesMarket')}</p>
                   <Button 
                     onClick={() => {
                       setShowTemplateModal(false);
@@ -319,32 +320,35 @@ const DashboardPage = () => {
                   </Button>
                 </div>
               ) : (
-                <div className="space-y-2">
+                <>
                   <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">❤️ {t('dashboard.favoriteTemplates')}</h3>
-                  {favoriteTemplates.map((template) => (
-                    <div 
-                      key={template.id}
-                      className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-blue-50 rounded-xl cursor-pointer transition-all border border-gray-100 hover:border-blue-200"
-                      onClick={() => {
-                        setShowTemplateModal(false);
-                        navigate(`/contracts/create?template_id=${template.id}`);
-                      }}
-                    >
-                      <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
-                        <span className="text-lg">🏠</span>
+                  {/* Скролл только для списка шаблонов */}
+                  <div className="max-h-[40vh] overflow-y-auto space-y-2 pr-1">
+                    {favoriteTemplates.map((template) => (
+                      <div 
+                        key={template.id}
+                        className="flex items-center gap-3 p-3 bg-gray-50 hover:bg-blue-50 rounded-xl cursor-pointer transition-all border border-gray-100 hover:border-blue-200"
+                        onClick={() => {
+                          setShowTemplateModal(false);
+                          navigate(`/contracts/create?template_id=${template.id}`);
+                        }}
+                      >
+                        <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
+                          <span className="text-lg">🏠</span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-sm font-semibold text-gray-900 truncate">{getTemplateTitle(template)}</h4>
+                          <p className="text-xs text-gray-500 truncate">{getTemplateDescription(template)}</p>
+                        </div>
+                        <svg className="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-semibold text-gray-900 truncate">{getTemplateTitle(template)}</h4>
-                        <p className="text-xs text-gray-500 truncate">{getTemplateDescription(template)}</p>
-                      </div>
-                      <svg className="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                </>
               )}
-            </>
+            </div>
           )}
         </DialogContent>
       </Dialog>
