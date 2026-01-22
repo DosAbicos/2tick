@@ -2570,16 +2570,13 @@ async def verify_registration_otp(registration_id: str, otp_data: dict):
     if not otp_code:
         raise HTTPException(status_code=400, detail="OTP code is required")
     
-    # Verify OTP via Twilio
-    result = verify_otp_via_twilio(phone, otp_code)
+    # Get stored OTP for KazInfoTech/mock verification
+    stored_otp = registration.get('otp_code')
     
-    # If Twilio verification failed, check if it's a mock OTP (fallback mode)
+    # Verify OTP using unified function
+    result = await verify_otp(phone, otp_code, stored_otp)
+    
     if not result["success"]:
-        stored_otp = registration.get('otp_code')
-        if stored_otp and stored_otp == otp_code:
-            # Mock OTP matches
-            logging.info(f"✅ Mock OTP verified for registration {registration_id}")
-        else:
             raise HTTPException(status_code=400, detail="Invalid OTP code")
     
     # OTP verified! Create user account
