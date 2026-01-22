@@ -106,7 +106,7 @@ const LoginPage = () => {
             {/* Email */}
             <div className="space-y-2">
               <label htmlFor="email" className="text-gray-700 text-sm font-medium flex items-center gap-2">
-                <Mail className="w-4 h-4 text-blue-500" />
+                <Mail className={`w-4 h-4 ${error ? 'text-red-500' : 'text-blue-500'}`} />
                 {t('auth.login.email')}
               </label>
               <input
@@ -116,7 +116,7 @@ const LoginPage = () => {
                 required
                 value={formData.email}
                 onChange={handleChange}
-                className="minimal-input w-full"
+                className={`minimal-input w-full ${error ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : ''}`}
                 placeholder="example@company.kz"
               />
             </div>
@@ -124,7 +124,7 @@ const LoginPage = () => {
             {/* Пароль */}
             <div className="space-y-2">
               <label htmlFor="password" className="text-gray-700 text-sm font-medium flex items-center gap-2">
-                <Lock className="w-4 h-4 text-blue-500" />
+                <Lock className={`w-4 h-4 ${error ? 'text-red-500' : 'text-blue-500'}`} />
                 {t('auth.login.password')}
               </label>
               <input
@@ -134,7 +134,7 @@ const LoginPage = () => {
                 required
                 value={formData.password}
                 onChange={handleChange}
-                className="minimal-input w-full"
+                className={`minimal-input w-full ${error ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : ''}`}
                 placeholder={t('auth.login.passwordPlaceholder')}
               />
               <div className="text-right">
