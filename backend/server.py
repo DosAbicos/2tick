@@ -1597,9 +1597,6 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
     first_pass_pdf = pdf_buffer.getvalue()
     
     # ========== SECOND PASS: Add page numbers to all pages ==========
-    total_pages = page_info['current_page']
-    logging.info(f"📄 PDF generated with {total_pages} pages. Adding page numbers...")
-    
     try:
         from PyPDF2 import PdfReader, PdfWriter
         
@@ -1607,8 +1604,12 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
         reader = PdfReader(BytesIO(first_pass_pdf))
         writer = PdfWriter()
         
+        # Get ACTUAL total pages from the generated PDF
+        total_pages = len(reader.pages)
+        logging.info(f"📄 PDF generated with {total_pages} pages. Adding page numbers...")
+        
         # Create page number overlays
-        for page_num in range(len(reader.pages)):
+        for page_num in range(total_pages):
             # Create overlay with page number
             overlay_buffer = BytesIO()
             overlay_canvas = canvas.Canvas(overlay_buffer, pagesize=A4)
