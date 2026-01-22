@@ -3741,12 +3741,10 @@ async def request_otp(contract_id: str, method: str = "sms"):
         "otp_requested_at": datetime.now(timezone.utc).isoformat()
     }
     
-    # Store request_id for KazInfoTech verification
-    if "request_id" in result:
-        update_data["otp_request_id"] = result["request_id"]
-    
-    # If mock OTP is present (fallback mode), store it
-    if "mock_otp" in result:
+    # Store OTP code for KazInfoTech/mock verification
+    if "otp_code" in result:
+        update_data["otp_code"] = result["otp_code"]
+    elif "mock_otp" in result:
         update_data["otp_code"] = result["mock_otp"]
     
     await db.signatures.update_one(
