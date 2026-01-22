@@ -90,7 +90,13 @@ function App() {
           <Route path="/payment/failure" element={<PaymentFailurePage />} />
         </Routes>
       </BrowserRouter>
-      {/* Toast notifications disabled - they were interfering with UX */}
+      {/* Toast notifications for errors/success */}
+      <Toaster 
+        position="top-center" 
+        richColors 
+        closeButton
+        duration={4000}
+      />
     </div>
   );
 }
