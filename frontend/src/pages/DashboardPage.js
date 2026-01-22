@@ -274,41 +274,43 @@ const DashboardPage = () => {
       
       {/* Modal for selecting favorite template */}
       <Dialog open={showTemplateModal} onOpenChange={setShowTemplateModal}>
-        <DialogContent className="w-[95vw] max-w-xl p-0 rounded-2xl bg-white shadow-2xl overflow-hidden">
-          {/* Header - компактный */}
-          <div className="px-4 pt-4 pb-2">
+        <DialogContent className="w-[95vw] max-w-xl rounded-2xl bg-white shadow-2xl overflow-hidden flex flex-col">
+          {/* Header */}
+          <div className="px-5 pt-5 pb-3 text-center">
             <DialogHeader>
-              <DialogTitle className="text-lg font-bold text-center">{t('dashboard.new_contract')}</DialogTitle>
-              <DialogDescription className="text-xs text-gray-500 text-center">
+              <DialogTitle className="text-lg font-bold">{t('dashboard.new_contract')}</DialogTitle>
+              <DialogDescription className="text-xs text-gray-500">
                 {t('dashboard.selectTemplate')}
               </DialogDescription>
             </DialogHeader>
           </div>
           
           {loadingFavorites ? (
-            <div className="py-8 text-center text-gray-600 text-sm">{t('dashboard.loadingTemplates')}</div>
+            <div className="flex-1 flex items-center justify-center py-8">
+              <span className="text-gray-600 text-sm">{t('dashboard.loadingTemplates')}</span>
+            </div>
           ) : (
-            <div className="px-4 pb-4">
-              {/* Кнопка загрузить PDF - компактная */}
+            <div className="px-5 pb-5 flex flex-col">
+              {/* Кнопка загрузить PDF */}
               <button
                 onClick={() => {
                   setShowTemplateModal(false);
                   navigate('/contracts/upload-pdf');
                 }}
-                className="w-full py-2.5 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-all border border-blue-200 flex items-center justify-center gap-2"
+                className="w-full py-3 text-sm font-medium text-blue-600 bg-blue-50 rounded-xl hover:bg-blue-100 transition-all border border-blue-200 flex items-center justify-center gap-2"
               >
                 <Upload className="w-4 h-4" />
                 {t('dashboard.uploadPdf')}
               </button>
 
-              <p className="text-xs text-gray-400 text-center my-3">
+              <p className="text-xs text-gray-400 text-center my-4">
                 {t('dashboard.orSelectTemplate')}
               </p>
 
               {favoriteTemplates.length === 0 ? (
-                <div className="py-4 text-center">
-                  <p className="text-gray-600 mb-2 text-sm">{t('dashboard.noFavoriteTemplates')}</p>
-                  <p className="text-xs text-gray-400 mb-3">{t('dashboard.goToTemplatesMarket')}</p>
+                <div className="py-6 text-center">
+                  <p className="text-gray-600 mb-3 text-sm">{t('dashboard.noFavoriteTemplates')}</p>
+                  <p className="text-xs text-gray-400 mb-4">{t('dashboard.goToTemplatesMarket')}</p>
                   <Button 
                     onClick={() => {
                       setShowTemplateModal(false);
@@ -321,9 +323,9 @@ const DashboardPage = () => {
                 </div>
               ) : (
                 <>
-                  <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">❤️ {t('dashboard.favoriteTemplates')}</h3>
+                  <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">❤️ {t('dashboard.favoriteTemplates')}</h3>
                   {/* Скролл только для списка шаблонов */}
-                  <div className="max-h-[40vh] overflow-y-auto space-y-2 pr-1">
+                  <div className="max-h-[35vh] overflow-y-auto space-y-2">
                     {favoriteTemplates.map((template) => (
                       <div 
                         key={template.id}
