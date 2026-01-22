@@ -26,6 +26,15 @@ import base64
 import hashlib
 from twilio.rest import Client
 from twilio.base.exceptions import TwilioRestException
+import time
+
+# psutil for system metrics (optional - may not work in all environments)
+try:
+    import psutil
+    PSUTIL_AVAILABLE = True
+except ImportError:
+    PSUTIL_AVAILABLE = False
+    psutil = None
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
