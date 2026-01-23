@@ -61,7 +61,7 @@ TWILIO_PROXY_SERVICE_SID = os.environ.get('TWILIO_PROXY_SERVICE_SID')
 TWILIO_PHONE_NUMBER = os.environ.get('TWILIO_PHONE_NUMBER')
 
 # SendGrid Configuration
-SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
+# SendGrid removed - using only SMTP
 SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'noreply@2tick.kz')
 
 # SMTP Configuration (primary)
