@@ -24,8 +24,6 @@ from fastapi.responses import StreamingResponse, Response
 import random
 import base64
 import hashlib
-from twilio.rest import Client
-from twilio.base.exceptions import TwilioRestException
 import time
 import httpx
 
@@ -53,18 +51,8 @@ JWT_SECRET = os.environ.get('JWT_SECRET', 'signify-kz-secret-key-change-in-produ
 JWT_ALGORITHM = 'HS256'
 JWT_EXPIRATION_HOURS = 24 * 7  # 7 days
 
-# Twilio Configuration
-TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID')
-TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN')
-TWILIO_VERIFY_SERVICE_SID = os.environ.get('TWILIO_VERIFY_SERVICE_SID')
-TWILIO_PROXY_SERVICE_SID = os.environ.get('TWILIO_PROXY_SERVICE_SID')
-TWILIO_PHONE_NUMBER = os.environ.get('TWILIO_PHONE_NUMBER')
-
-# SendGrid Configuration
-# SendGrid removed - using only SMTP
+# Email Configuration - SMTP only
 SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'noreply@2tick.kz')
-
-# SMTP Configuration (primary)
 USE_SMTP = os.environ.get('USE_SMTP', 'false').lower() == 'true'
 SMTP_HOST = os.environ.get('SMTP_HOST', 'mail.2tick.kz')
 SMTP_PORT = int(os.environ.get('SMTP_PORT', '25'))
@@ -75,24 +63,11 @@ SMTP_PASSWORD = os.environ.get('SMTP_PASSWORD', '')
 TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
 TELEGRAM_BOT_USERNAME = os.environ.get('TELEGRAM_BOT_USERNAME', 'twotick_bot')
 
-# KazInfoTech SMS Configuration (primary SMS provider)
+# KazInfoTech SMS Configuration (единственный SMS провайдер)
 KAZINFOTECH_API_URL = os.environ.get('KAZINFOTECH_API_URL', 'http://212.124.121.186:9507/api')
-KAZINFOTECH_USERNAME = os.environ.get('KAZINFOTECH_USERNAME', '')  # HTTP API username
-KAZINFOTECH_PASSWORD = os.environ.get('KAZINFOTECH_PASSWORD', '')  # HTTP API password
-KAZINFOTECH_SENDER = os.environ.get('KAZINFOTECH_SENDER', 'INFO')  # Sender name (alpha-name)
-SMS_PROVIDER = os.environ.get('SMS_PROVIDER', 'kazinfotech')  # 'kazinfotech' or 'twilio'
-
-# Legacy MobiCheck (not used anymore)
-KAZINFOTECH_TOKEN = os.environ.get('KAZINFOTECH_TOKEN', '')
-
-# Initialize Twilio client (fallback)
-twilio_client = None
-if TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN:
-    try:
-        twilio_client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
-        logging.info("✅ Twilio client initialized successfully")
-    except Exception as e:
-        logging.error(f"❌ Failed to initialize Twilio client: {str(e)}")
+KAZINFOTECH_USERNAME = os.environ.get('KAZINFOTECH_USERNAME', '')
+KAZINFOTECH_PASSWORD = os.environ.get('KAZINFOTECH_PASSWORD', '')
+KAZINFOTECH_SENDER = os.environ.get('KAZINFOTECH_SENDER', 'INFO')
 else:
     logging.warning("⚠️ Twilio credentials not found, SMS will be mocked")
 
