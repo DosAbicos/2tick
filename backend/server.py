@@ -68,14 +68,12 @@ KAZINFOTECH_API_URL = os.environ.get('KAZINFOTECH_API_URL', 'http://212.124.121.
 KAZINFOTECH_USERNAME = os.environ.get('KAZINFOTECH_USERNAME', '')
 KAZINFOTECH_PASSWORD = os.environ.get('KAZINFOTECH_PASSWORD', '')
 KAZINFOTECH_SENDER = os.environ.get('KAZINFOTECH_SENDER', 'INFO')
-else:
-    logging.warning("⚠️ Twilio credentials not found, SMS will be mocked")
 
 # Log SMS provider status
 if KAZINFOTECH_USERNAME and KAZINFOTECH_PASSWORD:
-    logging.info(f"✅ KazInfoTech HTTP API configured as primary SMS provider (sender: {KAZINFOTECH_SENDER})")
+    logging.info(f"✅ KazInfoTech HTTP API configured (sender: {KAZINFOTECH_SENDER})")
 else:
-    logging.warning("⚠️ KazInfoTech not configured, will use Twilio or mock")
+    logging.warning("⚠️ KazInfoTech not configured - SMS will not work")
 
 # Create the main app
 app = FastAPI()
