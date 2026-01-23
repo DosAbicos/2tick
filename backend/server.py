@@ -402,7 +402,7 @@ def normalize_phone(phone: str) -> str:
 # ============ KAZINFOTECH SMS INTEGRATION ============
 
 async def send_otp_via_kazinfotech(phone: str) -> dict:
-    """Send OTP via KazInfoTech MobiCheck API
+    """Send OTP via KazInfoTech HTTP API
     
     Args:
         phone: Phone number (will be normalized to 7XXXXXXXXXX format)
@@ -411,8 +411,8 @@ async def send_otp_via_kazinfotech(phone: str) -> dict:
         dict with 'success' bool, 'otp_code' and 'message' or 'error'
     """
     if not KAZINFOTECH_USERNAME or not KAZINFOTECH_PASSWORD:
-        logging.warning("KazInfoTech not configured, falling back to Twilio")
-        return send_otp_via_twilio(phone)
+        logging.error("KazInfoTech not configured")
+        return {"success": False, "error": "SMS provider not configured"}
     
     try:
         # Normalize phone to 7XXXXXXXXXX format (no + or 8)
@@ -453,14 +453,16 @@ async def send_otp_via_kazinfotech(phone: str) -> dict:
                     "phone": normalized
                 }
             else:
-                logging.error(f"❌ KazInfoTech error: {response.status_code} - {response.text}")
-                # Fallback to Twilio
-                return send_otp_via_twilio(phone)
+                # Extract error message from XML
+                import re
+                error_match = re.search(r'<errormessage>([^<]+)</errormessage>', response.text)
+                error_msg = error_match.group(1) if error_match else response.text
+                logging.error(f"❌ KazInfoTech error: {error_msg}")
+                return {"success": False, "error": error_msg}
                 
     except Exception as e:
         logging.error(f"❌ KazInfoTech request error: {str(e)}")
-        # Fallback to Twilio
-        return send_otp_via_twilio(phone)
+        return {"success": False, "error": str(e)}
 
 
 async def verify_otp_via_kazinfotech(stored_otp: str, entered_otp: str) -> dict:
