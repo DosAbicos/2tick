@@ -399,39 +399,6 @@ def normalize_phone(phone: str) -> str:
     
     return phone
 
-def send_otp_via_twilio(phone: str, channel: str = "sms") -> dict:
-    """Send OTP via Twilio Verify API (fallback provider)
-    
-    Args:
-        phone: Phone number in international format
-        channel: 'sms' only (call removed)
-    
-    Returns:
-        dict with 'success' bool and 'message' or 'error'
-    """
-    if not twilio_client or not TWILIO_VERIFY_SERVICE_SID:
-        # No Twilio configured - return error
-        logging.error("[Twilio] Not configured - SMS cannot be sent")
-        return {"success": False, "error": "SMS provider not configured"}
-    
-    try:
-        phone = normalize_phone(phone)
-        verification = twilio_client.verify.v2.services(TWILIO_VERIFY_SERVICE_SID).verifications.create(
-            to=phone,
-            channel="sms"  # Only SMS, no call
-        )
-        
-        logging.info(f"✅ Twilio OTP sent to {phone} via SMS. Status: {verification.status}")
-        return {"success": True, "message": "OTP sent via SMS", "status": verification.status}
-    
-    except TwilioRestException as e:
-        logging.error(f"❌ Twilio error: {e.msg}")
-        return {"success": False, "error": str(e.msg)}
-    except Exception as e:
-        logging.error(f"❌ Error sending OTP: {str(e)}")
-        return {"success": False, "error": str(e)}
-
-
 # ============ KAZINFOTECH SMS INTEGRATION ============
 
 async def send_otp_via_kazinfotech(phone: str) -> dict:
