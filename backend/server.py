@@ -2555,119 +2555,13 @@ async def verify_registration_otp(registration_id: str, otp_data: dict):
 
 @api_router.post("/auth/registration/{registration_id}/request-call-otp")
 async def request_registration_call_otp(registration_id: str):
-    """Request phone call verification during registration"""
-    registration = await db.registrations.find_one({"id": registration_id})
-    if not registration:
-        raise HTTPException(status_code=404, detail="Registration not found")
-    
-    if registration.get('verified'):
-        raise HTTPException(status_code=400, detail="Registration already verified")
-    
-    # Check if expired
-    expires_at = registration.get('expires_at')
-    if isinstance(expires_at, str):
-        expires_at = datetime.fromisoformat(expires_at)
-    if expires_at < datetime.now(timezone.utc):
-        raise HTTPException(status_code=400, detail="Registration expired. Please register again.")
-    
-    phone = registration.get('phone')
-    if not phone:
-        raise HTTPException(status_code=400, detail="Phone number not found")
-    
-    # Normalize phone to E.164 format
-    phone = normalize_phone(phone)
-    
-    try:
-        # Make call via Twilio
-        from twilio.rest import Client
-        client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
-        
-        call = client.calls.create(
-            to=phone,
-            from_=TWILIO_PHONE_NUMBER,
-            url="http://demo.twilio.com/docs/voice.xml",
-            timeout=10
-        )
-        
-        # Extract last 4 digits from our number
-        caller_number = TWILIO_PHONE_NUMBER.replace('+', '').replace(' ', '').replace('-', '')
-        last_4_digits = caller_number[-4:]
-        
-        # Store verification data
-        verification_data = {
-            "registration_id": registration_id,
-            "phone": phone,
-            "call_sid": call.sid,
-            "expected_code": last_4_digits,
-            "method": "call",
-            "created_at": datetime.now(timezone.utc).isoformat(),
-            "expires_at": (datetime.now(timezone.utc) + timedelta(minutes=5)).isoformat(),
-            "verified": False
-        }
-        
-        await db.verifications.insert_one(verification_data)
-        
-        logging.info(f"✅ Registration call initiated to {phone}, SID: {call.sid}")
-        
-        return {
-            "message": "Звонок инициирован. Введите последние 4 цифры входящего номера.",
-            "call_sid": call.sid,
-            "hint": f"Номер заканчивается на: ...{last_4_digits}"
-        }
-        
-    except Exception as e:
-        logging.error(f"Registration call error: {str(e)}")
-        # Fallback: return mock response
-        last_4_digits = "1334"
-        
-        verification_data = {
-            "registration_id": registration_id,
-            "phone": phone,
-            "call_sid": "MOCK_CALL",
-            "expected_code": last_4_digits,
-            "method": "call",
-            "created_at": datetime.now(timezone.utc).isoformat(),
-            "expires_at": (datetime.now(timezone.utc) + timedelta(minutes=5)).isoformat(),
-            "verified": False
-        }
-        
-        await db.verifications.insert_one(verification_data)
-        
-        return {
-            "message": "Mock: Звонок инициирован. Введите последние 4 цифры.",
-            "hint": f"Номер заканчивается на: ...{last_4_digits}"
-        }
+    """Phone call verification removed - returns 410 Gone"""
+    raise HTTPException(status_code=410, detail="Phone call verification is no longer available. Please use SMS or Telegram.")
 
 @api_router.post("/auth/registration/{registration_id}/verify-call-otp")
 async def verify_registration_call_otp(registration_id: str, data: dict):
-    """Verify call OTP and create user account"""
-    registration = await db.registrations.find_one({"id": registration_id})
-    if not registration:
-        raise HTTPException(status_code=404, detail="Registration not found")
-    
-    if registration.get('verified'):
-        raise HTTPException(status_code=400, detail="Registration already verified")
-    
-    code = data.get('code')
-    if not code:
-        raise HTTPException(status_code=400, detail="Code is required")
-    
-    # Find verification record
-    verification = await db.verifications.find_one({
-        "registration_id": registration_id,
-        "method": "call",
-        "verified": False
-    })
-    
-    if not verification:
-        raise HTTPException(status_code=404, detail="Call verification not found")
-    
-    # Check if expired
-    expires_at = verification.get('expires_at')
-    if isinstance(expires_at, str):
-        expires_at = datetime.fromisoformat(expires_at)
-    if expires_at < datetime.now(timezone.utc):
-        raise HTTPException(status_code=400, detail="Verification expired")
+    """Phone call verification removed - returns 410 Gone"""
+    raise HTTPException(status_code=410, detail="Phone call verification is no longer available. Please use SMS or Telegram.")
     
     # Verify code
     expected_code = verification.get('expected_code')
