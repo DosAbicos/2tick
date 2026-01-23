@@ -542,7 +542,7 @@ async def send_sms_via_kazinfotech(phone: str, text: str) -> dict:
 # ============ UNIFIED OTP FUNCTIONS ============
 
 async def send_otp(phone: str) -> dict:
-    """Send OTP using configured provider (KazInfoTech primary, Twilio fallback)
+    """Send OTP using KazInfoTech (единственный SMS провайдер)
     
     Args:
         phone: Phone number
@@ -550,35 +550,31 @@ async def send_otp(phone: str) -> dict:
     Returns:
         dict with 'success' bool and provider-specific data
     """
-    if SMS_PROVIDER == 'kazinfotech' and KAZINFOTECH_USERNAME and KAZINFOTECH_PASSWORD:
+    if KAZINFOTECH_USERNAME and KAZINFOTECH_PASSWORD:
         return await send_otp_via_kazinfotech(phone)
-    elif twilio_client and TWILIO_VERIFY_SERVICE_SID:
-        return send_otp_via_twilio(phone)
     else:
-        # No SMS provider configured - return error
-        logging.error("[SMS] No SMS provider configured - SMS cannot be sent")
+        # KazInfoTech not configured - return error
+        logging.error("[SMS] KazInfoTech not configured - SMS cannot be sent")
         return {"success": False, "error": "SMS provider not configured"}
 
 
 async def verify_otp(phone: str, code: str, stored_otp: str = None) -> dict:
-    """Verify OTP using configured provider
+    """Verify OTP using stored code (KazInfoTech local verification)
     
     Args:
         phone: Phone number
         code: OTP code entered by user
-        stored_otp: OTP code that was sent (for KazInfoTech)
+        stored_otp: OTP code that was sent
     
     Returns:
         dict with 'success' bool and 'status' or 'error'
     """
-    if SMS_PROVIDER == 'kazinfotech' and KAZINFOTECH_USERNAME and stored_otp:
+    if stored_otp:
         return await verify_otp_via_kazinfotech(stored_otp, code)
-    elif twilio_client and TWILIO_VERIFY_SERVICE_SID:
-        return verify_otp_via_twilio(phone, code)
     else:
-        # No SMS provider configured - return error
-        logging.error("[SMS] No SMS provider configured for verification")
-        return {"success": False, "error": "SMS provider not configured"}
+        # No stored OTP - return error
+        logging.error("[SMS] No stored OTP for verification")
+        return {"success": False, "error": "OTP not found"}
 
 
 # ============ EMAIL OTP FUNCTIONS ============
