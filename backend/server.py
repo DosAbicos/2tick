@@ -675,57 +675,13 @@ async def verify_otp_via_email(stored_otp: str, entered_otp: str) -> dict:
         return {"success": False, "error": "Invalid code", "status": "rejected"}
 
 
-def verify_otp_via_twilio(phone: str, code: str) -> dict:
-    """Verify OTP via Twilio Verify API (fallback provider)
-    
-    Args:
-        phone: Phone number in international format
-        code: OTP code to verify
-    
-    Returns:
-        dict with 'success' bool and 'status' or 'error'
-    """
-    if not twilio_client or not TWILIO_VERIFY_SERVICE_SID:
-        # Fallback to mock (always approve for testing)
-        logging.warning(f"[MOCK] Twilio not configured. Accepting OTP: {code}")
-        return {"success": True, "status": "approved"}
-    
-    try:
-        phone = normalize_phone(phone)
-        verification_check = twilio_client.verify.v2.services(TWILIO_VERIFY_SERVICE_SID).verification_checks.create(
-            to=phone,
-            code=code
-        )
-        
-        logging.info(f"✅ Twilio OTP verification for {phone}. Status: {verification_check.status}")
-        
-        if verification_check.status == "approved":
-            return {"success": True, "status": "approved"}
-        else:
-            return {"success": False, "error": "Invalid or expired OTP", "status": verification_check.status}
-    
-    except TwilioRestException as e:
-        logging.error(f"❌ Twilio verification error: {e.msg}")
-        
-        # Handle trial account limitations and authentication errors - fallback to mock verification
-        if ("unverified" in str(e.msg).lower() or 
-            "trial account" in str(e.msg).lower() or 
-            "authenticate" in str(e.msg).lower()):
-            logging.warning(f"[MOCK FALLBACK] Twilio error ({e.msg}). Accepting OTP: {code}")
-            return {"success": True, "status": "approved"}
-        
-        return {"success": False, "error": str(e.msg)}
-    except Exception as e:
-        logging.error(f"❌ Error verifying OTP: {str(e)}")
-        return {"success": False, "error": str(e)}
-
 def send_sms(phone: str, message: str) -> bool:
     """Legacy mocked SMS sending (kept for backward compatibility)"""
     logging.info(f"[MOCK SMS] To: {phone} | Message: {message}")
     return True
 
 def send_email(to_email: str, subject: str, body: str, attachment: bytes = None, filename: str = None) -> bool:
-    """Send email via SMTP (primary) or SendGrid (fallback)"""
+    """Send email via SMTP only"""
     print(f"🔥 DEBUG send_email: to={to_email}, USE_SMTP={USE_SMTP}")
     logging.info(f"📧 Attempting to send email to {to_email}, subject: {subject}")
     
