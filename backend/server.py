@@ -2562,48 +2562,6 @@ async def request_registration_call_otp(registration_id: str):
 async def verify_registration_call_otp(registration_id: str, data: dict):
     """Phone call verification removed - returns 410 Gone"""
     raise HTTPException(status_code=410, detail="Phone call verification is no longer available. Please use SMS or Telegram.")
-    
-    # Verify code
-    expected_code = verification.get('expected_code')
-    if code != expected_code:
-        raise HTTPException(status_code=400, detail="Invalid code")
-    
-    # Mark verification as verified
-    await db.verifications.update_one(
-        {"_id": verification["_id"]},
-        {"$set": {"verified": True}}
-    )
-    
-    # Create user account
-    # Generate unique user ID
-    unique_id = await generate_unique_user_id()
-    
-    user = User(
-        id=unique_id,
-        email=registration['email'],
-        full_name=registration['full_name'],
-        phone=registration['phone'],
-        company_name=registration['company_name'],
-        iin=registration['iin'],
-        legal_address=registration['legal_address'],
-        language=registration.get('language', 'ru')
-    )
-    
-    user_doc = user.model_dump()
-    user_doc['password'] = registration['password_hash']
-    user_doc['created_at'] = user_doc['created_at'].isoformat()
-    
-    await db.users.insert_one(user_doc)
-    
-    # Delete registration
-    await db.registrations.delete_one({"id": registration_id})
-    
-    # Generate token
-    token = create_jwt_token(user.id, user.email, user.role)
-    
-    await log_audit("user_registered", user_id=user.id, details=f"User {user.email} registered after call verification")
-    
-    return {"token": token, "user": user, "verified": True}
 
 @api_router.get("/auth/registration/{registration_id}/telegram-deep-link")
 async def get_registration_telegram_deep_link(registration_id: str):
