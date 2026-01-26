@@ -240,7 +240,7 @@ const RegisterPage = () => {
       await sendSmsCode();
     } else {
       // Если повторный вход - очищаем старый код
-      setMockOtp('');
+      setVerificationCode('');
     }
   };
 
