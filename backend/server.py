@@ -716,15 +716,15 @@ def send_email(to_email: str, subject: str, body: str, attachment: bytes = None,
                 try:
                     print(f"🔥 Trying SMTP port {port}, TLS={use_tls}")
                     
-                    # Reduced timeout from 10 to 5 seconds for faster failure
+                    # Increased timeout for large attachments
                     if use_tls == 'SSL':
                         # SSL connection (port 465)
                         import ssl
                         context = ssl.create_default_context()
-                        server = smtplib.SMTP_SSL(SMTP_HOST, port, context=context, timeout=5)
+                        server = smtplib.SMTP_SSL(SMTP_HOST, port, context=context, timeout=60)
                     else:
                         # Regular connection
-                        server = smtplib.SMTP(SMTP_HOST, port, timeout=5)
+                        server = smtplib.SMTP(SMTP_HOST, port, timeout=60)
                         server.ehlo()
                         
                         if use_tls:
