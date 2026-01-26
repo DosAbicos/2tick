@@ -413,6 +413,7 @@ const resources = {
       "signing.email": "Email",
       "signing.emailHint": "Код придет на почту",
       "signing.emailCodeSent": "Код отправлен на email",
+      "signing.codeSentToEmail": "Мы отправили 6-значный код на вашу почту",
       "signing.resendEmail": "Отправить код повторно",
       "signing.sending": "Отправка...",
       "signing.call": "Звонок",
