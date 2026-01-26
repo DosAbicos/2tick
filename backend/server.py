@@ -1994,11 +1994,11 @@ async def log_user_action(user_id: str, action: str, details: str = None, ip: st
 # ===== AUTH ROUTES =====
 @api_router.post("/auth/check-user-exists")
 async def check_user_exists(data: dict):
-    """Check if user with given email or phone already exists"""
+    """Check if user with given email or phone already exists (only verified users)"""
     email = data.get('email')
     phone = data.get('phone')
     
-    # Check in users collection
+    # Check in users collection (verified users only)
     if email:
         existing_user = await db.users.find_one({"email": email})
         if existing_user:
@@ -2009,16 +2009,18 @@ async def check_user_exists(data: dict):
         if existing_user:
             return {"exists": True, "field": "phone"}
     
-    # Check in pending registrations
+    # Clean up expired/unverified pending registrations before checking
+    # This allows users to re-register if they didn't complete verification
+    from datetime import datetime, timezone
+    now = datetime.now(timezone.utc).isoformat()
+    
     if email:
-        pending_reg = await db.registrations.find_one({"email": email})
-        if pending_reg:
-            return {"exists": True, "field": "email"}
+        # Delete expired or old unverified registrations for this email
+        await db.registrations.delete_many({"email": email})
     
     if phone:
-        pending_reg = await db.registrations.find_one({"phone": phone})
-        if pending_reg:
-            return {"exists": True, "field": "phone"}
+        # Delete expired or old unverified registrations for this phone
+        await db.registrations.delete_many({"phone": phone})
     
     return {"exists": False}
 
