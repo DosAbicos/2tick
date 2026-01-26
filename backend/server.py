@@ -4266,20 +4266,24 @@ async def approve_signature(contract_id: str, current_user: dict = Depends(get_c
             """
             
             print(f"🔥 DEBUG: About to call send_email to {contract['signer_email']}")
-            # Run email sending in background to avoid blocking
-            import asyncio
-            loop = asyncio.get_event_loop()
-            loop.run_in_executor(
-                None,
-                send_email,
-                contract['signer_email'],
-                subject,
-                body,
-                pdf_bytes,
-                f"contract-{contract_id}.pdf"
-            )
-            print(f"📧 Email task queued for {contract['signer_email']}")
-            logging.info(f"✅ Email queued to {contract['signer_email']} with PDF attachment")
+            # Send email synchronously to ensure it completes
+            try:
+                email_result = send_email(
+                    contract['signer_email'],
+                    subject,
+                    body,
+                    pdf_bytes,
+                    f"contract-{contract_id}.pdf"
+                )
+                if email_result:
+                    print(f"✅ Email sent successfully to {contract['signer_email']}")
+                    logging.info(f"✅ Email sent to {contract['signer_email']} with PDF attachment")
+                else:
+                    print(f"❌ Email send returned False for {contract['signer_email']}")
+                    logging.error(f"❌ Email send failed for {contract['signer_email']}")
+            except Exception as email_err:
+                print(f"❌ Email send error: {str(email_err)}")
+                logging.error(f"❌ Email send error: {str(email_err)}")
     except Exception as e:
         print(f"🔥 DEBUG: Exception in try block: {str(e)}")
         logging.error(f"❌ Error generating PDF or sending email: {str(e)}")
