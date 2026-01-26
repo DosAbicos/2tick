@@ -1485,18 +1485,15 @@ const SignContractPage = () => {
                         whileHover={{ y: -2 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={async () => {
+                          // Сразу переключаемся на форму ввода кода
+                          setVerificationMethod('email');
+                          // Параллельно отправляем код
                           try {
-                            setSendingCode(true);
                             await axios.post(`${API}/sign/${id}/request-otp?method=email`);
                             toast.success(t('signing.emailCodeSent'));
                           } catch (err) {
                             console.error('Failed to send email OTP:', err);
                             toast.error(err.response?.data?.detail || t('common.error'));
-                          } finally {
-                            setSendingCode(false);
-                            // Always show OTP input form - even if email sending failed
-                            // User might receive the code or retry
-                            setVerificationMethod('email');
                           }
                         }}
                         disabled={sendingCode}
