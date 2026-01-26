@@ -1630,9 +1630,22 @@ const SignContractPage = () => {
                     className="space-y-8"
                   >
                     <div className="text-center">
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
+                        className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center"
+                      >
+                        <svg className="w-10 h-10 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                      </motion.div>
                       <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('signing.enterVerificationCode')}</h3>
-                      <p className="text-sm text-gray-500">
-                        {t('signing.emailCodeSent')}
+                      <p className="text-sm text-gray-500 mb-2">
+                        {t('signing.codeSentToEmail')}
+                      </p>
+                      <p className="text-purple-600 font-medium">
+                        {signerInfo.email || contract?.signer_email || allPlaceholderValues?.['EMAIL'] || ''}
                       </p>
                     </div>
                     
@@ -1647,6 +1660,27 @@ const SignContractPage = () => {
                           <InputOTPSlot index={5} />
                         </InputOTPGroup>
                       </InputOTP>
+                    </div>
+                    
+                    <div className="flex gap-3">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setVerificationMethod('');
+                          setVerificationCode('');
+                        }}
+                        className="flex-1 py-3 px-6 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all font-medium"
+                      >
+                        {t('signing.back')}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleVerifyOTP}
+                        disabled={verifying || verificationCode.length !== 6}
+                        className="flex-1 py-3 px-6 text-white bg-gradient-to-r from-purple-600 to-purple-500 rounded-xl hover:from-purple-700 hover:to-purple-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-lg shadow-purple-500/20"
+                      >
+                        {verifying ? t('signing.verifying') : t('signing.signContract')}
+                      </button>
                     </div>
                     
                     <button
@@ -1665,29 +1699,8 @@ const SignContractPage = () => {
                       disabled={sendingCode}
                       className="block w-full text-center py-2 text-sm text-gray-500 hover:text-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      {sendingCode ? t('signing.verifying') : t('signing.resendEmail')}
+                      {sendingCode ? t('signing.sending') : t('signing.resendEmail')}
                     </button>
-                    
-                    <div className="flex gap-3">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setVerificationMethod('');
-                          setVerificationCode('');
-                        }}
-                        className="flex-1 py-3 px-6 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all font-medium"
-                      >
-                        {t('signing.back')}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={handleVerifyOTP}
-                        disabled={verifying || verificationCode.length !== 6}
-                        className="flex-1 py-3 px-6 text-white bg-gradient-to-r from-green-600 to-green-500 rounded-xl hover:from-green-700 hover:to-green-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow-lg shadow-green-500/20"
-                      >
-                        {verifying ? t('signing.verifying') : t('signing.signContract')}
-                      </button>
-                    </div>
                   </motion.div>
                 ) : verificationMethod === 'telegram' ? (
                   // Telegram verification - OTP boxes
