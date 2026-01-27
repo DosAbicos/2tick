@@ -4346,65 +4346,109 @@ async def approve_signature(contract_id: str, current_user: dict = Depends(get_c
         
         # Send email to signer
         if contract.get('signer_email'):
-            subject = f"✅ Подписанный договор: {contract['title']}"
+            subject = f"✅ Договор подписан: {contract['title']}"
             
-            # Create beautiful HTML email
+            # Create beautiful HTML email matching website style
             body = f"""
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <style>
-        body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
-        .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-        .header {{ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }}
-        .content {{ background: #ffffff; padding: 30px; border: 1px solid #e0e0e0; }}
-        .footer {{ background: #f8f9fa; padding: 20px; text-align: center; border-radius: 0 0 10px 10px; font-size: 12px; color: #666; }}
-        .signature-box {{ background: #f0f4ff; padding: 15px; border-left: 4px solid #667eea; margin: 20px 0; }}
-        .button {{ display: inline-block; background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 10px 0; }}
-        h2 {{ color: #667eea; }}
-        .code {{ font-family: monospace; font-size: 18px; font-weight: bold; color: #764ba2; }}
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🎉 Договор успешно подписан!</h1>
-        </div>
-        
-        <div class="content">
-            <h2>Здравствуйте, {contract['signer_name']}!</h2>
-            
-            <p>Поздравляем! Ваш договор <strong>"{contract['title']}"</strong> был успешно подписан и утвержден наймодателем.</p>
-            
-            <p>Во вложении к этому письму находится подписанный договор в формате PDF.</p>
-            
-            <div class="signature-box">
-                <h3>📝 Информация о подписях:</h3>
-                <p><strong>Код-ключ вашей подписи:</strong><br>
-                <span class="code">{signature.get('signature_hash', 'N/A')}</span></p>
+<body style="margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif; background-color: #f8fafc;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f8fafc; padding: 40px 20px;">
+        <tr>
+            <td align="center">
+                <table role="presentation" width="600" cellspacing="0" cellpadding="0" style="background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);">
+                    <!-- Header with gradient -->
+                    <tr>
+                        <td style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #15803d 100%); padding: 40px 30px; text-align: center;">
+                            <img src="{EMAIL_LOGO_URL}" alt="2tick.kz" width="70" height="70" style="border-radius: 16px; margin-bottom: 15px;">
+                            <h1 style="color: #ffffff; margin: 0; font-size: 26px; font-weight: 700;">Договор успешно подписан!</h1>
+                        </td>
+                    </tr>
+                    
+                    <!-- Content -->
+                    <tr>
+                        <td style="padding: 40px;">
+                            <p style="color: #1e293b; font-size: 18px; font-weight: 600; margin: 0 0 10px 0;">
+                                Здравствуйте, {contract['signer_name']}!
+                            </p>
+                            
+                            <p style="color: #64748b; font-size: 15px; line-height: 1.7; margin: 0 0 25px 0;">
+                                Поздравляем! Ваш договор <strong style="color: #1e293b;">«{contract['title']}»</strong> был успешно подписан и утвержден.
+                            </p>
+                            
+                            <!-- Contract Info Card -->
+                            <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1px solid #bbf7d0; border-radius: 16px; padding: 25px; margin-bottom: 25px;">
+                                <p style="color: #166534; font-size: 14px; font-weight: 600; margin: 0 0 15px 0; text-transform: uppercase; letter-spacing: 0.5px;">
+                                    📎 Подписанный договор во вложении
+                                </p>
+                                <p style="color: #15803d; font-size: 13px; margin: 0;">
+                                    Сохраните PDF-файл в надёжном месте
+                                </p>
+                            </div>
+                            
+                            <!-- Signature Hashes -->
+                            <div style="background: #f8fafc; border-radius: 16px; padding: 25px; margin-bottom: 25px;">
+                                <p style="color: #475569; font-size: 14px; font-weight: 600; margin: 0 0 20px 0;">
+                                    🔐 Цифровые подписи договора
+                                </p>
+                                
+                                <!-- Party B (Signer) -->
+                                <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; margin-bottom: 12px;">
+                                    <p style="color: #7c3aed; font-size: 12px; font-weight: 600; margin: 0 0 8px 0; text-transform: uppercase;">
+                                        Сторона Б (Ваша подпись)
+                                    </p>
+                                    <p style="color: #1e293b; font-size: 14px; font-family: 'Courier New', monospace; margin: 0; word-break: break-all;">
+                                        {signature.get('signature_hash', 'N/A')}
+                                    </p>
+                                </div>
+                                
+                                <!-- Party A (Landlord) -->
+                                <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px;">
+                                    <p style="color: #0891b2; font-size: 12px; font-weight: 600; margin: 0 0 8px 0; text-transform: uppercase;">
+                                        Сторона А (Наймодатель)
+                                    </p>
+                                    <p style="color: #1e293b; font-size: 14px; font-family: 'Courier New', monospace; margin: 0; word-break: break-all;">
+                                        {landlord_signature_hash}
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <!-- Date -->
+                            <div style="text-align: center; padding: 20px 0; border-top: 1px solid #e2e8f0;">
+                                <p style="color: #94a3b8; font-size: 13px; margin: 0;">
+                                    📅 Дата подписания: <strong style="color: #475569;">{datetime.now().strftime('%d.%m.%Y в %H:%M')}</strong>
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); padding: 30px 40px; text-align: center;">
+                            <p style="color: #7c3aed; font-size: 16px; font-weight: 600; margin: 0 0 5px 0;">
+                                2tick.kz
+                            </p>
+                            <p style="color: #a78bfa; font-size: 13px; margin: 0 0 15px 0;">
+                                Платформа электронных договоров
+                            </p>
+                            <a href="https://2tick.kz" style="display: inline-block; background: #7c3aed; color: #ffffff; font-size: 13px; font-weight: 500; text-decoration: none; padding: 10px 25px; border-radius: 8px;">
+                                Перейти на сайт
+                            </a>
+                        </td>
+                    </tr>
+                </table>
                 
-                <p><strong>Код-ключ наймодателя:</strong><br>
-                <span class="code">{landlord_signature_hash}</span></p>
-                
-                <p style="font-size: 12px; color: #666; margin-top: 15px;">
-                Эти ключи подтверждают подлинность подписей и могут быть использованы для проверки договора.
+                <!-- Disclaimer -->
+                <p style="color: #94a3b8; font-size: 11px; text-align: center; margin-top: 20px; max-width: 500px;">
+                    Это автоматическое уведомление. Если вы не подписывали этот договор, свяжитесь с нами.
                 </p>
-            </div>
-            
-            <p><strong>Дата подписания:</strong> {datetime.now().strftime('%d.%m.%Y')}</p>
-            
-            <p style="margin-top: 30px;">Если у вас возникли вопросы, пожалуйста, свяжитесь с наймодателем или нашей службой поддержки.</p>
-        </div>
-        
-        <div class="footer">
-            <p>С уважением,<br><strong>Команда Signify KZ</strong></p>
-            <p style="margin-top: 10px;">
-                Платформа для дистанционного подписания договоров<br>
-                <a href="https://signify-kz.com" style="color: #667eea;">signify-kz.com</a>
-            </p>
-        </div>
-    </div>
+            </td>
+        </tr>
+    </table>
 </body>
 </html>
             """
