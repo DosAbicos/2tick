@@ -2301,7 +2301,7 @@ async def forgot_password(request: ForgotPasswordRequest):
     </html>
     """
     
-    send_email(request.email, subject, body)
+    send_email_async(request.email, subject, body)
     
     await log_audit("password_reset_requested", details=f"Reset code sent to {request.email}")
     
