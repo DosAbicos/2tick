@@ -1610,7 +1610,10 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
     logo_path = '/app/backend/logo.png'
     
     # QR code data - link to verify contract
-    qr_data = f"https://2tick.kz/verify/{contract.get('id', '')}"
+    # Use environment variable for base URL or default to production
+    import os
+    base_url = os.environ.get('FRONTEND_URL', 'https://2tick.kz')
+    qr_data = f"{base_url}/verify/{contract.get('id', '')}"
     
     # Track page info for dynamic numbering
     page_info = {
