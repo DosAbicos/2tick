@@ -2006,6 +2006,14 @@ def replace_placeholders_in_content(content: str, contract: dict, template: dict
     if days_count:
         content = content.replace('[Количество суток]', days_count)
     
+    # Direct replacement of {{KEY}} placeholders with values from placeholder_values
+    # This ensures all placeholder formats are replaced
+    for key, value in pv.items():
+        if value:
+            # Replace {{KEY}} format (with optional spaces)
+            pattern = re.compile(f'{{{{\\s*{key}\\s*}}}}', re.IGNORECASE)
+            content = pattern.sub(str(value), content)
+    
     return content
 
 def verify_document_ocr(file_data: str) -> bool:
