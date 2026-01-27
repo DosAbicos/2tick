@@ -1663,14 +1663,6 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
     # Russian content
     content_type = contract.get('content_type', 'plain')
     
-    # Russian title for this section
-    try:
-        p.setFont("DejaVu-Bold", 14)
-    except:
-        p.setFont("Helvetica-Bold", 14)
-    p.drawCentredString(width / 2, y_position, title_text[:60])
-    y_position -= 25
-    
     try:
         content_ru = contract.get('content', '')
         if content_type == 'html':
