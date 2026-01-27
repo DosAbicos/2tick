@@ -1684,7 +1684,7 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
     
     y_position = height - 120
     
-    # Kazakh title - translate contract title
+    # Kazakh title
     try:
         p.setFont("DejaVu-Bold", 14)
     except:
