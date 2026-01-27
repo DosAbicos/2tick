@@ -642,10 +642,7 @@ async def send_otp_via_email(email: str) -> dict:
             "message": "OTP sent via Email",
             "otp_code": otp_code,
             "email": email
-            }
-        else:
-            logging.error(f"❌ Failed to send email OTP to {email}")
-            return {"success": False, "error": "Failed to send email"}
+        }
             
     except Exception as e:
         logging.error(f"❌ Email OTP error: {str(e)}")
