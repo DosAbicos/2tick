@@ -17,9 +17,10 @@ const VerifyContractPage = () => {
     const fetchContract = async () => {
       try {
         setLoading(true);
+        // Use public verify endpoint - no auth required
         const [contractRes, signatureRes] = await Promise.all([
-          axios.get(`${API}/api/contracts/${contractId}`).catch(() => null),
-          axios.get(`${API}/api/contracts/${contractId}/signature`).catch(() => null)
+          axios.get(`${API}/api/verify/${contractId}`).catch(() => null),
+          axios.get(`${API}/api/verify/${contractId}/signature`).catch(() => null)
         ]);
         
         if (contractRes?.data) {
