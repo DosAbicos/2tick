@@ -629,20 +629,19 @@ async def send_otp_via_email(email: str) -> dict:
         </html>
         """
         
-        # Send email
-        success = send_email(
+        # Send email in background for faster response
+        send_email_async(
             to_email=email,
             subject=f"Код подтверждения: {otp_code} — 2tick.kz",
             body=html_body
         )
         
-        if success:
-            logging.info(f"✅ Email OTP sent to {email}")
-            return {
-                "success": True,
-                "message": "OTP sent via Email",
-                "otp_code": otp_code,
-                "email": email
+        logging.info(f"⚡ Email OTP queued for {email}")
+        return {
+            "success": True,
+            "message": "OTP sent via Email",
+            "otp_code": otp_code,
+            "email": email
             }
         else:
             logging.error(f"❌ Failed to send email OTP to {email}")
