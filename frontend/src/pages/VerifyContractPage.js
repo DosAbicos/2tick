@@ -74,7 +74,7 @@ const VerifyContractPage = () => {
     );
   }
 
-  const isVerified = contract.status === 'signed' && contract.landlord_signature_hash;
+  const isVerified = contract.verified || (contract.status === 'signed' && contract.landlord_signature_hash);
   const formatDate = (dateString) => {
     if (!dateString) return '-';
     const date = new Date(dateString);
