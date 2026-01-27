@@ -676,6 +676,54 @@ def send_sms(phone: str, message: str) -> bool:
     logging.info(f"[MOCK SMS] To: {phone} | Message: {message}")
     return True
 
+# Threading for background email sending
+import threading
+from queue import Queue
+
+email_queue = Queue()
+
+def _send_email_worker(to_email: str, subject: str, body: str, attachment: bytes = None, filename: str = None):
+    """Worker function that actually sends email in background thread"""
+    import smtplib
+    from email.mime.multipart import MIMEMultipart
+    from email.mime.text import MIMEText
+    from email.mime.application import MIMEApplication
+    
+    try:
+        msg = MIMEMultipart()
+        msg['From'] = SENDER_EMAIL
+        msg['To'] = to_email
+        msg['Subject'] = subject
+        msg.attach(MIMEText(body, 'html', 'utf-8'))
+        
+        if attachment and filename:
+            pdf_attachment = MIMEApplication(attachment, _subtype='pdf')
+            pdf_attachment.add_header('Content-Disposition', 'attachment', filename=filename)
+            msg.attach(pdf_attachment)
+            print(f"📎 [BG] PDF attached: {filename} ({len(attachment)} bytes)")
+        
+        server = smtplib.SMTP(SMTP_HOST, 587, timeout=60)
+        server.starttls()
+        server.login(SMTP_USER, SMTP_PASSWORD)
+        server.send_message(msg)
+        server.quit()
+        print(f"✅ [BG] Email sent to {to_email}")
+        logging.info(f"✅ [BG] Email sent to {to_email}")
+    except Exception as e:
+        print(f"❌ [BG] Email error: {e}")
+        logging.error(f"❌ [BG] Email error to {to_email}: {e}")
+
+def send_email_async(to_email: str, subject: str, body: str, attachment: bytes = None, filename: str = None):
+    """Send email in background thread - returns immediately"""
+    print(f"⚡ Queuing email to {to_email} (background)")
+    thread = threading.Thread(
+        target=_send_email_worker,
+        args=(to_email, subject, body, attachment, filename),
+        daemon=True
+    )
+    thread.start()
+    return True
+
 def send_email(to_email: str, subject: str, body: str, attachment: bytes = None, filename: str = None) -> bool:
     """Send email via SMTP only"""
     print(f"🔥 DEBUG send_email: to={to_email}, USE_SMTP={USE_SMTP}")
