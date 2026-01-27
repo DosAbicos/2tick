@@ -1692,6 +1692,16 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
     
     y_position = height - 120
     
+    # Kazakh title - translate contract title
+    try:
+        p.setFont("DejaVu-Bold", 14)
+    except:
+        p.setFont("Helvetica-Bold", 14)
+    # Convert title to Kazakh format
+    kk_title = title_text.replace("Договор", "Шарт").replace("от", "")
+    p.drawCentredString(width / 2, y_position, kk_title[:60])
+    y_position -= 25
+    
     try:
         content_kk = contract.get('content_kk', '')
         if not content_kk:
@@ -1715,6 +1725,15 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
         _draw_simple_header(p, width, height, contract_code, logo_path, qr_data)
         
         y_position = height - 120
+        
+        # English title
+        try:
+            p.setFont("DejaVu-Bold", 14)
+        except:
+            p.setFont("Helvetica-Bold", 14)
+        en_title = title_text.replace("Договор", "Contract").replace("от", "dated")
+        p.drawCentredString(width / 2, y_position, en_title[:60])
+        y_position -= 25
         
         try:
             content_en = contract.get('content_en', '')
