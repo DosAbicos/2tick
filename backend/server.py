@@ -2903,6 +2903,38 @@ async def get_contracts(current_user: dict = Depends(get_current_user)):
             c['updated_at'] = datetime.fromisoformat(c['updated_at'])
     return contracts
 
+@api_router.get("/verify/{contract_id}")
+async def verify_contract_public(contract_id: str):
+    """Public endpoint for contract verification via QR code - no auth required"""
+    contract = await db.contracts.find_one({"id": contract_id}, {"_id": 0})
+    if not contract:
+        raise HTTPException(status_code=404, detail="Contract not found")
+    
+    # Return only safe public information
+    return {
+        "id": contract.get("id"),
+        "title": contract.get("title"),
+        "contract_code": contract.get("contract_code"),
+        "status": contract.get("status"),
+        "created_at": contract.get("created_at"),
+        "approved_at": contract.get("approved_at"),
+        "landlord_signature_hash": contract.get("landlord_signature_hash"),
+        "signer_name": contract.get("signer_name"),
+        "verified": contract.get("status") == "signed" and contract.get("landlord_signature_hash") is not None
+    }
+
+@api_router.get("/verify/{contract_id}/signature")
+async def verify_contract_signature_public(contract_id: str):
+    """Public endpoint for contract signature verification"""
+    signature = await db.signatures.find_one({"contract_id": contract_id}, {"_id": 0})
+    if not signature:
+        return {"signature_hash": None, "created_at": None}
+    
+    return {
+        "signature_hash": signature.get("signature_hash"),
+        "created_at": signature.get("created_at")
+    }
+
 @api_router.get("/contracts/{contract_id}", response_model=Contract)
 async def get_contract(contract_id: str, current_user: dict = Depends(get_current_user)):
     contract = await db.contracts.find_one({"id": contract_id}, {"_id": 0})
