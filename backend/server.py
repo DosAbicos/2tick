@@ -900,7 +900,7 @@ def _draw_simple_header(p, width, height, contract_code, logo_path='/app/logo.pn
     # Reset color
     p.setFillColor(HexColor('#000000'))
 
-def draw_page_header_footer(p, width, height, page_num, total_pages, contract_code, logo_path='/app/backend/logo.png', qr_data=None):
+def draw_page_header_footer(p, width, height, page_num, total_pages, contract_code, logo_path='/app/logo.png', qr_data=None):
     """Draw header with logo, footer with page number, and QR code on every page"""
     from reportlab.lib.colors import HexColor
     from reportlab.lib.utils import ImageReader
