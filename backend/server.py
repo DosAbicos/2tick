@@ -715,7 +715,7 @@ def send_email_async(to_email: str, subject: str, body: str, attachment: bytes =
     thread = threading.Thread(
         target=_send_email_worker,
         args=(to_email, subject, body, attachment, filename),
-        daemon=True
+        daemon=False  # Non-daemon to ensure email is sent even after request completes
     )
     thread.start()
     return True
