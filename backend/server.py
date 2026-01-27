@@ -1630,7 +1630,7 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
     # For now, draw a simple header
     _draw_simple_header(p, width, height, contract_code, logo_path, qr_data)
     
-    # Title
+    # Title - format date as DD-MM-YYYY
     y_position = height - 140
     
     try:
@@ -1638,7 +1638,12 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
     except:
         p.setFont("Helvetica-Bold", 16)
     
+    # Parse and reformat date in title if present (convert 2026-01-27 to 27-01-2026)
     title_text = contract['title']
+    import re
+    date_pattern = r'(\d{4})-(\d{2})-(\d{2})'
+    title_text = re.sub(date_pattern, r'\3-\2-\1', title_text)
+    
     p.drawCentredString(width / 2, y_position, title_text[:60])
     
     y_position -= 25
@@ -1657,6 +1662,14 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
     
     # Russian content
     content_type = contract.get('content_type', 'plain')
+    
+    # Russian title for this section
+    try:
+        p.setFont("DejaVu-Bold", 14)
+    except:
+        p.setFont("Helvetica-Bold", 14)
+    p.drawCentredString(width / 2, y_position, title_text[:60])
+    y_position -= 25
     
     try:
         content_ru = contract.get('content', '')
