@@ -1608,7 +1608,7 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
     from reportlab.lib.colors import HexColor
     
     contract_code = contract.get('contract_code', 'N/A')
-    logo_path = '/app/backend/logo.png'
+    logo_path = '/app/logo.png'
     
     # QR code data - link to verify contract on production domain
     qr_data = f"https://2tick.kz/verify/{contract.get('id', '')}"
