@@ -1574,6 +1574,7 @@ def generate_contract_pdf(contract: dict, signature: dict = None, landlord_signa
         '/usr/share/fonts/truetype/freefont/',
         '/usr/share/fonts/',
         '/app/backend/fonts/',
+        '/app/backend/',
     ]
     
     for dejavu_path in font_paths:
