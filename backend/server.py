@@ -579,6 +579,9 @@ async def verify_otp(phone: str, code: str, stored_otp: str = None) -> dict:
 
 # ============ EMAIL OTP FUNCTIONS ============
 
+# Logo URL for emails (hosted publicly)
+EMAIL_LOGO_URL = "https://customer-assets.emergentagent.com/job_6b787c47-7870-4c48-a923-10b09f887e22/artifacts/xqk86zjh_Bot%20Avatar%20512x512.png"
+
 async def send_otp_via_email(email: str) -> dict:
     """Send OTP via Email
     
@@ -592,39 +595,71 @@ async def send_otp_via_email(email: str) -> dict:
         # Generate 6-digit OTP
         otp_code = generate_otp()
         
-        # Create beautiful HTML email
+        # Create beautiful HTML email matching website style
         html_body = f"""
         <!DOCTYPE html>
         <html>
         <head>
             <meta charset="UTF-8">
-            <style>
-                body {{ font-family: 'Segoe UI', Arial, sans-serif; background-color: #f5f5f5; margin: 0; padding: 20px; }}
-                .container {{ max-width: 500px; margin: 0 auto; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }}
-                .header {{ background: linear-gradient(135deg, #2563eb, #1d4ed8); padding: 30px; text-align: center; }}
-                .header h1 {{ color: white; margin: 0; font-size: 24px; }}
-                .content {{ padding: 40px 30px; text-align: center; }}
-                .otp-code {{ font-size: 36px; font-weight: bold; letter-spacing: 8px; color: #1e40af; background: #eff6ff; padding: 20px 30px; border-radius: 12px; display: inline-block; margin: 20px 0; }}
-                .message {{ color: #64748b; font-size: 14px; line-height: 1.6; margin-bottom: 20px; }}
-                .warning {{ color: #f59e0b; font-size: 12px; margin-top: 20px; }}
-                .footer {{ background: #f8fafc; padding: 20px; text-align: center; color: #94a3b8; font-size: 12px; }}
-            </style>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
         </head>
-        <body>
-            <div class="container">
-                <div class="header">
-                    <h1>🔐 2tick.kz</h1>
-                </div>
-                <div class="content">
-                    <p class="message">Ваш код подтверждения:</p>
-                    <div class="otp-code">{otp_code}</div>
-                    <p class="message">Введите этот код для подтверждения вашего действия.</p>
-                    <p class="warning">⏰ Код действителен 10 минут. Никому не сообщайте этот код.</p>
-                </div>
-                <div class="footer">
-                    © 2024 2tick.kz — Электронные договоры
-                </div>
-            </div>
+        <body style="margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif; background-color: #f8fafc;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f8fafc; padding: 40px 20px;">
+                <tr>
+                    <td align="center">
+                        <table role="presentation" width="500" cellspacing="0" cellpadding="0" style="background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);">
+                            <!-- Header with gradient -->
+                            <tr>
+                                <td style="background: linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #c084fc 100%); padding: 40px 30px; text-align: center;">
+                                    <img src="{EMAIL_LOGO_URL}" alt="2tick.kz" width="70" height="70" style="border-radius: 16px; margin-bottom: 15px;">
+                                    <h1 style="color: #ffffff; margin: 0; font-size: 26px; font-weight: 700; letter-spacing: -0.5px;">Код подтверждения</h1>
+                                </td>
+                            </tr>
+                            
+                            <!-- Content -->
+                            <tr>
+                                <td style="padding: 50px 40px; text-align: center;">
+                                    <p style="color: #64748b; font-size: 16px; line-height: 1.6; margin: 0 0 30px 0;">
+                                        Используйте код ниже для подтверждения вашего действия
+                                    </p>
+                                    
+                                    <!-- OTP Code Box -->
+                                    <div style="background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%); border: 2px solid #ddd6fe; border-radius: 16px; padding: 25px 35px; display: inline-block; margin: 10px 0 30px 0;">
+                                        <span style="font-size: 42px; font-weight: 700; letter-spacing: 10px; color: #7c3aed; font-family: 'Courier New', monospace;">{otp_code}</span>
+                                    </div>
+                                    
+                                    <p style="color: #94a3b8; font-size: 14px; line-height: 1.5; margin: 0;">
+                                        ⏰ Код действителен <strong>10 минут</strong>
+                                    </p>
+                                </td>
+                            </tr>
+                            
+                            <!-- Warning -->
+                            <tr>
+                                <td style="padding: 0 40px 30px 40px;">
+                                    <div style="background: #fef3c7; border-radius: 12px; padding: 16px 20px; text-align: center;">
+                                        <p style="color: #92400e; font-size: 13px; margin: 0;">
+                                            🔒 Никому не сообщайте этот код. Сотрудники 2tick.kz никогда не запрашивают коды.
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <!-- Footer -->
+                            <tr>
+                                <td style="background: #f8fafc; padding: 25px 40px; text-align: center; border-top: 1px solid #e2e8f0;">
+                                    <p style="color: #94a3b8; font-size: 13px; margin: 0 0 10px 0;">
+                                        Это письмо отправлено автоматически системой
+                                    </p>
+                                    <p style="color: #7c3aed; font-size: 14px; font-weight: 600; margin: 0;">
+                                        2tick.kz — Электронные договоры
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
         </body>
         </html>
         """
@@ -632,7 +667,7 @@ async def send_otp_via_email(email: str) -> dict:
         # Send email in background for faster response
         send_email_async(
             to_email=email,
-            subject=f"Код подтверждения: {otp_code} — 2tick.kz",
+            subject=f"🔐 Код подтверждения: {otp_code} — 2tick.kz",
             body=html_body
         )
         
