@@ -832,7 +832,7 @@ def html_to_text_for_pdf(html_content: str) -> str:
     
     return text.strip()
 
-def _draw_simple_header(p, width, height, contract_code, logo_path='/app/backend/logo.png', qr_data=None):
+def _draw_simple_header(p, width, height, contract_code, logo_path='/app/logo.png', qr_data=None):
     """Draw header with logo and QR code (no page numbers - those are added later)"""
     from reportlab.lib.colors import HexColor
     from reportlab.lib.utils import ImageReader
