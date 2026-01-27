@@ -7,6 +7,7 @@ import NewLandingPage from './pages/NewLandingPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import VerifyRegistrationPage from './pages/VerifyRegistrationPage';
+import VerifyContractPage from './pages/VerifyContractPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import DashboardPage from './pages/DashboardPage';
