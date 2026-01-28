@@ -4359,7 +4359,8 @@ async def approve_signature(contract_id: str, current_user: dict = Depends(get_c
         if contract.get('signer_email'):
             subject = f"Договор подписан — 2tick.kz"
             
-            # Clean minimalist email design (Duolingo style with blue colors)
+            # Professional email design with blue theme - no emojis
+            verification_url = f"https://2tick.kz/verify/{contract['id']}"
             body = f"""
 <!DOCTYPE html>
 <html>
@@ -4367,112 +4368,92 @@ async def approve_signature(contract_id: str, current_user: dict = Depends(get_c
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background-color: #ffffff;">
-    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #ffffff;">
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background-color: #f0f9ff;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f0f9ff;">
         <tr>
             <td align="center" style="padding: 40px 20px;">
-                <table role="presentation" width="480" cellspacing="0" cellpadding="0">
+                <table role="presentation" width="520" cellspacing="0" cellpadding="0" style="background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 40px rgba(37, 99, 235, 0.12);">
                     
-                    <!-- Logo -->
+                    <!-- Header with gradient -->
                     <tr>
-                        <td align="center" style="padding-bottom: 30px;">
-                            <img src="{EMAIL_LOGO_URL}" alt="2tick.kz" width="60" height="60" style="border-radius: 12px;">
-                        </td>
-                    </tr>
-                    
-                    <!-- Success Icon -->
-                    <tr>
-                        <td align="center" style="padding-bottom: 20px;">
-                            <div style="width: 60px; height: 60px; background: #dcfce7; border-radius: 50%; display: inline-block; line-height: 60px; font-size: 28px;">
-                                ✓
+                        <td style="background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); padding: 35px 30px; text-align: center;">
+                            <img src="{EMAIL_LOGO_URL}" alt="2tick.kz" width="55" height="55" style="border-radius: 12px;">
+                            <div style="margin-top: 15px; display: inline-block; background: rgba(255,255,255,0.2); border-radius: 50px; padding: 8px 20px;">
+                                <span style="color: #ffffff; font-size: 14px; font-weight: 600;">Успешно подписан</span>
                             </div>
                         </td>
                     </tr>
                     
-                    <!-- Title -->
+                    <!-- Main Content -->
                     <tr>
-                        <td align="center" style="padding-bottom: 15px;">
-                            <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #1e293b;">Договор подписан</h1>
-                        </td>
-                    </tr>
-                    
-                    <!-- Greeting -->
-                    <tr>
-                        <td align="center" style="padding-bottom: 25px;">
-                            <p style="margin: 0; font-size: 15px; color: #64748b; line-height: 1.5;">
-                                {contract['signer_name']}, ваш договор успешно подписан
+                        <td style="padding: 40px;">
+                            <!-- Greeting -->
+                            <h1 style="margin: 0 0 8px 0; font-size: 22px; font-weight: 700; color: #1e293b;">
+                                Поздравляем, {contract['signer_name']}!
+                            </h1>
+                            <p style="margin: 0 0 25px 0; font-size: 15px; color: #64748b; line-height: 1.6;">
+                                Ваш договор был успешно подписан обеими сторонами и теперь имеет юридическую силу.
                             </p>
-                        </td>
-                    </tr>
-                    
-                    <!-- Contract Info Box -->
-                    <tr>
-                        <td style="padding-bottom: 25px;">
-                            <div style="background: #f8fafc; border-radius: 12px; padding: 20px;">
-                                <p style="margin: 0 0 8px 0; font-size: 13px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">Договор</p>
-                                <p style="margin: 0; font-size: 16px; font-weight: 600; color: #1e293b;">{contract['title']}</p>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    <!-- PDF Notice -->
-                    <tr>
-                        <td align="center" style="padding-bottom: 30px;">
-                            <p style="margin: 0; font-size: 14px; color: #64748b;">
-                                📎 Подписанный договор во вложении
-                            </p>
-                        </td>
-                    </tr>
-                    
-                    <!-- Signatures Section -->
-                    <tr>
-                        <td style="padding-bottom: 25px;">
-                            <p style="margin: 0 0 15px 0; font-size: 13px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">Цифровые подписи</p>
                             
-                            <!-- Party B -->
-                            <div style="background: #f8fafc; border-radius: 8px; padding: 15px; margin-bottom: 10px;">
-                                <p style="margin: 0 0 5px 0; font-size: 12px; color: #64748b;">Сторона Б</p>
-                                <p style="margin: 0; font-size: 13px; font-family: monospace; color: #1e293b; word-break: break-all;">{signature.get('signature_hash', 'N/A')}</p>
+                            <!-- Contract Card -->
+                            <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 16px; padding: 25px; margin-bottom: 25px; border: 1px solid #bfdbfe;">
+                                <p style="margin: 0 0 5px 0; font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 1px; font-weight: 500;">Название договора</p>
+                                <p style="margin: 0 0 15px 0; font-size: 17px; font-weight: 700; color: #1e40af;">{contract['title']}</p>
+                                
+                                <div style="display: table; width: 100%;">
+                                    <div style="display: table-cell; width: 50%;">
+                                        <p style="margin: 0 0 3px 0; font-size: 11px; color: #64748b;">Номер договора</p>
+                                        <p style="margin: 0; font-size: 14px; font-weight: 600; color: #1e293b;">{contract.get('contract_code', contract['id'][:8])}</p>
+                                    </div>
+                                    <div style="display: table-cell; width: 50%; text-align: right;">
+                                        <p style="margin: 0 0 3px 0; font-size: 11px; color: #64748b;">Дата подписания</p>
+                                        <p style="margin: 0; font-size: 14px; font-weight: 600; color: #1e293b;">{datetime.now().strftime('%d.%m.%Y')}</p>
+                                    </div>
+                                </div>
                             </div>
                             
-                            <!-- Party A -->
-                            <div style="background: #f8fafc; border-radius: 8px; padding: 15px;">
-                                <p style="margin: 0 0 5px 0; font-size: 12px; color: #64748b;">Сторона А</p>
-                                <p style="margin: 0; font-size: 13px; font-family: monospace; color: #1e293b; word-break: break-all;">{landlord_signature_hash}</p>
+                            <!-- PDF Attachment Notice -->
+                            <div style="background: #f8fafc; border-radius: 12px; padding: 18px 20px; margin-bottom: 25px; border-left: 4px solid #2563eb;">
+                                <p style="margin: 0; font-size: 14px; color: #475569;">
+                                    <strong>Подписанный договор</strong> прикреплен к этому письму в формате PDF. Сохраните его для своих записей.
+                                </p>
                             </div>
-                        </td>
-                    </tr>
-                    
-                    <!-- Date -->
-                    <tr>
-                        <td align="center" style="padding-bottom: 30px;">
-                            <p style="margin: 0; font-size: 13px; color: #94a3b8;">
-                                Дата: {datetime.now().strftime('%d.%m.%Y')}
-                            </p>
-                        </td>
-                    </tr>
-                    
-                    <!-- Button -->
-                    <tr>
-                        <td align="center" style="padding-bottom: 30px;">
-                            <a href="https://2tick.kz" style="display: inline-block; background: #2563eb; color: #ffffff; font-size: 14px; font-weight: 600; text-decoration: none; padding: 14px 32px; border-radius: 8px;">
-                                Открыть 2tick.kz
-                            </a>
-                        </td>
-                    </tr>
-                    
-                    <!-- Divider -->
-                    <tr>
-                        <td style="padding-bottom: 20px;">
-                            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 0;">
+                            
+                            <!-- Signatures Section -->
+                            <div style="margin-bottom: 25px;">
+                                <p style="margin: 0 0 12px 0; font-size: 13px; color: #64748b; font-weight: 600;">Цифровые подписи сторон:</p>
+                                
+                                <div style="background: #f1f5f9; border-radius: 10px; padding: 14px 16px; margin-bottom: 8px;">
+                                    <p style="margin: 0 0 4px 0; font-size: 11px; color: #64748b; font-weight: 500;">Сторона Б ({contract['signer_name']})</p>
+                                    <p style="margin: 0; font-size: 11px; font-family: 'SF Mono', 'Courier New', monospace; color: #475569; word-break: break-all;">{signature.get('signature_hash', 'N/A')}</p>
+                                </div>
+                                
+                                <div style="background: #f1f5f9; border-radius: 10px; padding: 14px 16px;">
+                                    <p style="margin: 0 0 4px 0; font-size: 11px; color: #64748b; font-weight: 500;">Сторона А</p>
+                                    <p style="margin: 0; font-size: 11px; font-family: 'SF Mono', 'Courier New', monospace; color: #475569; word-break: break-all;">{landlord_signature_hash}</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Button -->
+                            <div style="text-align: center;">
+                                <a href="{verification_url}" style="display: inline-block; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: #ffffff; font-size: 14px; font-weight: 600; text-decoration: none; padding: 14px 35px; border-radius: 10px; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);">
+                                    Подробнее
+                                </a>
+                                <p style="margin: 12px 0 0 0; font-size: 12px; color: #94a3b8;">
+                                    Проверьте статус договора онлайн
+                                </p>
+                            </div>
                         </td>
                     </tr>
                     
                     <!-- Footer -->
                     <tr>
-                        <td align="center">
+                        <td style="background: #1e293b; padding: 25px 40px; text-align: center;">
+                            <p style="margin: 0 0 5px 0; font-size: 15px; color: #ffffff; font-weight: 600;">
+                                2tick.kz
+                            </p>
                             <p style="margin: 0; font-size: 12px; color: #94a3b8;">
-                                2tick.kz — Электронные договоры
+                                Надежная платформа для электронного подписания договоров
                             </p>
                         </td>
                     </tr>
