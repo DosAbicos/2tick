@@ -1227,7 +1227,7 @@ const SignContractPage = () => {
                   {documentUploaded && (
                     <button
                       onClick={() => setStep(4)}
-                      className="flex-1 py-4 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/20"
+                      className="flex-1 py-3 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/20"
                     >
                       {t('signing.reviewContract')}
                     </button>
