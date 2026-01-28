@@ -634,15 +634,8 @@ async def send_otp_via_email(email: str) -> dict:
                                 <span style="font-size: 38px; font-weight: 800; letter-spacing: 10px; color: #1d4ed8; font-family: 'SF Mono', 'Courier New', monospace;">{otp_code}</span>
                             </div>
                             
-                            <!-- Timer notice -->
-                            <div style="margin: 25px 0; text-align: center; padding: 14px 20px; background: #fef3c7; border-radius: 10px; border-left: 4px solid #f59e0b;">
-                                <p style="margin: 0; font-size: 14px; color: #92400e;">
-                                    Если вы не запрашивали код — проигнорируйте это письмо
-                                </p>
-                            </div>
-                            
                             <!-- Security notice -->
-                            <div style="background: #f8fafc; border-radius: 12px; padding: 18px 20px; margin-top: 20px;">
+                            <div style="background: #f8fafc; border-radius: 12px; padding: 18px 20px; margin-top: 25px;">
                                 <p style="margin: 0 0 8px 0; font-size: 14px; color: #475569; font-weight: 600;">
                                     Важная информация о безопасности:
                                 </p>
