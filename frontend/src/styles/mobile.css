@@ -143,13 +143,19 @@
 
 /* Touch-specific improvements */
 @media (hover: none) and (pointer: coarse) {
-  /* Larger touch targets */
+  /* Larger touch targets for buttons and links */
   button,
-  a,
+  a {
+    min-height: 44px !important;
+  }
+
+  /* Checkboxes and radios should be smaller but still touchable */
   input[type="checkbox"],
   input[type="radio"] {
-    min-height: 44px !important;
-    min-width: 44px !important;
+    min-height: 20px !important;
+    min-width: 20px !important;
+    width: 20px !important;
+    height: 20px !important;
   }
 
   /* Prevent double-tap zoom */
