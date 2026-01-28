@@ -4370,10 +4370,24 @@ async def approve_signature(contract_id: str, current_user: dict = Depends(get_c
                     <!-- Header with gradient -->
                     <tr>
                         <td style="background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); padding: 35px 30px; text-align: center;">
-                            <img src="{EMAIL_LOGO_URL}" alt="2tick.kz" width="55" height="55" style="border-radius: 12px;">
-                            <div style="margin-top: 15px; display: inline-block; background: rgba(255,255,255,0.2); border-radius: 50px; padding: 8px 20px;">
-                                <span style="color: #ffffff; font-size: 14px; font-weight: 600;">Успешно подписан</span>
-                            </div>
+                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td align="center">
+                                        <img src="{EMAIL_LOGO_URL}" alt="2tick.kz" width="55" height="55" style="border-radius: 12px; display: block; margin: 0 auto;">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center" style="padding-top: 15px;">
+                                        <table role="presentation" cellspacing="0" cellpadding="0">
+                                            <tr>
+                                                <td style="background: rgba(255,255,255,0.2); border-radius: 50px; padding: 8px 20px;">
+                                                    <span style="color: #ffffff; font-size: 14px; font-weight: 600;">Успешно подписан</span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
                     </tr>
                     
