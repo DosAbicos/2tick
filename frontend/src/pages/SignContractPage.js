@@ -926,19 +926,19 @@ const SignContractPage = () => {
             <div className="space-y-3">
               <button
                 onClick={() => handleLanguageSelect('ru')}
-                className="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg flex items-center justify-center gap-3"
+                className="w-full py-3 px-6 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg flex items-center justify-center gap-3"
               >
                 🇷🇺 Русский
               </button>
               <button
                 onClick={() => handleLanguageSelect('kk')}
-                className="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg flex items-center justify-center gap-3"
+                className="w-full py-3 px-6 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg flex items-center justify-center gap-3"
               >
                 🇰🇿 Қазақша
               </button>
               <button
                 onClick={() => handleLanguageSelect('en')}
-                className="w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg flex items-center justify-center gap-3"
+                className="w-full py-3 px-6 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg flex items-center justify-center gap-3"
               >
                 🇬🇧 English
               </button>
