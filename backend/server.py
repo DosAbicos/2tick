@@ -595,7 +595,7 @@ async def send_otp_via_email(email: str) -> dict:
         # Generate 6-digit OTP
         otp_code = generate_otp()
         
-        # Clean minimalist email design (Duolingo style with blue colors)
+        # Clean colorful email design with blue theme
         html_body = f"""
 <!DOCTYPE html>
 <html>
@@ -603,66 +603,46 @@ async def send_otp_via_email(email: str) -> dict:
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background-color: #ffffff;">
-    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #ffffff;">
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background-color: #eff6ff;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #eff6ff;">
         <tr>
             <td align="center" style="padding: 40px 20px;">
-                <table role="presentation" width="400" cellspacing="0" cellpadding="0">
+                <table role="presentation" width="420" cellspacing="0" cellpadding="0" style="background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(37, 99, 235, 0.1);">
                     
-                    <!-- Logo -->
+                    <!-- Header -->
                     <tr>
-                        <td align="center" style="padding-bottom: 30px;">
-                            <img src="{EMAIL_LOGO_URL}" alt="2tick.kz" width="60" height="60" style="border-radius: 12px;">
+                        <td style="background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); padding: 35px 30px; text-align: center;">
+                            <img src="{EMAIL_LOGO_URL}" alt="2tick.kz" width="55" height="55" style="border-radius: 12px; border: 3px solid rgba(255,255,255,0.3);">
+                            <h1 style="color: #ffffff; margin: 15px 0 0 0; font-size: 22px; font-weight: 600;">Код подтверждения</h1>
                         </td>
                     </tr>
                     
-                    <!-- Title -->
+                    <!-- Content -->
                     <tr>
-                        <td align="center" style="padding-bottom: 20px;">
-                            <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #1e293b;">Код подтверждения</h1>
-                        </td>
-                    </tr>
-                    
-                    <!-- Description -->
-                    <tr>
-                        <td align="center" style="padding-bottom: 30px;">
-                            <p style="margin: 0; font-size: 15px; color: #64748b; line-height: 1.5;">
-                                Введите этот код для подтверждения
+                        <td style="padding: 40px 35px; text-align: center;">
+                            <p style="margin: 0 0 25px 0; font-size: 15px; color: #64748b; line-height: 1.5;">
+                                Введите этот код для подтверждения действия
                             </p>
-                        </td>
-                    </tr>
-                    
-                    <!-- OTP Code -->
-                    <tr>
-                        <td align="center" style="padding-bottom: 30px;">
-                            <div style="background: #f1f5f9; border-radius: 12px; padding: 20px 40px; display: inline-block;">
-                                <span style="font-size: 32px; font-weight: 700; letter-spacing: 8px; color: #2563eb; font-family: 'Courier New', monospace;">{otp_code}</span>
+                            
+                            <!-- OTP Code -->
+                            <div style="background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 12px; padding: 22px 35px; display: inline-block; border: 2px solid #93c5fd;">
+                                <span style="font-size: 34px; font-weight: 700; letter-spacing: 8px; color: #1d4ed8; font-family: 'Courier New', monospace;">{otp_code}</span>
                             </div>
-                        </td>
-                    </tr>
-                    
-                    <!-- Timer -->
-                    <tr>
-                        <td align="center" style="padding-bottom: 40px;">
-                            <p style="margin: 0; font-size: 13px; color: #94a3b8;">
-                                Код действителен 10 минут
+                            
+                            <p style="margin: 25px 0 0 0; font-size: 13px; color: #94a3b8;">
+                                ⏱ Код действителен <strong>10 минут</strong>
                             </p>
-                        </td>
-                    </tr>
-                    
-                    <!-- Divider -->
-                    <tr>
-                        <td style="padding-bottom: 20px;">
-                            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 0;">
                         </td>
                     </tr>
                     
                     <!-- Footer -->
                     <tr>
-                        <td align="center">
+                        <td style="background: #f8fafc; padding: 20px 35px; text-align: center; border-top: 1px solid #e2e8f0;">
                             <p style="margin: 0; font-size: 12px; color: #94a3b8; line-height: 1.6;">
-                                Никому не сообщайте этот код.<br>
-                                Сотрудники 2tick.kz никогда его не запрашивают.
+                                🔒 Никому не сообщайте этот код
+                            </p>
+                            <p style="margin: 10px 0 0 0; font-size: 13px; color: #2563eb; font-weight: 600;">
+                                2tick.kz
                             </p>
                         </td>
                     </tr>
