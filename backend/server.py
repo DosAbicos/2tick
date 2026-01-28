@@ -637,7 +637,7 @@ async def send_otp_via_email(email: str) -> dict:
                             <!-- Timer notice -->
                             <div style="margin: 25px 0; text-align: center; padding: 14px 20px; background: #fef3c7; border-radius: 10px; border-left: 4px solid #f59e0b;">
                                 <p style="margin: 0; font-size: 14px; color: #92400e;">
-                                    Код действителен <strong>10 минут</strong>
+                                    Если вы не запрашивали код — проигнорируйте это письмо
                                 </p>
                             </div>
                             
