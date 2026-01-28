@@ -1282,9 +1282,9 @@ const SignContractPage = () => {
                   </div>
                 )}
 
-                {/* English Disclaimer Checkbox */}
+                {/* English Disclaimer Checkbox - compact for mobile */}
                 {contractLanguage === 'en' && (
-                  <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-4 space-y-3">
+                  <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-3 sm:p-4 space-y-2">
                     <div className="flex items-start gap-2">
                       <input
                         type="checkbox"
@@ -1296,25 +1296,25 @@ const SignContractPage = () => {
                             axios.post(`${API}/sign/${id}/accept-english-disclaimer`).catch(console.error);
                           }
                         }}
-                        className="mt-0.5 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                        className="mt-0.5 w-4 h-4 flex-shrink-0 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                       />
-                      <label htmlFor="english-disclaimer" className="text-xs text-gray-700 leading-snug">
+                      <label htmlFor="english-disclaimer" className="text-xs text-gray-700 leading-tight">
                         {t('signing.englishDisclaimer')}
                       </label>
                     </div>
                     
                     {/* Dropdown to view original versions */}
-                    <details className="mt-2">
+                    <details className="mt-1">
                       <summary className="cursor-pointer text-blue-600 font-medium text-xs hover:text-blue-700 flex items-center gap-1">
-                        🎬 📄 {t('signing.viewOriginalVersions')}
+                        {t('signing.viewOriginalVersions')}
                       </summary>
-                      <div className="mt-3 space-y-3">
+                      <div className="mt-2 space-y-2">
                         {/* Russian version */}
                         {contract.content && (
-                          <div className="border border-gray-200 rounded-lg p-3 bg-white">
-                            <h5 className="font-semibold text-gray-900 mb-2 text-xs">🇷🇺 {t('signing.russianVersion')}:</h5>
+                          <div className="border border-gray-200 rounded-lg p-2 bg-white">
+                            <h5 className="font-semibold text-gray-900 mb-1 text-xs">{t('signing.russianVersion')}:</h5>
                             <div 
-                              className="whitespace-pre-wrap text-xs leading-relaxed text-gray-700 max-h-40 overflow-y-auto"
+                              className="whitespace-pre-wrap text-xs leading-relaxed text-gray-700 max-h-32 overflow-y-auto"
                               dangerouslySetInnerHTML={{ __html: highlightPlaceholders(contract.content) }}
                             />
                           </div>
@@ -1322,10 +1322,10 @@ const SignContractPage = () => {
                         
                         {/* Kazakh version */}
                         {contract.content_kk && (
-                          <div className="border border-gray-200 rounded-lg p-3 bg-white">
-                            <h5 className="font-semibold text-gray-900 mb-2 text-xs">🇰🇿 {t('signing.kazakhVersion')}:</h5>
+                          <div className="border border-gray-200 rounded-lg p-2 bg-white">
+                            <h5 className="font-semibold text-gray-900 mb-1 text-xs">{t('signing.kazakhVersion')}:</h5>
                             <div 
-                              className="whitespace-pre-wrap text-xs leading-relaxed text-gray-700 max-h-40 overflow-y-auto"
+                              className="whitespace-pre-wrap text-xs leading-relaxed text-gray-700 max-h-32 overflow-y-auto"
                               dangerouslySetInnerHTML={{ __html: highlightPlaceholders(contract.content_kk) }}
                             />
                           </div>
