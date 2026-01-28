@@ -126,7 +126,7 @@ const VerifyContractPage = () => {
             )}
             <div>
               <h2 className={`text-lg font-bold ${isVerified ? 'text-green-700' : 'text-amber-700'}`}>
-                {isVerified ? 'Договор подписан и верифицирован' : 'Договор ожидает подписания'}
+                {isVerified ? 'Договор подписан' : 'Договор ожидает подписания'}
               </h2>
               <p className={`text-sm ${isVerified ? 'text-green-600' : 'text-amber-600'}`}>
                 {isVerified 
