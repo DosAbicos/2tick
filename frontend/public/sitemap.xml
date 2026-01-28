@@ -3,7 +3,7 @@
   <!-- Главная страница -->
   <url>
     <loc>https://2tick.kz/</loc>
-    <lastmod>2025-01-19</lastmod>
+    <lastmod>2026-01-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -11,14 +11,14 @@
   <!-- Авторизация -->
   <url>
     <loc>https://2tick.kz/login</loc>
-    <lastmod>2025-01-19</lastmod>
+    <lastmod>2026-01-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://2tick.kz/register</loc>
-    <lastmod>2025-01-19</lastmod>
+    <lastmod>2026-01-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -26,29 +26,37 @@
   <!-- Юридические страницы -->
   <url>
     <loc>https://2tick.kz/offer</loc>
-    <lastmod>2025-01-19</lastmod>
+    <lastmod>2026-01-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://2tick.kz/privacy</loc>
-    <lastmod>2025-01-19</lastmod>
+    <lastmod>2026-01-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://2tick.kz/refund</loc>
-    <lastmod>2025-01-19</lastmod>
+    <lastmod>2026-01-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://2tick.kz/contacts</loc>
-    <lastmod>2025-01-19</lastmod>
+    <lastmod>2026-01-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+  </url>
+
+  <!-- Верификация договоров -->
+  <url>
+    <loc>https://2tick.kz/verify</loc>
+    <lastmod>2026-01-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
 </urlset>
