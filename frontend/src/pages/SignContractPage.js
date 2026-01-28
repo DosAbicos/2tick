@@ -1645,7 +1645,7 @@ const SignContractPage = () => {
                         {t('signing.codeSentToEmail')}
                       </p>
                       <p className="text-purple-600 font-medium">
-                        {signerInfo.email || contract?.signer_email || allPlaceholderValues?.['EMAIL'] || ''}
+                        {signerInfo.email || contract?.signer_email || placeholderValues?.['EMAIL'] || ''}
                       </p>
                     </div>
                     
