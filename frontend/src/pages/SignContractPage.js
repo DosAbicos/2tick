@@ -903,7 +903,7 @@ const SignContractPage = () => {
 
   return (
     <div className="min-h-screen gradient-bg">
-      <Header hideLanguageSelector={true} />
+      <Header hideLanguageSelector={false} />
       
       {/* Language Selector Modal - показывается только один раз */}
       {showLanguageSelector && (
