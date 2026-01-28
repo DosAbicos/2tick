@@ -1393,7 +1393,7 @@ const SignContractPage = () => {
                         // Don't continue if save fails - user needs valid phone for verification
                       }
                     }}
-                    className={`flex-1 py-4 text-base font-semibold text-white rounded-xl transition-all shadow-lg ${
+                    className={`flex-1 py-3 text-base font-semibold text-white rounded-xl transition-all shadow-lg ${
                       contractLanguage === 'en' && !englishDisclaimerAccepted
                         ? 'bg-gray-400 cursor-not-allowed'
                         : 'bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 shadow-green-500/30'
