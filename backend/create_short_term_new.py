@@ -32,7 +32,7 @@ def add_text(text):
     run.font.name = 'Arial'
 
 # ========== РУССКАЯ ВЕРСИЯ ==========
-add_title("ДОГОВОР КРАТКОСРОЧНОЙ АРЕНДЫ ЖИЛОГО ПОМЕЩЕНИЯ № {{CONTRACT_NUMBER}}", "🇷🇺")
+add_title("ДОГОВОР КРАТКОСРОЧНОЙ АРЕНДЫ ЖИЛОГО ПОМЕЩЕНИЯ № {{CONTRACT_NUMBER}}")
 
 add_text("г. {{CITY}}                                                              {{CONTRACT_DATE}}")
 
@@ -224,7 +224,7 @@ add_text("""
 doc.add_page_break()
 
 # ========== КАЗАХСКАЯ ВЕРСИЯ ==========
-add_title("ТҰРҒЫН ҮЙ-ЖАЙДЫ ҚЫСҚА МЕРЗІМДІ ЖАЛҒА АЛУ ШАРТЫ № {{CONTRACT_NUMBER}}", "🇰🇿")
+add_title("ТҰРҒЫН ҮЙ-ЖАЙДЫ ҚЫСҚА МЕРЗІМДІ ЖАЛҒА АЛУ ШАРТЫ № {{CONTRACT_NUMBER}}")
 
 add_text("{{CITY}} қ.                                                              {{CONTRACT_DATE}}")
 
@@ -416,7 +416,7 @@ add_text("""
 doc.add_page_break()
 
 # ========== ENGLISH VERSION ==========
-add_title("SHORT-TERM RESIDENTIAL RENTAL AGREEMENT № {{CONTRACT_NUMBER}}", "🇬🇧")
+add_title("SHORT-TERM RESIDENTIAL RENTAL AGREEMENT № {{CONTRACT_NUMBER}}")
 
 add_text("{{CITY}}                                                              {{CONTRACT_DATE}}")
 
