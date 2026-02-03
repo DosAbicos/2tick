@@ -102,10 +102,10 @@ const ForgotPasswordPage = () => {
       <div className="max-w-md mx-auto px-4 sm:px-6 py-8 sm:py-16">
         <button
           onClick={() => navigate('/login')}
-          className="mb-6 px-4 py-2 text-gray-600 hover:text-blue-600 flex items-center gap-2 transition-colors"
+          className="mb-4 sm:mb-6 px-3 sm:px-4 py-2 text-sm font-medium text-gray-700 minimal-card hover:shadow-lg transition-all flex items-center gap-2"
         >
           <ArrowLeft className="w-4 h-4" />
-          {t('auth.forgotPassword.backToLogin')}
+          {t('common.back')}
         </button>
 
         <div className="minimal-card p-6 sm:p-8 animate-fade-in">
@@ -120,19 +120,16 @@ const ForgotPasswordPage = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-              <div className="relative">
-                <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className={`minimal-input w-full pl-12 ${
-                    email && !validateEmail(email) ? 'border-red-500' : ''
-                  }`}
-                  placeholder="example@mail.com"
-                />
-              </div>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className={`minimal-input w-full ${
+                  email && !validateEmail(email) ? 'border-red-500' : ''
+                }`}
+                placeholder="example@mail.com"
+              />
               {email && !validateEmail(email) && (
                 <p className="text-xs text-red-500 mt-1">{t('auth.forgotPassword.invalidEmail')}</p>
               )}
