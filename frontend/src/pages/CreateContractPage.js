@@ -556,34 +556,12 @@ Email: ${templateData.tenant_email || '[Email]'}
       }
     });
     
-    // Calculate computed fields
+    // Calculate computed fields using the new calculator utility
+    const calculatedValues = computeAllCalculatedFields(values, placeholders);
+    
     Object.entries(placeholders).forEach(([key, config]) => {
       if (config.type === 'calculated' && config.formula) {
-        const { operand1, operation, operand2 } = config.formula;
-        
-        let result = 0;
-        
-        if (operation === 'days_between') {
-          if (values[operand1] && values[operand2]) {
-            const date1 = new Date(values[operand1]);
-            const date2 = new Date(values[operand2]);
-            const diffTime = Math.abs(date2 - date1);
-            result = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-          }
-        } else {
-          const val1 = parseFloat(values[operand1]) || 0;
-          const val2 = parseFloat(values[operand2]) || 0;
-          
-          switch(operation) {
-            case 'add': result = val1 + val2; break;
-            case 'subtract': result = val1 - val2; break;
-            case 'multiply': result = val1 * val2; break;
-            case 'divide': result = val2 !== 0 ? val1 / val2 : 0; break;
-            case 'modulo': result = val2 !== 0 ? val1 % val2 : 0; break;
-            default: result = 0;
-          }
-        }
-        
+        const result = calculatedValues[key] || 0;
         const regex = new RegExp(`{{${key}}}`, 'g');
         processedContent = processedContent.replace(regex, result.toString());
       }
