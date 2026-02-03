@@ -130,16 +130,39 @@ class TestCalculatorFeature:
         
         assert response.status_code in [200, 201], f"Failed to create template: {response.text}"
         
-        template = response.json()
+        result = response.json()
+        
+        # API returns {"message": "...", "template_id": "..."}
+        assert "template_id" in result or "id" in result, f"No template_id in response: {result}"
+        
+        template_id = result.get("template_id") or result.get("id")
+        print(f"✅ Created template with ID: {template_id}")
+        
+        # Verify template was created by fetching it
+        get_response = self.session.get(f"{BASE_URL}/api/templates/{template_id}")
+        assert get_response.status_code == 200, f"Failed to get template: {get_response.text}"
+        
+        template = get_response.json()
         assert template.get("title") == "TEST_Calculator_Template"
         assert "placeholders" in template
         assert "TOTAL_DAYS" in template["placeholders"]
         assert template["placeholders"]["TOTAL_DAYS"]["type"] == "calculated"
         assert "formula" in template["placeholders"]["TOTAL_DAYS"]
         
-        # Store template ID for cleanup
-        self.template_id = template.get("id")
-        print(f"✅ Created template with ID: {self.template_id}")
+        # Verify formula structure
+        formula = template["placeholders"]["TOTAL_DAYS"]["formula"]
+        assert formula.get("operand1") == "CHECK_OUT_DATE"
+        assert formula.get("operation") == "subtract"
+        assert formula.get("operand2") == "CHECK_IN_DATE"
+        
+        # Verify chained calculation
+        assert "TOTAL_AMOUNT" in template["placeholders"]
+        total_formula = template["placeholders"]["TOTAL_AMOUNT"]["formula"]
+        assert total_formula.get("operand1") == "TOTAL_DAYS"
+        assert total_formula.get("operation") == "multiply"
+        assert total_formula.get("operand2") == "PRICE_PER_DAY"
+        
+        print(f"✅ Template has correct calculated fields structure")
         
         return template
     
@@ -200,15 +223,23 @@ class TestCalculatorFeature:
         
         assert response.status_code in [200, 201], f"Failed to create template: {response.text}"
         
-        template = response.json()
+        result = response.json()
+        template_id = result.get("template_id") or result.get("id")
+        
+        # Fetch the template to verify
+        get_response = self.session.get(f"{BASE_URL}/api/templates/{template_id}")
+        assert get_response.status_code == 200
+        
+        template = get_response.json()
         assert template["placeholders"]["TOTAL_WITH_FEE"]["formula"]["useTextFormula"] == True
         assert template["placeholders"]["TOTAL_WITH_FEE"]["formula"]["textFormula"] == "BASE_AMOUNT + SERVICE_FEE"
+        assert template["placeholders"]["TOTAL_WITH_FEE"]["formula"]["roundingMode"] == "decimal"
         
         print(f"✅ Created template with text formula")
         
         # Cleanup
-        if template.get("id"):
-            self.session.delete(f"{BASE_URL}/api/admin/templates/{template['id']}")
+        if template_id:
+            self.session.delete(f"{BASE_URL}/api/admin/templates/{template_id}")
     
     def test_get_templates_list(self):
         """Test getting list of templates"""
