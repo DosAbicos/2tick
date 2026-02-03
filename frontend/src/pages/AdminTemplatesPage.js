@@ -645,7 +645,10 @@ const AdminTemplatesPageNew = () => {
       formula: {
         operand1: '',
         operation: 'add',
-        operand2: ''
+        operand2: '',
+        textFormula: '',
+        useTextFormula: false,
+        roundingMode: 'integer'
       }
     });
     setShowPlaceholderDialog(false);
