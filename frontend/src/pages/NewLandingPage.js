@@ -10,7 +10,7 @@ const NewLandingPage = () => {
   const { t } = useTranslation();
   
   return (
-    <div className="min-h-screen gradient-bg">
+    <div className="min-h-screen gradient-bg overflow-x-hidden">
       <Header showAuth={true} />
 
       {/* Hero Section */}
@@ -25,49 +25,49 @@ const NewLandingPage = () => {
                 </span>
               </div>
               
-              <h1 className="text-5xl md:text-6xl font-bold text-gray-900 leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight break-words">
                 {t('landing.hero.title')}
                 <span className="block bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
                   {t('landing.hero.subtitle')}
                 </span>
               </h1>
               
-              <p className="text-xl text-gray-600 leading-relaxed">
+              <p className="text-lg sm:text-xl text-gray-600 leading-relaxed">
                 {t('landing.hero.description')}
               </p>
               
               <div className="flex flex-wrap gap-4">
                 <Link to="/register">
-                  <button className="text-lg px-8 py-4 font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 flex items-center gap-2">
+                  <button className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 flex items-center gap-2">
                     {t('landing.hero.startFree')}
                     <ArrowRight className="w-5 h-5" />
                   </button>
                 </Link>
                 <a href="#features">
-                  <button className="text-lg px-8 py-4 font-medium text-blue-600 bg-white border-2 border-blue-100 rounded-xl hover:bg-blue-50 transition-all">
+                  <button className="text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4 font-medium text-blue-600 bg-white border-2 border-blue-100 rounded-xl hover:bg-blue-50 transition-all">
                     {t('landing.hero.ctaSecondary')}
                   </button>
                 </a>
               </div>
               
               {/* Statistics */}
-              <div className="flex gap-8 pt-8">
+              <div className="flex gap-4 sm:gap-8 pt-8">
                 <div>
-                  <div className="text-3xl font-bold text-blue-600">2 сек</div>
-                  <div className="text-sm text-gray-500">{t('landing.hero.stat1')}</div>
+                  <div className="text-2xl sm:text-3xl font-bold text-blue-600">2 сек</div>
+                  <div className="text-xs sm:text-sm text-gray-500">{t('landing.hero.stat1')}</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-blue-600">100%</div>
-                  <div className="text-sm text-gray-500">{t('landing.hero.stat2')}</div>
+                  <div className="text-2xl sm:text-3xl font-bold text-blue-600">100%</div>
+                  <div className="text-xs sm:text-sm text-gray-500">{t('landing.hero.stat2')}</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-blue-600">24/7</div>
-                  <div className="text-sm text-gray-500">{t('landing.hero.stat3')}</div>
+                  <div className="text-2xl sm:text-3xl font-bold text-blue-600">24/7</div>
+                  <div className="text-xs sm:text-sm text-gray-500">{t('landing.hero.stat3')}</div>
                 </div>
               </div>
             </div>
             
-            <div className="relative">
+            <div className="relative hidden md:block">
               <div className="minimal-card p-8 animate-float">
                 <img 
                   src="https://images.unsplash.com/photo-1652992714070-4b1c488ec7cc?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODF8MHwxfHNlYXJjaHwzfHxzbWFydHBob25lJTIwZGlnaXRhbCUyMGRvY3VtZW50JTIwYnVzaW5lc3N8ZW58MHx8fHwxNzY4NTYxMjAwfDA&ixlib=rb-4.1.0&q=85"
