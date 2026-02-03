@@ -5,7 +5,7 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import Header from '@/components/Header';
-import { ArrowLeft, CheckCircle2, Lock, Key } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Lock } from 'lucide-react';
 import '../styles/neumorphism.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
