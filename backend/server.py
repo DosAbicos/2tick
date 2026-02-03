@@ -138,6 +138,7 @@ class ChangePassword(BaseModel):
 
 class ForgotPasswordRequest(BaseModel):
     email: EmailStr
+    language: str = "ru"
 
 class ResetPassword(BaseModel):
     email: EmailStr
