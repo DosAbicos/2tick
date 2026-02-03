@@ -67,12 +67,12 @@ const NewLandingPage = () => {
               </div>
             </div>
             
-            <div className="relative hidden md:block">
+            <div className="relative">
               <div className="minimal-card p-8 animate-float">
                 <img 
                   src="https://images.unsplash.com/photo-1652992714070-4b1c488ec7cc?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODF8MHwxfHNlYXJjaHwzfHxzbWFydHBob25lJTIwZGlnaXRhbCUyMGRvY3VtZW50JTIwYnVzaW5lc3N8ZW58MHx8fHwxNzY4NTYxMjAwfDA&ixlib=rb-4.1.0&q=85"
                   alt="Электронное подписание договоров онлайн - 2tick.kz"
-                  className="rounded-xl w-full"
+                  className="rounded-xl w-full max-w-md mx-auto"
                 />
               </div>
               <div className="absolute -top-4 -right-4 w-20 h-20 bg-blue-500/10 rounded-full blur-2xl"></div>
