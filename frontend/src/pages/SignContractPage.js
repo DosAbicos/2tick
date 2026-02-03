@@ -10,6 +10,7 @@ import Loader from '@/components/Loader';
 import { CheckCircle, CheckCircle2, FileUp, Phone } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { IMaskInput } from 'react-imask';
+import { computeAllCalculatedFields } from '@/utils/calculatorUtils';
 import '../styles/neumorphism.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
