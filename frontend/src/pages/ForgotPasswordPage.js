@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { toast } from 'sonner';
 import Header from '@/components/Header';
-import { ArrowLeft, Mail, Send, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Mail, Send } from 'lucide-react';
 import '../styles/neumorphism.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
