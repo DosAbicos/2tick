@@ -110,8 +110,8 @@ const PrivacyPage = () => {
               <p className="text-gray-700">{t('legal.privacy.section9.p5')}</p>
             </section>
 
-            <section className="bg-green-50 p-6 rounded-lg border border-green-200">
-              <h2 className="text-lg font-bold text-green-900 mb-3">{t('legal.privacy.section10.title')}</h2>
+            <section>
+              <h2 className="text-lg font-bold text-gray-900 mb-3">{t('legal.privacy.section10.title')}</h2>
               
               <p className="text-gray-700 font-medium mb-1">{t('legal.privacy.section10.p1')}</p>
               <ul className="list-disc pl-6 text-gray-700 space-y-1 mb-3">
