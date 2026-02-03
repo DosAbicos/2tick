@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Header from '@/components/Header';
 import { ArrowLeft, Upload, CheckCircle } from 'lucide-react';
 import { IMaskInput } from 'react-imask';
+import { computeFormula, computeAllCalculatedFields } from '@/utils/calculatorUtils';
 import '../styles/neumorphism.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
