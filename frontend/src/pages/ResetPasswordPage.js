@@ -5,7 +5,8 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import Header from '@/components/Header';
-import { ArrowLeft, CheckCircle2, Lock } from 'lucide-react';
+import { ArrowLeft, Check, Lock } from 'lucide-react';
+import { motion } from 'framer-motion';
 import '../styles/neumorphism.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -53,49 +54,20 @@ const ResetPasswordPage = () => {
 
       setSuccess(true);
       toast.success(t('auth.resetPassword.success'));
+      
+      // Redirect to login after 2 seconds
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);
     } catch (error) {
       if (error.response?.status === 400) {
         toast.error(t('auth.resetPassword.invalidCode'));
       } else {
         toast.error(error.response?.data?.detail || t('auth.resetPassword.error'));
       }
-    } finally {
       setLoading(false);
     }
   };
-
-  if (success) {
-    return (
-      <div className="min-h-screen gradient-bg">
-        <Header showAuth={false} />
-        
-        <div className="max-w-md mx-auto px-4 sm:px-6 py-8 sm:py-16">
-          <div className="minimal-card p-6 sm:p-8 animate-fade-in">
-            <div className="text-center mb-6">
-              <div className="w-16 h-16 mx-auto bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-green-500/30">
-                <CheckCircle2 className="w-8 h-8 text-white" />
-              </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('auth.resetPassword.passwordChanged')}</h2>
-              <p className="text-gray-600">{t('auth.resetPassword.canLoginNow')}</p>
-            </div>
-
-            <div className="bg-green-50 border-2 border-green-200 rounded-xl p-4 mb-6">
-              <p className="text-sm text-green-800">
-                {t('auth.resetPassword.successMessage')}
-              </p>
-            </div>
-
-            <button
-              onClick={() => navigate('/login')}
-              className="w-full px-6 py-3 text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 font-medium"
-            >
-              {t('auth.resetPassword.goToLogin')}
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen gradient-bg">
