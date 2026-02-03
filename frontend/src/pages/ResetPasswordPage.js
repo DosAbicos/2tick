@@ -175,26 +175,12 @@ const ResetPasswordPage = () => {
               }`}
             >
               {success ? (
-                <motion.div 
-                  className="flex items-center gap-1"
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ delay: 0, duration: 0.3 }}
-                  >
-                    <Check className="w-6 h-6" />
-                  </motion.div>
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ delay: 0.2, duration: 0.3 }}
-                  >
-                    <Check className="w-6 h-6" />
-                  </motion.div>
+                  <Check className="w-6 h-6" />
                 </motion.div>
               ) : loading ? (
                 t('auth.resetPassword.submitting')
