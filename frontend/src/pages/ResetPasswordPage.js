@@ -104,10 +104,10 @@ const ResetPasswordPage = () => {
       <div className="max-w-md mx-auto px-4 sm:px-6 py-8 sm:py-16">
         <button
           onClick={() => navigate('/forgot-password')}
-          className="mb-6 px-4 py-2 text-gray-600 hover:text-blue-600 flex items-center gap-2 transition-colors"
+          className="mb-4 sm:mb-6 px-3 sm:px-4 py-2 text-sm font-medium text-gray-700 minimal-card hover:shadow-lg transition-all flex items-center gap-2"
         >
           <ArrowLeft className="w-4 h-4" />
-          {t('common.previous')}
+          {t('common.back')}
         </button>
 
         <div className="minimal-card p-6 sm:p-8 animate-fade-in">
@@ -125,27 +125,25 @@ const ResetPasswordPage = () => {
               <input
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="minimal-input w-full"
+                readOnly
+                className="minimal-input w-full bg-gray-100 cursor-not-allowed"
                 placeholder="example@mail.com"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-3">
-                <Key className="w-4 h-4 inline mr-1" />
                 {t('auth.resetPassword.codeFromEmail')}
               </label>
               <div className="flex justify-center">
                 <InputOTP maxLength={6} value={resetCode} onChange={setResetCode}>
                   <InputOTPGroup>
-                    <InputOTPSlot index={0} className="neuro-input" />
-                    <InputOTPSlot index={1} className="neuro-input" />
-                    <InputOTPSlot index={2} className="neuro-input" />
-                    <InputOTPSlot index={3} className="neuro-input" />
-                    <InputOTPSlot index={4} className="neuro-input" />
-                    <InputOTPSlot index={5} className="neuro-input" />
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
                   </InputOTPGroup>
                 </InputOTP>
               </div>
