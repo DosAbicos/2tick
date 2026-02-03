@@ -723,7 +723,10 @@ const AdminTemplatesPageNew = () => {
       formula: config.formula || {
         operand1: '',
         operation: 'add',
-        operand2: ''
+        operand2: '',
+        textFormula: '',
+        useTextFormula: false,
+        roundingMode: 'integer'
       }
     });
     setShowPlaceholderDialog(true);
