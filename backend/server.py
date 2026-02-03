@@ -2349,22 +2349,48 @@ async def forgot_password(request: ForgotPasswordRequest):
     )
     await db.password_resets.insert_one(reset_doc.model_dump())
     
-    # Send email with reset code
-    subject = "Password Reset Code - Signify KZ"
+    # Multi-language email content
+    lang = request.language
+    
+    if lang == "kk":
+        subject = "Құпия сөзді қалпына келтіру коды - 2tick.kz"
+        title = "Құпия сөзді қалпына келтіру сұрауы"
+        text1 = "Сіз 2tick.kz жүйесінде құпия сөзіңізді қалпына келтіруді сұрадыңыз."
+        text2 = "Құпия сөзді қалпына келтіру коды:"
+        text3 = "Бұл код <strong>1 сағат</strong> ішінде жарамды."
+        text4 = "Егер сіз бұл сұрауды жасамасаңыз, бұл хатты елемеңіз."
+        footer = "2tick.kz — Қашықтан шарттарға қол қою платформасы"
+    elif lang == "en":
+        subject = "Password Reset Code - 2tick.kz"
+        title = "Password Reset Request"
+        text1 = "You requested to reset your password for 2tick.kz."
+        text2 = "Your password reset code is:"
+        text3 = "This code will expire in <strong>1 hour</strong>."
+        text4 = "If you didn't request this, please ignore this email."
+        footer = "2tick.kz — Remote Contract Signing Platform"
+    else:  # Russian default
+        subject = "Код восстановления пароля - 2tick.kz"
+        title = "Запрос на восстановление пароля"
+        text1 = "Вы запросили восстановление пароля для 2tick.kz."
+        text2 = "Ваш код для восстановления пароля:"
+        text3 = "Этот код действителен <strong>1 час</strong>."
+        text4 = "Если вы не запрашивали это, проигнорируйте это письмо."
+        footer = "2tick.kz — Платформа дистанционного подписания договоров"
+    
     body = f"""
     <html>
         <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
             <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-                <h2 style="color: #2563eb;">Password Reset Request</h2>
-                <p>You requested to reset your password for Signify KZ.</p>
-                <p>Your password reset code is:</p>
+                <h2 style="color: #2563eb;">{title}</h2>
+                <p>{text1}</p>
+                <p>{text2}</p>
                 <div style="background-color: #f3f4f6; padding: 20px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 5px; margin: 20px 0;">
                     {reset_code}
                 </div>
-                <p>This code will expire in <strong>1 hour</strong>.</p>
-                <p>If you didn't request this, please ignore this email.</p>
+                <p>{text3}</p>
+                <p>{text4}</p>
                 <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
-                <p style="color: #6b7280; font-size: 12px;">Signify KZ - Remote Contract Signing Platform</p>
+                <p style="color: #6b7280; font-size: 12px;">{footer}</p>
             </div>
         </body>
     </html>
