@@ -31,7 +31,8 @@ class TestCalculatorFeature:
         })
         assert login_response.status_code == 200, f"Login failed: {login_response.text}"
         
-        token = login_response.json().get("access_token")
+        # Use "token" key (not "access_token")
+        token = login_response.json().get("token")
         self.session.headers.update({"Authorization": f"Bearer {token}"})
         
         yield
