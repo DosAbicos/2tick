@@ -1454,127 +1454,234 @@ const AdminTemplatesPageNew = () => {
 
               {/* Calculator for calculated fields */}
               {currentPlaceholder.type === 'calculated' && (
-                <div className="border-2 border-dashed border-amber-200 rounded-lg p-4 bg-amber-50/50 space-y-3">
+                <div className="border-2 border-dashed border-amber-200 rounded-lg p-4 bg-amber-50/50 space-y-4">
                   <Label className="text-sm font-bold text-amber-900">🧮 Настройка формулы</Label>
                   
                   {/* Инструкция по использованию */}
                   <div className="bg-white border border-amber-300 rounded p-3 text-xs space-y-1">
                     <p className="font-semibold text-amber-900">ℹ️ Как работает калькулятор:</p>
                     <p className="text-neutral-700">
-                      • Вычисляемые поля автоматически рассчитываются на основе других плейсхолдеров
+                      • Вычисляемые поля автоматически рассчитываются при заполнении формы
                     </p>
                     <p className="text-neutral-700">
-                      • Калькулятор работает только с полями типа &quot;Число&quot; и &quot;Дата&quot;
+                      • Поддерживает числа, даты и результаты других вычислений
                     </p>
-                    <p className="text-amber-800 font-medium mt-2">
-                      Пример: {'{{'} СУММА_АРЕНДЫ {'}}'} = {'{{'} ЦЕНА_ЗА_ДЕНЬ {'}}'} × {'{{'} КОЛИЧЕСТВО_ДНЕЙ {'}}'}
+                    <p className="text-neutral-700">
+                      • Для дат: вычитание возвращает количество дней
                     </p>
-                  </div>
-                  
-                  {/* 1. Первый операнд */}
-                  <div>
-                    <Label className="text-xs font-semibold">1. Первый операнд</Label>
-                    <Select
-                      value={currentPlaceholder.formula.operand1}
-                      onValueChange={(value) => setCurrentPlaceholder({
-                        ...currentPlaceholder,
-                        formula: { ...currentPlaceholder.formula, operand1: value }
-                      })}
-                    >
-                      <SelectTrigger className="mt-1 bg-white">
-                        <SelectValue placeholder="Выберите плейсхолдер" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white">
-                        {placeholderOrder
-                          .filter(name => {
-                            const ph = formData.placeholders[name];
-                            // Только number, date и calculated
-                            return ph.type === 'number' || ph.type === 'date' || ph.type === 'calculated';
-                          })
-                          .map((name) => (
-                            <SelectItem key={name} value={name}>
-                              <div className="flex items-center gap-2">
-                                <span className="text-xs text-neutral-500">
-                                  {formData.placeholders[name].type === 'date' ? '📅' : 
-                                   formData.placeholders[name].type === 'calculated' ? '🧮' : '🔢'}
-                                </span>
-                                {'{{'}{name}{'}}'} - {formData.placeholders[name].label}
-                              </div>
-                            </SelectItem>
-                          ))}
-                      </SelectContent>
-                    </Select>
                   </div>
 
-                  {/* 2. Выберите операцию */}
+                  {/* Toggle between simple and text formula */}
+                  <div className="flex items-center gap-3 p-2 bg-white rounded border">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="formulaMode"
+                        checked={!currentPlaceholder.formula.useTextFormula}
+                        onChange={() => setCurrentPlaceholder({
+                          ...currentPlaceholder,
+                          formula: { ...currentPlaceholder.formula, useTextFormula: false }
+                        })}
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm">Простая формула</span>
+                    </label>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="radio"
+                        name="formulaMode"
+                        checked={currentPlaceholder.formula.useTextFormula}
+                        onChange={() => setCurrentPlaceholder({
+                          ...currentPlaceholder,
+                          formula: { ...currentPlaceholder.formula, useTextFormula: true }
+                        })}
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm">Текстовая формула</span>
+                    </label>
+                  </div>
+
+                  {/* Simple formula mode */}
+                  {!currentPlaceholder.formula.useTextFormula && (
+                    <>
+                      {/* 1. Первый операнд */}
+                      <div>
+                        <Label className="text-xs font-semibold">1. Первый операнд</Label>
+                        <Select
+                          value={currentPlaceholder.formula.operand1}
+                          onValueChange={(value) => setCurrentPlaceholder({
+                            ...currentPlaceholder,
+                            formula: { ...currentPlaceholder.formula, operand1: value }
+                          })}
+                        >
+                          <SelectTrigger className="mt-1 bg-white">
+                            <SelectValue placeholder="Выберите плейсхолдер" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-white">
+                            {placeholderOrder
+                              .filter(name => {
+                                const ph = formData.placeholders[name];
+                                return ph.type === 'number' || ph.type === 'date' || ph.type === 'calculated';
+                              })
+                              .map((name) => (
+                                <SelectItem key={name} value={name}>
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-xs text-neutral-500">
+                                      {formData.placeholders[name].type === 'date' ? '📅' : 
+                                       formData.placeholders[name].type === 'calculated' ? '🧮' : '🔢'}
+                                    </span>
+                                    {'{{'}{name}{'}}'} - {formData.placeholders[name].label}
+                                  </div>
+                                </SelectItem>
+                              ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* 2. Выберите операцию */}
+                      <div>
+                        <Label className="text-xs font-semibold">2. Выберите операцию</Label>
+                        <Select
+                          value={currentPlaceholder.formula.operation}
+                          onValueChange={(value) => setCurrentPlaceholder({
+                            ...currentPlaceholder,
+                            formula: { ...currentPlaceholder.formula, operation: value }
+                          })}
+                        >
+                          <SelectTrigger className="mt-1 bg-white">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className="bg-white">
+                            {CALCULATOR_OPERATIONS.map((op) => (
+                              <SelectItem key={op.value} value={op.value}>
+                                {op.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* 3. Второй операнд */}
+                      <div>
+                        <Label className="text-xs font-semibold">3. Второй операнд</Label>
+                        <Select
+                          value={currentPlaceholder.formula.operand2}
+                          onValueChange={(value) => setCurrentPlaceholder({
+                            ...currentPlaceholder,
+                            formula: { ...currentPlaceholder.formula, operand2: value }
+                          })}
+                        >
+                          <SelectTrigger className="mt-1 bg-white">
+                            <SelectValue placeholder="Выберите плейсхолдер" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-white">
+                            {placeholderOrder
+                              .filter(name => {
+                                const ph = formData.placeholders[name];
+                                return ph.type === 'number' || ph.type === 'date' || ph.type === 'calculated';
+                              })
+                              .map((name) => (
+                                <SelectItem key={name} value={name}>
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-xs text-neutral-500">
+                                      {formData.placeholders[name].type === 'date' ? '📅' : 
+                                       formData.placeholders[name].type === 'calculated' ? '🧮' : '🔢'}
+                                    </span>
+                                    {'{{'}{name}{'}}'} - {formData.placeholders[name].label}
+                                  </div>
+                                </SelectItem>
+                              ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </>
+                  )}
+
+                  {/* Text formula mode */}
+                  {currentPlaceholder.formula.useTextFormula && (
+                    <div>
+                      <Label className="text-xs font-semibold">Текстовая формула</Label>
+                      <textarea
+                        value={currentPlaceholder.formula.textFormula}
+                        onChange={(e) => setCurrentPlaceholder({
+                          ...currentPlaceholder,
+                          formula: { ...currentPlaceholder.formula, textFormula: e.target.value }
+                        })}
+                        placeholder="(CHECK_OUT_DATE - CHECK_IN_DATE) * PRICE_PER_DAY + SERVICE_FEE"
+                        className="w-full mt-1 p-2 border rounded bg-white font-mono text-sm h-20"
+                      />
+                      <div className="mt-2 text-xs text-neutral-600 space-y-1">
+                        <p><strong>Доступные операции:</strong> + − * / ( )</p>
+                        <p><strong>Примеры:</strong></p>
+                        <p className="font-mono text-amber-700">CHECK_OUT_DATE - CHECK_IN_DATE</p>
+                        <p className="font-mono text-amber-700">(TOTAL_DAYS * PRICE_PER_DAY) + DEPOSIT</p>
+                      </div>
+                      {/* Available placeholders for reference */}
+                      <div className="mt-2 p-2 bg-neutral-100 rounded text-xs">
+                        <p className="font-semibold mb-1">Доступные плейсхолдеры:</p>
+                        <div className="flex flex-wrap gap-1">
+                          {placeholderOrder
+                            .filter(name => {
+                              const ph = formData.placeholders[name];
+                              return ph.type === 'number' || ph.type === 'date' || ph.type === 'calculated';
+                            })
+                            .map((name) => (
+                              <span 
+                                key={name} 
+                                className="px-2 py-0.5 bg-white rounded border cursor-pointer hover:bg-amber-50"
+                                onClick={() => {
+                                  const current = currentPlaceholder.formula.textFormula || '';
+                                  setCurrentPlaceholder({
+                                    ...currentPlaceholder,
+                                    formula: { ...currentPlaceholder.formula, textFormula: current + name }
+                                  });
+                                }}
+                              >
+                                {name}
+                              </span>
+                            ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Rounding mode */}
                   <div>
-                    <Label className="text-xs font-semibold">2. Выберите операцию</Label>
+                    <Label className="text-xs font-semibold">Округление результата</Label>
                     <Select
-                      value={currentPlaceholder.formula.operation}
+                      value={currentPlaceholder.formula.roundingMode || 'integer'}
                       onValueChange={(value) => setCurrentPlaceholder({
                         ...currentPlaceholder,
-                        formula: { 
-                          ...currentPlaceholder.formula,
-                          operation: value
-                        }
+                        formula: { ...currentPlaceholder.formula, roundingMode: value }
                       })}
                     >
                       <SelectTrigger className="mt-1 bg-white">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-white">
-                        {CALCULATOR_OPERATIONS.map((op) => (
-                          <SelectItem key={op.value} value={op.value}>
-                            {op.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* 3. Второй операнд */}
-                  <div>
-                    <Label className="text-xs font-semibold">3. Второй операнд</Label>
-                    <Select
-                      value={currentPlaceholder.formula.operand2}
-                      onValueChange={(value) => setCurrentPlaceholder({
-                        ...currentPlaceholder,
-                        formula: { ...currentPlaceholder.formula, operand2: value }
-                      })}
-                    >
-                      <SelectTrigger className="mt-1 bg-white">
-                        <SelectValue placeholder="Выберите плейсхолдер" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white">
-                        {placeholderOrder
-                          .filter(name => {
-                            const ph = formData.placeholders[name];
-                            // Только number, date и calculated
-                            return ph.type === 'number' || ph.type === 'date' || ph.type === 'calculated';
-                          })
-                          .map((name) => (
-                            <SelectItem key={name} value={name}>
-                              <div className="flex items-center gap-2">
-                                <span className="text-xs text-neutral-500">
-                                  {formData.placeholders[name].type === 'date' ? '📅' : 
-                                   formData.placeholders[name].type === 'calculated' ? '🧮' : '🔢'}
-                                </span>
-                                {'{{'}{name}{'}}'} - {formData.placeholders[name].label}
-                              </div>
-                            </SelectItem>
-                          ))}
+                        <SelectItem value="integer">До целых чисел (123)</SelectItem>
+                        <SelectItem value="decimal">С плавающей точкой (123.45)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   {/* Preview */}
-                  {currentPlaceholder.formula.operand1 && currentPlaceholder.formula.operand2 && (
+                  {!currentPlaceholder.formula.useTextFormula && currentPlaceholder.formula.operand1 && currentPlaceholder.formula.operand2 && (
                     <div className="bg-white border border-amber-300 rounded p-2 text-xs font-mono">
                       <span className="text-amber-700">Формула:</span>
                       <br />
                       {'{{'}{currentPlaceholder.formula.operand1}{'}}'}
                       {' '}{CALCULATOR_OPERATIONS.find(op => op.value === currentPlaceholder.formula.operation)?.symbol || '+'}{' '}
                       {'{{'}{currentPlaceholder.formula.operand2}{'}}'}
+                      {' = '}
+                      {'{{'}{currentPlaceholder.name || 'РЕЗУЛЬТАТ'}{'}}'}
+                    </div>
+                  )}
+                  {currentPlaceholder.formula.useTextFormula && currentPlaceholder.formula.textFormula && (
+                    <div className="bg-white border border-amber-300 rounded p-2 text-xs font-mono">
+                      <span className="text-amber-700">Формула:</span>
+                      <br />
+                      {currentPlaceholder.formula.textFormula}
                       {' = '}
                       {'{{'}{currentPlaceholder.name || 'РЕЗУЛЬТАТ'}{'}}'}
                     </div>
