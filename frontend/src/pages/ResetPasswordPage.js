@@ -161,15 +161,46 @@ const ResetPasswordPage = () => {
               type="submit"
               disabled={
                 loading ||
+                success ||
                 !email ||
                 resetCode.length !== 6 ||
                 !newPassword ||
                 !confirmPassword ||
                 newPassword !== confirmPassword
               }
-              className="w-full px-6 py-3 text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+              className={`w-full px-6 py-3 text-white rounded-xl transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed font-medium flex items-center justify-center gap-2 ${
+                success 
+                  ? 'bg-gradient-to-r from-green-500 to-green-600 shadow-green-500/30' 
+                  : 'bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 shadow-blue-500/30'
+              }`}
             >
-              {loading ? t('auth.resetPassword.submitting') : t('auth.resetPassword.submit')}
+              {success ? (
+                <motion.div 
+                  className="flex items-center gap-1"
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0, duration: 0.3 }}
+                  >
+                    <Check className="w-6 h-6" />
+                  </motion.div>
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.2, duration: 0.3 }}
+                  >
+                    <Check className="w-6 h-6" />
+                  </motion.div>
+                </motion.div>
+              ) : loading ? (
+                t('auth.resetPassword.submitting')
+              ) : (
+                t('auth.resetPassword.submit')
+              )}
             </button>
           </form>
 
