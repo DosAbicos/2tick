@@ -22,6 +22,7 @@
   .max-w-5xl,
   .max-w-\[1600px\] {
     padding-left: 1rem !important;
+    padding-right: 1rem !important;
   }
 
   /* Grid to single column - except for dashboard stats which stay 2x2 */
