@@ -205,11 +205,30 @@ const SignContractPage = () => {
       ...placeholderValues
     };
     
+    // Calculate computed fields if template exists
+    let calculatedValues = {};
+    if (template?.placeholders) {
+      calculatedValues = computeAllCalculatedFields(allPlaceholderValues, template.placeholders);
+      // Merge calculated values with all values
+      Object.assign(allPlaceholderValues, calculatedValues);
+    }
+    
     // First, replace {{KEY}} format placeholders with values
     const templatePlaceholderRegex = /\{\{([^}]+)\}\}/g;
     result = result.replace(templatePlaceholderRegex, (match, key) => {
       const value = allPlaceholderValues[key];
       const config = template?.placeholders?.[key];
+      
+      // Special handling for calculated fields
+      if (config?.type === 'calculated') {
+        const calcValue = calculatedValues[key];
+        if (calcValue !== undefined && calcValue !== 0) {
+          return `<span class="inline-block px-2 py-0.5 rounded-md border bg-blue-50 border-blue-200 text-blue-700 font-medium transition-all duration-300 shadow-sm">${calcValue}</span>`;
+        } else {
+          const label = getPlaceholderLabel(config);
+          return `<span class="inline-block px-2 py-0.5 rounded-md border bg-amber-50 border-amber-200 text-amber-700 font-medium transition-all duration-300 shadow-sm">[${label}]</span>`;
+        }
+      }
       
       if (value) {
         // Value exists - show green highlighted
