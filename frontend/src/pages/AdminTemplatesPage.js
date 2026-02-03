@@ -348,7 +348,11 @@ const AdminTemplatesPageNew = () => {
     formula: {
       operand1: '',
       operation: 'add',
-      operand2: ''
+      operand2: '',
+      // New fields for advanced calculator
+      textFormula: '',  // For complex formulas like: (CHECK_OUT_DATE - CHECK_IN_DATE) * PRICE_PER_DAY
+      useTextFormula: false,
+      roundingMode: 'integer'  // 'integer' or 'decimal'
     }
   });
 
