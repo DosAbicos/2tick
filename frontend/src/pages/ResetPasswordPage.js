@@ -55,9 +55,20 @@ const ResetPasswordPage = () => {
       setSuccess(true);
       toast.success(t('auth.resetPassword.success'));
       
-      // Redirect to login after 2 seconds
-      setTimeout(() => {
-        navigate('/login');
+      // Auto-login and redirect to dashboard after 2 seconds
+      setTimeout(async () => {
+        try {
+          const loginResponse = await axios.post(`${API}/auth/login`, {
+            email,
+            password: newPassword
+          });
+          localStorage.setItem('token', loginResponse.data.token);
+          localStorage.setItem('user', JSON.stringify(loginResponse.data.user));
+          navigate('/dashboard');
+        } catch {
+          // If auto-login fails, redirect to login page
+          navigate('/login');
+        }
       }, 2000);
     } catch (error) {
       if (error.response?.status === 400) {
