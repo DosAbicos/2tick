@@ -95,29 +95,28 @@ const SignContractPage = () => {
   
   // Check if contract language is already set
   useEffect(() => {
-    const checkContractLanguage = async () => {
-      if (!contract) return;
-      
-      const lang = contract.contract_language;
-      if (lang) {
-        // Contract language already locked
-        setContractLanguage(lang);
-        setContractLanguageLocked(true);
-        setShowLanguageSelector(false);
-        
-        // IMPORTANT: Also set UI language to match contract language
-        // This ensures interface matches the contract language when reopening
-        // Force change by updating localStorage first
-        localStorage.setItem('i18nextLng', lang);
-        await i18n.changeLanguage(lang);
-      } else {
-        // Need to select contract language
-        setShowLanguageSelector(true);
-      }
-    };
+    if (!contract) return;
     
-    checkContractLanguage();
-  }, [contract, i18n]);
+    const lang = contract.contract_language;
+    if (lang) {
+      // Contract language already locked
+      setContractLanguage(lang);
+      setContractLanguageLocked(true);
+      setShowLanguageSelector(false);
+      
+      // CRITICAL: Force UI language to match contract language
+      // This must happen synchronously to avoid race conditions
+      const currentLang = i18n.language;
+      if (currentLang !== lang) {
+        console.log(`Switching UI language from ${currentLang} to ${lang}`);
+        localStorage.setItem('i18nextLng', lang);
+        i18n.changeLanguage(lang);
+      }
+    } else {
+      // Need to select contract language
+      setShowLanguageSelector(true);
+    }
+  }, [contract]); // Remove i18n from dependencies to prevent infinite loop
   
   // Call OTP states
   const [verificationMethod, setVerificationMethod] = useState(''); // 'sms', 'call', or 'telegram'
