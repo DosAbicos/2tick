@@ -2191,14 +2191,19 @@ async def login(credentials: UserLogin, request: Request):
         await log_user_action("unknown", "login_failed", f"Email: {credentials.email}", request.client.host)
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
-    # Verify password
-    print(f"DEBUG: Verifying password for {credentials.email}")
-    print(f"DEBUG: Password hash exists: {'password' in user_doc}")
+    # Verify password - debug
+    stored_hash = user_doc.get('password', '')
+    print(f"DEBUG: Input password: {repr(credentials.password)}")
+    print(f"DEBUG: Stored hash: {repr(stored_hash)}")
+    print(f"DEBUG: Stored hash type: {type(stored_hash)}")
+    
     try:
-        password_valid = verify_password(credentials.password, user_doc['password'])
+        password_valid = bcrypt.checkpw(credentials.password.encode('utf-8'), stored_hash.encode('utf-8'))
         print(f"DEBUG: Password valid: {password_valid}")
     except Exception as e:
         print(f"DEBUG: Password verification error: {e}")
+        import traceback
+        traceback.print_exc()
         password_valid = False
     
     if not password_valid:
