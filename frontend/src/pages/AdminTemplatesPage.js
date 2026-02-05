@@ -579,6 +579,20 @@ const AdminTemplatesPageNew = () => {
       }
     }
 
+    // Validation for select fields
+    if (currentPlaceholder.type === 'select') {
+      if (!currentPlaceholder.options || currentPlaceholder.options.length === 0) {
+        toast.error('Добавьте хотя бы один вариант для выпадающего списка');
+        return;
+      }
+      // Check that all options have at least Russian label
+      const invalidOption = currentPlaceholder.options.find(opt => !opt.label || opt.label.trim() === '');
+      if (invalidOption) {
+        toast.error('Заполните значения для всех вариантов');
+        return;
+      }
+    }
+
     const placeholderName = currentPlaceholder.name.toUpperCase().replace(/\s+/g, '_');
     
     const placeholderConfig = {
@@ -596,6 +610,11 @@ const AdminTemplatesPageNew = () => {
     // Add formula for calculated fields
     if (currentPlaceholder.type === 'calculated') {
       placeholderConfig.formula = currentPlaceholder.formula;
+    }
+
+    // Add options for select fields
+    if (currentPlaceholder.type === 'select') {
+      placeholderConfig.options = currentPlaceholder.options;
     }
 
     // Check if editing existing placeholder
