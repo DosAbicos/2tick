@@ -104,19 +104,20 @@ const SignContractPage = () => {
       setContractLanguageLocked(true);
       setShowLanguageSelector(false);
       
-      // CRITICAL: Force UI language to match contract language
-      // This must happen synchronously to avoid race conditions
-      const currentLang = i18n.language;
-      if (currentLang !== lang) {
-        console.log(`Switching UI language from ${currentLang} to ${lang}`);
+      // CRITICAL: Ensure UI language matches contract language
+      const currentUiLang = i18n.language;
+      if (currentUiLang !== lang) {
+        // Set both localStorage keys
         localStorage.setItem('i18nextLng', lang);
+        localStorage.setItem('language', lang);
+        // Change language without reload (contract already has language set)
         i18n.changeLanguage(lang);
       }
     } else {
       // Need to select contract language
       setShowLanguageSelector(true);
     }
-  }, [contract]); // Remove i18n from dependencies to prevent infinite loop
+  }, [contract]); // Remove i18n from dependencies
   
   // Call OTP states
   const [verificationMethod, setVerificationMethod] = useState(''); // 'sms', 'call', or 'telegram'
