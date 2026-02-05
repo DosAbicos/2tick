@@ -1222,7 +1222,7 @@ const SignContractPage = () => {
                       <input
                         id="document"
                         type="file"
-                        accept="image/*,.pdf"
+                        accept="image/*,application/pdf,.pdf"
                         onChange={handleFileUpload}
                         disabled={uploading}
                         className="hidden"
