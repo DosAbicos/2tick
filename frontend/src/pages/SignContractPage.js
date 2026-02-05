@@ -1561,24 +1561,48 @@ const SignContractPage = () => {
                         whileTap={{ scale: 0.98 }}
                         type="button"
                         onClick={async () => {
+                          // Сохраняем состояние перед переходом в Telegram
+                          // Это важно для iOS Chrome - при возврате состояние восстановится
+                          const stateToSave = {
+                            step: 5,
+                            signerInfo,
+                            placeholderValues,
+                            documentUploaded,
+                            unfilledPlaceholders,
+                            verificationMethod: 'telegram'
+                          };
+                          localStorage.setItem(`contract_${id}_state`, JSON.stringify(stateToSave));
+                          
                           // Загружаем/перезагружаем ссылку при каждом клике
+                          let linkToOpen = telegramDeepLink;
                           if (!telegramDeepLink || telegramDeepLink === '#') {
                             try {
                               const res = await axios.get(`${API}/sign/${id}/telegram-deep-link`);
-                              setTelegramDeepLink(res.data.deep_link);
-                              // Открываем ссылку
-                              window.open(res.data.deep_link, '_blank');
-                              setVerificationMethod('telegram');
-                              toast.success(t('signing.telegramCodeSent'));
+                              linkToOpen = res.data.deep_link;
+                              setTelegramDeepLink(linkToOpen);
                             } catch (err) {
                               console.error('Failed to load Telegram link:', err);
                               toast.error(t('common.error'));
+                              return;
                             }
+                          }
+                          
+                          // Устанавливаем метод верификации до перехода
+                          setVerificationMethod('telegram');
+                          toast.success(t('signing.telegramCodeSent'));
+                          
+                          // Используем window.location.href для мобильных устройств
+                          // Это предотвращает создание новой вкладки в iOS Chrome
+                          // Desktop браузеры откроют в новой вкладке через window.open
+                          const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                          
+                          if (isMobile) {
+                            // Для мобильных: открываем в том же окне
+                            // При возврате из Telegram страница перезагрузится и восстановит состояние из localStorage
+                            window.location.href = linkToOpen;
                           } else {
-                            // Если ссылка уже есть, просто открываем
-                            window.open(telegramDeepLink, '_blank');
-                            setVerificationMethod('telegram');
-                            toast.success(t('signing.telegramCodeSent'));
+                            // Для desktop: открываем в новой вкладке (стандартное поведение)
+                            window.open(linkToOpen, '_blank');
                           }
                         }}
                         className="relative overflow-hidden block w-full p-6 rounded-2xl bg-gradient-to-br from-[#0088cc] to-[#0077b3] transition-all no-underline group shadow-lg shadow-[#0088cc]/20 hover:shadow-xl hover:shadow-[#0088cc]/30 text-left"
