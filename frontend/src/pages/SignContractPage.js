@@ -107,7 +107,9 @@ const SignContractPage = () => {
         
         // IMPORTANT: Also set UI language to match contract language
         // This ensures interface matches the contract language when reopening
-        i18n.changeLanguage(lang);
+        // Force change by updating localStorage first
+        localStorage.setItem('i18nextLng', lang);
+        await i18n.changeLanguage(lang);
       } else {
         // Need to select contract language
         setShowLanguageSelector(true);
