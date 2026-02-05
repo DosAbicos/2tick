@@ -1816,15 +1816,17 @@ const SignContractPage = () => {
               <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-3xl">⚠️</span>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">{t('signing.englishWarning')}</h3>
+              {/* Always show in English - hardcoded */}
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Important Notice</h3>
               <p className="text-gray-700 mb-6 leading-relaxed">
-                {t('signing.englishWarningText')}
+                The English version of this contract is a translation for your convenience only. 
+                In case of any discrepancies, the Russian version shall prevail and be legally binding.
               </p>
               <button
                 onClick={handleEnglishWarningAccept}
                 className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors"
               >
-                OK
+                I Understand
               </button>
             </div>
           </motion.div>
