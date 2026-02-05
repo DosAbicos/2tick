@@ -1017,8 +1017,34 @@ const AdminTemplatesPageNew = () => {
                     ))}
                   </SelectContent>
                 </Select>
-                <p className="text-xs text-purple-700 mt-2">
-                  📝 Выбранные роли: <strong>{formData.party_a_role}</strong> и <strong>{formData.party_b_role}</strong>
+                
+                {/* Интерактивный блок с кнопкой смены ролей */}
+                <div className="mt-3 flex items-center justify-center gap-2 p-3 bg-white rounded-lg border border-purple-200">
+                  <span className="px-3 py-1.5 bg-blue-100 text-blue-800 font-semibold rounded-lg text-sm">
+                    {formData.party_a_role}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFormData({
+                        ...formData, 
+                        party_a_role: formData.party_b_role, 
+                        party_b_role: formData.party_a_role
+                      });
+                    }}
+                    className="p-2 hover:bg-purple-100 rounded-full transition-all duration-200 group"
+                    title="Поменять роли местами"
+                  >
+                    <svg className="w-5 h-5 text-purple-600 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                    </svg>
+                  </button>
+                  <span className="px-3 py-1.5 bg-green-100 text-green-800 font-semibold rounded-lg text-sm">
+                    {formData.party_b_role}
+                  </span>
+                </div>
+                <p className="text-xs text-purple-600 mt-2 text-center">
+                  Нажмите на стрелки чтобы поменять роли местами
                 </p>
               </div>
 
