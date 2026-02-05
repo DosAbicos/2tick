@@ -119,8 +119,25 @@ const SignContractPage = () => {
     }
   }, [contract]); // Remove i18n from dependencies
   
+  // Initialize verificationMethod from localStorage (important for iOS Chrome return from Telegram)
+  const getInitialVerificationMethod = () => {
+    const savedState = localStorage.getItem(`contract_${id}_state`);
+    if (savedState) {
+      try {
+        const parsed = JSON.parse(savedState);
+        if (parsed.verificationMethod) {
+          console.log('🔄 Restoring verificationMethod from localStorage:', parsed.verificationMethod);
+          return parsed.verificationMethod;
+        }
+      } catch (e) {
+        return '';
+      }
+    }
+    return '';
+  };
+  
   // Call OTP states
-  const [verificationMethod, setVerificationMethod] = useState(''); // 'sms', 'call', or 'telegram'
+  const [verificationMethod, setVerificationMethod] = useState(getInitialVerificationMethod); // 'sms', 'call', or 'telegram'
   const [callCode, setCallCode] = useState('');
   const [callHint, setCallHint] = useState('');
   const [requestingCall, setRequestingCall] = useState(false);
