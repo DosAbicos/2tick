@@ -1082,6 +1082,25 @@ Email: ${templateData.tenant_email || '[Email]'}
                                 placeholder={`Введите ${config.label.toLowerCase()}`}
                               />
                             )}
+                            
+                            {config.type === 'select' && config.options && (
+                              <select
+                                id={`placeholder_${key}`}
+                                value={placeholderValues[key] || ''}
+                                onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
+                                required={config.required}
+                                className="minimal-input w-full"
+                              >
+                                <option value="">{t('common.select')}...</option>
+                                {config.options.map((option, idx) => (
+                                  <option key={idx} value={option.value || option.label}>
+                                    {i18n.language === 'kk' ? (option.label_kk || option.label) : 
+                                     i18n.language === 'en' ? (option.label_en || option.label) : 
+                                     option.label}
+                                  </option>
+                                ))}
+                              </select>
+                            )}
                           </div>
                         );
                             })}
