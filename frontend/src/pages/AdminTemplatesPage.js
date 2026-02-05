@@ -559,9 +559,20 @@ const AdminTemplatesPageNew = () => {
 
     // Validation for calculated fields
     if (currentPlaceholder.type === 'calculated') {
-      if (!currentPlaceholder.formula.operand1 || !currentPlaceholder.formula.operand2) {
-        toast.error('Укажите оба операнда для вычисляемого поля');
-        return;
+      const formula = currentPlaceholder.formula;
+      // Check if using text formula or simple formula
+      if (formula.useTextFormula) {
+        // Text formula mode - need textFormula
+        if (!formula.textFormula || formula.textFormula.trim() === '') {
+          toast.error('Укажите текстовую формулу для вычисляемого поля');
+          return;
+        }
+      } else {
+        // Simple formula mode - need operand1 and operand2
+        if (!formula.operand1 || !formula.operand2) {
+          toast.error('Укажите оба операнда для вычисляемого поля');
+          return;
+        }
       }
     }
 
