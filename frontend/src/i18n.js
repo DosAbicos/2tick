@@ -3146,10 +3146,13 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    lng: localStorage.getItem('language') || 'ru',
+    lng: localStorage.getItem('i18nextLng') || localStorage.getItem('language') || 'ru',
     fallbackLng: 'ru',
     interpolation: {
       escapeValue: false
+    },
+    react: {
+      useSuspense: false
     }
   });
 
