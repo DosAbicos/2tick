@@ -755,6 +755,7 @@ const AdminTemplatesPageNew = () => {
       showInContractDetails: config.showInContractDetails !== false,
       showInContent: config.showInContent !== false,
       showInSignatureInfo: config.showInSignatureInfo !== false,
+      options: config.options || [],
       isCalculated: config.type === 'calculated',
       formula: config.formula || {
         operand1: '',
