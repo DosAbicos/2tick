@@ -484,20 +484,41 @@ const SignContractPage = () => {
     const file = e.target.files[0];
     if (!file) return;
     
+    // Check file size (max 10MB)
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      toast.error(
+        contractLanguage === 'en' ? 'File too large. Maximum size is 10MB.' :
+        contractLanguage === 'kk' ? 'Файл тым үлкен. Максималды өлшем 10МБ.' :
+        'Файл слишком большой. Максимальный размер 10МБ.'
+      );
+      return;
+    }
+    
+    console.log(`Uploading file: ${file.name}, size: ${file.size}, type: ${file.type}`);
+    
     setUploading(true);
     const formData = new FormData();
     formData.append('file', file);
     
     try {
-      await axios.post(`${API}/sign/${id}/upload-document`, formData);
+      const response = await axios.post(`${API}/sign/${id}/upload-document`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        timeout: 60000, // 60 second timeout for large files
+      });
+      console.log('Upload response:', response.data);
       toast.success(t('signing.docUploaded'));
-      setDocumentUploaded(true); // Mark as uploaded
+      setDocumentUploaded(true);
       
       // Reload contract to get updated signature with document_upload
       const updatedContractResponse = await axios.get(`${API}/sign/${id}`);
       setContract(updatedContractResponse.data);
     } catch (error) {
-      toast.error(error.response?.data?.detail || t('common.error'));
+      console.error('Upload error:', error);
+      const errorMsg = error.response?.data?.detail || error.message || t('common.error');
+      toast.error(errorMsg);
     } finally {
       setUploading(false);
     }
