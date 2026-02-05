@@ -504,8 +504,7 @@ const SignContractPage = () => {
 
   const handleLanguageSelect = async (lang) => {
     if (lang === 'en') {
-      // First change UI language to English so warning shows in English
-      i18n.changeLanguage('en');
+      // Show English warning (always in English)
       setShowEnglishWarning(true);
       return;
     }
@@ -528,8 +527,10 @@ const SignContractPage = () => {
         setContractLanguageLocked(true);
         setShowLanguageSelector(false);
         
-        // Set UI language
-        i18n.changeLanguage(lang);
+        // IMPORTANT: Set UI language to match contract language
+        // Force change by updating localStorage first
+        localStorage.setItem('i18nextLng', lang);
+        await i18n.changeLanguage(lang);
         
         // IMPORTANT: After language selection, always start from step 1 (contract review)
         // This ensures user first reviews the contract before filling form
