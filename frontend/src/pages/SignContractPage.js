@@ -1828,14 +1828,20 @@ const SignContractPage = () => {
                       </button>
                     </div>
                     
-                    <a
-                      href={telegramDeepLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                        if (isMobile) {
+                          window.location.href = telegramDeepLink;
+                        } else {
+                          window.open(telegramDeepLink, '_blank');
+                        }
+                      }}
                       className="block w-full text-center py-2 text-sm text-gray-500 hover:text-gray-700 transition-colors"
                     >
                       {t('signing.telegram')} ↗
-                    </a>
+                    </button>
                   </motion.div>
                 ) : null}
               </motion.div>
