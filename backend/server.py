@@ -2192,7 +2192,16 @@ async def login(credentials: UserLogin, request: Request):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
     # Verify password
-    if not verify_password(credentials.password, user_doc['password']):
+    print(f"DEBUG: Verifying password for {credentials.email}")
+    print(f"DEBUG: Password hash exists: {'password' in user_doc}")
+    try:
+        password_valid = verify_password(credentials.password, user_doc['password'])
+        print(f"DEBUG: Password valid: {password_valid}")
+    except Exception as e:
+        print(f"DEBUG: Password verification error: {e}")
+        password_valid = False
+    
+    if not password_valid:
         await log_user_action(user_doc['id'], "login_failed", "Wrong password", request.client.host)
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
