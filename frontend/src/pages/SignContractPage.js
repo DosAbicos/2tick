@@ -549,28 +549,16 @@ const SignContractPage = () => {
         setContractLanguageLocked(true);
         setShowLanguageSelector(false);
         
-        // CRITICAL: Force UI language change immediately
-        console.log(`Setting UI language to ${lang}`);
+        // CRITICAL: Set both localStorage keys for i18n
         localStorage.setItem('i18nextLng', lang);
-        i18n.changeLanguage(lang);
+        localStorage.setItem('language', lang);
         
-        // Force re-render by updating document language
-        document.documentElement.lang = lang;
+        // Change i18n language
+        await i18n.changeLanguage(lang);
         
-        // Start from step 1 (contract review)
-        setStep(1);
-        
-        // Clear any previous state
-        localStorage.removeItem(`contract_${id}_state`);
-        
-        // Refetch contract to get updated data
-        await fetchContract();
-        
-        toast.success(
-          lang === 'ru' ? 'Язык установлен: Русский' :
-          lang === 'kk' ? 'Тіл орнатылды: Қазақша' :
-          'Language set: English'
-        );
+        // Force page reload to ensure all components re-render with new language
+        // This is the most reliable way to ensure UI updates
+        window.location.reload();
       }
     } catch (error) {
       console.error('Error setting language:', error);
