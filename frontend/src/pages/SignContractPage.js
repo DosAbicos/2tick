@@ -554,12 +554,13 @@ const SignContractPage = () => {
   };
   
   const getPlaceholderLabel = (config) => {
-    // Use UI language for labels (not contract language)
-    const uiLang = i18n.language;
-    if (uiLang === 'kk' && config.label_kk) {
+    // Use CONTRACT language for placeholder labels (not UI language)
+    // This ensures placeholders match the contract language
+    const lang = contractLanguage || i18n.language;
+    if (lang === 'kk' && config.label_kk) {
       return config.label_kk;
     }
-    if (uiLang === 'en' && config.label_en) {
+    if (lang === 'en' && config.label_en) {
       return config.label_en;
     }
     return config.label;
