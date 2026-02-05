@@ -1000,18 +1000,25 @@ const AdminTemplatesPageNew = () => {
                   <Label className="text-sm font-semibold text-gray-900">Роли сторон договора *</Label>
                 </div>
                 <Select 
-                  value={`${formData.party_a_role}|${formData.party_b_role}`}
+                  value={rolePairs.findIndex(p => 
+                    (p.a === formData.party_a_role && p.b === formData.party_b_role) ||
+                    (p.b === formData.party_a_role && p.a === formData.party_b_role)
+                  ).toString()}
                   onValueChange={(value) => {
-                    const [a, b] = value.split('|');
-                    setFormData({...formData, party_a_role: a, party_b_role: b});
+                    const pair = rolePairs[parseInt(value)];
+                    if (pair) {
+                      setFormData({...formData, party_a_role: pair.a, party_b_role: pair.b});
+                    }
                   }}
                 >
                   <SelectTrigger className="bg-white">
-                    <SelectValue />
+                    <SelectValue placeholder="Выберите роли">
+                      {formData.party_a_role} / {formData.party_b_role}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent className="bg-white">
                     {rolePairs.map((pair, idx) => (
-                      <SelectItem key={idx} value={`${pair.a}|${pair.b}`}>
+                      <SelectItem key={idx} value={idx.toString()}>
                         {pair.a} / {pair.b}
                       </SelectItem>
                     ))}
@@ -1020,16 +1027,18 @@ const AdminTemplatesPageNew = () => {
                 
                 {/* Интерактивный блок с кнопкой смены ролей */}
                 <div className="mt-3 flex items-center justify-center gap-2 p-3 bg-white rounded-lg border border-purple-200">
-                  <span className="px-3 py-1.5 bg-blue-100 text-blue-800 font-semibold rounded-lg text-sm">
-                    {formData.party_a_role}
+                  <span className="px-3 py-1.5 bg-blue-100 text-blue-800 font-semibold rounded-lg text-sm min-w-[100px] text-center">
+                    {formData.party_a_role || 'Сторона А'}
                   </span>
                   <button
                     type="button"
                     onClick={() => {
+                      const currentA = formData.party_a_role || 'Сторона А';
+                      const currentB = formData.party_b_role || 'Сторона Б';
                       setFormData({
                         ...formData, 
-                        party_a_role: formData.party_b_role, 
-                        party_b_role: formData.party_a_role
+                        party_a_role: currentB, 
+                        party_b_role: currentA
                       });
                     }}
                     className="p-2 hover:bg-purple-100 rounded-full transition-all duration-200 group"
@@ -1039,8 +1048,8 @@ const AdminTemplatesPageNew = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                     </svg>
                   </button>
-                  <span className="px-3 py-1.5 bg-green-100 text-green-800 font-semibold rounded-lg text-sm">
-                    {formData.party_b_role}
+                  <span className="px-3 py-1.5 bg-green-100 text-green-800 font-semibold rounded-lg text-sm min-w-[100px] text-center">
+                    {formData.party_b_role || 'Сторона Б'}
                   </span>
                 </div>
                 <p className="text-xs text-purple-600 mt-2 text-center">
