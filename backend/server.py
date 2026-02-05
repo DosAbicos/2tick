@@ -3608,27 +3608,36 @@ async def accept_english_disclaimer(contract_id: str):
 
 @api_router.post("/sign/{contract_id}/upload-document")
 async def upload_document(contract_id: str, file: UploadFile = File(...)):
-    # Allow overwriting - client can replace document anytime
-    # Removed check that prevented re-upload
+    """Upload identity document (image or PDF)"""
+    logging.info(f"Document upload started for contract {contract_id}")
+    logging.info(f"File: {file.filename}, Content-Type: {file.content_type}")
     
     # Read file
     content = await file.read()
+    logging.info(f"File size: {len(content)} bytes")
     
     # Check if it's a PDF and convert to image
     file_data = None
     filename = file.filename
     
-    if file.content_type == 'application/pdf' or filename.lower().endswith('.pdf'):
+    is_pdf = file.content_type == 'application/pdf' or filename.lower().endswith('.pdf')
+    logging.info(f"Is PDF: {is_pdf}")
+    
+    if is_pdf:
         try:
             from pdf2image import convert_from_bytes
             from PIL import Image as PILImage
             
+            logging.info("Starting PDF conversion...")
+            
             # Convert PDF to images
-            images = convert_from_bytes(content, first_page=1, last_page=1)
+            images = convert_from_bytes(content, first_page=1, last_page=1, dpi=150)
+            logging.info(f"PDF converted, got {len(images)} pages")
             
             if images:
                 # Get first page
                 img = images[0]
+                logging.info(f"Image size: {img.size}, mode: {img.mode}")
                 
                 # Convert to RGB if needed
                 if img.mode != 'RGB':
@@ -3645,18 +3654,25 @@ async def upload_document(contract_id: str, file: UploadFile = File(...)):
                 
                 # Encode to base64
                 file_data = base64.b64encode(img_buffer.getvalue()).decode()
-                filename = filename.replace('.pdf', '.jpg')
+                filename = filename.replace('.pdf', '.jpg').replace('.PDF', '.jpg')
                 
-                logging.info(f"PDF converted to image successfully")
+                logging.info(f"PDF converted to image successfully, new filename: {filename}")
+            else:
+                logging.error("No images extracted from PDF")
+                raise HTTPException(status_code=400, detail="Could not extract image from PDF")
         except Exception as e:
             logging.error(f"Error converting PDF: {str(e)}")
-            raise HTTPException(status_code=400, detail="Error converting PDF document")
+            import traceback
+            logging.error(traceback.format_exc())
+            raise HTTPException(status_code=400, detail=f"Error converting PDF: {str(e)}")
     else:
         # For images, just encode
         file_data = base64.b64encode(content).decode()
+        logging.info("Image encoded to base64")
     
     # Mock OCR validation
     if not verify_document_ocr(file_data):
+        logging.warning("Document OCR verification failed")
         raise HTTPException(status_code=400, detail="Document verification failed")
     
     # Store document
@@ -3670,6 +3686,7 @@ async def upload_document(contract_id: str, file: UploadFile = File(...)):
     )
     
     await log_audit("document_uploaded", contract_id=contract_id)
+    logging.info(f"Document uploaded successfully for contract {contract_id}")
     
     return {"message": "Document uploaded successfully"}
 
