@@ -1,187 +1,281 @@
 <analysis>**original_problem_statement:**
-The user's initial high-level goal is to improve and finalize their contract management application for production use. This session focused on several areas based on iterative user feedback:
-
-1.  **UI/UX Bug Fixing:** The user reported and requested fixes for a non-functional language switcher on the contract signing page, an oversized button and checkbox on mobile views, and runtime errors () on the QR code verification page.
-2.  **Email & Page Redesign:** The user requested a complete redesign of the OTP and signed-contract email templates to remove emojis, adjust content, and fix layout issues. They also requested a redesign of the QR code verification page to match the main site's branding.
-3.  **SEO Optimization:** The user wanted to improve their site's visibility on Google and Yandex, specifically asking for help with search rankings for terms like 2tick and два тик, and fixing a missing favicon in search results.
-4.  **Contract Template Enhancement:** The user requested a legal review and enhancement of their existing contract templates (monthly rental, daily rental, services). This evolved into a multi-step process of creating, translating, and repeatedly modifying these contracts in  format, focusing on the legal strength of the e-signature clauses and adding business-specific details (like check-in/out times for daily rentals) based on competitor examples.
+The user's high-level goal is to finalize their contract management application. This session focused on several key areas:
+1.  **FreedomPay Integration Compliance:** The user needed to satisfy requirements from their payment acquirer, FreedomPay, by adding explicit information about Simple Electronic Signatures (ПЭП) and data security measures to the website.
+2.  **Feature Implementation (Calculator):** The user requested a significant feature enhancement: a full-featured calculator within the admin template editor. This was to allow for creating calculated fields that could perform arithmetic operations (addition, subtraction, multiplication, division) and handle date differences (e.g., ) to compute values like .
+3.  **UI/UX and Bug Fixing:** The user reported numerous bugs and UI issues, often via screenshots from their iPhone. These included:
+    *   Mobile responsiveness problems on the landing page.
+    *   A complete overhaul of the Forgot/Reset Password flow for better UX and functionality.
+    *   Critical bugs on the contract signing page, including language synchronization failures and an inability to upload PDF documents for identity verification.
+    *   Failure of the Telegram OTP verification mechanism.
+    *   A browser-specific issue where returning from the Telegram app in Chrome on iOS would create an unwanted extra page.
+4.  **Contract Template Finalization:** The session began by finalizing the daily rental agreement based on a competitor's template, a task carried over from the previous session.
 
 **User's preferred language**: russian
 
 **what currently exists?**
-The application is a React+FastAPI+MongoDB contract management platform. In this session, significant progress was made on the frontend and in generating legal documents.
-- The language switcher on the signing page is now functional.
-- The public QR code verification page has been redesigned with the correct branding and now properly displays contract status or a Not Found message.
-- Email templates (OTP and signed contract) have been updated multiple times to meet the user's specific design and content requirements.
-- Critical mobile UI bugs, including an oversized button and checkbox, have been fixed.
-- Basic on-page SEO has been implemented:  has new meta tags,  has been updated, and a full set of PNG/ICO favicons have been generated and linked.
-- Multiple versions of enhanced contract templates (monthly rental, daily rental, services) have been created as  files based on iterative user feedback.
+The application is a full-stack React+FastAPI+MongoDB platform. In this session, the agent successfully implemented a major new feature and fixed several critical bugs.
+- **Calculator Feature:** A comprehensive calculator for template placeholders is now implemented in the admin panel. It supports both simple (UI-driven) and complex (text-based) formulas, date arithmetic, and rounding options. The logic is integrated into the contract creation and signing pages.
+- **FreedomPay Compliance:** The  page was updated with new sections detailing the use of Simple Electronic Signatures (ПЭП) and the platform's data security measures, fulfilling the payment provider's requirements.
+- **Password Reset Flow:** The entire Forgot/Reset Password process has been redesigned. It now features a streamlined UI, multi-language emails, a success animation, and automatic login after a successful password change.
+- **Critical Bug Fixes:**
+    - The language synchronization issue on the signing page is resolved; the interface language now correctly updates based on the user's selection.
+    - The PDF upload failure has been fixed by adding the necessary  dependency to the backend Docker image and  to .
+    - The Telegram OTP issue was diagnosed as a conflict from multiple running bot instances and resolved by instructing the user on how to restart the services correctly.
+- **UI Improvements:** Mobile layout issues on the landing page have been fixed, and the language switcher has been removed from the header of the signing page to prevent user confusion.
 
 **Last working item**:
--   **Last item agent was working:** The agent was rewriting the daily rental agreement (). The user provided a competitor's contract as a detailed template and asked the agent to incorporate its structure and clauses (check-in/out times, deposit rules, property inventory) to make their own contract more robust. The agent created a Python script  to generate this new version.
+-   **Last item agent was working:** The agent was investigating a UX bug specific to Chrome on iOS. When a user opens the Telegram deeplink to get a verification code and then returns to the browser, an extra, unwanted page is created, disrupting the signing flow. The agent was analyzing the frontend code that handles this redirection.
 -   **Status:** IN PROGRESS
 -   **Agent Testing Done:** N
--   **Which testing method agent to use?** The agent needs to execute the Python script , generate the new  file, and present it to the user for review.
+-   **Which testing method agent to use?** Frontend testing agent. This is a platform-specific browser behavior issue. The agent should first try to reproduce it with the screenshot tool, but a proper fix will likely require analyzing the deeplink generation logic in  and potentially using a different redirection method. The testing agent can help verify the fix across different scenarios.
 -   **User Testing Done:** N
 
 **All Pending/In progress Issue list**:
--   **Issue 1: Finalize and get approval for the new daily rental agreement (P0)**
+-   **Issue 1: Chrome on iOS creates an extra page when returning from Telegram deeplink (P0)**
 -   **Issue 2: User needs to deploy all changes to the production server (P1)**
 -   **Issue 3: KazInfoTech SMS Service is inactive (P2)**
 
 **Issues Detail:**
--   **Issue 1: Finalize and get approval for the new daily rental agreement (P0)**
-    -   **Description:** The user wants the daily rental agreement to be as detailed as a competitor's example they provided.
-    -   **Attempted fixes:** A script to generate the document, , was created.
+-   **Issue 1: Chrome on iOS creates an extra page when returning from Telegram deeplink (P0)**
+    -   **Description:** When a user on an iPhone using Chrome clicks the Telegram deeplink, gets the code, and switches back to Chrome, they land on a new, blank page instead of the original signing page. This forces them to manually close the new page and find the original one. The issue does not occur in Safari.
+    -   **Attempted fixes:** The agent started analyzing the deeplink generation code in .
     -   **Next debug checklist:**
-        1.  Execute the Python script: Document saved successfully!.
-        2.  Verify the  file is created correctly.
-        3.  Present the generated document to the user for their review and approval.
-    -   **Why fix this issue and what will be achieved with the fix?** To fulfill the user's direct request for a legally stronger and more comprehensive contract template for their business.
+        1.  Examine , specifically the  function and how the  state is used to navigate the user.
+        2.  The current implementation likely uses . Research alternative methods for triggering deeplinks that are more compatible with iOS Chrome's handling of app switching, such as using  with specific targets or other JavaScript workarounds.
+        3.  Conduct a web search for terms like ios chrome deeplink back navigation new tab to find known issues and solutions.
+    -   **Why fix this issue and what will be achieved with the fix?** To ensure a smooth, uninterrupted user experience for contract signing on all major mobile browsers.
     -   **Status:** IN PROGRESS
     -   **Is recurring issue?** N
-    -   **Should Test frontend/backend/both after fix?** N/A (Document generation).
+    -   **Should Test frontend/backend/both after fix?** Frontend.
     -   **Blocked on other issue:** None.
 
 -   **Issue 2: User needs to deploy all changes to the production server (P1)**
-    -   **Description:** The user is reporting bugs on their live site () that have already been fixed in the preview environment (e.g., broken QR page, , old email designs, large checkbox). This indicates the production server is running outdated code.
-    -   **Attempted fixes:** The agent has repeatedly informed the user that the fixes are in the preview environment and need to be deployed.
+    -   **Description:** The user frequently reports bugs on their live site that have already been fixed in the preview environment. This is due to incorrect or incomplete deployment of the latest code.
+    -   **Attempted fixes:** The agent has repeatedly provided the correct  and usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]
+           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]
+           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]
+           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]
+           [--super-prefix=<path>] [--config-env=<name>=<envvar>]
+           <command> [<args>]
+
+These are common Git commands used in various situations:
+
+start a working area (see also: git help tutorial)
+   clone     Clone a repository into a new directory
+   init      Create an empty Git repository or reinitialize an existing one
+
+work on the current change (see also: git help everyday)
+   add       Add file contents to the index
+   mv        Move or rename a file, a directory, or a symlink
+   restore   Restore working tree files
+   rm        Remove files from the working tree and from the index
+
+examine the history and state (see also: git help revisions)
+   bisect    Use binary search to find the commit that introduced a bug
+   diff      Show changes between commits, commit and working tree, etc
+   grep      Print lines matching a pattern
+   log       Show commit logs
+   show      Show various types of objects
+   status    Show the working tree status
+
+grow, mark and tweak your common history
+   branch    List, create, or delete branches
+   commit    Record changes to the repository
+   merge     Join two or more development histories together
+   rebase    Reapply commits on top of another base tip
+   reset     Reset current HEAD to the specified state
+   switch    Switch branches
+   tag       Create, list, delete or verify a tag object signed with GPG
+
+collaborate (see also: git help workflows)
+   fetch     Download objects and refs from another repository
+   pull      Fetch from and integrate with another repository or a local branch
+   push      Update remote refs along with associated objects
+
+'git help -a' and 'git help -g' list available subcommands and some
+concept guides. See 'git help <command>' or 'git help <concept>'
+to read about a specific subcommand or concept.
+See 'git help git' for an overview of the system. commands, including how to handle  conflicts (No local changes to save) and how to force a rebuild with .
     -   **Next debug checklist:**
-        1.  Ask the user for their deployment method (e.g., , ).
-        2.  Provide the exact commands necessary for them to update their production server.
-        3.  Guide them through the deployment process.
-    -   **Why fix this issue and what will be achieved with the fix?** This is a critical blocker. Deploying the code will resolve numerous user-facing bugs and make all the completed work in this and previous sessions live.
-    -   **Status:** BLOCKED (on user action: deployment).
+        1.  Provide a clear, consolidated set of deployment instructions.
+        2.  Remind the user to always use  when frontend or backend dependencies (, , ) have changed.
+    -   **Why fix this issue and what will be achieved with the fix?** To make all completed features and bug fixes live for end-users and to stop wasting time re-investigating solved problems.
+    -   **Status:** BLOCKED (on user action).
     -   **Is recurring issue?** Y
-    -   **Should Test frontend/backend/both after fix?** Both (after user deploys).
+    -   **Should Test frontend/backend/both after fix?** Both (on the user's production server).
     -   **Blocked on other issue:** None.
 
 -   **Issue 3: KazInfoTech SMS Service is inactive (P2)**
-    -   **Description:** SMS notifications and OTPs are not functional because the user's account with the provider has a zero balance. This is a carry-over issue.
+    -   **Description:** SMS notifications and OTPs are not functional because the user's account with the provider has a zero balance.
     -   **Next debug checklist:**
         1.  Remind the user that they must add funds to their KazInfoTech account for the SMS service to work.
     -   **Why fix this issue and what will be achieved with the fix?** To enable SMS as a contract verification and notification channel.
-    -   **Status:** BLOCKED (on user action: adding funds).
+    -   **Status:** BLOCKED (on user action).
     -   **Is recurring issue?** Y
     -   **Should Test frontend/backend/both after fix?** Backend.
     -   **Blocked on other issue:** None.
 
 **In progress Task List**:
--   **Task 1: Generate and provide the new daily rental agreement document.**
-    -   **Where to resume:** Execute the script , generate the  file, and present it to the user.
-    -   **What will be achieved with this?** Fulfills the user's most recent request for an improved contract template.
-    -   **Status:** IN PROGRESS
-    -   **Should Test frontend/backend/both after fix?** N/A
-    -   **Blocked on something:** None.
+None. All current work items are categorized as issues.
 
 **Upcoming and Future Tasks**
 *   **Upcoming Tasks:**
-    *   (P0) Integrate Contract Templates into the App: The generated  files are currently standalone. The next step is to build functionality for users to select and use these templates within the application.
+    *   (P0) Integrate Contract Templates into the App: Build functionality for users to select and use the generated  templates within the application, connecting them to the new calculator feature.
 *   **Future Tasks:**
     *   (P1) Add Watermark to generated PDF contracts.
     *   (P2) Implement a Mock or Test mode for the payment flow UI.
     *   (P2) Develop a user-facing Contract Constructor UI.
-    -   (P2) Implement a detailed Audit Trail for contract actions.
-    -   (P2) Add Version History for contracts.
-    -   (P2) Re-implement the auto-renewal toggle for subscriptions.
+    *   (P2) Implement a detailed Audit Trail for contract actions.
+    *   (P2) Add Version History for contracts.
+    *   (P2) Re-implement the auto-renewal toggle for subscriptions.
 
 **Completed work in this session**
--   **Language Switcher (FIXED):** Enabled and fixed the language switcher on the contract signing page by editing .
--   **UI/UX Redesign & Fixes (FIXED):**
-    -   Redesigned the QR verification page () to match the site's branding.
-    -   Fixed mobile responsiveness issues on , including an oversized button and checkbox.
--   **Email Templates (FIXED):**
-    -   Rewrote the HTML for OTP and signed contract emails in  to meet new design and content requirements.
--   **SEO (IMPLEMENTED):**
-    -   Updated  with improved meta tags for better search engine visibility.
-    -   Generated and linked a full set of  and  icons in  to fix display issues in Google search.
-    -   Updated  and guided the user on submitting it to Google Search Console.
--   **Contract Generation (DONE):**
-    -   Created and delivered multiple enhanced versions of legal contracts (monthly rental, daily rental, services) as  files based on user feedback.
-
-**Earlier issues found/mentioned but not fixed**
-None not already listed in the pending issues. The primary unfixed issues are those the user sees on their production server, which is pending deployment.
-
-**Known issue recurrence from previous fork**
-None.
+-   **Feature: Placeholder Calculator:** Implemented a full-featured calculator in  with a new utility file . It supports date math, complex text formulas, and rounding, and is integrated into  and .
+-   **Compliance: FreedomPay Requirements:** Added Simple Electronic Signature and Data Security sections to .
+-   **Bugfix: PDF Uploads:** Resolved PDF upload failures by adding  to  and  to .
+-   **Bugfix: Language Synchronization:** Fixed the UI language not updating on the  by correcting  key usage and forcing a page reload on language selection.
+-   **Bugfix: Telegram OTP:** Fixed the Telegram verification flow by instructing the user on how to resolve the  caused by multiple bot instances.
+-   **UX Overhaul: Password Reset:** Completely redesigned the password reset flow across  and , adding auto-login and multi-language email support in .
+-   **UI Fixes:**
+    -   Corrected mobile layout on .
+    -   Hid the redundant language switcher on .
+-   **Task Completion:** Generated and delivered the final version of the daily rental agreement  file.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
--   **Iterative Frontend Debugging:** Using screenshots and rapid feedback loops to fix specific UI/UX issues (styling, element sizes) on mobile and desktop.
--   **Dynamic Document Generation:** Using Python ( library) to programmatically create and modify complex Word documents with translations and conditional legal clauses.
--   **On-Page SEO:** Implementing fundamental SEO practices by modifying meta tags, generating a comprehensive set of favicons, and managing the  file.
--   **Production vs. Preview Environment Divergence:** The session was characterized by a recurring need to explain to the user that fixes implemented in the preview environment will not appear on their live production site until they deploy the new code.
+-   **Complex Feature Implementation:** Built a JavaScript-based calculator from scratch to parse and evaluate user-defined mathematical and date-based formulas.
+-   **Dependency Management:** Debugged and fixed issues related to missing system-level () and application-level () dependencies in a Docker environment.
+-   **Authentication Flow Debugging:** Performed a deep-dive into login failures, tracing issues back to incorrect database connections, password hashing (), and data model mismatches.
+-   **Cross-App Deeplinking:** Investigating mobile browser-specific bugs (iOS Chrome) related to returning from a native app (Telegram) via a deeplink.
+-   **i18next State Synchronization:** Debugged and fixed issues where the React UI did not update upon language change, requiring a forced page reload as a definitive solution.
+-   **Docker Troubleshooting:** Diagnosed and resolved runtime conflicts () and build issues ().
 
 **key DB schema**
-No changes were made to the database schema.
+-   No structural changes were made to the database schema.
+-   The  collection was debugged to fix a login issue related to an incorrect field name ( vs ).
 
 **changes in tech stack**
--    was installed as a system dependency to generate image files.
+-   : Added as a system dependency in the backend Docker image for PDF processing.
+-   : Added as a Python dependency.
 
 **All files of reference**
 -   **New Files:**
-    -    (and other  scripts used for contract generation).
-    -   , , , .
+    -   
 -   **Heavily Modified:**
-    -    (Multiple email template rewrites).
-    -    (Complete visual redesign and content changes).
+    -   
+    -   
+    -   
+    -   
 -   **Modified:**
-    -    (UI logic and style fixes).
-    -    (SEO).
-    -    (SEO).
-    -    (UI fix).
+    -   
+    -   
+    -   
+    -   
+    -   
+    -   
+    -   
 
 **Areas that need refactoring**:
--    remains a monolithic file containing API routes, business logic, and raw HTML templates. It should be broken down into modules (e.g., for routing, email services, PDF generation).
--   The contract generation logic is spread across multiple temporary scripts () in the  directory. This functionality should be consolidated into a reusable service or class within the main application, and the temporary scripts should be removed.
+-    has grown excessively complex, handling multiple signing steps, OTP logic for two channels, file uploads, and language switching. It is a strong candidate for being broken down into smaller, more manageable components and custom hooks.
+-    remains a large, monolithic file containing routes, business logic, and email templates. It should be modularized.
 
 **key api endpoints**
--   No new API endpoints were created. The existing  endpoint was heavily tested and debugged from the frontend perspective.
+-   : Extensively debugged and fixed.
+-   : Modified to support multi-language emails.
+-   : Modified to enable the new auto-login flow.
+-   : Debugged and fixed for PDF uploads.
+-   : Debugged and fixed.
 
 **Critical Info for New Agent**
 -   **Respond in Russian.**
--   **PRODUCTION DEPLOYMENT IS THE #1 BLOCKER.** The user's live site () is running old code. Many new bugs they report are problems you will find have already been fixed. Your first priority should be to guide the user to deploy the latest code to their production server to resolve these issues and unblock progress.
--   **Contract generation is an iterative process.** The user is actively developing their legal documents. The last request was to rework the daily rental agreement. Be prepared for more feedback and changes to the generated  files.
--   **The user provides feedback visually.** Expect to receive many screenshots and make small, specific UI changes based on them. Analyze images carefully.
+-   **Deployment is a recurring blocker.** The user frequently struggles with usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]
+           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]
+           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]
+           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]
+           [--super-prefix=<path>] [--config-env=<name>=<envvar>]
+           <command> [<args>]
+
+These are common Git commands used in various situations:
+
+start a working area (see also: git help tutorial)
+   clone     Clone a repository into a new directory
+   init      Create an empty Git repository or reinitialize an existing one
+
+work on the current change (see also: git help everyday)
+   add       Add file contents to the index
+   mv        Move or rename a file, a directory, or a symlink
+   restore   Restore working tree files
+   rm        Remove files from the working tree and from the index
+
+examine the history and state (see also: git help revisions)
+   bisect    Use binary search to find the commit that introduced a bug
+   diff      Show changes between commits, commit and working tree, etc
+   grep      Print lines matching a pattern
+   log       Show commit logs
+   show      Show various types of objects
+   status    Show the working tree status
+
+grow, mark and tweak your common history
+   branch    List, create, or delete branches
+   commit    Record changes to the repository
+   merge     Join two or more development histories together
+   rebase    Reapply commits on top of another base tip
+   reset     Reset current HEAD to the specified state
+   switch    Switch branches
+   tag       Create, list, delete or verify a tag object signed with GPG
+
+collaborate (see also: git help workflows)
+   fetch     Download objects and refs from another repository
+   pull      Fetch from and integrate with another repository or a local branch
+   push      Update remote refs along with associated objects
+
+'git help -a' and 'git help -g' list available subcommands and some
+concept guides. See 'git help <command>' or 'git help <concept>'
+to read about a specific subcommand or concept.
+See 'git help git' for an overview of the system. and . Be prepared to provide very clear, step-by-step commands and explain the purpose of flags like . Always suspect that user-reported bugs might be due to outdated code on their production server.
+-   **The login credentials are  / .** The login flow was debugged extensively; the issue was a combination of an incorrect database name in a local script and a schema mismatch. The correct database is  as defined in .
+-   **The Telegram OTP bug was a race condition.** It was caused by multiple bot instances running. If it happens again, the first debugging step is to stop all containers and restart them cleanly ().
+-   The user primarily tests on an iPhone. Be mindful of mobile-specific UI/UX bugs and browser behaviors (e.g., the current iOS Chrome issue).
 
 **documents and test reports created in this job**
--   Multiple  contract templates were generated and saved in  as a temporary location for the user to download. These include:  and .
+-    (Generated and provided to the user)
+-    (Generated by testing agent, but not fully acted upon due to login bug)
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User:** Asks for daily and service contracts to be as strong as the monthly rental one. (Status: **Addressed**)
-2.  **User:** Asks if the detailed e-signature clause is necessary. (Status: **Addressed**, agent explained its importance).
-3.  **User:** Requests the detailed e-signature clause be added to all contracts. (Status: **Addressed**)
-4.  **User:** Changes mind, asks to simplify the closing section and remove the detailed e-signature clause. (Status: **Addressed**)
-5.  **User:** Changes mind again, states the daily rental contract should be stronger than the others (re-add the full clause). (Status: **Addressed**)
-6.  **User:** Provides text from a competitor's daily rental contract and asks the agent to completely rework their daily rental template to be as detailed, including specific clauses for check-in/out times. (Status: **In Progress**, this is the current active task).
-7.  **User:** Acknowledges the agent's plan to add the simplified closing section. (This message seems out of order, the agent correctly proceeded with the request from message #6).
-8.  **User:** Asks what submitting the sitemap to Google provides. (Status: **Addressed**)
-9.  **User:** Asks when the favicon will appear in search results. (Status: **Addressed**)
-10. **User:** Asks for analysis and enhancement of their contract templates, providing a  file. (Status: **Addressed**, this kicked off the entire contract generation sub-task).
+1.  **User:** Reports the Chrome on iOS deeplink issue, where returning from Telegram creates an extra page. (Status: **In Progress**)
+2.  **User:** Confirms that PDF uploads and language switching are now working, but Telegram signing is broken. (Status: **Addressed**)
+3.  **User:** Provides logs showing the  error. (Status: **Addressed**)
+4.  **User:** Confirms everything is working now. Asks about the extra page issue in Chrome on iPhone. (Status: **In Progress**)
+5.  **User:** Reports that the interface doesn't change language and PDF still doesn't upload on production, despite  being present. (Status: **Addressed**)
+6.  **User:** Provides logs from production showing . (Status: **Addressed**)
+7.  **User:** Reports their  failed due to local changes in . (Status: **Addressed**)
+8.  **User:** Reports that the interface language doesn't switch correctly and the English warning should always be in English. (Status: **Addressed**)
+9.  **User:** Provides screenshots of the language and PDF upload issues on production. (Status: **Addressed**)
+10. **User:** Reports that after filling placeholders, the next step (ID upload) doesn't accept PDF files. (Status: **Addressed**)
 
 **Project Health Check:**
 -   **Broken:**
-    -   The user's production environment () is running outdated code, making several features appear broken to the user (e.g., QR code verification, UI elements, email designs).
+    -   The user's production environment is frequently out-of-sync with the development branch, causing them to report already-fixed issues.
+    -   The SMS OTP channel () is non-functional due to a lack of funds in the user's account.
 -   **Mocked:** None.
 
 **3rd Party Integrations**
--   : SMS provider (inactive due to zero balance).
--   : Telegram OTP.
--   : Custom SMTP for email.
+-   : SMS provider (Inactive due to zero balance).
+-   : For Telegram OTP (Active, recently debugged and fixed).
+-   : For custom SMTP emails (Active).
+-   : Payment acquirer (Compliance issues addressed, user is in communication with them).
 
 **Testing status**
--   Testing agent used after significant changes: NO
+-   Testing agent used after significant changes: YES (for the calculator feature, but the run was interrupted by a blocking login bug).
 -   Troubleshoot agent used after agent stuck in loop: NO
--   Test files created: []
--   Known regressions: None. The regressions reported by the user are due to their production environment running old code.
+-   Test files created:
+    -    (for  testing)
+-   Known regressions: None. Issues reported by the user were due to their production environment running old code.
 
 **Credentials to test flow:**
--   **SMTP:**
-    -   Host:  / Port: 
-    -   User:  / Password: 
 -   **App Admin User:**  / Password: 
 
 **What agent forgot to execute**
--   The agent created the Python script  to fulfill the user's final request but did not execute it to generate the  file. The next agent must run this script and present the output to the user.</analysis>
+-   The testing agent was invoked for the calculator feature, but its results were never fully processed because the agent got sidetracked by a critical login bug. The new agent should consider re-running tests for the calculator to ensure there are no regressions.</analysis>
