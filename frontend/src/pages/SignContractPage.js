@@ -344,12 +344,13 @@ const SignContractPage = () => {
         signerInfo,
         placeholderValues,
         documentUploaded,
-        unfilledPlaceholders
+        unfilledPlaceholders,
+        verificationMethod
       };
       console.log('Saving state to localStorage:', stateToSave);
       localStorage.setItem(`contract_${id}_state`, JSON.stringify(stateToSave));
     }
-  }, [step, signerInfo, placeholderValues, documentUploaded, unfilledPlaceholders, id, contract]);
+  }, [step, signerInfo, placeholderValues, documentUploaded, unfilledPlaceholders, verificationMethod, id, contract]);
 
   // Pre-fetch Telegram deep link when step 5 is reached (verification step)
   useEffect(() => {
