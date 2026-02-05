@@ -674,6 +674,7 @@ const AdminTemplatesPageNew = () => {
       showInContractDetails: true,
       showInContent: true,
       showInSignatureInfo: true,
+      options: [],
       isCalculated: false,
       formula: {
         operand1: '',
