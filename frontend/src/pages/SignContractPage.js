@@ -528,16 +528,18 @@ const SignContractPage = () => {
         setContractLanguageLocked(true);
         setShowLanguageSelector(false);
         
-        // IMPORTANT: Set UI language to match contract language
-        // Force change by updating localStorage first
+        // CRITICAL: Force UI language change immediately
+        console.log(`Setting UI language to ${lang}`);
         localStorage.setItem('i18nextLng', lang);
-        await i18n.changeLanguage(lang);
+        i18n.changeLanguage(lang);
         
-        // IMPORTANT: After language selection, always start from step 1 (contract review)
-        // This ensures user first reviews the contract before filling form
+        // Force re-render by updating document language
+        document.documentElement.lang = lang;
+        
+        // Start from step 1 (contract review)
         setStep(1);
         
-        // Clear any previous state that might skip the review step
+        // Clear any previous state
         localStorage.removeItem(`contract_${id}_state`);
         
         // Refetch contract to get updated data
