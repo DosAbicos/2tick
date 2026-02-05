@@ -53,7 +53,7 @@ const CATEGORIES = [
   { value: 'other', label: '📄 Другое' }
 ];
 
-import { Clock } from 'lucide-react';
+import { Clock, ChevronDown } from 'lucide-react';
 
 const FIELD_TYPES = [
   { value: 'text', label: 'Текст', icon: Type },
@@ -63,6 +63,7 @@ const FIELD_TYPES = [
   { value: 'phone', label: 'Телефон', icon: Phone },
   { value: 'email', label: 'Email', icon: Mail },
   { value: 'textarea', label: 'Длинный текст', icon: FileText },
+  { value: 'select', label: 'Выпадающий список', icon: ChevronDown },
   { value: 'calculated', label: '🧮 Вычисляемое', icon: Hash }
 ];
 
