@@ -1738,6 +1738,86 @@ const AdminTemplatesPageNew = () => {
                 </div>
               )}
 
+              {/* Options for select/dropdown fields */}
+              {currentPlaceholder.type === 'select' && (
+                <div className="border-2 border-dashed border-blue-200 rounded-lg p-4 bg-blue-50/50 space-y-4">
+                  <Label className="text-sm font-bold text-blue-900">📋 Варианты выбора</Label>
+                  
+                  <div className="bg-white border border-blue-300 rounded p-3 text-xs space-y-1">
+                    <p className="text-neutral-700">
+                      Добавьте варианты, которые пользователь сможет выбрать из списка
+                    </p>
+                  </div>
+
+                  {/* Existing options */}
+                  <div className="space-y-2">
+                    {(currentPlaceholder.options || []).map((option, index) => (
+                      <div key={index} className="flex gap-2 items-start bg-white p-2 rounded border">
+                        <div className="flex-1 grid grid-cols-3 gap-2">
+                          <Input
+                            placeholder="Значение (RU)"
+                            value={option.label || ''}
+                            onChange={(e) => {
+                              const newOptions = [...(currentPlaceholder.options || [])];
+                              newOptions[index] = { ...newOptions[index], label: e.target.value, value: e.target.value };
+                              setCurrentPlaceholder({ ...currentPlaceholder, options: newOptions });
+                            }}
+                            className="text-sm"
+                          />
+                          <Input
+                            placeholder="Қазақша (KK)"
+                            value={option.label_kk || ''}
+                            onChange={(e) => {
+                              const newOptions = [...(currentPlaceholder.options || [])];
+                              newOptions[index] = { ...newOptions[index], label_kk: e.target.value };
+                              setCurrentPlaceholder({ ...currentPlaceholder, options: newOptions });
+                            }}
+                            className="text-sm"
+                          />
+                          <Input
+                            placeholder="English (EN)"
+                            value={option.label_en || ''}
+                            onChange={(e) => {
+                              const newOptions = [...(currentPlaceholder.options || [])];
+                              newOptions[index] = { ...newOptions[index], label_en: e.target.value };
+                              setCurrentPlaceholder({ ...currentPlaceholder, options: newOptions });
+                            }}
+                            className="text-sm"
+                          />
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            const newOptions = currentPlaceholder.options.filter((_, i) => i !== index);
+                            setCurrentPlaceholder({ ...currentPlaceholder, options: newOptions });
+                          }}
+                          className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Add new option button */}
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const newOptions = [...(currentPlaceholder.options || []), { value: '', label: '', label_kk: '', label_en: '' }];
+                      setCurrentPlaceholder({ ...currentPlaceholder, options: newOptions });
+                    }}
+                    className="w-full border-dashed border-blue-400 text-blue-600 hover:bg-blue-100"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Добавить вариант
+                  </Button>
+                </div>
+              )}
+
               {/* Owner - only if NOT calculated */}
               {currentPlaceholder.type !== 'calculated' && (
                 <div>
