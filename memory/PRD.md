@@ -39,6 +39,8 @@
     - `/app/frontend/src/pages/SignContractPage.js` (строки 1555-1640, 120-140, 340-355)
   
 - ✅ **SMS провайдер КазИнфоТех активен** (баланс пополнен пользователем)
+
+### 22.01.2025 (предыдущая сессия)
 - ✅ **Email OTP верификация:**
   - Добавлена возможность получать OTP код на email при регистрации и подписании
   - Реализованы API endpoints: `/api/sign/{id}/request-otp?method=email`, `/api/auth/registration/{id}/request-otp?method=email`
