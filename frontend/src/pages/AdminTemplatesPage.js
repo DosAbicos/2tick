@@ -344,6 +344,8 @@ const AdminTemplatesPageNew = () => {
     showInContractDetails: true,
     showInContent: true,
     showInSignatureInfo: true,
+    // For select fields (dropdown)
+    options: [],  // Array of { value: '', label: '', label_kk: '', label_en: '' }
     // For calculated fields
     isCalculated: false,
     formula: {
