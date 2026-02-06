@@ -207,6 +207,32 @@ const evaluateTextFormula = (textFormula, values, placeholders, calculatedCache)
     // Remove any remaining date placeholders (shouldn't happen in valid formulas)
     expression = expression.replace(/__DATE_\w+__/g, '0');
     
+    // Handle percentages BEFORE safe evaluation
+    // Pattern 1: NUMBER * NUMBER% → NUMBER * (NUMBER / 100)
+    // Pattern 2: NUMBER + NUMBER% → NUMBER + (NUMBER * NUMBER / 100)  
+    // Pattern 3: NUMBER - NUMBER% → NUMBER - (NUMBER * NUMBER / 100)
+    
+    // First, convert standalone percentages after * or / operators: "* 15%" → "* 0.15"
+    expression = expression.replace(/([*/])\s*(\d+(?:\.\d+)?)\s*%/g, (match, operator, percent) => {
+      return `${operator} ${parseFloat(percent) / 100}`;
+    });
+    
+    // Handle "NUMBER + NUMBER%" → "NUMBER * (1 + NUMBER/100)" and "NUMBER - NUMBER%" → "NUMBER * (1 - NUMBER/100)"
+    // This is for cases like "100 - 15%" meaning "100 minus 15% of 100"
+    expression = expression.replace(/(\d+(?:\.\d+)?)\s*([+-])\s*(\d+(?:\.\d+)?)\s*%/g, (match, base, operator, percent) => {
+      const percentDecimal = parseFloat(percent) / 100;
+      if (operator === '+') {
+        return `(${base} + ${base} * ${percentDecimal})`;
+      } else {
+        return `(${base} - ${base} * ${percentDecimal})`;
+      }
+    });
+    
+    // Handle any remaining percentage signs (convert to decimal)
+    expression = expression.replace(/(\d+(?:\.\d+)?)\s*%/g, (match, percent) => {
+      return (parseFloat(percent) / 100).toString();
+    });
+    
     // Safely evaluate the mathematical expression
     // Only allow numbers, operators, parentheses, and whitespace
     const safeExpression = expression.replace(/[^0-9+\-*/().]/g, '');
