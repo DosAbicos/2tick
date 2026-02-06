@@ -4645,11 +4645,15 @@ async def download_pdf(contract_id: str, current_user: dict = Depends(get_curren
 
 # ===== ADMIN ROUTES =====
 @api_router.get("/admin/users")
-async def get_all_users(current_user: dict = Depends(get_current_user), search: str = None):
+async def get_all_users(current_user: dict = Depends(get_current_user), search: str = None, include_deleted: bool = False):
     if current_user.get('role') != 'admin':
         raise HTTPException(status_code=403, detail="Admin access required")
     
     query = {}
+    
+    # По умолчанию не показываем удалённых пользователей
+    if not include_deleted:
+        query["is_deleted"] = {"$ne": True}
     
     # Добавляем поиск по ФИО, email, phone, ID  
     if search:
