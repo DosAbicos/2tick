@@ -638,7 +638,14 @@ const AdminPage = () => {
                         <TableCell>
                           <code className="text-xs font-mono bg-gray-100 px-2 py-1 rounded text-gray-700">{(user.id || user._id || '—').substring(0, 8)}...</code>
                         </TableCell>
-                        <TableCell className="font-medium text-gray-900">{user.email}</TableCell>
+                        <TableCell className="font-medium text-gray-900">
+                          <div className="flex items-center gap-2">
+                            {user.email}
+                            {user.is_active === false && (
+                              <span className="text-xs px-1.5 py-0.5 bg-red-100 text-red-700 rounded">отключён</span>
+                            )}
+                          </div>
+                        </TableCell>
                         <TableCell className="text-gray-700">{user.full_name}</TableCell>
                         <TableCell>
                           <Badge variant={user.role === 'admin' ? 'destructive' : 'default'} className="font-medium">
@@ -648,7 +655,7 @@ const AdminPage = () => {
                         <TableCell className="text-gray-700">{user.contract_limit || 10}</TableCell>
                         <TableCell className="text-gray-600">{new Date(user.created_at).toLocaleDateString('ru-RU')}</TableCell>
                         <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
+                          <div className="flex justify-end gap-1">
                             <button
                               onClick={() => fetchUserDetails(user.id)}
                               title="Просмотр профиля"
