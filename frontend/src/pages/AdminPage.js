@@ -696,9 +696,19 @@ const AdminPage = () => {
                               <Minus className="h-4 w-4 text-orange-600" />
                             </button>
                             <button
-                              onClick={() => {
-                                setSelectedUser(user);
-                                handleToggleUserStatus();
+                              onClick={async () => {
+                                try {
+                                  const response = await axios.post(
+                                    `${API}/admin/users/${user.id}/toggle-status`,
+                                    null,
+                                    { headers: { Authorization: `Bearer ${token}` } }
+                                  );
+                                  const status = response.data.is_active ? 'активирован' : 'деактивирован';
+                                  toast.success(`Пользователь ${status}`);
+                                  fetchAdminData();
+                                } catch (error) {
+                                  toast.error(error.response?.data?.detail || 'Ошибка изменения статуса');
+                                }
                               }}
                               title={user.is_active !== false ? "Деактивировать" : "Активировать"}
                               className="p-2 hover:bg-purple-50 rounded-lg transition-colors"
