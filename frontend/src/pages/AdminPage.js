@@ -1127,8 +1127,8 @@ const AdminPage = () => {
             <div className="p-4 bg-red-50 rounded-lg border border-red-200">
               <p className="text-sm text-red-900 font-medium">⚠️ Внимание!</p>
               <p className="text-sm text-red-700 mt-2">
-                Пользователь будет деактивирован и помечен как удалённый. 
-                Это действие можно отменить только через базу данных.
+                Пользователь и все его договора будут <strong>безвозвратно удалены</strong> из базы данных.
+                Это действие нельзя отменить!
               </p>
             </div>
           </div>
@@ -1138,7 +1138,7 @@ const AdminPage = () => {
             </Button>
             <Button onClick={handleDeleteUser} variant="destructive">
               <Trash2 className="mr-2 h-4 w-4" />
-              Удалить пользователя
+              Удалить навсегда
             </Button>
           </DialogFooter>
         </DialogContent>
