@@ -128,7 +128,7 @@ const CreateContractPage = () => {
 
   const editorRef = useRef(null);
 
-  // Load next contract number on mount
+  // Load next contract number and current user data on mount
   useEffect(() => {
     const fetchNextContractNumber = async () => {
       try {
@@ -143,7 +143,20 @@ const CreateContractPage = () => {
       }
     };
     
+    // Fetch current user profile for auto-fill
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await axios.get(`${API}/auth/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setCurrentUser(response.data);
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    };
+    
     fetchNextContractNumber();
+    fetchCurrentUser();
 
     // Load template if template_id is provided (from URL or sessionStorage)
     const storedTemplateId = sessionStorage.getItem('selectedTemplateId');
