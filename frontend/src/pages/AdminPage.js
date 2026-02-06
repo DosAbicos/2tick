@@ -72,11 +72,14 @@ const AdminPage = () => {
   const [userDetailsOpen, setUserDetailsOpen] = useState(false);
   const [resetPasswordOpen, setResetPasswordOpen] = useState(false);
   const [addContractsOpen, setAddContractsOpen] = useState(false);
+  const [removeContractsOpen, setRemoveContractsOpen] = useState(false);
+  const [deleteUserOpen, setDeleteUserOpen] = useState(false);
   const [errorsModalOpen, setErrorsModalOpen] = useState(false);
   
   // Form states
   const [newPassword, setNewPassword] = useState('');
   const [contractsToAdd, setContractsToAdd] = useState(1);
+  const [contractsToRemove, setContractsToRemove] = useState(1);
   const [userLogs, setUserLogs] = useState([]);
   const [loadingLogs, setLoadingLogs] = useState(false);
   const [recentErrors, setRecentErrors] = useState([]);
