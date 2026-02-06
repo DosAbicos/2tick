@@ -1188,6 +1188,29 @@ Email: ${templateData.tenant_email || '[Email]'}
                               />
                             )}
                             
+                            {config.type === 'textarea' && (
+                              <textarea
+                                id={`placeholder_${key}`}
+                                value={placeholderValues[key] || ''}
+                                onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
+                                required={config.required}
+                                className="minimal-input w-full min-h-[100px] resize-y"
+                                placeholder={`Введите ${config.label.toLowerCase()}`}
+                                rows={4}
+                              />
+                            )}
+                            
+                            {config.type === 'time' && (
+                              <input
+                                id={`placeholder_${key}`}
+                                type="time"
+                                value={placeholderValues[key] || ''}
+                                onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
+                                required={config.required}
+                                className="minimal-input w-full"
+                              />
+                            )}
+                            
                             {config.type === 'select' && config.options && (
                               <select
                                 id={`placeholder_${key}`}
