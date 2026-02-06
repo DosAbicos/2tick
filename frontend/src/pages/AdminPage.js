@@ -677,6 +677,41 @@ const AdminPage = () => {
                             >
                               <Plus className="h-4 w-4 text-green-600" />
                             </button>
+                            <button
+                              onClick={() => {
+                                setSelectedUser(user);
+                                setContractsToRemove(1);
+                                setRemoveContractsOpen(true);
+                              }}
+                              title="Отнять договоры"
+                              className="p-2 hover:bg-orange-50 rounded-lg transition-colors"
+                            >
+                              <Minus className="h-4 w-4 text-orange-600" />
+                            </button>
+                            <button
+                              onClick={() => {
+                                setSelectedUser(user);
+                                handleToggleUserStatus();
+                              }}
+                              title={user.is_active !== false ? "Деактивировать" : "Активировать"}
+                              className="p-2 hover:bg-purple-50 rounded-lg transition-colors"
+                            >
+                              {user.is_active !== false ? (
+                                <UserX className="h-4 w-4 text-purple-600" />
+                              ) : (
+                                <UserCheck className="h-4 w-4 text-green-600" />
+                              )}
+                            </button>
+                            <button
+                              onClick={() => {
+                                setSelectedUser(user);
+                                setDeleteUserOpen(true);
+                              }}
+                              title="Удалить пользователя"
+                              className="p-2 hover:bg-red-50 rounded-lg transition-colors"
+                            >
+                              <Trash2 className="h-4 w-4 text-red-600" />
+                            </button>
                           </div>
                         </TableCell>
                       </TableRow>
