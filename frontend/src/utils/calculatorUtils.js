@@ -156,8 +156,12 @@ const tokenize = (formula) => {
 };
 
 /**
- * Parse and evaluate a text formula
- * Supports: placeholders, numbers, +, -, *, /, parentheses
+ * Parse and evaluate a text formula with percentage support
+ * Supports: placeholders, numbers, +, -, *, /, parentheses, and percentages (%)
+ * Examples: 
+ *   - TOTAL_AMOUNT * 15%  → TOTAL_AMOUNT * 0.15
+ *   - 100 - 15%           → 100 - (100 * 0.15) = 85
+ *   - TOTAL_AMOUNT * PREPAYMENT_PERCENT% → multiply by percent as decimal
  */
 const evaluateTextFormula = (textFormula, values, placeholders, calculatedCache) => {
   if (!textFormula) return 0;
