@@ -1001,6 +1001,97 @@ const AdminPage = () => {
         </DialogContent>
       </Dialog>
 
+      {/* Remove Contracts Dialog */}
+      <Dialog open={removeContractsOpen} onOpenChange={setRemoveContractsOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Отнять договоры</DialogTitle>
+            <DialogDescription>
+              Уменьшить лимит договоров для {selectedUser?.email}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label htmlFor="contracts-to-remove">Количество договоров для отнятия</Label>
+              <div className="flex items-center gap-2 mt-2">
+                <Button
+                  size="icon"
+                  variant="outline"
+                  onClick={() => setContractsToRemove(Math.max(1, contractsToRemove - 1))}
+                >
+                  <Minus className="h-4 w-4" />
+                </Button>
+                <Input
+                  id="contracts-to-remove"
+                  type="number"
+                  value={contractsToRemove}
+                  onChange={(e) => setContractsToRemove(parseInt(e.target.value) || 1)}
+                  className="text-center"
+                  min="1"
+                />
+                <Button
+                  size="icon"
+                  variant="outline"
+                  onClick={() => setContractsToRemove(contractsToRemove + 1)}
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+              <div className="mt-4 p-3 bg-red-50 rounded-lg border border-red-200">
+                <p className="text-sm text-red-900">
+                  <strong>Текущий лимит:</strong> {selectedUser?.contract_limit || 10}
+                </p>
+                <p className="text-sm text-red-900 mt-1">
+                  <strong>Новый лимит:</strong> {Math.max(0, (selectedUser?.contract_limit || 10) - contractsToRemove)}
+                </p>
+                <p className="text-xs text-red-700 mt-2">
+                  Будет отнято {contractsToRemove} договоров от текущего лимита
+                </p>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRemoveContractsOpen(false)}>
+              Отмена
+            </Button>
+            <Button onClick={handleRemoveContracts} variant="destructive">
+              <Minus className="mr-2 h-4 w-4" />
+              Отнять договоры
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete User Confirmation Dialog */}
+      <Dialog open={deleteUserOpen} onOpenChange={setDeleteUserOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="text-red-600">Удаление пользователя</DialogTitle>
+            <DialogDescription>
+              Вы уверены, что хотите удалить пользователя {selectedUser?.email}?
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="p-4 bg-red-50 rounded-lg border border-red-200">
+              <p className="text-sm text-red-900 font-medium">⚠️ Внимание!</p>
+              <p className="text-sm text-red-700 mt-2">
+                Пользователь будет деактивирован и помечен как удалённый. 
+                Это действие можно отменить только через базу данных.
+              </p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteUserOpen(false)}>
+              Отмена
+            </Button>
+            <Button onClick={handleDeleteUser} variant="destructive">
+              <Trash2 className="mr-2 h-4 w-4" />
+              Удалить пользователя
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Contract Search Dialog */}
       <Dialog open={contractSearchOpen} onOpenChange={setContractSearchOpen}>
         <DialogContent className="max-w-2xl">
