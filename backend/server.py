@@ -4974,7 +4974,7 @@ async def toggle_user_status(user_id: str, current_user: dict = Depends(get_curr
 
 @api_router.delete("/admin/users/{user_id}")
 async def delete_user(user_id: str, current_user: dict = Depends(get_current_user)):
-    """Удалить пользователя (мягкое удаление)"""
+    """Полностью удалить пользователя из базы данных"""
     if current_user.get('role') != 'admin':
         raise HTTPException(status_code=403, detail="Admin access required")
     
@@ -4986,19 +4986,14 @@ async def delete_user(user_id: str, current_user: dict = Depends(get_current_use
     if user_id == current_user.get('user_id'):
         raise HTTPException(status_code=400, detail="Cannot delete yourself")
     
-    # Мягкое удаление - помечаем как удалённого
-    await db.users.update_one(
-        {"id": user_id},
-        {"$set": {
-            "is_deleted": True,
-            "is_active": False,
-            "deleted_at": datetime.utcnow(),
-            "deleted_by": current_user.get('user_id')
-        }}
-    )
+    # Удаляем пользователя полностью
+    await db.users.delete_one({"id": user_id})
+    
+    # Также удаляем все его договора
+    await db.contracts.delete_many({"user_id": user_id})
     
     await log_audit("admin_user_deleted", user_id=current_user.get('user_id'), 
-                   details=f"User {user.get('email')} was deleted")
+                   details=f"User {user.get('email')} was permanently deleted")
     
     return {"message": "User deleted successfully"}
 
