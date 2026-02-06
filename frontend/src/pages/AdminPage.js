@@ -43,7 +43,10 @@ import {
   Settings,
   Bell,
   ScrollText,
-  AlertCircle
+  AlertCircle,
+  Trash2,
+  UserX,
+  UserCheck
 } from 'lucide-react';
 import '../styles/neumorphism.css';
 
