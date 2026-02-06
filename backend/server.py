@@ -4906,6 +4906,99 @@ async def add_contracts_to_limit(user_id: str, contracts_to_add: int, current_us
         "contracts_added": contracts_to_add
     }
 
+
+@api_router.post("/admin/users/{user_id}/remove-contracts")
+async def remove_contracts_from_limit(user_id: str, contracts_to_remove: int, current_user: dict = Depends(get_current_user)):
+    """Отнять договора у пользователя"""
+    if current_user.get('role') != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    current_limit = user.get('contract_limit', 3)
+    new_limit = max(0, current_limit - contracts_to_remove)  # Не меньше 0
+    
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"contract_limit": new_limit}}
+    )
+    
+    await log_audit("admin_contracts_removed", user_id=current_user.get('user_id'), 
+                   details=f"Removed {contracts_to_remove} contracts from {user.get('email')}. New limit: {new_limit}")
+    
+    return {
+        "message": f"Removed {contracts_to_remove} contracts successfully",
+        "previous_limit": current_limit,
+        "new_limit": new_limit,
+        "contracts_removed": contracts_to_remove
+    }
+
+
+@api_router.post("/admin/users/{user_id}/toggle-status")
+async def toggle_user_status(user_id: str, current_user: dict = Depends(get_current_user)):
+    """Активировать/деактивировать пользователя"""
+    if current_user.get('role') != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Нельзя деактивировать самого себя
+    if user_id == current_user.get('user_id'):
+        raise HTTPException(status_code=400, detail="Cannot deactivate yourself")
+    
+    current_status = user.get('is_active', True)
+    new_status = not current_status
+    
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"is_active": new_status}}
+    )
+    
+    action = "activated" if new_status else "deactivated"
+    await log_audit(f"admin_user_{action}", user_id=current_user.get('user_id'), 
+                   details=f"User {user.get('email')} was {action}")
+    
+    return {
+        "message": f"User {action} successfully",
+        "is_active": new_status
+    }
+
+
+@api_router.delete("/admin/users/{user_id}")
+async def delete_user(user_id: str, current_user: dict = Depends(get_current_user)):
+    """Удалить пользователя (мягкое удаление)"""
+    if current_user.get('role') != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Нельзя удалить самого себя
+    if user_id == current_user.get('user_id'):
+        raise HTTPException(status_code=400, detail="Cannot delete yourself")
+    
+    # Мягкое удаление - помечаем как удалённого
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {
+            "is_deleted": True,
+            "is_active": False,
+            "deleted_at": datetime.utcnow(),
+            "deleted_by": current_user.get('user_id')
+        }}
+    )
+    
+    await log_audit("admin_user_deleted", user_id=current_user.get('user_id'), 
+                   details=f"User {user.get('email')} was deleted")
+    
+    return {"message": "User deleted successfully"}
+
+
 # ==================== CONTRACT TEMPLATES ENDPOINTS ====================
 
 @api_router.get("/templates")
