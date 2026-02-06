@@ -203,13 +203,13 @@ const CreateContractPage = () => {
             const user = currentUser;
             
             if (user) {
-              // Name fields
+              // Name/Company fields
               if (keyUpper.includes('NAME') || keyUpper.includes('ФИО') || keyUpper.includes('НАИМЕНОВАНИЕ')) {
-                initialValues[key] = user.company_name || user.full_name || user.name || '';
+                initialValues[key] = user.company_name || user.full_name || '';
               }
               // IIN/BIN fields
               else if (keyUpper.includes('IIN') || keyUpper.includes('BIN') || keyUpper.includes('ИИН') || keyUpper.includes('БИН')) {
-                initialValues[key] = user.iin_bin || user.iin || '';
+                initialValues[key] = user.iin || '';
               }
               // Phone fields
               else if (keyUpper.includes('PHONE') || keyUpper.includes('ТЕЛЕФОН') || keyUpper.includes('ТЕЛ')) {
@@ -221,7 +221,7 @@ const CreateContractPage = () => {
               }
               // Address fields
               else if (keyUpper.includes('ADDRESS') || keyUpper.includes('АДРЕС') || keyUpper.includes('МЕКЕНЖАЙ')) {
-                initialValues[key] = user.address || '';
+                initialValues[key] = user.legal_address || '';
               }
               else {
                 initialValues[key] = '';
