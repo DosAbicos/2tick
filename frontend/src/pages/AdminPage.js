@@ -371,6 +371,58 @@ const AdminPage = () => {
     }
   };
 
+  const handleRemoveContracts = async () => {
+    try {
+      const response = await axios.post(
+        `${API}/admin/users/${selectedUser.id}/remove-contracts`,
+        null,
+        {
+          params: { contracts_to_remove: contractsToRemove },
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+      toast.success(`Отнято ${contractsToRemove} договоров. Новый лимит: ${response.data.new_limit}`);
+      setRemoveContractsOpen(false);
+      setContractsToRemove(1);
+      fetchUserDetails(selectedUser.id);
+      fetchAdminData();
+    } catch (error) {
+      toast.error('Ошибка отнятия договоров');
+    }
+  };
+
+  const handleToggleUserStatus = async () => {
+    try {
+      const response = await axios.post(
+        `${API}/admin/users/${selectedUser.id}/toggle-status`,
+        null,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      const status = response.data.is_active ? 'активирован' : 'деактивирован';
+      toast.success(`Пользователь ${status}`);
+      fetchUserDetails(selectedUser.id);
+      fetchAdminData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Ошибка изменения статуса');
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    try {
+      await axios.delete(
+        `${API}/admin/users/${selectedUser.id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success('Пользователь удалён');
+      setDeleteUserOpen(false);
+      setUserDetailsOpen(false);
+      setSelectedUser(null);
+      fetchAdminData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Ошибка удаления пользователя');
+    }
+  };
+
   const getStatusBadge = (status) => {
     const variants = {
       'signed': { label: 'Подписан', color: 'bg-green-100 text-green-800' },
