@@ -2191,6 +2191,11 @@ async def login(credentials: UserLogin, request: Request):
         await log_user_action("unknown", "login_failed", f"Email: {credentials.email}", request.client.host)
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
+    # Check if user is deactivated
+    if user_doc.get('is_active') == False:
+        await log_user_action(user_doc['id'], "login_blocked", "Account deactivated", request.client.host)
+        raise HTTPException(status_code=403, detail="Аккаунт деактивирован. Обратитесь к администратору.")
+    
     # Verify password
     if not verify_password(credentials.password, user_doc['password']):
         await log_user_action(user_doc['id'], "login_failed", "Wrong password", request.client.host)
