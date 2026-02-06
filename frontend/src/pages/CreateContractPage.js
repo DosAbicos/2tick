@@ -267,20 +267,25 @@ const CreateContractPage = () => {
           else if (config.owner === 'landlord') {
             const keyUpper = key.toUpperCase();
             
+            // Name/Company fields
             if (keyUpper.includes('NAME') || keyUpper.includes('ФИО') || keyUpper.includes('НАИМЕНОВАНИЕ')) {
-              updated[key] = currentUser.company_name || currentUser.full_name || currentUser.name || '';
+              updated[key] = currentUser.company_name || currentUser.full_name || '';
             }
+            // IIN/BIN fields
             else if (keyUpper.includes('IIN') || keyUpper.includes('BIN') || keyUpper.includes('ИИН') || keyUpper.includes('БИН')) {
-              updated[key] = currentUser.iin_bin || currentUser.iin || '';
+              updated[key] = currentUser.iin || '';
             }
+            // Phone fields
             else if (keyUpper.includes('PHONE') || keyUpper.includes('ТЕЛЕФОН') || keyUpper.includes('ТЕЛ')) {
               updated[key] = currentUser.phone || '';
             }
+            // Email fields
             else if (keyUpper.includes('EMAIL') || keyUpper.includes('ПОЧТА') || keyUpper.includes('MAIL')) {
               updated[key] = currentUser.email || '';
             }
+            // Address fields
             else if (keyUpper.includes('ADDRESS') || keyUpper.includes('АДРЕС') || keyUpper.includes('МЕКЕНЖАЙ')) {
-              updated[key] = currentUser.address || '';
+              updated[key] = currentUser.legal_address || '';
             }
           }
         });
