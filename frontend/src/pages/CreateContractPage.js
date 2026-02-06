@@ -187,11 +187,52 @@ const CreateContractPage = () => {
       setSelectedTemplate(template);
       setManualContent(template.content || '');
       
-      // Initialize placeholder values
+      // Initialize placeholder values with auto-fill for Party A fields and today's date
       const initialValues = {};
+      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+      
       if (template.placeholders) {
-        Object.keys(template.placeholders).forEach(key => {
-          initialValues[key] = '';
+        Object.entries(template.placeholders).forEach(([key, config]) => {
+          // Auto-fill today's date for CONTRACT_DATE
+          if (key === 'CONTRACT_DATE' || key.includes('CONTRACT_DATE')) {
+            initialValues[key] = today;
+          }
+          // Auto-fill Party A (landlord) fields from user profile
+          else if (config.owner === 'landlord') {
+            const keyUpper = key.toUpperCase();
+            const user = currentUser;
+            
+            if (user) {
+              // Name fields
+              if (keyUpper.includes('NAME') || keyUpper.includes('ФИО') || keyUpper.includes('НАИМЕНОВАНИЕ')) {
+                initialValues[key] = user.company_name || user.full_name || user.name || '';
+              }
+              // IIN/BIN fields
+              else if (keyUpper.includes('IIN') || keyUpper.includes('BIN') || keyUpper.includes('ИИН') || keyUpper.includes('БИН')) {
+                initialValues[key] = user.iin_bin || user.iin || '';
+              }
+              // Phone fields
+              else if (keyUpper.includes('PHONE') || keyUpper.includes('ТЕЛЕФОН') || keyUpper.includes('ТЕЛ')) {
+                initialValues[key] = user.phone || '';
+              }
+              // Email fields
+              else if (keyUpper.includes('EMAIL') || keyUpper.includes('ПОЧТА') || keyUpper.includes('MAIL')) {
+                initialValues[key] = user.email || '';
+              }
+              // Address fields
+              else if (keyUpper.includes('ADDRESS') || keyUpper.includes('АДРЕС') || keyUpper.includes('МЕКЕНЖАЙ')) {
+                initialValues[key] = user.address || '';
+              }
+              else {
+                initialValues[key] = '';
+              }
+            } else {
+              initialValues[key] = '';
+            }
+          }
+          else {
+            initialValues[key] = '';
+          }
         });
       }
       setPlaceholderValues(initialValues);
