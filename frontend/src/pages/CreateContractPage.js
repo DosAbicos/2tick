@@ -247,6 +247,49 @@ const CreateContractPage = () => {
     }
   };
 
+  // Auto-fill Party A fields when currentUser loads (if template already selected)
+  useEffect(() => {
+    if (currentUser && selectedTemplate?.placeholders) {
+      const today = new Date().toISOString().split('T')[0];
+      
+      setPlaceholderValues(prev => {
+        const updated = { ...prev };
+        
+        Object.entries(selectedTemplate.placeholders).forEach(([key, config]) => {
+          // Only auto-fill if field is empty
+          if (updated[key]) return;
+          
+          // Auto-fill today's date for CONTRACT_DATE
+          if (key === 'CONTRACT_DATE' || key.includes('CONTRACT_DATE')) {
+            updated[key] = today;
+          }
+          // Auto-fill Party A (landlord) fields from user profile
+          else if (config.owner === 'landlord') {
+            const keyUpper = key.toUpperCase();
+            
+            if (keyUpper.includes('NAME') || keyUpper.includes('ФИО') || keyUpper.includes('НАИМЕНОВАНИЕ')) {
+              updated[key] = currentUser.company_name || currentUser.full_name || currentUser.name || '';
+            }
+            else if (keyUpper.includes('IIN') || keyUpper.includes('BIN') || keyUpper.includes('ИИН') || keyUpper.includes('БИН')) {
+              updated[key] = currentUser.iin_bin || currentUser.iin || '';
+            }
+            else if (keyUpper.includes('PHONE') || keyUpper.includes('ТЕЛЕФОН') || keyUpper.includes('ТЕЛ')) {
+              updated[key] = currentUser.phone || '';
+            }
+            else if (keyUpper.includes('EMAIL') || keyUpper.includes('ПОЧТА') || keyUpper.includes('MAIL')) {
+              updated[key] = currentUser.email || '';
+            }
+            else if (keyUpper.includes('ADDRESS') || keyUpper.includes('АДРЕС') || keyUpper.includes('МЕКЕНЖАЙ')) {
+              updated[key] = currentUser.address || '';
+            }
+          }
+        });
+        
+        return updated;
+      });
+    }
+  }, [currentUser, selectedTemplate]);
+
   const toggleEditMode = () => {
     if (!manualEditMode) {
       // If content was already saved, use it; otherwise generate new WITHOUT highlighting
