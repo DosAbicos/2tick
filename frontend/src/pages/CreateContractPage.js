@@ -25,6 +25,9 @@ const CreateContractPage = () => {
   const [loadingTemplate, setLoadingTemplate] = useState(!!hasTemplateId); // true if template should be loaded
   const token = localStorage.getItem('token');
   
+  // Current user data for auto-fill
+  const [currentUser, setCurrentUser] = useState(null);
+  
   // Template data from marketplace
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [placeholderValues, setPlaceholderValues] = useState({});
