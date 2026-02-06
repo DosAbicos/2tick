@@ -1138,6 +1138,33 @@ const SignContractPage = () => {
                           />
                         )}
                         
+                        {config.type === 'textarea' && (
+                          <textarea
+                            id={`placeholder_${key}`}
+                            value={placeholderValues[key] || ''}
+                            onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
+                            className="minimal-input w-full mt-1 min-h-[100px] resize-y"
+                            placeholder={config.label}
+                            required={config.required}
+                            readOnly={contract?.approved}
+                            disabled={contract?.approved}
+                            rows={4}
+                          />
+                        )}
+                        
+                        {config.type === 'time' && (
+                          <input
+                            id={`placeholder_${key}`}
+                            type="time"
+                            value={placeholderValues[key] || ''}
+                            onChange={(e) => setPlaceholderValues({...placeholderValues, [key]: e.target.value})}
+                            className="minimal-input w-full mt-1"
+                            required={config.required}
+                            readOnly={contract?.approved}
+                            disabled={contract?.approved}
+                          />
+                        )}
+                        
                         {config.type === 'select' && config.options && (
                           <select
                             id={`placeholder_${key}`}
