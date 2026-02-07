@@ -2189,7 +2189,7 @@ async def login(credentials: UserLogin, request: Request):
     user_doc = await db.users.find_one({"email": credentials.email})
     if not user_doc:
         await log_user_action("unknown", "login_failed", f"Email: {credentials.email}", request.client.host)
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+        raise HTTPException(status_code=401, detail="Пользователь с таким email не найден")
     
     # Check if user is deactivated
     if user_doc.get('is_active') == False:
@@ -2199,7 +2199,7 @@ async def login(credentials: UserLogin, request: Request):
     # Verify password
     if not verify_password(credentials.password, user_doc['password']):
         await log_user_action(user_doc['id'], "login_failed", "Wrong password", request.client.host)
-        raise HTTPException(status_code=401, detail="Invalid credentials")
+        raise HTTPException(status_code=401, detail="Неверный пароль")
     
     # Convert to User model
     user_doc.pop('password', None)
