@@ -4638,6 +4638,34 @@ async def download_pdf(contract_id: str, current_user: dict = Depends(get_curren
             content=pdf_bytes,
             media_type="application/pdf",
             headers={"Content-Disposition": f"attachment; filename=contract-{contract_id}.pdf"}
+
+
+# Public endpoint to view PDF for signers (no auth required)
+@api_router.get("/sign/{contract_id}/view-pdf")
+async def view_pdf_for_signer(contract_id: str):
+    """Public endpoint to view uploaded PDF for signing"""
+    contract = await db.contracts.find_one({"id": contract_id})
+    if not contract:
+        raise HTTPException(status_code=404, detail="Contract not found")
+    
+    # Check if it's an uploaded PDF contract
+    if contract.get('source_type') != 'uploaded_pdf':
+        raise HTTPException(status_code=400, detail="This contract does not have an uploaded PDF")
+    
+    # Get the uploaded PDF path
+    pdf_path = contract.get('uploaded_pdf_path')
+    if not pdf_path or not os.path.exists(pdf_path):
+        raise HTTPException(status_code=404, detail="PDF file not found")
+    
+    # Read and return the PDF
+    with open(pdf_path, 'rb') as f:
+        pdf_bytes = f.read()
+    
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"inline; filename=contract-{contract_id}.pdf"}
+    )
         )
     except Exception as e:
         print(f"❌ PDF generation error: {str(e)}")
