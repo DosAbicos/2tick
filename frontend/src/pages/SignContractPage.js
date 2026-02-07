@@ -1021,22 +1021,50 @@ const SignContractPage = () => {
                 animate={{ opacity: 1 }}
                 data-testid="step-view-contract"
               >
-                <div className="bg-white p-6 rounded-lg border border-gray-200 mb-6">
-                  <div 
-                    className="whitespace-pre-wrap text-sm leading-relaxed text-gray-800"
-                    style={{
-                      fontFamily: 'IBM Plex Sans, sans-serif',
-                      fontSize: '14px',
-                      lineHeight: '1.6'
-                    }}
-                    dangerouslySetInnerHTML={{ __html: highlightPlaceholders(
-                      contractLanguage === 'kk' && contract.content_kk ? contract.content_kk :
-                      contractLanguage === 'en' && contract.content_en ? contract.content_en :
-                      contract.content
-                    ) }}
-                    data-testid="contract-preview"
-                  />
-                </div>
+                {/* Show PDF viewer for uploaded PDF contracts */}
+                {contract.source_type === 'uploaded_pdf' ? (
+                  <div className="bg-white p-4 rounded-lg border border-gray-200 mb-6">
+                    <div className="text-center mb-4">
+                      <p className="text-gray-600 text-sm mb-3">{t('signing.pdfContract')}</p>
+                    </div>
+                    <iframe
+                      src={`${API}/contracts/${contract.id}/download-pdf#toolbar=1&navpanes=0`}
+                      className="w-full rounded-lg border border-gray-200"
+                      style={{ height: '500px' }}
+                      title="PDF Contract"
+                    />
+                    <div className="mt-4 text-center">
+                      <a
+                        href={`${API}/contracts/${contract.id}/download-pdf`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 text-sm font-medium"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        {t('signing.downloadPdf')}
+                      </a>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-white p-6 rounded-lg border border-gray-200 mb-6">
+                    <div 
+                      className="whitespace-pre-wrap text-sm leading-relaxed text-gray-800"
+                      style={{
+                        fontFamily: 'IBM Plex Sans, sans-serif',
+                        fontSize: '14px',
+                        lineHeight: '1.6'
+                      }}
+                      dangerouslySetInnerHTML={{ __html: highlightPlaceholders(
+                        contractLanguage === 'kk' && contract.content_kk ? contract.content_kk :
+                        contractLanguage === 'en' && contract.content_en ? contract.content_en :
+                        contract.content
+                      ) }}
+                      data-testid="contract-preview"
+                    />
+                  </div>
+                )}
                 
                 <button
                   onClick={() => setStep(needsInfo ? 1.5 : 2)}
