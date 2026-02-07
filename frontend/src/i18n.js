@@ -35,7 +35,7 @@ const resources = {
       "landing.howItWorks.step1.title": "Создайте договор",
       "landing.howItWorks.step1.desc": "Выберите шаблон или загрузите свой PDF",
       "landing.howItWorks.step2.title": "Отправьте на подпись",
-      "landing.howItWorks.step2.desc": "Получатель получит уведомление в SMS или Telegram",
+      "landing.howItWorks.step2.desc": "Скопируйте ссылку и отправьте через мессенджер",
       "landing.howItWorks.step3.title": "Получите подписанный документ",
       "landing.howItWorks.step3.desc": "Скачайте PDF с электронной подписью",
       "landing.pricing.title": "Тарифы",
