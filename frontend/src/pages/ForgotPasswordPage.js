@@ -72,12 +72,6 @@ const ForgotPasswordPage = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-sm text-red-600 text-center">{error}</p>
-              </div>
-            )}
-            
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
               <input
@@ -93,7 +87,10 @@ const ForgotPasswordPage = () => {
                 }`}
                 placeholder="example@mail.com"
               />
-              {email && !validateEmail(email) && !error && (
+              {error && (
+                <p className="text-sm text-red-500 mt-2">{error}</p>
+              )}
+              {!error && email && !validateEmail(email) && (
                 <p className="text-xs text-red-500 mt-1">{t('auth.forgotPassword.invalidEmail')}</p>
               )}
             </div>
