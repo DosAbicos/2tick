@@ -1098,7 +1098,7 @@ const resources = {
       "landing.features.title": "Ыңғайлы жұмыс үшін бәрі",
       "landing.features.subtitle": "Уақытты үнемдейтін құралдар",
       "landing.features.speed.title": "Жылдам қол қою",
-      "landing.features.speed.desc": "Келісімшартты SMS немесе Telegram арқылы қол қоюға жіберіңіз. Қол қою 2 секундтан аз уақыт алады.",
+      "landing.features.speed.desc": "Сілтемені мессенджер арқылы жіберіңіз. Қол қою 2 секундтан аз уақыт алады.",
       "landing.features.security.title": "Қауіпсіздік",
       "landing.features.security.desc": "Деректерді шифрлау, құжаттарды қорғалған сақтау және толық құпиялылық.",
       "landing.features.templates.title": "Дайын үлгілер",
