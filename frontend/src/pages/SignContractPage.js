@@ -1028,14 +1028,14 @@ const SignContractPage = () => {
                       <p className="text-gray-600 text-sm mb-3">{t('signing.pdfContract')}</p>
                     </div>
                     <iframe
-                      src={`${API}/contracts/${contract.id}/download-pdf#toolbar=1&navpanes=0`}
+                      src={`${API}/sign/${contract.id}/view-pdf#toolbar=1&navpanes=0`}
                       className="w-full rounded-lg border border-gray-200"
                       style={{ height: '500px' }}
                       title="PDF Contract"
                     />
                     <div className="mt-4 text-center">
                       <a
-                        href={`${API}/contracts/${contract.id}/download-pdf`}
+                        href={`${API}/sign/${contract.id}/view-pdf`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 text-sm font-medium"
