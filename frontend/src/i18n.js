@@ -2132,7 +2132,7 @@ const resources = {
       "landing.features.title": "Everything for convenient work",
       "landing.features.subtitle": "Tools that save time",
       "landing.features.speed.title": "Fast Signing",
-      "landing.features.speed.desc": "Send contracts for signing via SMS, call, or Telegram. Signing takes less than 2 seconds.",
+      "landing.features.speed.desc": "Send the contract link via messenger. Signing takes less than 2 seconds.",
       "landing.features.security.title": "Security",
       "landing.features.security.desc": "Data encryption, secure document storage, and complete confidentiality.",
       "landing.features.templates.title": "Ready Templates",
