@@ -2144,7 +2144,7 @@ const resources = {
       "landing.howItWorks.step1.title": "Create a contract",
       "landing.howItWorks.step1.desc": "Choose a template or upload your PDF",
       "landing.howItWorks.step2.title": "Send for signing",
-      "landing.howItWorks.step2.desc": "Copy the link and send via messenger",
+      "landing.howItWorks.step2.desc": "Send the link to your client via any convenient method",
       "landing.howItWorks.step3.title": "Get signed document",
       "landing.howItWorks.step3.desc": "Download PDF with electronic signature",
       "landing.pricing.title": "Pricing",
