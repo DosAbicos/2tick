@@ -430,6 +430,7 @@ const resources = {
       "signing.successSigned": "Договор успешно подписан!",
       "signing.successDescription": "Вы получите подтверждение на email и WhatsApp",
       "signing.downloadPdf": "Скачать PDF",
+      "signing.pdfContract": "Ознакомьтесь с договором перед подписанием",
       "signing.fullName": "ФИО",
       "signing.phone": "Номер телефона",
       "signing.email": "Email",
