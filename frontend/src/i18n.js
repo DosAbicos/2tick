@@ -23,7 +23,7 @@ const resources = {
       "landing.features.title": "Всё для удобной работы",
       "landing.features.subtitle": "Инструменты которые экономят время",
       "landing.features.speed.title": "Быстрое подписание",
-      "landing.features.speed.desc": "Отправьте договор на подпись через SMS или Telegram. Подписание занимает менее 2 секунд.",
+      "landing.features.speed.desc": "Отправьте ссылку на договор через мессенджер. Подписание занимает менее 2 секунд.",
       "landing.features.security.title": "Безопасность",
       "landing.features.security.desc": "Шифрование данных, защищённое хранение документов и полная конфиденциальность.",
       "landing.features.templates.title": "Готовые шаблоны",
