@@ -2527,6 +2527,7 @@ const resources = {
       "signing.successSigned": "Contract signed successfully!",
       "signing.successDescription": "You will receive confirmation via email and WhatsApp",
       "signing.downloadPdf": "Download PDF",
+      "signing.pdfContract": "Review the contract before signing",
       "signing.fullName": "Full Name",
       "signing.phone": "Phone Number",
       "signing.email": "Email",
