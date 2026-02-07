@@ -15,6 +15,7 @@ const ForgotPasswordPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -23,9 +24,10 @@ const ForgotPasswordPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
 
     if (!validateEmail(email)) {
-      toast.error(t('auth.forgotPassword.invalidEmail'));
+      setError(t('auth.forgotPassword.invalidEmail'));
       return;
     }
 
@@ -40,7 +42,8 @@ const ForgotPasswordPage = () => {
       // Redirect directly to reset password page
       navigate(`/reset-password?email=${encodeURIComponent(email)}`);
     } catch (error) {
-      toast.error(error.response?.data?.detail || t('auth.forgotPassword.sendError'));
+      const errorMessage = error.response?.data?.detail || t('auth.forgotPassword.sendError');
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
