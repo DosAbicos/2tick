@@ -1497,6 +1497,7 @@ const resources = {
       "signing.successSigned": "Келісімшартқа сәтті қол қойылды!",
       "signing.successDescription": "Сіз email және WhatsApp арқылы растау аласыз",
       "signing.downloadPdf": "PDF жүктеу",
+      "signing.pdfContract": "Қол қоймас бұрын шартпен танысыңыз",
       "signing.fullName": "Аты-жөні",
       "signing.phone": "Телефон нөмірі",
       "signing.email": "Email",
