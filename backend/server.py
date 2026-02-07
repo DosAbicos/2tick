@@ -3809,6 +3809,33 @@ async def get_telegram_deep_link(contract_id: str):
         "contract_id": contract_id
     }
 
+
+@api_router.get("/sign/{contract_id}/view-pdf")
+async def view_pdf_for_signer(contract_id: str):
+    """Public endpoint to view uploaded PDF for signing (no auth required)"""
+    contract = await db.contracts.find_one({"id": contract_id})
+    if not contract:
+        raise HTTPException(status_code=404, detail="Contract not found")
+    
+    # Check if it's an uploaded PDF contract
+    if contract.get('source_type') != 'uploaded_pdf':
+        raise HTTPException(status_code=400, detail="This contract does not have an uploaded PDF")
+    
+    # Get the uploaded PDF path
+    pdf_path = contract.get('uploaded_pdf_path')
+    if not pdf_path or not os.path.exists(pdf_path):
+        raise HTTPException(status_code=404, detail="PDF file not found")
+    
+    # Read and return the PDF
+    with open(pdf_path, 'rb') as f:
+        pdf_bytes = f.read()
+    
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"inline; filename=contract-{contract_id}.pdf"}
+    )
+
 @api_router.post("/sign/{contract_id}/request-telegram-otp")
 async def request_telegram_otp(contract_id: str, data: dict):
     """Request OTP via Telegram - user provides their Telegram username"""
