@@ -1466,7 +1466,7 @@ const SignContractPage = () => {
                 <div className="flex gap-2 sm:gap-3">
                   <button
                     onClick={() => setStep(2)}
-                    className="flex-1 py-2.5 sm:py-3 px-3 sm:px-4 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all"
+                    className="flex-1 py-2.5 sm:py-3 px-3 sm:px-4 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-all"
                   >
                     ← {t('signing.back')}
                   </button>
