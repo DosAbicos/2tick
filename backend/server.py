@@ -2338,8 +2338,7 @@ async def forgot_password(request: ForgotPasswordRequest):
     # Find user by email
     user_doc = await db.users.find_one({"email": request.email})
     if not user_doc:
-        # Don't reveal if user exists or not for security
-        return {"message": "If the email exists, a reset code has been sent"}
+        raise HTTPException(status_code=404, detail="Пользователь с таким email не зарегистрирован")
     
     # Generate 6-digit code
     reset_code = ''.join([str(random.randint(0, 9)) for _ in range(6)])
