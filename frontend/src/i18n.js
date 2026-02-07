@@ -1110,7 +1110,7 @@ const resources = {
       "landing.howItWorks.step1.title": "Келісімшарт жасаңыз",
       "landing.howItWorks.step1.desc": "Үлгіні таңдаңыз немесе өз PDF файлыңызды жүктеңіз",
       "landing.howItWorks.step2.title": "Қол қоюға жіберіңіз",
-      "landing.howItWorks.step2.desc": "Сілтемені көшіріп, мессенджер арқылы жіберіңіз",
+      "landing.howItWorks.step2.desc": "Сілтемені клиентке кез келген ыңғайлы тәсілмен жіберіңіз",
       "landing.howItWorks.step3.title": "Қол қойылған құжатты алыңыз",
       "landing.howItWorks.step3.desc": "Электрондық қолтаңбасы бар PDF жүктеп алыңыз",
       "landing.pricing.title": "Тарифтер",
