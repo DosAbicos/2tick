@@ -7,7 +7,7 @@ const resources = {
       // ===== LANDING PAGE =====
       "landing.hero.title": "Электронное подписание",
       "landing.hero.subtitle": "договоров в Казахстане",
-      "landing.hero.description": "Создавайте, отправляйте и подписывайте договоры онлайн. Верификация через SMS или Telegram. Юридически значимо и безопасно.",
+      "landing.hero.description": "Создавайте, отправляйте и подписывайте договоры онлайн. Верификация через SMS, звонок или Telegram. Юридически значимо и безопасно.",
       "landing.hero.cta": "Создать контракт",
       "landing.hero.ctaSecondary": "Узнать больше",
       "landing.hero.startFree": "Попробовать бесплатно",
