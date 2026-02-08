@@ -72,7 +72,7 @@ const UploadPdfContractPage = () => {
     setUploading(true);
 
     const data = new FormData();
-    data.append('pdf_file', file);
+    data.append('file', file);
     data.append('title', formData.title);
     data.append('signer_name', formData.signer_name);
     data.append('signer_email', formData.signer_email);
