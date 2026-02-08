@@ -2887,6 +2887,13 @@ const resources = {
       "uploadPdf.fileTooLarge": "File too large (max 10 MB)",
       "uploadPdf.success": "PDF contract uploaded successfully!",
       "uploadPdf.error": "Error uploading PDF",
+      "uploadPdf.createContract": "Create contract",
+      "uploadPdf.enterTitle": "Enter contract title",
+      
+      "contract.partyA": "Party A",
+      "contract.partyB": "Party B",
+      "contract.clientFieldsOptional": "Fill if you know client data (optional)",
+      "common.optional": "optional",
       
       // ===== ADMIN TEMPLATES =====
       "adminTemplates.title": "Template Management",
