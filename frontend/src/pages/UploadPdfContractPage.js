@@ -329,13 +329,13 @@ const UploadPdfContractPage = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      {t('profile.companyName')}
+                      {t('profile.company')}
                     </label>
                     <input
                       value={formData.landlord_name}
                       onChange={(e) => setFormData({ ...formData, landlord_name: e.target.value })}
                       className="minimal-input w-full"
-                      placeholder={t('profile.companyNamePlaceholder')}
+                      placeholder={t('auth.register.companyName')}
                       data-testid="landlord-name-input"
                     />
                   </div>
