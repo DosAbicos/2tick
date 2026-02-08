@@ -776,6 +776,13 @@ const resources = {
       "uploadPdf.fileTooLarge": "Файл слишком большой (максимум 10 МБ)",
       "uploadPdf.success": "PDF договор успешно загружен!",
       "uploadPdf.error": "Ошибка при загрузке PDF",
+      "uploadPdf.createContract": "Создать договор",
+      "uploadPdf.enterTitle": "Введите название договора",
+      
+      "contract.partyA": "Сторона А",
+      "contract.partyB": "Сторона Б",
+      "contract.clientFieldsOptional": "Заполните, если знаете данные клиента (опционально)",
+      "common.optional": "опционально",
       
       // ===== ADMIN TEMPLATES =====
       "adminTemplates.title": "Управление шаблонами",
