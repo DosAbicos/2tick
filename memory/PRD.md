@@ -187,6 +187,9 @@
 - `/app/frontend/src/pages/SignContractPage.js` — страница подписания (Email/SMS/Telegram OTP)
 - `/app/frontend/src/pages/RegisterPage.js` — регистрация с Email OTP
 - `/app/frontend/src/pages/ProfilePage.js` — профиль с тарифами
+- `/app/frontend/src/pages/UploadPdfContractPage.js` — загрузка PDF (переработано 08.02.2025)
+- `/app/frontend/src/pages/CreateContractPage.js` — создание контракта из шаблона
+- `/app/frontend/src/pages/ContractDetailsPage.js` — детали контракта с кнопкой "Копировать ссылку"
 - `/app/frontend/src/components/ui/dialog.jsx` — модальные окна (исправлена анимация)
 - `/app/frontend/src/pages/{OfferPage,PrivacyPage,RefundPage,ContactsPage}.js` — юридические страницы
 - `/app/backend/server.py` — API (OTP, SMS, Email, контракты)
@@ -194,6 +197,8 @@
 
 ## Тестовые файлы
 - `/app/backend/tests/test_email_otp_iteration6.py` — Email OTP тесты (8/8 passed)
-- `/app/backend/tests/test_upload_pdf_contract.py` — PDF upload тесты
+- `/app/backend/tests/test_upload_pdf_contract.py` — PDF upload тесты (iteration 8)
+- `/app/backend/tests/test_pdf_upload_iteration9.py` — PDF upload refactoring тесты (7/7 passed)
 - `/app/test_reports/iteration_6.json` — результаты тестирования Email OTP
-- `/app/test_reports/iteration_8.json` — результаты тестирования PDF upload (100% passed)
+- `/app/test_reports/iteration_8.json` — результаты тестирования PDF upload
+- `/app/test_reports/iteration_9.json` — результаты тестирования PDF upload refactoring (100% passed)
