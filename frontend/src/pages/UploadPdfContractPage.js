@@ -390,7 +390,7 @@ const UploadPdfContractPage = () => {
                       value={formData.landlord_address}
                       onChange={(e) => setFormData({ ...formData, landlord_address: e.target.value })}
                       className="minimal-input w-full"
-                      placeholder={t('profile.addressPlaceholder')}
+                      placeholder={t('profile.address')}
                       data-testid="landlord-address-input"
                     />
                   </div>
