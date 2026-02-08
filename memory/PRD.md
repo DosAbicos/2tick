@@ -188,4 +188,6 @@
 
 ## Тестовые файлы
 - `/app/backend/tests/test_email_otp_iteration6.py` — Email OTP тесты (8/8 passed)
-- `/app/test_reports/iteration_6.json` — результаты тестирования
+- `/app/backend/tests/test_upload_pdf_contract.py` — PDF upload тесты
+- `/app/test_reports/iteration_6.json` — результаты тестирования Email OTP
+- `/app/test_reports/iteration_8.json` — результаты тестирования PDF upload (100% passed)
