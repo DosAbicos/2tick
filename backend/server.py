@@ -5943,12 +5943,26 @@ async def create_subscription_payment(
 async def upload_pdf_contract(
     file: UploadFile = File(...),
     title: str = Form(...),
-    signer_email: str = Form(...),
-    signer_phone: str = Form(...),
-    signer_name: str = Form(None),
+    # Party A fields (from user profile)
+    landlord_name: str = Form(""),
+    landlord_iin: str = Form(""),
+    landlord_phone: str = Form(""),
+    landlord_email: str = Form(""),
+    landlord_address: str = Form(""),
+    # Party B fields (optional - can be filled later by signer)
+    signer_name: str = Form(""),
+    signer_email: str = Form(""),
+    signer_phone: str = Form(""),
     current_user: dict = Depends(get_current_user)
 ):
-    """Загрузить готовый PDF договор для подписания"""
+    """Загрузить готовый PDF договор для подписания.
+    Работает так же как шаблонные контракты:
+    1. Сторона А заполняет свои данные и загружает PDF
+    2. Контракт создаётся со статусом "draft"
+    3. Сторона А копирует ссылку и отправляет Стороне Б
+    4. Сторона Б открывает ссылку, просматривает PDF, загружает удостоверение, верифицируется
+    5. Сторона А утверждает контракт
+    """
     
     # Validate file type
     if not file.filename.lower().endswith('.pdf'):
@@ -5958,6 +5972,20 @@ async def upload_pdf_contract(
     content = await file.read()
     if len(content) > 10 * 1024 * 1024:
         raise HTTPException(status_code=400, detail="File size must be less than 10MB")
+    
+    # Check contract limit
+    user = await db.users.find_one({"id": current_user['user_id']})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    contract_limit = user.get('contract_limit', 3)
+    user_contracts = await db.contracts.count_documents({"creator_id": current_user['user_id']})
+    
+    if user_contracts >= contract_limit:
+        raise HTTPException(
+            status_code=403, 
+            detail="Лимит договоров исчерпан. Пожалуйста, обновите тариф для создания новых договоров."
+        )
     
     # Save file to server
     upload_dir = "/app/backend/uploaded_contracts"
@@ -5969,25 +5997,34 @@ async def upload_pdf_contract(
     with open(file_path, "wb") as f:
         f.write(content)
     
-    # Get user info for landlord fields
-    user = await db.users.find_one({"id": current_user['user_id']})
+    # Use provided landlord data or fall back to user profile
+    final_landlord_name = landlord_name or user.get('company_name', '') or user.get('full_name', '')
+    final_landlord_email = landlord_email or user.get('email', '')
+    final_landlord_phone = landlord_phone or user.get('phone', '')
+    final_landlord_iin = landlord_iin or user.get('iin', '')
+    final_landlord_address = landlord_address or user.get('legal_address', '')
     
-    # Create contract
+    # Create contract with status "draft" (like template contracts)
     contract = Contract(
         title=title,
-        content="",  # Empty for uploaded PDF
+        content="",  # Empty for uploaded PDF - PDF file is used instead
         content_type="plain",
         creator_id=current_user['user_id'],
         source_type="uploaded_pdf",
         uploaded_pdf_path=file_path,
+        # Party B data (can be empty - signer will fill during signing)
         signer_name=signer_name or "",
-        signer_email=signer_email,
-        signer_phone=signer_phone,
-        status="sent",
-        landlord_name=user.get('company_name', ''),
-        landlord_email=user.get('email', ''),
+        signer_email=signer_email or "",
+        signer_phone=signer_phone or "",
+        # Status "draft" - same flow as template contracts
+        status="draft",
+        # Party A data
+        landlord_name=final_landlord_name,
+        landlord_email=final_landlord_email,
         landlord_full_name=user.get('full_name', ''),
-        landlord_iin_bin=user.get('iin', ''),
+        landlord_iin_bin=final_landlord_iin,
+        landlord_phone=final_landlord_phone,
+        landlord_address=final_landlord_address,
         contract_number="PDF-" + str(uuid.uuid4())[:8].upper(),
         contract_code=generate_contract_code()
     )
