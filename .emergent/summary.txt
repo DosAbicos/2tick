@@ -1,281 +1,163 @@
 <analysis>**original_problem_statement:**
-The user's high-level goal is to finalize their contract management application. This session focused on several key areas:
-1.  **FreedomPay Integration Compliance:** The user needed to satisfy requirements from their payment acquirer, FreedomPay, by adding explicit information about Simple Electronic Signatures (ПЭП) and data security measures to the website.
-2.  **Feature Implementation (Calculator):** The user requested a significant feature enhancement: a full-featured calculator within the admin template editor. This was to allow for creating calculated fields that could perform arithmetic operations (addition, subtraction, multiplication, division) and handle date differences (e.g., ) to compute values like .
-3.  **UI/UX and Bug Fixing:** The user reported numerous bugs and UI issues, often via screenshots from their iPhone. These included:
-    *   Mobile responsiveness problems on the landing page.
-    *   A complete overhaul of the Forgot/Reset Password flow for better UX and functionality.
-    *   Critical bugs on the contract signing page, including language synchronization failures and an inability to upload PDF documents for identity verification.
-    *   Failure of the Telegram OTP verification mechanism.
-    *   A browser-specific issue where returning from the Telegram app in Chrome on iOS would create an unwanted extra page.
-4.  **Contract Template Finalization:** The session began by finalizing the daily rental agreement based on a competitor's template, a task carried over from the previous session.
+The user provided a series of feature requests and bug reports throughout the session, including:
+- Fixing a Telegram deeplink issue on Chrome for iOS.
+- Resolving a recurring Telegram bot conflict error.
+- Reviewing and enhancing a tri-lingual (RU/KK/EN) service agreement template, and generating a DOCX file.
+- Improving the UI for role selection in the template editor by adding a role-swapping button.
+- Fixing bugs and adding features to the placeholder calculator, including support for percentage calculations.
+- Adding a new Dropdown List placeholder type.
+- Implementing autofill for provider data and setting the current date as the default on the contract creation page.
+- Adding management features for admin users, including deactivating, deleting, and managing contract limits for other users.
+- Improving the quality of the PWA/home screen icon for mobile devices.
+- Correcting misleading text on the landing page.
+- Fixing bugs in the user deletion and Forgot Password flows to provide clearer error messages.
+- Fixing a non-functional PDF contract signing process, which included an unstyled button and the inability to upload the file.
 
-**User's preferred language**: russian
+**User's preferred language**:
+Russian. The next agent MUST respond in Russian.
 
 **what currently exists?**
-The application is a full-stack React+FastAPI+MongoDB platform. In this session, the agent successfully implemented a major new feature and fixed several critical bugs.
-- **Calculator Feature:** A comprehensive calculator for template placeholders is now implemented in the admin panel. It supports both simple (UI-driven) and complex (text-based) formulas, date arithmetic, and rounding options. The logic is integrated into the contract creation and signing pages.
-- **FreedomPay Compliance:** The  page was updated with new sections detailing the use of Simple Electronic Signatures (ПЭП) and the platform's data security measures, fulfilling the payment provider's requirements.
-- **Password Reset Flow:** The entire Forgot/Reset Password process has been redesigned. It now features a streamlined UI, multi-language emails, a success animation, and automatic login after a successful password change.
-- **Critical Bug Fixes:**
-    - The language synchronization issue on the signing page is resolved; the interface language now correctly updates based on the user's selection.
-    - The PDF upload failure has been fixed by adding the necessary  dependency to the backend Docker image and  to .
-    - The Telegram OTP issue was diagnosed as a conflict from multiple running bot instances and resolved by instructing the user on how to restart the services correctly.
-- **UI Improvements:** Mobile layout issues on the landing page have been fixed, and the language switcher has been removed from the header of the signing page to prevent user confusion.
+The application is a contract signing platform (2tick.kz) with a React frontend, Python (FastAPI) backend, and MongoDB database. Key features implemented include:
+- User authentication and management.
+- A template editor for creating dynamic contracts with placeholders.
+- Contract creation from templates or by uploading a PDF.
+- A contract signing flow involving verification via SMS/Telegram.
+- An admin panel for user and template management.
+- PWA support with high-resolution home screen icons.
+- Basic dark mode support via Tailwind CSS (though not fully implemented).
 
 **Last working item**:
--   **Last item agent was working:** The agent was investigating a UX bug specific to Chrome on iOS. When a user opens the Telegram deeplink to get a verification code and then returns to the browser, an extra, unwanted page is created, disrupting the signing flow. The agent was analyzing the frontend code that handles this redirection.
--   **Status:** IN PROGRESS
--   **Agent Testing Done:** N
--   **Which testing method agent to use?** Frontend testing agent. This is a platform-specific browser behavior issue. The agent should first try to reproduce it with the screenshot tool, but a proper fix will likely require analyzing the deeplink generation logic in  and potentially using a different redirection method. The testing agent can help verify the fix across different scenarios.
--   **User Testing Done:** N
+- **Last item agent was working:** The agent was debugging an issue where the  page appeared as a blank white screen after the agent had fixed two other bugs on that same page (an unstyled Back button and a non-functional Upload button).
+- **Status:** IN PROGRESS
+- **Agent Testing Done:** N
+- **Which testing method agent to use?** Frontend testing agent. The agent should first use browser developer tools to check the console for errors and inspect the React component tree on the  page. This is likely a frontend rendering error (e.g., a JavaScript error, a missing translation key, or a failed API call during component mount).
+- **User Testing Done:** N
 
 **All Pending/In progress Issue list**:
--   **Issue 1: Chrome on iOS creates an extra page when returning from Telegram deeplink (P0)**
--   **Issue 2: User needs to deploy all changes to the production server (P1)**
--   **Issue 3: KazInfoTech SMS Service is inactive (P2)**
+- **Issue 1:** The  renders a blank screen. (P0)
 
 **Issues Detail:**
--   **Issue 1: Chrome on iOS creates an extra page when returning from Telegram deeplink (P0)**
-    -   **Description:** When a user on an iPhone using Chrome clicks the Telegram deeplink, gets the code, and switches back to Chrome, they land on a new, blank page instead of the original signing page. This forces them to manually close the new page and find the original one. The issue does not occur in Safari.
-    -   **Attempted fixes:** The agent started analyzing the deeplink generation code in .
-    -   **Next debug checklist:**
-        1.  Examine , specifically the  function and how the  state is used to navigate the user.
-        2.  The current implementation likely uses . Research alternative methods for triggering deeplinks that are more compatible with iOS Chrome's handling of app switching, such as using  with specific targets or other JavaScript workarounds.
-        3.  Conduct a web search for terms like ios chrome deeplink back navigation new tab to find known issues and solutions.
-    -   **Why fix this issue and what will be achieved with the fix?** To ensure a smooth, uninterrupted user experience for contract signing on all major mobile browsers.
-    -   **Status:** IN PROGRESS
-    -   **Is recurring issue?** N
-    -   **Should Test frontend/backend/both after fix?** Frontend.
-    -   **Blocked on other issue:** None.
-
--   **Issue 2: User needs to deploy all changes to the production server (P1)**
-    -   **Description:** The user frequently reports bugs on their live site that have already been fixed in the preview environment. This is due to incorrect or incomplete deployment of the latest code.
-    -   **Attempted fixes:** The agent has repeatedly provided the correct  and usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]
-           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]
-           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]
-           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]
-           [--super-prefix=<path>] [--config-env=<name>=<envvar>]
-           <command> [<args>]
-
-These are common Git commands used in various situations:
-
-start a working area (see also: git help tutorial)
-   clone     Clone a repository into a new directory
-   init      Create an empty Git repository or reinitialize an existing one
-
-work on the current change (see also: git help everyday)
-   add       Add file contents to the index
-   mv        Move or rename a file, a directory, or a symlink
-   restore   Restore working tree files
-   rm        Remove files from the working tree and from the index
-
-examine the history and state (see also: git help revisions)
-   bisect    Use binary search to find the commit that introduced a bug
-   diff      Show changes between commits, commit and working tree, etc
-   grep      Print lines matching a pattern
-   log       Show commit logs
-   show      Show various types of objects
-   status    Show the working tree status
-
-grow, mark and tweak your common history
-   branch    List, create, or delete branches
-   commit    Record changes to the repository
-   merge     Join two or more development histories together
-   rebase    Reapply commits on top of another base tip
-   reset     Reset current HEAD to the specified state
-   switch    Switch branches
-   tag       Create, list, delete or verify a tag object signed with GPG
-
-collaborate (see also: git help workflows)
-   fetch     Download objects and refs from another repository
-   pull      Fetch from and integrate with another repository or a local branch
-   push      Update remote refs along with associated objects
-
-'git help -a' and 'git help -g' list available subcommands and some
-concept guides. See 'git help <command>' or 'git help <concept>'
-to read about a specific subcommand or concept.
-See 'git help git' for an overview of the system. commands, including how to handle  conflicts (No local changes to save) and how to force a rebuild with .
-    -   **Next debug checklist:**
-        1.  Provide a clear, consolidated set of deployment instructions.
-        2.  Remind the user to always use  when frontend or backend dependencies (, , ) have changed.
-    -   **Why fix this issue and what will be achieved with the fix?** To make all completed features and bug fixes live for end-users and to stop wasting time re-investigating solved problems.
-    -   **Status:** BLOCKED (on user action).
-    -   **Is recurring issue?** Y
-    -   **Should Test frontend/backend/both after fix?** Both (on the user's production server).
-    -   **Blocked on other issue:** None.
-
--   **Issue 3: KazInfoTech SMS Service is inactive (P2)**
-    -   **Description:** SMS notifications and OTPs are not functional because the user's account with the provider has a zero balance.
-    -   **Next debug checklist:**
-        1.  Remind the user that they must add funds to their KazInfoTech account for the SMS service to work.
-    -   **Why fix this issue and what will be achieved with the fix?** To enable SMS as a contract verification and notification channel.
-    -   **Status:** BLOCKED (on user action).
-    -   **Is recurring issue?** Y
-    -   **Should Test frontend/backend/both after fix?** Backend.
-    -   **Blocked on other issue:** None.
+- **Issue 1:** The page at  is blank.
+    - **Attempted fixes:** The agent previously fixed the Back button styling and the Upload button functionality on this page. The agent confirmed via  that the backend is working correctly. The last action was to check the browser console logs, but the session ended before a result was seen.
+    - **Next debug checklist:**
+        1. Access the  page in a browser.
+        2. Open the developer tools and check the **Console** tab for any JavaScript errors that might be halting rendering.
+        3. Check the **Network** tab to see if all API calls are successful.
+        4. Inspect the React component tree to see if the  component and its children are mounted correctly.
+        5. Check  for potential issues like infinite loops in , problems with state initialization, or errors related to the i18n translation library.
+    - **Why fix this issue and what will be achieved with the fix?** This page is critical for the PDF contract creation flow. Fixing it will allow users to upload their own PDF documents to be signed.
+    - **Status:** IN PROGRESS
+    - **Is recurring issue?** N
+    - **Should Test frontend/backend/both after fix?** Frontend. The backend endpoint was already verified.
+    - **Blocked on other issue:** None.
 
 **In progress Task List**:
-None. All current work items are categorized as issues.
+None.
 
 **Upcoming and Future Tasks**
-*   **Upcoming Tasks:**
-    *   (P0) Integrate Contract Templates into the App: Build functionality for users to select and use the generated  templates within the application, connecting them to the new calculator feature.
-*   **Future Tasks:**
-    *   (P1) Add Watermark to generated PDF contracts.
-    *   (P2) Implement a Mock or Test mode for the payment flow UI.
-    *   (P2) Develop a user-facing Contract Constructor UI.
-    *   (P2) Implement a detailed Audit Trail for contract actions.
-    *   (P2) Add Version History for contracts.
-    *   (P2) Re-implement the auto-renewal toggle for subscriptions.
+- **Task 1: Full Dark Mode Implementation (P2)**
+    - The user postponed this task.
+    - **Details:** The current setup for dark mode is incomplete. While  is set to , the components lack the necessary  variant classes (e.g., , ).
+    - **Action:** Go through all major components and pages (e.g., , , , , etc.) and add the corresponding  styles to ensure the UI correctly adapts to the system's dark theme. This is a significant UI task.
 
 **Completed work in this session**
--   **Feature: Placeholder Calculator:** Implemented a full-featured calculator in  with a new utility file . It supports date math, complex text formulas, and rounding, and is integrated into  and .
--   **Compliance: FreedomPay Requirements:** Added Simple Electronic Signature and Data Security sections to .
--   **Bugfix: PDF Uploads:** Resolved PDF upload failures by adding  to  and  to .
--   **Bugfix: Language Synchronization:** Fixed the UI language not updating on the  by correcting  key usage and forcing a page reload on language selection.
--   **Bugfix: Telegram OTP:** Fixed the Telegram verification flow by instructing the user on how to resolve the  caused by multiple bot instances.
--   **UX Overhaul: Password Reset:** Completely redesigned the password reset flow across  and , adding auto-login and multi-language email support in .
--   **UI Fixes:**
-    -   Corrected mobile layout on .
-    -   Hid the redundant language switcher on .
--   **Task Completion:** Generated and delivered the final version of the daily rental agreement  file.
+- **Recently completed:**
+  - **PDF Signing Flow:** Fixed the process to show the PDF for review before signing and implemented a public endpoint for access. (DONE)
+  - **User Management:** Added features for admins to permanently delete users and deactivate/reactivate accounts, preventing login for deactivated users. (DONE)
+  - **'Forgot Password' Flow:** Improved UX by adding server-side validation and displaying a clear error message (User not registered) on the frontend. (DONE)
+  - **PWA Icons:** Updated home screen icons for iOS and Android with high-resolution versions, resolving poor quality issues. (DONE)
+  - **Placeholder Calculator:** Enhanced the calculator to support percentage calculations (e.g., ). (DONE)
+  - **Autofill Data:** Implemented auto-filling of the provider's data (name, IIN, etc.) and set the current date as the default on the contract creation page. (DONE)
+  - **New Placeholder Type:** Added a Dropdown List () placeholder with a multi-language configuration UI. (DONE)
+  - **Admin UI:** Added an interactive button to swap Provider and Client roles in the template editor. (DONE)
+  - **Landing Page:** Updated text to accurately describe the contract sharing process. (DONE)
+  - **Telegram Deeplink Fix:** Resolved an issue where Chrome on iOS would open a new tab instead of returning to the app, by using  and . (DONE)
+
+**Earlier issues found/mentioned but not fixed**
+None.
+
+**Known issue recurrence from previous fork**
+- **Issue recurrence in previous fork:** . This happens when multiple instances of the Telegram bot run with the same token.
+- **Recurrence count:** 2+
+- **Status:** RESOLVED (mitigated). The agent provided a workaround: always run  before  during deployment. The agent also offered to add automatic conflict handling in the bot's code as a permanent fix, but this was not implemented. The next agent should be aware of this and follow the deployment instructions carefully.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
--   **Complex Feature Implementation:** Built a JavaScript-based calculator from scratch to parse and evaluate user-defined mathematical and date-based formulas.
--   **Dependency Management:** Debugged and fixed issues related to missing system-level () and application-level () dependencies in a Docker environment.
--   **Authentication Flow Debugging:** Performed a deep-dive into login failures, tracing issues back to incorrect database connections, password hashing (), and data model mismatches.
--   **Cross-App Deeplinking:** Investigating mobile browser-specific bugs (iOS Chrome) related to returning from a native app (Telegram) via a deeplink.
--   **i18next State Synchronization:** Debugged and fixed issues where the React UI did not update upon language change, requiring a forced page reload as a definitive solution.
--   **Docker Troubleshooting:** Diagnosed and resolved runtime conflicts () and build issues ().
+- **Frontend:** React, Tailwind CSS, Shadcn/ui, , .
+- **Backend:** Python 3.11, FastAPI, Beanie (ODM for MongoDB), JWT for authentication.
+- **Database:** MongoDB.
+- **Architecture:** Monorepo with separate frontend and backend services containerized with Docker.
 
 **key DB schema**
--   No structural changes were made to the database schema.
--   The  collection was debugged to fix a login issue related to an incorrect field name ( vs ).
+- **users:** 
+- **contracts:** 
 
 **changes in tech stack**
--   : Added as a system dependency in the backend Docker image for PDF processing.
--   : Added as a Python dependency.
+None.
 
 **All files of reference**
--   **New Files:**
-    -   
--   **Heavily Modified:**
-    -   
-    -   
-    -   
-    -   
--   **Modified:**
-    -   
-    -   
-    -   
-    -   
-    -   
-    -   
-    -   
+- : **Last edited file.** The agent was fixing bugs and debugging a blank screen issue here.
+- : Contains the  endpoint relevant to the last task.
+- : Recently modified to display PDF contracts.
+- : Recently modified to add user deletion/deactivation endpoints.
+- : Recently modified to add UI for user management.
+- : Changed to enable media-query-based dark mode, although this is incomplete.
 
 **Areas that need refactoring**:
--    has grown excessively complex, handling multiple signing steps, OTP logic for two channels, file uploads, and language switching. It is a strong candidate for being broken down into smaller, more manageable components and custom hooks.
--    remains a large, monolithic file containing routes, business logic, and email templates. It should be modularized.
+None explicitly identified, but the implementation of dark mode requires adding  classes across the entire component library.
 
 **key api endpoints**
--   : Extensively debugged and fixed.
--   : Modified to support multi-language emails.
--   : Modified to enable the new auto-login flow.
--   : Debugged and fixed for PDF uploads.
--   : Debugged and fixed.
+- : Uploads a PDF file to create a contract. (Related to the current issue).
+- : **(New)** Public endpoint to view a PDF contract for signing.
+- : **(New)** Permanently deletes a user.
+- : **(New)** Activates or deactivates a user account.
+- : User login. Now checks  status.
+- : Initiates password reset. Now validates if the user exists.
 
 **Critical Info for New Agent**
--   **Respond in Russian.**
--   **Deployment is a recurring blocker.** The user frequently struggles with usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]
-           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]
-           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]
-           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]
-           [--super-prefix=<path>] [--config-env=<name>=<envvar>]
-           <command> [<args>]
-
-These are common Git commands used in various situations:
-
-start a working area (see also: git help tutorial)
-   clone     Clone a repository into a new directory
-   init      Create an empty Git repository or reinitialize an existing one
-
-work on the current change (see also: git help everyday)
-   add       Add file contents to the index
-   mv        Move or rename a file, a directory, or a symlink
-   restore   Restore working tree files
-   rm        Remove files from the working tree and from the index
-
-examine the history and state (see also: git help revisions)
-   bisect    Use binary search to find the commit that introduced a bug
-   diff      Show changes between commits, commit and working tree, etc
-   grep      Print lines matching a pattern
-   log       Show commit logs
-   show      Show various types of objects
-   status    Show the working tree status
-
-grow, mark and tweak your common history
-   branch    List, create, or delete branches
-   commit    Record changes to the repository
-   merge     Join two or more development histories together
-   rebase    Reapply commits on top of another base tip
-   reset     Reset current HEAD to the specified state
-   switch    Switch branches
-   tag       Create, list, delete or verify a tag object signed with GPG
-
-collaborate (see also: git help workflows)
-   fetch     Download objects and refs from another repository
-   pull      Fetch from and integrate with another repository or a local branch
-   push      Update remote refs along with associated objects
-
-'git help -a' and 'git help -g' list available subcommands and some
-concept guides. See 'git help <command>' or 'git help <concept>'
-to read about a specific subcommand or concept.
-See 'git help git' for an overview of the system. and . Be prepared to provide very clear, step-by-step commands and explain the purpose of flags like . Always suspect that user-reported bugs might be due to outdated code on their production server.
--   **The login credentials are  / .** The login flow was debugged extensively; the issue was a combination of an incorrect database name in a local script and a schema mismatch. The correct database is  as defined in .
--   **The Telegram OTP bug was a race condition.** It was caused by multiple bot instances running. If it happens again, the first debugging step is to stop all containers and restart them cleanly ().
--   The user primarily tests on an iPhone. Be mindful of mobile-specific UI/UX bugs and browser behaviors (e.g., the current iOS Chrome issue).
+- **Deployment:** To avoid the recurring Telegram bot conflict, you **MUST** run  before every deployment that involves restarting services. The standard deployment command is: .
+- **Dark Mode:** The user is aware of the dark theme. It is currently set to follow system preferences (), but it's not fully functional because components lack  CSS classes. The user has postponed a full implementation.
+- **User Deletion:** The logic was changed from soft delete to hard delete. If issues with ghost users persist on production, it's because the new code hasn't been deployed and old soft-deleted users may still be in the DB.
+- **User Feedback:** The user prefers explicit error messages (e.g., User not found instead of a generic Login error).
 
 **documents and test reports created in this job**
--    (Generated and provided to the user)
--    (Generated by testing agent, but not fully acted upon due to login bug)
+-  (renamed to ): An enhanced, tri-lingual service agreement template created for the user.
+-  (updated)
+-  (updated)
+-  (created for PWA support)
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User:** Reports the Chrome on iOS deeplink issue, where returning from Telegram creates an extra page. (Status: **In Progress**)
-2.  **User:** Confirms that PDF uploads and language switching are now working, but Telegram signing is broken. (Status: **Addressed**)
-3.  **User:** Provides logs showing the  error. (Status: **Addressed**)
-4.  **User:** Confirms everything is working now. Asks about the extra page issue in Chrome on iPhone. (Status: **In Progress**)
-5.  **User:** Reports that the interface doesn't change language and PDF still doesn't upload on production, despite  being present. (Status: **Addressed**)
-6.  **User:** Provides logs from production showing . (Status: **Addressed**)
-7.  **User:** Reports their  failed due to local changes in . (Status: **Addressed**)
-8.  **User:** Reports that the interface language doesn't switch correctly and the English warning should always be in English. (Status: **Addressed**)
-9.  **User:** Provides screenshots of the language and PDF upload issues on production. (Status: **Addressed**)
-10. **User:** Reports that after filling placeholders, the next step (ID upload) doesn't accept PDF files. (Status: **Addressed**)
+1.  **User (msg 503):** Reports PDF signing is broken: the back button is unstyled, and signing doesn't work, likely because the PDF doesn't load. (Status: In Progress, partially fixed)
+2.  **Agent (msg 522-622):** Investigates and fixes the PDF signing flow by adding a public endpoint to view the PDF and unifying button styles.
+3.  **User (msg 623):** Reports new bugs on the PDF *upload* page: the back button is unstyled, and the upload and send button does nothing. (Status: In Progress)
+4.  **Agent (msg 624-638):** Identifies the cause (missing styles and incorrect form data key) and applies fixes to .
+5.  **Agent (msg 639-643):** Tries to test the fix but encounters a blank white screen, confirms the backend is okay with , and prepares to check the browser console. (Status: Blocked/Debugging)
+6.  **User (msg 499):** Dislikes the block-style error message on the Forgot Password page and asks for simple red text under the input field. (Status: Resolved)
+7.  **Agent (msg 500-502):** Acknowledges and implements the requested style change.
+8.  **User (msg 485):** Points out that the error message on the Forgot Password page isn't displayed on-screen like it is on the login page. (Status: Resolved)
+9.  **Agent (msg 486-498):** Fixes the  to display backend error messages in a red block above the input.
+10. **User (msg 475):** Reports a bug in the Forgot Password flow: it sends a reset email even for non-existent users. (Status: Resolved)
 
 **Project Health Check:**
--   **Broken:**
-    -   The user's production environment is frequently out-of-sync with the development branch, causing them to report already-fixed issues.
-    -   The SMS OTP channel () is non-functional due to a lack of funds in the user's account.
--   **Mocked:** None.
+- **Broken:**
+    - The PDF contract upload page () is currently rendering a blank screen, blocking that entire user flow.
 
 **3rd Party Integrations**
--   : SMS provider (Inactive due to zero balance).
--   : For Telegram OTP (Active, recently debugged and fixed).
--   : For custom SMTP emails (Active).
--   : Payment acquirer (Compliance issues addressed, user is in communication with them).
+- **KazInfoTech:** Used for sending SMS, requires user-provided balance/keys.
+- **Telegram Bot API:** Used for sending verification codes and notifications, requires a bot token.
 
 **Testing status**
--   Testing agent used after significant changes: YES (for the calculator feature, but the run was interrupted by a blocking login bug).
--   Troubleshoot agent used after agent stuck in loop: NO
--   Test files created:
-    -    (for  testing)
--   Known regressions: None. Issues reported by the user were due to their production environment running old code.
+- **Testing agent used after significant changes:** NO
+- **Troubleshoot agent used after agent stuck in loop:** NO
+- **Test files created:** None.
+- **Known regressions:** The  is currently broken and displays a blank screen.
 
 **Credentials to test flow:**
--   **App Admin User:**  / Password: 
+Admin credentials for the preview environment:
+- **Email:** 
+- **Password:** 
 
 **What agent forgot to execute**
--   The testing agent was invoked for the calculator feature, but its results were never fully processed because the agent got sidetracked by a critical login bug. The new agent should consider re-running tests for the calculator to ensure there are no regressions.</analysis>
+The agent was in the middle of debugging the blank screen on  when the session ended. The next step was to check the browser's developer console for errors, which was not executed.</analysis>
