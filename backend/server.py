@@ -3252,7 +3252,7 @@ async def get_contract_for_signing(contract_id: str):
             if contract.get('template_id'):
                 template = await db.templates.find_one({"id": contract['template_id']}, {"_id": 0})
             
-            placeholder_values = contract.get('placeholder_values', {})
+            placeholder_values = contract.get('placeholder_values') or {}
             template_placeholders = template.get('placeholders', {}) if template else {}
             
             for key, value in placeholder_values.items():
