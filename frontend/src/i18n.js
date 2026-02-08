@@ -1850,6 +1850,13 @@ const resources = {
       "uploadPdf.fileTooLarge": "Файл тым үлкен (максимум 10 МБ)",
       "uploadPdf.success": "PDF келісімшарт сәтті жүктелді!",
       "uploadPdf.error": "PDF жүктеу қатесі",
+      "uploadPdf.createContract": "Келісімшарт жасау",
+      "uploadPdf.enterTitle": "Келісімшарт атауын енгізіңіз",
+      
+      "contract.partyA": "А жағы",
+      "contract.partyB": "Б жағы",
+      "contract.clientFieldsOptional": "Клиент деректерін білсеңіз толтырыңыз (қосымша)",
+      "common.optional": "қосымша",
       
       // ===== ADMIN TEMPLATES =====
       "adminTemplates.title": "Үлгілерді басқару",
