@@ -1397,22 +1397,43 @@ const SignContractPage = () => {
                   </p>
                 </div>
 
-                {/* Contract content */}
-                <div className="bg-white p-6 rounded-lg border border-gray-200 max-h-[500px] overflow-y-auto">
-                  <div 
-                    className="whitespace-pre-wrap text-sm leading-relaxed text-gray-800"
-                    style={{
-                      fontFamily: 'IBM Plex Sans, sans-serif',
-                      fontSize: '14px',
-                      lineHeight: '1.6'
-                    }}
-                    dangerouslySetInnerHTML={{ __html: highlightPlaceholders(
-                      contractLanguage === 'kk' && contract.content_kk ? contract.content_kk :
-                      contractLanguage === 'en' && contract.content_en ? contract.content_en :
-                      contract.content
-                    ) }}
-                  />
-                </div>
+                {/* Contract content - PDF viewer for uploaded PDF contracts */}
+                {contract.source_type === 'uploaded_pdf' ? (
+                  <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                    <iframe
+                      src={`${API}/sign/${id}/view-pdf`}
+                      className="w-full h-[400px] sm:h-[500px] border-0"
+                      title="PDF Contract"
+                      data-testid="pdf-viewer-final-review"
+                    />
+                    <div className="p-3 border-t border-gray-100 flex justify-center gap-3">
+                      <a
+                        href={`${API}/sign/${id}/view-pdf`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-all"
+                      >
+                        {t('sign.openPdf')}
+                      </a>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-white p-6 rounded-lg border border-gray-200 max-h-[500px] overflow-y-auto">
+                    <div 
+                      className="whitespace-pre-wrap text-sm leading-relaxed text-gray-800"
+                      style={{
+                        fontFamily: 'IBM Plex Sans, sans-serif',
+                        fontSize: '14px',
+                        lineHeight: '1.6'
+                      }}
+                      dangerouslySetInnerHTML={{ __html: highlightPlaceholders(
+                        contractLanguage === 'kk' && contract.content_kk ? contract.content_kk :
+                        contractLanguage === 'en' && contract.content_en ? contract.content_en :
+                        contract.content
+                      ) }}
+                    />
+                  </div>
+                )}
 
                 {/* Display uploaded document (ID/passport) if exists */}
                 {contract.signature?.document_upload && (
