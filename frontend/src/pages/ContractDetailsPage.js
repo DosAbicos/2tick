@@ -728,40 +728,73 @@ const ContractDetailsPage = () => {
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
                 <h3 className="text-base sm:text-lg font-semibold text-gray-900">{t('contractDetails.content')}</h3>
                 
-                {/* Language Switcher for Content - Admin Style */}
-                <div 
-                  className="flex gap-2"
-                  data-testid="content-language-switcher"
-                >
-                  {getAvailableContentLanguages().map((lang) => (
-                    <button
-                      key={lang}
-                      onClick={() => setSelectedContentLang(lang)}
-                      className={`px-3 sm:px-4 py-2 rounded-lg font-semibold transition-all ${
-                        selectedContentLang === lang
-                          ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg'
-                          : 'neuro-button'
-                      }`}
-                      data-testid={`content-lang-${lang}`}
-                    >
-                      {lang === 'ru' ? '🇷🇺 Русский' : lang === 'kk' ? '🇰🇿 Қазақша' : '🇬🇧 English'}
-                    </button>
-                  ))}
-                </div>
+                {/* Language Switcher for Content - Only for non-PDF contracts */}
+                {contract.source_type !== 'uploaded_pdf' && (
+                  <div 
+                    className="flex gap-2"
+                    data-testid="content-language-switcher"
+                  >
+                    {getAvailableContentLanguages().map((lang) => (
+                      <button
+                        key={lang}
+                        onClick={() => setSelectedContentLang(lang)}
+                        className={`px-3 sm:px-4 py-2 rounded-lg font-semibold transition-all ${
+                          selectedContentLang === lang
+                            ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg'
+                            : 'neuro-button'
+                        }`}
+                        data-testid={`content-lang-${lang}`}
+                      >
+                        {lang === 'ru' ? '🇷🇺 Русский' : lang === 'kk' ? '🇰🇿 Қазақша' : '🇬🇧 English'}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
               
-              <div className="bg-gradient-to-br from-white to-gray-50 p-4 sm:p-6 rounded-xl border border-gray-100 shadow-inner">
-                <div 
-                  className="whitespace-pre-wrap text-xs sm:text-sm leading-relaxed text-gray-800 break-words overflow-x-auto"
-                  style={{
-                    fontFamily: 'IBM Plex Sans, sans-serif',
-                    fontSize: 'clamp(12px, 2.5vw, 14px)',
-                    lineHeight: '1.6'
-                  }}
-                  dangerouslySetInnerHTML={{ __html: replacePlaceholders(getContentForLanguage(selectedContentLang)) }}
-                  data-testid="contract-content"
-                />
-              </div>
+              {/* PDF Viewer for uploaded PDF contracts */}
+              {contract.source_type === 'uploaded_pdf' ? (
+                <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl border border-gray-100 shadow-inner overflow-hidden">
+                  <iframe
+                    src={`${API}/sign/${id}/view-pdf`}
+                    className="w-full h-[500px] sm:h-[600px] border-0"
+                    title="PDF Contract"
+                    data-testid="pdf-viewer"
+                  />
+                  <div className="p-3 border-t border-gray-100 flex justify-center gap-3">
+                    <a
+                      href={`${API}/sign/${id}/view-pdf`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-all"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      {t('sign.openPdf')}
+                    </a>
+                    <a
+                      href={`${API}/sign/${id}/view-pdf`}
+                      download={`contract-${contract.contract_number || id}.pdf`}
+                      className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all"
+                    >
+                      <Download className="w-4 h-4" />
+                      {t('sign.downloadPdf')}
+                    </a>
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-gradient-to-br from-white to-gray-50 p-4 sm:p-6 rounded-xl border border-gray-100 shadow-inner">
+                  <div 
+                    className="whitespace-pre-wrap text-xs sm:text-sm leading-relaxed text-gray-800 break-words overflow-x-auto"
+                    style={{
+                      fontFamily: 'IBM Plex Sans, sans-serif',
+                      fontSize: 'clamp(12px, 2.5vw, 14px)',
+                      lineHeight: '1.6'
+                    }}
+                    dangerouslySetInnerHTML={{ __html: replacePlaceholders(getContentForLanguage(selectedContentLang)) }}
+                    data-testid="contract-content"
+                  />
+                </div>
+              )}
             </div>
             
             {/* Old signature link block removed - now at top */}
