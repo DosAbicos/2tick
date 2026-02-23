@@ -23,13 +23,10 @@ Build a comprehensive contract signing platform (2tick.kz) with:
 - ✅ Dashboard with favorite templates
 - ✅ PDF viewer in contract details, signing, and review pages
 - ✅ Calculated fields in templates
+- ✅ Mobile optimizations for signing page (Step 2 upload, Step 5 verification)
 
 ### Known Issues
-1. **P0:** Mobile UX on signing page requires excessive scrolling
-   - Previous optimization attempt was rejected and reverted
-   - Needs new approach with user approval
-
-2. **P1:** Placeholders with identical labels across languages may not render for Party B
+1. **P1:** Placeholders with identical labels across languages may not render for Party B
    - Cannot reproduce without specific template/contract ID
    - Waiting for user to provide example
 
@@ -45,7 +42,7 @@ Build a comprehensive contract signing platform (2tick.kz) with:
 - **Deployment:** Docker Compose
 
 ### Key Files
-- `frontend/src/pages/SignContractPage.js` - Contract signing flow (2031 lines)
+- `frontend/src/pages/SignContractPage.js` - Contract signing flow (~2050 lines)
 - `frontend/src/pages/admin/EditTemplatePage.js` - Template editor
 - `frontend/src/pages/DashboardPage.js` - User dashboard
 - `frontend/src/pages/UploadPdfContractPage.js` - PDF contract upload
@@ -63,6 +60,10 @@ Build a comprehensive contract signing platform (2tick.kz) with:
 - User deploys to own VPS using Git and Docker Compose
 
 ## Changelog
+- **2026-02-23:** Mobile optimizations for SignContractPage.js
+  - Step 2: Compact upload button on mobile, full dropzone on desktop
+  - Step 5: Smaller verification icon and buttons on mobile
+  - Added translations for "uploadImages"
 - **2026-02-23:** Reverted SignContractPage.js mobile optimization (user rejected changes)
 - **Previous session:** 
   - Implemented PDF contract flow
