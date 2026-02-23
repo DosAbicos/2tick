@@ -1037,14 +1037,17 @@ const SignContractPage = () => {
                         <svg className="w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
-                        <p className="text-gray-500 text-sm mb-4">{t('sign.pdfNotDisplayed')}</p>
+                        <p className="text-gray-500 text-sm mb-4">PDF не отображается в браузере</p>
                         <a
                           href={`${API}/sign/${contract.id}/view-pdf`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                         >
-                          {t('sign.openPdf')}
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                          Открыть PDF
                         </a>
                       </div>
                     </object>
@@ -1304,29 +1307,29 @@ const SignContractPage = () => {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="space-y-3 sm:space-y-6"
+                className="space-y-6"
                 data-testid="step-upload-document"
               >
-                <div className="text-center mb-2 sm:mb-4">
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-r from-blue-600 to-blue-500 flex items-center justify-center mx-auto mb-2 sm:mb-4 shadow-lg shadow-blue-500/30">
-                    <FileUp className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
+                <div className="text-center mb-4">
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-600 to-blue-500 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/30">
+                    <FileUp className="h-8 w-8 text-white" />
                   </div>
-                  <h3 className="text-lg sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2">{t('signing.uploadDoc')}</h3>
-                  <p className="text-gray-600 text-xs sm:text-sm">{t('signing.uploadDocDescription')}</p>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('signing.uploadDoc')}</h3>
+                  <p className="text-gray-600 text-sm">{t('signing.uploadDocDescription')}</p>
                 </div>
                 
-                {/* Show uploaded document status - compact on mobile */}
+                {/* Show uploaded document status */}
                 {documentUploaded && (
-                  <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 sm:border-2 rounded-lg sm:rounded-xl p-2.5 sm:p-4">
-                    <div className="flex items-center gap-2 sm:gap-3">
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
-                        <CheckCircle2 className="h-4 w-4 sm:h-6 sm:w-6 text-white" />
+                  <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-4 mb-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0">
+                        <CheckCircle2 className="h-6 w-6 text-white" />
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-green-900 text-sm sm:text-base">
+                      <div className="flex-1">
+                        <p className="font-semibold text-green-900">
                           {t('signing.docUploaded')}
                         </p>
-                        <p className="text-xs sm:text-sm text-green-700 truncate">
+                        <p className="text-sm text-green-700">
                           {t('signing.docUploadedHint')}
                         </p>
                       </div>
@@ -1334,9 +1337,9 @@ const SignContractPage = () => {
                   </div>
                 )}
                 
-                <div className="bg-gradient-to-br from-blue-50 via-sky-50 to-cyan-50 border border-blue-200 sm:border-2 rounded-lg sm:rounded-xl p-3 sm:p-6">
+                <div className="bg-gradient-to-br from-blue-50 via-sky-50 to-cyan-50 border-2 border-blue-200 rounded-xl p-6">
                   <label htmlFor="document" className="cursor-pointer block">
-                    <div className="border-2 border-dashed border-blue-300 rounded-lg sm:rounded-xl p-4 sm:p-8 text-center hover:border-blue-500 hover:bg-white/50 transition-all bg-white/30">
+                    <div className="border-2 border-dashed border-blue-300 rounded-xl p-8 text-center hover:border-blue-500 hover:bg-white/50 transition-all bg-white/30">
                       <input
                         id="document"
                         type="file"
@@ -1346,23 +1349,23 @@ const SignContractPage = () => {
                         className="hidden"
                         data-testid="document-upload-input"
                       />
-                      <svg className="w-8 h-8 sm:w-12 sm:h-12 text-blue-400 mx-auto mb-2 sm:mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-12 h-12 text-blue-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                       </svg>
-                      <p className="text-sm sm:text-base font-medium text-gray-900 mb-0.5 sm:mb-1">
+                      <p className="text-base font-medium text-gray-900 mb-1">
                         {uploading ? t('signing.uploading') : (documentUploaded ? t('signing.clickToReplace') : t('signing.clickToUpload'))}
                       </p>
-                      <p className="text-xs sm:text-sm text-gray-500">
+                      <p className="text-sm text-gray-500">
                         JPEG, PNG, PDF до 10MB
                       </p>
                     </div>
                   </label>
                 </div>
                 
-                <div className="flex gap-2 sm:gap-3">
+                <div className="flex gap-3">
                   <button
                     onClick={() => setStep(1.5)}
-                    className="flex-1 py-2.5 sm:py-3 px-3 sm:px-4 text-xs sm:text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg sm:rounded-xl hover:bg-gray-50 transition-all"
+                    className="flex-1 py-3 px-4 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-all"
                     data-testid="back-to-info-button"
                   >
                     ← {t('signing.back')}
@@ -1370,7 +1373,7 @@ const SignContractPage = () => {
                   {documentUploaded && (
                     <button
                       onClick={() => setStep(4)}
-                      className="flex-1 py-2.5 sm:py-3 text-sm sm:text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/20"
+                      className="flex-1 py-3 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/20"
                     >
                       {t('signing.reviewContract')}
                     </button>
@@ -1593,19 +1596,19 @@ const SignContractPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4 }}
-                className="space-y-3 sm:space-y-6"
+                className="space-y-6"
                 data-testid="step-verify-otp"
               >
                 {!verificationMethod ? (
-                  // Method selection - Compact on mobile
+                  // Method selection - Neumorphism style
                   <div className="text-center">
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                      className="w-14 h-14 sm:w-20 sm:h-20 mx-auto mb-3 sm:mb-6 neuro-card flex items-center justify-center"
+                      className="w-20 h-20 mx-auto mb-6 neuro-card flex items-center justify-center"
                     >
-                      <svg className="w-7 h-7 sm:w-10 sm:h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                       </svg>
                     </motion.div>
@@ -1614,7 +1617,7 @@ const SignContractPage = () => {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.3 }}
-                      className="text-lg sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2"
+                      className="text-2xl font-bold text-gray-900 mb-2"
                     >
                       {t('signing.confirmSignature')}
                     </motion.h3>
@@ -1623,13 +1626,13 @@ const SignContractPage = () => {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.4 }}
-                      className="text-gray-600 text-xs sm:text-sm mb-4 sm:mb-8"
+                      className="text-gray-600 text-sm mb-8"
                     >
                       {t('signing.selectVerificationMethod')}
                     </motion.p>
                     
-                    <div className="space-y-2.5 sm:space-y-4 max-w-md mx-auto">
-                      {/* SMS Button - Compact on mobile */}
+                    <div className="space-y-4 max-w-md mx-auto">
+                      {/* SMS Button - Neumorphism with rounded corners */}
                       <motion.button
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -1638,27 +1641,27 @@ const SignContractPage = () => {
                         whileTap={{ scale: 0.98 }}
                         onClick={handleRequestSMS}
                         disabled={smsCooldown > 0}
-                        className="neuro-card w-full p-3 sm:p-6 rounded-xl sm:rounded-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
+                        className="neuro-card w-full p-6 rounded-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
                       >
-                        <div className="flex items-center gap-3 sm:gap-4">
-                          <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-lg sm:rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center flex-shrink-0 group-hover:from-blue-100 group-hover:to-blue-200 transition-all">
-                            <svg className="w-5 h-5 sm:w-7 sm:h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="flex items-center gap-4">
+                          <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center flex-shrink-0 group-hover:from-blue-100 group-hover:to-blue-200 transition-all">
+                            <svg className="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                             </svg>
                           </div>
                           <div className="flex-1 text-left">
-                            <h4 className="text-sm sm:text-lg font-semibold text-gray-900">
+                            <h4 className="text-lg font-semibold text-gray-900 mb-1">
                               {smsCooldown > 0 ? `${t('signing.sms')} ${smsCooldown}s` : t('signing.sms')}
                             </h4>
-                            <p className="text-xs sm:text-sm text-gray-600 hidden sm:block">{t('signing.smsHint')}</p>
+                            <p className="text-sm text-gray-600">{t('signing.smsHint')}</p>
                           </div>
-                          <svg className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 flex-shrink-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-5 h-5 text-blue-600 flex-shrink-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
                         </div>
                       </motion.button>
                       
-                      {/* Email Button - Compact on mobile */}
+                      {/* Email Button */}
                       <motion.button
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -1678,27 +1681,27 @@ const SignContractPage = () => {
                           }
                         }}
                         disabled={sendingCode}
-                        className="neuro-card w-full p-3 sm:p-6 rounded-xl sm:rounded-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
+                        className="neuro-card w-full p-6 rounded-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
                       >
-                        <div className="flex items-center gap-3 sm:gap-4">
-                          <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-lg sm:rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 flex items-center justify-center flex-shrink-0 group-hover:from-purple-100 group-hover:to-purple-200 transition-all">
-                            <svg className="w-5 h-5 sm:w-7 sm:h-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="flex items-center gap-4">
+                          <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 flex items-center justify-center flex-shrink-0 group-hover:from-purple-100 group-hover:to-purple-200 transition-all">
+                            <svg className="w-7 h-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                             </svg>
                           </div>
                           <div className="flex-1 text-left">
-                            <h4 className="text-sm sm:text-lg font-semibold text-gray-900">
+                            <h4 className="text-lg font-semibold text-gray-900 mb-1">
                               {sendingCode ? t('signing.sending') : t('signing.email')}
                             </h4>
-                            <p className="text-xs sm:text-sm text-gray-600 hidden sm:block">{t('signing.emailHint')}</p>
+                            <p className="text-sm text-gray-600">{t('signing.emailHint')}</p>
                           </div>
-                          <svg className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 flex-shrink-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-5 h-5 text-purple-600 flex-shrink-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
                         </div>
                       </motion.button>
                       
-                      {/* Telegram Button - Compact on mobile */}
+                      {/* Telegram Button - Always active */}
                       <motion.button
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -1751,19 +1754,19 @@ const SignContractPage = () => {
                             window.open(linkToOpen, '_blank');
                           }
                         }}
-                        className="relative overflow-hidden block w-full p-3 sm:p-6 rounded-xl sm:rounded-2xl bg-gradient-to-br from-[#0088cc] to-[#0077b3] transition-all no-underline group shadow-lg shadow-[#0088cc]/20 hover:shadow-xl hover:shadow-[#0088cc]/30 text-left"
+                        className="relative overflow-hidden block w-full p-6 rounded-2xl bg-gradient-to-br from-[#0088cc] to-[#0077b3] transition-all no-underline group shadow-lg shadow-[#0088cc]/20 hover:shadow-xl hover:shadow-[#0088cc]/30 text-left"
                       >
-                        <div className="flex items-center gap-3 sm:gap-4">
-                          <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-lg sm:rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0 group-hover:bg-white/30 transition-all">
-                            <svg className="w-5 h-5 sm:w-8 sm:h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
+                        <div className="flex items-center gap-4">
+                          <div className="w-14 h-14 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0 group-hover:bg-white/30 transition-all">
+                            <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
                               <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
                             </svg>
                           </div>
                           <div className="flex-1 text-left">
-                            <h4 className="text-sm sm:text-lg font-semibold text-white">{t('signing.telegram')}</h4>
-                            <p className="text-xs sm:text-sm text-white/80 hidden sm:block">{t('signing.telegramHint')}</p>
+                            <h4 className="text-lg font-semibold text-white mb-1">{t('signing.telegram')}</h4>
+                            <p className="text-sm text-white/80">{t('signing.telegramHint')}</p>
                           </div>
-                          <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white flex-shrink-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-5 h-5 text-white flex-shrink-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
                         </div>
