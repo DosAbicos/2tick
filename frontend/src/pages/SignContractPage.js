@@ -1020,43 +1020,62 @@ const SignContractPage = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 data-testid="step-view-contract"
+                className="space-y-3 sm:space-y-6"
               >
                 {/* Show PDF viewer for uploaded PDF contracts */}
                 {contract.source_type === 'uploaded_pdf' ? (
-                  <div className="bg-white p-4 rounded-lg border border-gray-200 mb-6">
-                    <div className="text-center mb-4">
-                      <p className="text-gray-600 text-sm mb-3">{t('signing.pdfContract')}</p>
+                  <div className="bg-white p-3 sm:p-4 rounded-lg border border-gray-200">
+                    <div className="text-center mb-3 sm:mb-4">
+                      <p className="text-gray-600 text-xs sm:text-sm">{t('signing.pdfContract')}</p>
                     </div>
-                    <object
-                      data={`${API}/sign/${contract.id}/view-pdf`}
-                      type="application/pdf"
-                      className="w-full rounded-lg border border-gray-200"
-                      style={{ height: '500px' }}
-                    >
-                      <div className="flex flex-col items-center justify-center h-full py-12">
-                        <svg className="w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    {/* Compact PDF preview for mobile, full for desktop */}
+                    <div className="hidden sm:block">
+                      <object
+                        data={`${API}/sign/${contract.id}/view-pdf`}
+                        type="application/pdf"
+                        className="w-full rounded-lg border border-gray-200"
+                        style={{ height: '400px' }}
+                      >
+                        <div className="flex flex-col items-center justify-center h-full py-8">
+                          <svg className="w-12 h-12 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                          <p className="text-gray-500 text-sm mb-3">{t('sign.pdfNotDisplayed')}</p>
+                          <a
+                            href={`${API}/sign/${contract.id}/view-pdf`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                          >
+                            {t('sign.openPdf')}
+                          </a>
+                        </div>
+                      </object>
+                    </div>
+                    {/* Mobile: Simple button to open PDF */}
+                    <div className="sm:hidden">
+                      <div className="flex flex-col items-center py-6 border-2 border-dashed border-gray-200 rounded-lg bg-gray-50">
+                        <svg className="w-10 h-10 text-blue-500 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
-                        <p className="text-gray-500 text-sm mb-4">PDF не отображается в браузере</p>
                         <a
                           href={`${API}/sign/${contract.id}/view-pdf`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                          className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                           </svg>
-                          Открыть PDF
+                          {t('sign.openPdf')}
                         </a>
                       </div>
-                    </object>
-                    <div className="mt-4 text-center">
+                    </div>
+                    <div className="mt-3 text-center">
                       <a
                         href={`${API}/sign/${contract.id}/view-pdf`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 text-sm font-medium"
+                        download
+                        className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 text-xs sm:text-sm font-medium"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -1066,12 +1085,11 @@ const SignContractPage = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="bg-white p-6 rounded-lg border border-gray-200 mb-6">
+                  <div className="bg-white p-3 sm:p-6 rounded-lg border border-gray-200">
                     <div 
-                      className="whitespace-pre-wrap text-sm leading-relaxed text-gray-800"
+                      className="whitespace-pre-wrap text-xs sm:text-sm leading-relaxed text-gray-800 max-h-[300px] sm:max-h-[400px] overflow-y-auto"
                       style={{
                         fontFamily: 'IBM Plex Sans, sans-serif',
-                        fontSize: '14px',
                         lineHeight: '1.6'
                       }}
                       dangerouslySetInnerHTML={{ __html: highlightPlaceholders(
@@ -1086,7 +1104,7 @@ const SignContractPage = () => {
                 
                 <button
                   onClick={() => setStep(needsInfo ? 1.5 : 2)}
-                  className="w-full py-3 text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30"
+                  className="w-full py-2.5 sm:py-3 text-sm sm:text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg sm:rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30"
                   data-testid="proceed-button"
                 >
                   {t('signing.continue')} →
