@@ -1291,7 +1291,7 @@ const AdminTemplatesPageNew = () => {
                           {formData.party_b_role || 'Сторона Б'} (Заказчик)
                         </h4>
                         <span className="ml-auto text-xs bg-green-200 text-green-700 px-2 py-1 rounded">
-                          {placeholderOrder.filter(name => formData.placeholders[name]?.owner === 'tenant').length} полей
+                          {placeholderOrder.filter(name => formData.placeholders[name]?.owner === 'tenant' || formData.placeholders[name]?.owner === 'signer').length} полей
                         </span>
                       </div>
                       <DndContext
@@ -1300,12 +1300,12 @@ const AdminTemplatesPageNew = () => {
                         onDragEnd={handleDragEnd}
                       >
                         <SortableContext
-                          items={placeholderOrder.filter(name => formData.placeholders[name]?.owner === 'tenant')}
+                          items={placeholderOrder.filter(name => formData.placeholders[name]?.owner === 'tenant' || formData.placeholders[name]?.owner === 'signer')}
                           strategy={verticalListSortingStrategy}
                         >
                           <div className="space-y-3 min-h-[100px]">
                             {placeholderOrder
-                              .filter(name => formData.placeholders[name]?.owner === 'tenant')
+                              .filter(name => formData.placeholders[name]?.owner === 'tenant' || formData.placeholders[name]?.owner === 'signer')
                               .map((name) => (
                                 <SortablePlaceholder
                                   key={name}
@@ -1318,7 +1318,7 @@ const AdminTemplatesPageNew = () => {
                                   partyBRole={formData.party_b_role}
                                 />
                               ))}
-                            {placeholderOrder.filter(name => formData.placeholders[name]?.owner === 'tenant').length === 0 && (
+                            {placeholderOrder.filter(name => formData.placeholders[name]?.owner === 'tenant' || formData.placeholders[name]?.owner === 'signer').length === 0 && (
                               <div className="text-center py-8 text-gray-400 border-2 border-dashed border-gray-200 rounded-lg">
                                 <p className="text-sm">Нет полей для {formData.party_b_role || 'Стороны Б'}</p>
                               </div>
