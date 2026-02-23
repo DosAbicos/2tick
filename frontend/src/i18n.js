@@ -2524,7 +2524,7 @@ const resources = {
       "signing.docUploadedHint": "You can upload another file if needed",
       "signing.clickToUpload": "Click to upload",
       "signing.clickToReplace": "Click to replace document",
-      "signing.uploadImages": "Upload Images",
+      "signing.upload": "Upload",
       "signing.uploading": "Uploading...",
       "signing.reviewContract": "Continue",
       "signing.finalReview": "Final contract review",
