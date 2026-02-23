@@ -1509,6 +1509,7 @@ const resources = {
       "signing.downloadPdf": "PDF жүктеу",
       "sign.openPdf": "PDF ашу",
       "sign.downloadPdf": "PDF жүктеу",
+      "sign.pdfNotDisplayed": "PDF браузерде көрсетілмейді",
       "signing.pdfContract": "Қол қоймас бұрын шартпен танысыңыз",
       "signing.fullName": "Аты-жөні",
       "signing.phone": "Телефон нөмірі",
