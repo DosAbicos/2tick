@@ -1237,31 +1237,97 @@ const AdminTemplatesPageNew = () => {
                     </p>
                   </div>
                 ) : (
-                  <DndContext
-                    sensors={sensors}
-                    collisionDetection={closestCenter}
-                    onDragEnd={handleDragEnd}
-                  >
-                    <SortableContext
-                      items={placeholderOrder}
-                      strategy={verticalListSortingStrategy}
-                    >
-                      <div className="space-y-3">
-                        {placeholderOrder.map((name) => (
-                          <SortablePlaceholder
-                            key={name}
-                            id={name}
-                            placeholder={name}
-                            config={{...formData.placeholders[name], onEdit: handleEditPlaceholder}}
-                            onInsert={insertPlaceholderToContent}
-                            onRemove={handleRemovePlaceholder}
-                            partyARole={formData.party_a_role}
-                            partyBRole={formData.party_b_role}
-                          />
-                        ))}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* Column A - Landlord/Party A placeholders */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2 mb-4 p-3 bg-purple-100 rounded-lg">
+                        <Building className="h-5 w-5 text-purple-600" />
+                        <h4 className="font-semibold text-purple-800">
+                          {formData.party_a_role || 'Сторона А'} (Исполнитель)
+                        </h4>
+                        <span className="ml-auto text-xs bg-purple-200 text-purple-700 px-2 py-1 rounded">
+                          {placeholderOrder.filter(name => formData.placeholders[name]?.owner === 'landlord').length} полей
+                        </span>
                       </div>
-                    </SortableContext>
-                  </DndContext>
+                      <DndContext
+                        sensors={sensors}
+                        collisionDetection={closestCenter}
+                        onDragEnd={handleDragEnd}
+                      >
+                        <SortableContext
+                          items={placeholderOrder.filter(name => formData.placeholders[name]?.owner === 'landlord')}
+                          strategy={verticalListSortingStrategy}
+                        >
+                          <div className="space-y-3 min-h-[100px]">
+                            {placeholderOrder
+                              .filter(name => formData.placeholders[name]?.owner === 'landlord')
+                              .map((name) => (
+                                <SortablePlaceholder
+                                  key={name}
+                                  id={name}
+                                  placeholder={name}
+                                  config={{...formData.placeholders[name], onEdit: handleEditPlaceholder}}
+                                  onInsert={insertPlaceholderToContent}
+                                  onRemove={handleRemovePlaceholder}
+                                  partyARole={formData.party_a_role}
+                                  partyBRole={formData.party_b_role}
+                                />
+                              ))}
+                            {placeholderOrder.filter(name => formData.placeholders[name]?.owner === 'landlord').length === 0 && (
+                              <div className="text-center py-8 text-gray-400 border-2 border-dashed border-gray-200 rounded-lg">
+                                <p className="text-sm">Нет полей для {formData.party_a_role || 'Стороны А'}</p>
+                              </div>
+                            )}
+                          </div>
+                        </SortableContext>
+                      </DndContext>
+                    </div>
+
+                    {/* Column B - Tenant/Party B placeholders */}
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2 mb-4 p-3 bg-green-100 rounded-lg">
+                        <User className="h-5 w-5 text-green-600" />
+                        <h4 className="font-semibold text-green-800">
+                          {formData.party_b_role || 'Сторона Б'} (Заказчик)
+                        </h4>
+                        <span className="ml-auto text-xs bg-green-200 text-green-700 px-2 py-1 rounded">
+                          {placeholderOrder.filter(name => formData.placeholders[name]?.owner === 'tenant').length} полей
+                        </span>
+                      </div>
+                      <DndContext
+                        sensors={sensors}
+                        collisionDetection={closestCenter}
+                        onDragEnd={handleDragEnd}
+                      >
+                        <SortableContext
+                          items={placeholderOrder.filter(name => formData.placeholders[name]?.owner === 'tenant')}
+                          strategy={verticalListSortingStrategy}
+                        >
+                          <div className="space-y-3 min-h-[100px]">
+                            {placeholderOrder
+                              .filter(name => formData.placeholders[name]?.owner === 'tenant')
+                              .map((name) => (
+                                <SortablePlaceholder
+                                  key={name}
+                                  id={name}
+                                  placeholder={name}
+                                  config={{...formData.placeholders[name], onEdit: handleEditPlaceholder}}
+                                  onInsert={insertPlaceholderToContent}
+                                  onRemove={handleRemovePlaceholder}
+                                  partyARole={formData.party_a_role}
+                                  partyBRole={formData.party_b_role}
+                                />
+                              ))}
+                            {placeholderOrder.filter(name => formData.placeholders[name]?.owner === 'tenant').length === 0 && (
+                              <div className="text-center py-8 text-gray-400 border-2 border-dashed border-gray-200 rounded-lg">
+                                <p className="text-sm">Нет полей для {formData.party_b_role || 'Стороны Б'}</p>
+                              </div>
+                            )}
+                          </div>
+                        </SortableContext>
+                      </DndContext>
+                    </div>
+                  </div>
                 )}
               </div>
 
