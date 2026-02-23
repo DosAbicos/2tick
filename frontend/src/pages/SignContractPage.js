@@ -1596,19 +1596,19 @@ const SignContractPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4 }}
-                className="space-y-6"
+                className="space-y-3 sm:space-y-6"
                 data-testid="step-verify-otp"
               >
                 {!verificationMethod ? (
-                  // Method selection - Neumorphism style
+                  // Method selection - Compact on mobile
                   <div className="text-center">
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                      className="w-20 h-20 mx-auto mb-6 neuro-card flex items-center justify-center"
+                      className="w-14 h-14 sm:w-20 sm:h-20 mx-auto mb-3 sm:mb-6 neuro-card flex items-center justify-center"
                     >
-                      <svg className="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-7 h-7 sm:w-10 sm:h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                       </svg>
                     </motion.div>
@@ -1617,7 +1617,7 @@ const SignContractPage = () => {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.3 }}
-                      className="text-2xl font-bold text-gray-900 mb-2"
+                      className="text-lg sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2"
                     >
                       {t('signing.confirmSignature')}
                     </motion.h3>
@@ -1626,13 +1626,13 @@ const SignContractPage = () => {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.4 }}
-                      className="text-gray-600 text-sm mb-8"
+                      className="text-gray-600 text-xs sm:text-sm mb-4 sm:mb-8"
                     >
                       {t('signing.selectVerificationMethod')}
                     </motion.p>
                     
-                    <div className="space-y-4 max-w-md mx-auto">
-                      {/* SMS Button - Neumorphism with rounded corners */}
+                    <div className="space-y-2.5 sm:space-y-4 max-w-md mx-auto">
+                      {/* SMS Button - Compact on mobile */}
                       <motion.button
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -1641,27 +1641,27 @@ const SignContractPage = () => {
                         whileTap={{ scale: 0.98 }}
                         onClick={handleRequestSMS}
                         disabled={smsCooldown > 0}
-                        className="neuro-card w-full p-6 rounded-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
+                        className="neuro-card w-full p-3 sm:p-6 rounded-xl sm:rounded-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
                       >
-                        <div className="flex items-center gap-4">
-                          <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center flex-shrink-0 group-hover:from-blue-100 group-hover:to-blue-200 transition-all">
-                            <svg className="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="flex items-center gap-3 sm:gap-4">
+                          <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-lg sm:rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center flex-shrink-0 group-hover:from-blue-100 group-hover:to-blue-200 transition-all">
+                            <svg className="w-5 h-5 sm:w-7 sm:h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                             </svg>
                           </div>
                           <div className="flex-1 text-left">
-                            <h4 className="text-lg font-semibold text-gray-900 mb-1">
+                            <h4 className="text-sm sm:text-lg font-semibold text-gray-900">
                               {smsCooldown > 0 ? `${t('signing.sms')} ${smsCooldown}s` : t('signing.sms')}
                             </h4>
-                            <p className="text-sm text-gray-600">{t('signing.smsHint')}</p>
+                            <p className="text-xs sm:text-sm text-gray-600 hidden sm:block">{t('signing.smsHint')}</p>
                           </div>
-                          <svg className="w-5 h-5 text-blue-600 flex-shrink-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 flex-shrink-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
                         </div>
                       </motion.button>
                       
-                      {/* Email Button */}
+                      {/* Email Button - Compact on mobile */}
                       <motion.button
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -1681,21 +1681,21 @@ const SignContractPage = () => {
                           }
                         }}
                         disabled={sendingCode}
-                        className="neuro-card w-full p-6 rounded-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
+                        className="neuro-card w-full p-3 sm:p-6 rounded-xl sm:rounded-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed group"
                       >
-                        <div className="flex items-center gap-4">
-                          <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 flex items-center justify-center flex-shrink-0 group-hover:from-purple-100 group-hover:to-purple-200 transition-all">
-                            <svg className="w-7 h-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="flex items-center gap-3 sm:gap-4">
+                          <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-lg sm:rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 flex items-center justify-center flex-shrink-0 group-hover:from-purple-100 group-hover:to-purple-200 transition-all">
+                            <svg className="w-5 h-5 sm:w-7 sm:h-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                             </svg>
                           </div>
                           <div className="flex-1 text-left">
-                            <h4 className="text-lg font-semibold text-gray-900 mb-1">
+                            <h4 className="text-sm sm:text-lg font-semibold text-gray-900">
                               {sendingCode ? t('signing.sending') : t('signing.email')}
                             </h4>
-                            <p className="text-sm text-gray-600">{t('signing.emailHint')}</p>
+                            <p className="text-xs sm:text-sm text-gray-600 hidden sm:block">{t('signing.emailHint')}</p>
                           </div>
-                          <svg className="w-5 h-5 text-purple-600 flex-shrink-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 flex-shrink-0 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
                         </div>
