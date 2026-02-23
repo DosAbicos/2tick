@@ -359,7 +359,7 @@ const DashboardPage = () => {
                         }}
                       >
                         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-200">
-                          <span className="text-xl">🏠</span>
+                          <span className="text-xl">{CATEGORIES[template.category]?.icon || '📄'}</span>
                         </div>
                         <div className="flex-1 min-w-0">
                           <h4 className="text-base font-semibold text-gray-900 group-hover:text-blue-600 transition-colors leading-snug">{getTemplateTitle(template)}</h4>
