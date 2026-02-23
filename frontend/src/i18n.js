@@ -2549,6 +2549,7 @@ const resources = {
       "signing.downloadPdf": "Download PDF",
       "sign.openPdf": "Open PDF",
       "sign.downloadPdf": "Download PDF",
+      "sign.pdfNotDisplayed": "PDF cannot be displayed in browser",
       "signing.pdfContract": "Review the contract before signing",
       "signing.fullName": "Full Name",
       "signing.phone": "Phone Number",
