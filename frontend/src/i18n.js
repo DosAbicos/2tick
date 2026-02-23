@@ -1478,6 +1478,7 @@ const resources = {
       "signing.docUploadedHint": "Қажет болса, басқа файлды жүктеуге болады",
       "signing.clickToUpload": "Жүктеу үшін басыңыз",
       "signing.clickToReplace": "Құжатты ауыстыру үшін басыңыз",
+      "signing.uploadImages": "Суретті жүктеу",
       "signing.uploading": "Жүктелуде...",
       "signing.reviewContract": "Жалғастыру",
       "signing.finalReview": "Келісімшартты соңғы тексеру",
