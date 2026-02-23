@@ -1000,20 +1000,20 @@ const SignContractPage = () => {
         </div>
       )}
       
-      <div className="max-w-3xl mx-auto px-4 py-8">
-        <div className="minimal-card p-6 sm:p-8 animate-fade-in" data-testid="sign-contract-card">
-          <div className="mb-6">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3" data-testid="signing-title">{t('signing.title')}</h1>
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+      <div className="max-w-3xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
+        <div className="minimal-card p-4 sm:p-6 md:p-8 animate-fade-in" data-testid="sign-contract-card">
+          <div className="mb-3 sm:mb-6">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-2 sm:mb-3" data-testid="signing-title">{t('signing.title')}</h1>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-3">
               {contract.contract_code && (
-                <div className="inline-flex px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-sm font-bold rounded-xl shadow-lg shadow-blue-500/20 self-start">
+                <div className="inline-flex px-3 py-1.5 sm:px-4 sm:py-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-xs sm:text-sm font-bold rounded-lg sm:rounded-xl shadow-lg shadow-blue-500/20 self-start">
                   {contract.contract_code}
                 </div>
               )}
-              <p className="text-gray-600 font-medium whitespace-nowrap">{getLocalizedTitle()}</p>
+              <p className="text-gray-600 text-sm sm:font-medium whitespace-nowrap">{getLocalizedTitle()}</p>
             </div>
           </div>
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Step 1: View Contract */}
             {step === 1 && (
               <motion.div
