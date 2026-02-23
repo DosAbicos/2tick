@@ -1905,37 +1905,40 @@ const AdminTemplatesPageNew = () => {
                 </div>
               )}
 
-              {/* Owner - only if NOT calculated */}
-              {currentPlaceholder.type !== 'calculated' && (
-                <div>
-                  <Label>Кто заполняет? *</Label>
-                  <Select
-                    value={currentPlaceholder.owner}
-                    onValueChange={(value) => setCurrentPlaceholder({
-                      ...currentPlaceholder,
-                      owner: value
-                    })}
-                  >
-                    <SelectTrigger className="mt-1 bg-white">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white">
-                      <SelectItem value="landlord">
-                        <div className="flex items-center gap-2">
-                          <Building className="h-4 w-4" />
-                          {formData.party_a_role || 'Сторона А'}
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="signer">
-                        <div className="flex items-center gap-2">
-                          <User className="h-4 w-4" />
-                          {formData.party_b_role || 'Сторона Б'}
-                        </div>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
+              {/* Owner - for ALL placeholder types including calculated */}
+              <div>
+                <Label>Кто заполняет? * <span className="text-xs text-gray-500">(к какой стороне относится поле)</span></Label>
+                <Select
+                  value={currentPlaceholder.owner}
+                  onValueChange={(value) => setCurrentPlaceholder({
+                    ...currentPlaceholder,
+                    owner: value
+                  })}
+                >
+                  <SelectTrigger className="mt-1 bg-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white">
+                    <SelectItem value="landlord">
+                      <div className="flex items-center gap-2">
+                        <Building className="h-4 w-4" />
+                        {formData.party_a_role || 'Сторона А'}
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="signer">
+                      <div className="flex items-center gap-2">
+                        <User className="h-4 w-4" />
+                        {formData.party_b_role || 'Сторона Б'}
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                {currentPlaceholder.type === 'calculated' && (
+                  <p className="text-xs text-amber-600 mt-1">
+                    💡 Вычисляемые поля обычно относятся к Исполнителю (Сторона А)
+                  </p>
+                )}
+              </div>
 
               {/* Required checkbox - only for non-calculated */}
               {currentPlaceholder.type !== 'calculated' && (
