@@ -399,6 +399,7 @@ const resources = {
       "signing.docUploadedHint": "Вы можете загрузить другой файл при необходимости",
       "signing.clickToUpload": "Нажмите для загрузки",
       "signing.clickToReplace": "Нажмите для замены документа",
+      "signing.uploadImages": "Загрузить фото",
       "signing.uploading": "Загрузка...",
       "signing.reviewContract": "Продолжить",
       "signing.finalReview": "Финальная проверка договора",
