@@ -1340,9 +1340,9 @@ const SignContractPage = () => {
                 
                 {/* Upload area - compact button style on mobile, full dropzone on desktop */}
                 <div className="sm:bg-gradient-to-br sm:from-blue-50 sm:via-sky-50 sm:to-cyan-50 sm:border-2 sm:border-blue-200 sm:rounded-xl sm:p-6">
-                  <label htmlFor="document" className="cursor-pointer block">
-                    {/* Mobile: Compact button style like скрин19 */}
-                    <div className="sm:hidden flex items-center justify-center gap-3 py-3 px-6 border-2 border-blue-300 rounded-xl bg-white hover:border-blue-500 hover:bg-blue-50 transition-all">
+                  {/* Mobile: Compact button style like скрин19 */}
+                  <label htmlFor="document-mobile" className="sm:hidden cursor-pointer block">
+                    <div className="flex items-center justify-center gap-3 py-3 px-6 border-2 border-blue-300 rounded-xl bg-white hover:border-blue-500 hover:bg-blue-50 transition-all">
                       <input
                         id="document-mobile"
                         type="file"
@@ -1359,9 +1359,11 @@ const SignContractPage = () => {
                         {uploading ? t('signing.uploading') : (documentUploaded ? t('signing.clickToReplace') : t('signing.uploadImages'))}
                       </span>
                     </div>
-                    
-                    {/* Desktop: Full dropzone */}
-                    <div className="hidden sm:block border-2 border-dashed border-blue-300 rounded-xl p-8 text-center hover:border-blue-500 hover:bg-white/50 transition-all bg-white/30">
+                  </label>
+                  
+                  {/* Desktop: Full dropzone */}
+                  <label htmlFor="document" className="hidden sm:block cursor-pointer">
+                    <div className="border-2 border-dashed border-blue-300 rounded-xl p-8 text-center hover:border-blue-500 hover:bg-white/50 transition-all bg-white/30">
                       <input
                         id="document"
                         type="file"
