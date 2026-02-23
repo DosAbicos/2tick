@@ -1,209 +1,71 @@
-# 2tick.kz - PRD (Product Requirements Document)
+# 2tick.kz - Contract Signing Platform PRD
 
-## Описание продукта
-Сервис электронного подписания договоров для бизнеса в Казахстане. Позволяет создавать, отправлять и подписывать договоры с верификацией через SMS, звонок или Telegram.
+## Original Problem Statement
+Build a comprehensive contract signing platform (2tick.kz) with:
+- User authentication and management
+- Template creation with dynamic placeholder editor
+- Contract creation from templates
+- PDF upload and signing flow
+- Multi-language support (RU, KK, EN)
+- SMS/Call/Telegram verification
+- Admin panel for user and template management
 
-## Реквизиты компании
-- **Название:** ИП «AN Venture»
-- **БИН/ИИН:** 040825501172
-- **Адрес:** г. Алматы, микрорайон Таугуль, дом 13, кв/офис 64
-- **Email:** admin@2tick.kz
-- **Телефон:** +7 707 400 3201
-- **Директор:** Нұрғожа Әділет Нұралнұлы
+## Current Status (February 2026)
 
-## Тарифные планы
-| План | Цена | Лимит договоров |
-|------|------|-----------------|
-| FREE | 0 ₸ | 3 договора |
-| START | 5 990 ₸/мес | 20 договоров |
-| BUSINESS | 14 990 ₸/мес | 50 договоров |
+### Completed Features
+- ✅ Full authentication system (JWT)
+- ✅ Template management with two-column placeholder editor (Party A / Party B)
+- ✅ Contract creation from templates
+- ✅ PDF upload/signing flow (unified with template flow)
+- ✅ Multi-language support (RU, KK, EN)
+- ✅ SMS/Call/Telegram verification
+- ✅ Admin panel
+- ✅ Dashboard with favorite templates
+- ✅ PDF viewer in contract details, signing, and review pages
+- ✅ Calculated fields in templates
 
-## Текущий статус
-- **Домен:** 2tick.kz (SSL настроен)
-- **Деплой:** Docker + Nginx на VPS (hoster.kz)
-- **Платёжный шлюз:** FreedomPay Lite (интегрирован)
-- **SMS провайдер:** КазИнфоТех (активен, баланс пополнен)
+### Known Issues
+1. **P0:** Mobile UX on signing page requires excessive scrolling
+   - Previous optimization attempt was rejected and reverted
+   - Needs new approach with user approval
 
----
+2. **P1:** Placeholders with identical labels across languages may not render for Party B
+   - Cannot reproduce without specific template/contract ID
+   - Waiting for user to provide example
 
-## Что реализовано
+### Backlog
+- **P2:** Full dark mode implementation across application
 
-### 08.02.2025 (текущая сессия)
-- ✅ **Переработана страница загрузки PDF договоров:**
-  - Логика теперь такая же, как у шаблонных контрактов
-  - Сторона А: автозаполнение данных из профиля (компания, ИИН, телефон, email, адрес)
-  - Сторона Б: опционально, раскрывающаяся секция
-  - Контракт создаётся со статусом "draft" (не "sent")
-  - После создания редирект на ContractDetailsPage с кнопкой "Копировать ссылку"
-  - Сторона Б: просмотр PDF → заполнение данных → загрузка удостоверения → верификация → подпись
-  - Сторона А: утверждение контракта
-  - Кнопка "Назад" теперь такая же как на CreateContractPage
-  - Исправлен баг с `NoneType` placeholder_values
-- ✅ **Добавлено отображение PDF на всех страницах:**
-  - ContractDetailsPage: PDF viewer с fallback "Открыть PDF" / "Скачать PDF"
-  - SignContractPage Step 1 (Просмотр): PDF viewer с fallback
-  - SignContractPage Step 4 (Final Review): PDF viewer с fallback
-  - Используется тег `<object>` для встроенного просмотра PDF
-  - Полное E2E тестирование пройдено (100% тестов)
-  - Тестовые отчёты: `/app/test_reports/iteration_9.json`, `/app/test_reports/iteration_10.json`
+## Technical Architecture
 
-### 23.01.2025 (предыдущая сессия)
-- ✅ **Исправлен Chrome iOS deeplink баг:**
-  - Проблема: При возврате из Telegram в Chrome на iOS создавалась лишняя вкладка вместо возврата на исходную страницу подписания
-  - Решение: 
-    - Для мобильных устройств используется `window.location.href` вместо `window.open()` для открытия Telegram deeplink
-    - Состояние (step, verificationMethod) сохраняется в localStorage перед переходом и восстанавливается при возврате
-    - Добавлена функция `getInitialVerificationMethod()` для восстановления метода верификации
-  - Файлы изменены:
-    - `/app/frontend/src/pages/SignContractPage.js` (строки 1555-1640, 120-140, 340-355)
-  
-- ✅ **SMS провайдер КазИнфоТех активен** (баланс пополнен пользователем)
+### Stack
+- **Frontend:** React, Tailwind CSS, Shadcn/ui, react-router-dom, i18next, react-dnd
+- **Backend:** Python 3.11, FastAPI, Beanie (MongoDB ODM), JWT
+- **Database:** MongoDB
+- **Deployment:** Docker Compose
 
-### 22.01.2025 (предыдущая сессия)
-- ✅ **Email OTP верификация:**
-  - Добавлена возможность получать OTP код на email при регистрации и подписании
-  - Реализованы API endpoints: `/api/sign/{id}/request-otp?method=email`, `/api/auth/registration/{id}/request-otp?method=email`
-  - Добавлены кнопки Email на фронтенде (SignContractPage.js, RegisterPage.js)
-  - Тестирование: 8/8 тестов пройдено (test_email_otp_iteration6.py)
+### Key Files
+- `frontend/src/pages/SignContractPage.js` - Contract signing flow (2031 lines)
+- `frontend/src/pages/admin/EditTemplatePage.js` - Template editor
+- `frontend/src/pages/DashboardPage.js` - User dashboard
+- `frontend/src/pages/UploadPdfContractPage.js` - PDF contract upload
+- `backend/src/routes/contracts.py` - Contract API endpoints
+- `backend/src/models.py` - Database models
 
-- ✅ **Отправка письма Стороне Б после подписания:**
-  - При утверждении контракта Стороной А, Сторона Б получает email с:
-    - HTML-поздравление
-    - PDF договора во вложении
-    - Код-ключи обеих сторон
-  - Реализовано в approve_signature() (server.py строки 4520-4599)
+### Key API Endpoints
+- `POST /api/contracts/upload-pdf` - Upload PDF contract
+- `GET /api/sign/{id}/view-pdf` - View PDF in signing flow
+- `POST /api/sign/{id}/update-signer-info` - Update signer information
+- `POST /api/sign/{id}/verify-otp` - Verify OTP code
 
-- ✅ **Исправлена анимация модального окна:**
-  - Модальное окно "Создать договор" теперь открывается из центра экрана
-  - Использует scale анимацию (scale-95 → scale-100) вместо slide-in из угла
-  - Исправлены: dialog.jsx, alert-dialog.jsx
+## Deployment Notes
+- Always run `docker compose down` before `docker compose up -d` to prevent Telegram bot conflicts
+- User deploys to own VPS using Git and Docker Compose
 
-- ✅ **Миграция SMS провайдера (предыдущая сессия):**
-  - Основной провайдер: КазИнфоТех (HTTP API)
-  - Резервный: Twilio
-  - Удалена опция верификации через звонок
-  - Верификация OTP теперь локальная (код хранится в БД)
-
-### 21.01.2025 (предыдущая сессия)
-- ✅ **КРИТИЧЕСКИЙ БАГ ИСПРАВЛЕН: Данные Стороны А попадали в поля Стороны Б**
-  - Проблема: При создании контракта Стороной А (арендодатель), их данные (телефон, email) неправильно появлялись в полях Стороны Б (подписант)
-  - Решение: 
-    - Frontend: Создаётся `cleanedPlaceholderValues` содержащий ТОЛЬКО поля с `owner='landlord'`
-    - Frontend: `processContentWithPlaceholders` пропускает плейсхолдеры `signer/tenant`
-    - Backend: Извлекает signer info ТОЛЬКО из полей с `owner='signer'` или `owner='tenant'`
-  - Тестирование: 8/8 тестов пройдено (test_signer_placeholder_fix_iteration4.py)
-  - Файлы изменены:
-    - `/app/frontend/src/pages/CreateContractPage.js` (строки 653-710)
-    - `/app/backend/server.py` (строки 2868-2920)
-
-- ✅ **Добавлена опция заполнить данные Стороны Б за клиента**
-  - Добавлен переключатель "Заполнить сейчас" в секции Стороны Б
-  - Сторона А может опционально заполнить данные клиента (если они известны)
-  - По умолчанию поля показываются как "Заполняется клиентом"
-
-- ✅ **Улучшена генерация PDF:**
-  - Исправлен перенос текста: теперь используется реальная ширина текста в пикселях
-  - Исправлена нумерация страниц: динамический подсчёт после генерации контента
-  - Текст больше не выходит за границы страницы
-  - Добавлена зависимость PyPDF2 для двухпроходной генерации PDF
-
-### 19.12.2025 (предыдущая сессия)
-- ✅ **Полная интернационализация правовых страниц (RU/KK/EN):**
-  - `/offer` — Публичная оферта (все секции переведены)
-  - `/privacy` — Политика конфиденциальности (все секции переведены)
-  - `/refund` — Правила возврата (все секции переведены)
-  - `/contacts` — Контакты (адрес переведён)
-- ✅ **FAQ секция на лендинге:**
-  - 6 вопросов с ответами
-  - Полные переводы на RU/KK/EN
-- ✅ **Переводы тарифов на лендинге:**
-  - Описания планов (FREE, START, BUSINESS)
-  - Фичи каждого плана
-  - Футер с юридическими ссылками
-- ✅ **Исправлен импорт ChevronDown** в NewLandingPage.js
-
-### 14.01.2025
-- ✅ Юридические страницы для эквайринга:
-  - `/offer` — Публичная оферта
-  - `/privacy` — Политика конфиденциальности
-  - `/refund` — Правила возврата
-  - `/contacts` — Контакты
-- ✅ Обновлён футер с юридическими ссылками
-- ✅ Секция тарифов с 3 планами и ценами в тенге
-- ✅ Описание процедуры оплаты добавлено в оферту
-- ✅ Логотипы Visa/Mastercard
-
-### Ранее реализовано
-- ✅ FreedomPay интеграция (код готов, активирован провайдером)
-- ✅ История покупок в профиле
-- ✅ Лимит договоров для новых пользователей = 3
-- ✅ Telegram бот с кнопкой «Копировать код» (v21.8)
-- ✅ i18n для OTP сообщений (RU/KK/EN)
-- ✅ Переключатель языка на странице договора
-- ✅ Страница тарифов в профиле с автопродлением
-- ✅ Лимиты договоров и редирект на тарифы
-- ✅ Статистика «Осталось договоров» на дашборде
-- ✅ Docker-контейнеризация и деплой на VPS
-- ✅ SEO оптимизация лендинга
-- ✅ Новый favicon
-
----
-
-## Приоритетный бэклог
-
-### P0 (Критично)
-- [x] Интеграция FreedomPay Lite ✅
-- [x] i18n для правовых страниц ✅
-- [x] FAQ секция ✅
-- [x] **ИСПРАВЛЕН:** Данные Стороны А НЕ попадают в поля Стороны Б ✅
-- [x] **Email OTP верификация** ✅
-- [x] **Отправка письма Стороне Б после подписания** ✅
-- [x] **ИСПРАВЛЕН:** Chrome iOS deeplink создаёт лишнюю вкладку ✅
-- [x] **ИСПРАВЛЕНО:** Страница загрузки PDF работает корректно (/contracts/upload-pdf) ✅
-
-### P1 (Важно - для VPS production)
-- [x] **ИСПРАВЛЕНА:** Анимация модального окна из центра ✅
-- [ ] Telegram бот не запускается на VPS (требуется добавить TELEGRAM_BOT_TOKEN в docker-compose.yml)
-- [ ] PDF кодировка на VPS (требуется установить fonts-dejavu-core в Docker контейнере)
-- [ ] Водяной знак на PDF
-- [ ] **Интеграция шаблона контракта PEP** (contracts_templates_PEP.docx)
-
-### P2 (Желательно)
-- [ ] Конструктор договоров
-- [ ] Детальный аудит действий
-- [ ] История версий договоров
-
-### Не делаем (по просьбе пользователя)
-- AdminTemplatesPage i18n (не нужен перевод админки)
-
----
-
-## Технический стек
-- **Frontend:** React, Tailwind CSS, react-i18next, lucide-react, Shadcn/UI
-- **Backend:** FastAPI, Motor (async MongoDB)
-- **Bot:** python-telegram-bot v21.8
-- **SMS:** КазИнфоТех (основной), Twilio (резервный)
-- **Email:** SMTP + SendGrid (fallback)
-- **Деплой:** Docker, Docker Compose, Nginx, Let's Encrypt
-
-## Ключевые файлы
-- `/app/frontend/src/i18n.js` — все переводы (RU/KK/EN)
-- `/app/frontend/src/pages/NewLandingPage.js` — лендинг с тарифами и FAQ
-- `/app/frontend/src/pages/SignContractPage.js` — страница подписания (Email/SMS/Telegram OTP)
-- `/app/frontend/src/pages/RegisterPage.js` — регистрация с Email OTP
-- `/app/frontend/src/pages/ProfilePage.js` — профиль с тарифами
-- `/app/frontend/src/pages/UploadPdfContractPage.js` — загрузка PDF (переработано 08.02.2025)
-- `/app/frontend/src/pages/CreateContractPage.js` — создание контракта из шаблона
-- `/app/frontend/src/pages/ContractDetailsPage.js` — детали контракта с кнопкой "Копировать ссылку"
-- `/app/frontend/src/components/ui/dialog.jsx` — модальные окна (исправлена анимация)
-- `/app/frontend/src/pages/{OfferPage,PrivacyPage,RefundPage,ContactsPage}.js` — юридические страницы
-- `/app/backend/server.py` — API (OTP, SMS, Email, контракты)
-- `/app/docker-compose.yml` — конфигурация деплоя
-
-## Тестовые файлы
-- `/app/backend/tests/test_email_otp_iteration6.py` — Email OTP тесты (8/8 passed)
-- `/app/backend/tests/test_upload_pdf_contract.py` — PDF upload тесты (iteration 8)
-- `/app/backend/tests/test_pdf_upload_iteration9.py` — PDF upload refactoring тесты (7/7 passed)
-- `/app/test_reports/iteration_6.json` — результаты тестирования Email OTP
-- `/app/test_reports/iteration_8.json` — результаты тестирования PDF upload
-- `/app/test_reports/iteration_9.json` — результаты тестирования PDF upload refactoring (100% passed)
+## Changelog
+- **2026-02-23:** Reverted SignContractPage.js mobile optimization (user rejected changes)
+- **Previous session:** 
+  - Implemented PDF contract flow
+  - Fixed PDF display issues
+  - Improved placeholder editor UI
+  - Fixed dashboard template icons
