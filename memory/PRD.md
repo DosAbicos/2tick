@@ -39,8 +39,13 @@
   - Сторона А: утверждение контракта
   - Кнопка "Назад" теперь такая же как на CreateContractPage
   - Исправлен баг с `NoneType` placeholder_values
+- ✅ **Добавлено отображение PDF на всех страницах:**
+  - ContractDetailsPage: PDF viewer с fallback "Открыть PDF" / "Скачать PDF"
+  - SignContractPage Step 1 (Просмотр): PDF viewer с fallback
+  - SignContractPage Step 4 (Final Review): PDF viewer с fallback
+  - Используется тег `<object>` для встроенного просмотра PDF
   - Полное E2E тестирование пройдено (100% тестов)
-  - Тестовый отчёт: `/app/test_reports/iteration_9.json`
+  - Тестовые отчёты: `/app/test_reports/iteration_9.json`, `/app/test_reports/iteration_10.json`
 
 ### 23.01.2025 (предыдущая сессия)
 - ✅ **Исправлен Chrome iOS deeplink баг:**
