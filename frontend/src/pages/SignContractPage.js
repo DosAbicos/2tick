@@ -1618,19 +1618,19 @@ const SignContractPage = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4 }}
-                className="space-y-6"
+                className="space-y-4 sm:space-y-6"
                 data-testid="step-verify-otp"
               >
                 {!verificationMethod ? (
-                  // Method selection - Neumorphism style
+                  // Method selection - Neumorphism style, compact on mobile
                   <div className="text-center">
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                      className="w-20 h-20 mx-auto mb-6 neuro-card flex items-center justify-center"
+                      className="w-14 h-14 sm:w-20 sm:h-20 mx-auto mb-3 sm:mb-6 neuro-card flex items-center justify-center"
                     >
-                      <svg className="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-7 h-7 sm:w-10 sm:h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                       </svg>
                     </motion.div>
@@ -1639,7 +1639,7 @@ const SignContractPage = () => {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.3 }}
-                      className="text-2xl font-bold text-gray-900 mb-2"
+                      className="text-lg sm:text-2xl font-bold text-gray-900 mb-1 sm:mb-2"
                     >
                       {t('signing.confirmSignature')}
                     </motion.h3>
@@ -1648,7 +1648,7 @@ const SignContractPage = () => {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.4 }}
-                      className="text-gray-600 text-sm mb-8"
+                      className="text-gray-600 text-xs sm:text-sm mb-4 sm:mb-8"
                     >
                       {t('signing.selectVerificationMethod')}
                     </motion.p>
