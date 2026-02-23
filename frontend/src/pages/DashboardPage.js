@@ -24,6 +24,14 @@ import '../styles/neumorphism.css';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
+// Category icons for templates
+const CATEGORIES = {
+  real_estate: { icon: '🏠', color: 'bg-blue-100 text-blue-800' },
+  services: { icon: '💼', color: 'bg-green-100 text-green-800' },
+  employment: { icon: '👔', color: 'bg-purple-100 text-purple-800' },
+  other: { icon: '📄', color: 'bg-gray-100 text-gray-800' }
+};
+
 const DashboardPage = () => {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
