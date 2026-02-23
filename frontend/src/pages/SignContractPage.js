@@ -1023,7 +1023,7 @@ const SignContractPage = () => {
               >
                 {/* Show PDF viewer for uploaded PDF contracts */}
                 {contract.source_type === 'uploaded_pdf' ? (
-                  <div className="bg-white p-4 rounded-lg border border-gray-200 mb-6">
+                  <div className="bg-white p-4 rounded-lg border border-gray-200 mb-6 max-h-[60vh] sm:max-h-[500px] overflow-y-auto">
                     <div className="text-center mb-4">
                       <p className="text-gray-600 text-sm mb-3">{t('signing.pdfContract')}</p>
                     </div>
@@ -1031,7 +1031,7 @@ const SignContractPage = () => {
                       data={`${API}/sign/${contract.id}/view-pdf`}
                       type="application/pdf"
                       className="w-full rounded-lg border border-gray-200"
-                      style={{ height: '500px' }}
+                      style={{ height: '400px' }}
                     >
                       <div className="flex flex-col items-center justify-center h-full py-12">
                         <svg className="w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1066,7 +1066,7 @@ const SignContractPage = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="bg-white p-6 rounded-lg border border-gray-200 mb-6">
+                  <div className="bg-white p-4 sm:p-6 rounded-lg border border-gray-200 mb-4 sm:mb-6 max-h-[60vh] sm:max-h-[500px] overflow-y-auto">
                     <div 
                       className="whitespace-pre-wrap text-sm leading-relaxed text-gray-800"
                       style={{
