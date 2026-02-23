@@ -432,6 +432,7 @@ const resources = {
       "signing.downloadPdf": "Скачать PDF",
       "sign.openPdf": "Открыть PDF",
       "sign.downloadPdf": "Скачать PDF",
+      "sign.pdfNotDisplayed": "PDF не отображается в браузере",
       "signing.pdfContract": "Ознакомьтесь с договором перед подписанием",
       "signing.fullName": "ФИО",
       "signing.phone": "Номер телефона",
