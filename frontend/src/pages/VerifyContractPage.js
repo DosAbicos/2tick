@@ -286,32 +286,32 @@ const VerifyContractPage = () => {
           >
             <h3 className="text-base font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <Shield className="w-5 h-5 text-blue-600" />
-              Цифровые подписи
+              {t('verifyContract.signatures')}
             </h3>
             
             <div className="grid md:grid-cols-2 gap-4">
               {/* Party A */}
               <div className="p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-100">
-                <p className="text-xs text-green-700 font-semibold mb-2">Сторона А</p>
+                <p className="text-xs text-green-700 font-semibold mb-2">{t('verifyContract.partyA')}</p>
                 <p className="font-mono text-xs text-gray-700 break-all bg-white/60 rounded-lg p-2">
                   {contract.landlord_signature_hash || '-'}
                 </p>
                 {contract.approved_at && (
                   <p className="text-xs text-gray-500 mt-2">
-                    Подписано: {formatDate(contract.approved_at)}
+                    {t('verifyContract.signedAt')}: {formatDate(contract.approved_at)}
                   </p>
                 )}
               </div>
 
               {/* Party B */}
               <div className="p-4 bg-gradient-to-br from-blue-50 to-sky-50 rounded-xl border border-blue-100">
-                <p className="text-xs text-blue-700 font-semibold mb-2">Сторона Б</p>
+                <p className="text-xs text-blue-700 font-semibold mb-2">{t('verifyContract.partyB')}</p>
                 <p className="font-mono text-xs text-gray-700 break-all bg-white/60 rounded-lg p-2">
                   {signature?.signature_hash || '-'}
                 </p>
                 {signature?.created_at && (
                   <p className="text-xs text-gray-500 mt-2">
-                    Подписано: {formatDate(signature.created_at)}
+                    {t('verifyContract.signedAt')}: {formatDate(signature.created_at)}
                   </p>
                 )}
               </div>
@@ -326,13 +326,14 @@ const VerifyContractPage = () => {
           transition={{ delay: 0.3 }}
           className="text-center space-y-3"
         >
-          <p className="text-gray-500 text-sm">Проверено через систему 2tick.kz</p>
-          <p className="text-gray-400 text-xs font-mono">ID договора: {contractId}</p>
+          <p className="text-gray-500 text-sm">{t('verifyContract.verifiedVia')}</p>
+          <p className="text-gray-400 text-xs font-mono">{t('verifyContract.contractId')}: {contractId}</p>
           <Link 
             to="/"
             className="inline-block px-6 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors text-sm font-medium"
+            data-testid="verify-go-home-btn"
           >
-            Перейти на 2tick.kz
+            {t('verifyContract.goToSite')}
           </Link>
         </motion.div>
       </div>
