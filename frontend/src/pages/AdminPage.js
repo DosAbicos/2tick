@@ -49,7 +49,9 @@ import {
   UserCheck,
   Package,
   Download,
-  ExternalLink
+  ExternalLink,
+  RefreshCw,
+  X
 } from 'lucide-react';
 import '../styles/neumorphism.css';
 
