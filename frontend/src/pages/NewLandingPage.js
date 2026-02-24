@@ -53,7 +53,7 @@ const NewLandingPage = () => {
               {/* Statistics */}
               <div className="flex gap-4 sm:gap-8 pt-8">
                 <div>
-                  <div className="text-2xl sm:text-3xl font-bold text-blue-600">2 сек</div>
+                  <div className="text-2xl sm:text-3xl font-bold text-blue-600">2 мин</div>
                   <div className="text-xs sm:text-sm text-gray-500">{t('landing.hero.stat1')}</div>
                 </div>
                 <div>
