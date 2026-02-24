@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import Header from '@/components/Header';
 import Loader from '@/components/Loader';
-import { User, Mail, Phone, Building, CreditCard, MapPin, Lock, Save, Edit2, FileText, CheckCircle, Clock, XCircle, Receipt, Download, Copy, Hash } from 'lucide-react';
+import { User, Mail, Phone, Building, CreditCard, MapPin, Lock, Save, Edit2, FileText, CheckCircle, Clock, XCircle, Receipt, Download, Copy, Hash, Package, Upload, Minus, Plus } from 'lucide-react';
 import '../styles/neumorphism.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -27,7 +27,7 @@ const ProfilePage = () => {
   
   // Check URL param for initial tab
   const initialTab = searchParams.get('tab') || 'profile';
-  const [activeTab, setActiveTab] = useState(initialTab); // 'profile', 'tariffs', 'history'
+  const [activeTab, setActiveTab] = useState(initialTab); // 'profile', 'tariffs', 'history', 'custom'
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [processingPayment, setProcessingPayment] = useState(false);
   const [passwordData, setPasswordData] = useState({
@@ -36,6 +36,17 @@ const ProfilePage = () => {
     confirm_password: ''
   });
   const [subscription, setSubscription] = useState(null);
+  
+  // Custom contracts calculator state
+  const [customContractsCount, setCustomContractsCount] = useState(20);
+  const [customPricing, setCustomPricing] = useState(null);
+  const [loadingPricing, setLoadingPricing] = useState(false);
+  
+  // Custom template request state
+  const [customTemplateRequests, setCustomTemplateRequests] = useState([]);
+  const [showCustomTemplateForm, setShowCustomTemplateForm] = useState(false);
+  const [customTemplateDescription, setCustomTemplateDescription] = useState('');
+  const [customTemplateFile, setCustomTemplateFile] = useState(null);
 
   // Tariff plans data
   const tariffPlans = [
