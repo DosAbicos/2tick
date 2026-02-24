@@ -24,6 +24,19 @@ Build a comprehensive contract signing platform (2tick.kz) with:
 - ✅ PDF viewer in contract details, signing, and review pages
 - ✅ Calculated fields in templates
 - ✅ Mobile optimizations for signing page (Step 2 upload, Step 5 verification)
+- ✅ **NEW: Custom pricing plans**
+  - Individual contract template (29,990₸ one-time)
+  - Custom contracts package (from 20 contracts, 250₸/contract, discount after 50)
+- ✅ **NEW: Custom template request system** (user uploads document → admin creates template → assigned to user only)
+
+### New Pricing Structure
+| Plan | Price | Features |
+|------|-------|----------|
+| FREE | 0₸ | 3 contracts/month |
+| START | 5,990₸/month | 20 contracts |
+| BUSINESS | 14,990₸/month | 50 contracts |
+| Individual Contract | 29,990₸ one-time | Custom template for your business |
+| Contract Package | from 5,000₸ | 20+ contracts, never expire |
 
 ### Known Issues
 1. **P1:** Placeholders with identical labels across languages may not render for Party B
@@ -42,28 +55,35 @@ Build a comprehensive contract signing platform (2tick.kz) with:
 - **Deployment:** Docker Compose
 
 ### Key Files
-- `frontend/src/pages/SignContractPage.js` - Contract signing flow (~2050 lines)
-- `frontend/src/pages/admin/EditTemplatePage.js` - Template editor
-- `frontend/src/pages/DashboardPage.js` - User dashboard
-- `frontend/src/pages/UploadPdfContractPage.js` - PDF contract upload
-- `backend/src/routes/contracts.py` - Contract API endpoints
-- `backend/src/models.py` - Database models
+- `frontend/src/pages/SignContractPage.js` - Contract signing flow
+- `frontend/src/pages/ProfilePage.js` - User profile with custom plans tab
+- `frontend/src/pages/NewLandingPage.js` - Landing page with pricing
+- `frontend/src/pages/AdminPage.js` - Admin panel with requests management
+- `backend/server.py` - All backend logic
 
 ### Key API Endpoints
 - `POST /api/contracts/upload-pdf` - Upload PDF contract
 - `GET /api/sign/{id}/view-pdf` - View PDF in signing flow
-- `POST /api/sign/{id}/update-signer-info` - Update signer information
-- `POST /api/sign/{id}/verify-otp` - Verify OTP code
+- `GET /api/pricing/calculate-custom?count=N` - Calculate custom contracts price
+- `POST /api/custom-template-requests` - Submit custom template request
+- `GET /api/admin/custom-template-requests` - Get all requests (admin)
+- `PUT /api/admin/custom-template-requests/{id}` - Update request status
+
+### Database Collections
+- `users` - User accounts
+- `contracts` - All contracts
+- `contract_templates` - Templates (with optional `assigned_users` for individual templates)
+- `custom_template_requests` - Requests for individual contracts
+- `payments` - Payment records
+- `subscriptions` - User subscriptions
 
 ## Deployment Notes
 - Always run `docker compose down` before `docker compose up -d` to prevent Telegram bot conflicts
 - User deploys to own VPS using Git and Docker Compose
 
 ## Changelog
+- **2026-02-24:** Added custom pricing plans and individual contract request system
 - **2026-02-23:** Mobile optimizations for SignContractPage.js
-  - Step 2: Compact upload button on mobile, full dropzone on desktop
-  - Step 5: Smaller verification icon and buttons on mobile
-  - Added translations for "uploadImages"
 - **2026-02-23:** Reverted SignContractPage.js mobile optimization (user rejected changes)
 - **Previous session:** 
   - Implemented PDF contract flow
