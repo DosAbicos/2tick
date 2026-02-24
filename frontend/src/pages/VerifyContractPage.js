@@ -236,14 +236,14 @@ const VerifyContractPage = () => {
         >
           <h3 className="text-base font-semibold text-gray-900 mb-4 flex items-center gap-2">
             <FileText className="w-5 h-5 text-blue-600" />
-            Информация о договоре
+            {t('verifyContract.contractInfo')}
           </h3>
           
           <div className="space-y-3">
             <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
               <Hash className="w-5 h-5 text-blue-500" />
               <div>
-                <p className="text-xs text-gray-500">Номер договора</p>
+                <p className="text-xs text-gray-500">{t('verifyContract.contractNumber')}</p>
                 <p className="font-semibold text-gray-900">{contract.contract_code || contract.id?.slice(0, 8)}</p>
               </div>
             </div>
@@ -251,7 +251,7 @@ const VerifyContractPage = () => {
             <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
               <FileText className="w-5 h-5 text-blue-500" />
               <div>
-                <p className="text-xs text-gray-500">Название</p>
+                <p className="text-xs text-gray-500">{t('verifyContract.contractTitle')}</p>
                 <p className="font-medium text-gray-900">{contract.title}</p>
               </div>
             </div>
@@ -259,7 +259,7 @@ const VerifyContractPage = () => {
             <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
               <Calendar className="w-5 h-5 text-blue-500" />
               <div>
-                <p className="text-xs text-gray-500">Дата создания</p>
+                <p className="text-xs text-gray-500">{t('verifyContract.createdAt')}</p>
                 <p className="font-medium text-gray-900">{formatDate(contract.created_at)}</p>
               </div>
             </div>
@@ -267,12 +267,9 @@ const VerifyContractPage = () => {
             <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
               <User className="w-5 h-5 text-blue-500" />
               <div>
-                <p className="text-xs text-gray-500">Статус</p>
+                <p className="text-xs text-gray-500">{t('verifyContract.status')}</p>
                 <p className="font-medium text-gray-900">
-                  {contract.status === 'signed' ? 'Подписан' : 
-                   contract.status === 'sent' ? 'Отправлен на подпись' :
-                   contract.status === 'pending-signature' ? 'Ожидает утверждения' :
-                   contract.status}
+                  {getStatusText(contract.status)}
                 </p>
               </div>
             </div>
