@@ -917,23 +917,6 @@ const ProfilePage = () => {
               ))}
             </div>
 
-            {/* Payment Info */}
-            <div className="mt-8 bg-blue-50 rounded-xl p-6 border border-blue-100">
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <CreditCard className="w-5 h-5 text-blue-600" />
-                </div>
-                <div>
-                  <h4 className="font-semibold text-gray-900 mb-1">{t('tariffs.paymentInfo')}</h4>
-                  <p className="text-sm text-gray-600 mb-2">{t('tariffs.paymentInfoDesc')}</p>
-                  <div className="flex items-center gap-3 mt-3">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" className="h-5" />
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" className="h-5" />
-                  </div>
-                </div>
-              </div>
-            </div>
-
             {/* Custom Plans Section */}
             <div className="mt-12">
               <h3 className="text-xl font-bold text-gray-900 mb-6 text-center">{t('tariffs.customPlansTitle', 'Индивидуальные решения')}</h3>
@@ -1132,6 +1115,23 @@ const ProfilePage = () => {
                   </div>
                 </div>
               )}
+            </div>
+
+            {/* Payment Info */}
+            <div className="mt-8 bg-blue-50 rounded-xl p-6 border border-blue-100">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <CreditCard className="w-5 h-5 text-blue-600" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-1">{t('tariffs.paymentInfo')}</h4>
+                  <p className="text-sm text-gray-600 mb-2">{t('tariffs.paymentInfoDesc')}</p>
+                  <div className="flex items-center gap-3 mt-3">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" className="h-5" />
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" className="h-5" />
+                  </div>
+                </div>
+              </div>
             </div>
           </motion.div>
         )}
