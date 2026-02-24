@@ -129,7 +129,8 @@ const VerifyContractPage = () => {
   const formatDate = (dateString) => {
     if (!dateString) return '-';
     const date = new Date(dateString);
-    return date.toLocaleDateString('ru-RU', { 
+    const locale = currentLang === 'ru' ? 'ru-RU' : currentLang === 'kk' ? 'kk-KZ' : 'en-US';
+    return date.toLocaleDateString(locale, { 
       day: '2-digit', 
       month: '2-digit', 
       year: 'numeric',
@@ -138,23 +139,63 @@ const VerifyContractPage = () => {
     });
   };
 
+  // Get status text based on language
+  const getStatusText = (status) => {
+    switch (status) {
+      case 'signed': return t('verifyContract.statusSigned');
+      case 'sent': return t('verifyContract.statusSent');
+      case 'pending-signature': return t('verifyContract.statusPending');
+      default: return status;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-sky-50 py-8 px-4">
+      {/* Language Switcher */}
+      <div className="fixed top-4 right-4 z-50">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button 
+              className="h-9 px-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-blue-400 transition-all flex items-center gap-1 shadow-sm"
+              data-testid="verify-language-switcher"
+            >
+              {currentLang.toUpperCase()}
+              <ChevronDown className="w-4 h-4" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="bg-white border border-gray-200 rounded-lg shadow-lg">
+            {langOptions.map((lang) => (
+              <DropdownMenuItem
+                key={lang.code}
+                onClick={() => changeLanguage(lang.code)}
+                className={`px-3 py-2 text-sm hover:bg-gray-50 cursor-pointer ${currentLang === lang.code ? 'bg-blue-50 text-blue-700' : ''}`}
+                data-testid={`verify-lang-option-${lang.code}`}
+              >
+                {lang.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
       <div className="max-w-2xl mx-auto">
-        {/* Header */}
+        {/* Header with New Logo */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center">
-              <CheckCircle className="w-6 h-6 text-white" />
-            </div>
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <img 
+              src="/assets/logo-2tick.png" 
+              alt="2tick.kz Logo" 
+              className="w-12 h-12 rounded-xl shadow-md"
+              data-testid="verify-logo"
+            />
             <span className="text-2xl font-bold text-blue-600">2tick.kz</span>
           </div>
-          <h1 className="text-xl font-bold text-gray-900">Проверка договора</h1>
-          <p className="text-gray-500 text-sm">Верификация подлинности документа</p>
+          <h1 className="text-xl font-bold text-gray-900">{t('verifyContract.title')}</h1>
+          <p className="text-gray-500 text-sm">{t('verifyContract.subtitle')}</p>
         </motion.div>
 
         {/* Verification Status */}
