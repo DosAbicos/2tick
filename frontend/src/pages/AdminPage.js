@@ -204,6 +204,9 @@ const AdminPage = () => {
       setStats(statsRes.data);
       setUsers(usersRes.data);
       
+      // Fetch custom template requests
+      fetchCustomTemplateRequests();
+      
       // Fetch metrics separately (non-critical, may fail in some environments)
       try {
         const metricsRes = await axios.get(`${API}/admin/system/metrics`, { 
@@ -242,6 +245,65 @@ const AdminPage = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Fetch custom template requests
+  const fetchCustomTemplateRequests = async () => {
+    setLoadingRequests(true);
+    try {
+      const response = await axios.get(`${API}/admin/custom-template-requests`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setCustomTemplateRequests(response.data);
+    } catch (error) {
+      console.error('Error fetching custom template requests:', error);
+    } finally {
+      setLoadingRequests(false);
+    }
+  };
+
+  // Fetch templates for assignment
+  const fetchTemplates = async () => {
+    try {
+      const response = await axios.get(`${API}/admin/templates`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setTemplates(response.data);
+    } catch (error) {
+      console.error('Error fetching templates:', error);
+    }
+  };
+
+  // Update custom template request
+  const handleUpdateRequest = async (requestId, newStatus, assignedTemplateId = null, adminNotes = null) => {
+    try {
+      const params = new URLSearchParams();
+      if (newStatus) params.append('new_status', newStatus);
+      if (assignedTemplateId) params.append('assigned_template_id', assignedTemplateId);
+      if (adminNotes !== null) params.append('admin_notes', adminNotes);
+      
+      await axios.put(`${API}/admin/custom-template-requests/${requestId}?${params.toString()}`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      toast.success('Заявка обновлена');
+      fetchCustomTemplateRequests();
+      setRequestModalOpen(false);
+    } catch (error) {
+      toast.error('Ошибка обновления заявки');
+    }
+  };
+
+  // Download uploaded document from request
+  const handleDownloadDocument = (request) => {
+    if (!request.uploaded_document) {
+      toast.error('Документ не загружен');
+      return;
+    }
+    // Create download link from base64
+    const link = document.createElement('a');
+    link.href = `data:application/octet-stream;base64,${request.uploaded_document}`;
+    link.download = request.uploaded_document_filename || 'document';
+    link.click();
   };
 
   const fetchActiveNotification = async () => {
