@@ -68,6 +68,7 @@ const AdminPage = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [refreshingUsers, setRefreshingUsers] = useState(false);
   
   // System metrics
   const [systemMetrics, setSystemMetrics] = useState(null);
