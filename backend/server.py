@@ -6036,6 +6036,137 @@ async def toggle_auto_renewal(current_user: dict = Depends(get_current_user)):
     
     return {"auto_renewal": new_value}
 
+# ==================== CUSTOM CONTRACTS & TEMPLATES ====================
+
+@api_router.get("/pricing/calculate-custom")
+async def calculate_custom_price(count: int):
+    """Calculate price for custom contracts package"""
+    result = calculate_custom_contracts_price(count)
+    return result
+
+@api_router.post("/custom-template-requests")
+async def create_custom_template_request(
+    description: str = Form(""),
+    file: Optional[UploadFile] = File(None),
+    current_user: dict = Depends(get_current_user)
+):
+    """Create a request for custom template (after payment)"""
+    user_id = current_user['user_id']
+    
+    # Check if user has paid for custom_template
+    paid_request = await db.custom_template_requests.find_one({
+        "user_id": user_id,
+        "status": "paid"
+    })
+    
+    if not paid_request:
+        raise HTTPException(status_code=400, detail="Please purchase 'Individual Contract' plan first")
+    
+    # Read file if provided
+    uploaded_document = None
+    uploaded_document_filename = None
+    if file:
+        content = await file.read()
+        uploaded_document = base64.b64encode(content).decode('utf-8')
+        uploaded_document_filename = file.filename
+    
+    # Update the existing paid request
+    await db.custom_template_requests.update_one(
+        {"id": paid_request['id']},
+        {"$set": {
+            "description": description,
+            "uploaded_document": uploaded_document,
+            "uploaded_document_filename": uploaded_document_filename,
+            "status": "in_progress",
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    await log_audit("custom_template_request_submitted", user_id=user_id,
+                   details=f"Request ID: {paid_request['id']}")
+    
+    return {"message": "Request submitted successfully", "request_id": paid_request['id']}
+
+@api_router.get("/custom-template-requests/my")
+async def get_my_custom_template_requests(current_user: dict = Depends(get_current_user)):
+    """Get user's custom template requests"""
+    requests = await db.custom_template_requests.find(
+        {"user_id": current_user['user_id']},
+        {"_id": 0, "uploaded_document": 0}  # Exclude large base64 data
+    ).sort("created_at", -1).to_list(50)
+    return requests
+
+@api_router.get("/admin/custom-template-requests")
+async def get_all_custom_template_requests(current_user: dict = Depends(get_current_admin)):
+    """Admin: Get all custom template requests"""
+    requests = await db.custom_template_requests.find(
+        {},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(100)
+    
+    # Get user info for each request
+    for req in requests:
+        user = await db.users.find_one({"id": req['user_id']}, {"_id": 0, "email": 1, "full_name": 1, "company_name": 1})
+        req['user'] = user
+    
+    return requests
+
+@api_router.get("/admin/custom-template-requests/{request_id}")
+async def get_custom_template_request(
+    request_id: str,
+    current_user: dict = Depends(get_current_admin)
+):
+    """Admin: Get custom template request details"""
+    request = await db.custom_template_requests.find_one({"id": request_id}, {"_id": 0})
+    if not request:
+        raise HTTPException(status_code=404, detail="Request not found")
+    
+    user = await db.users.find_one({"id": request['user_id']}, {"_id": 0, "email": 1, "full_name": 1, "company_name": 1, "phone": 1})
+    request['user'] = user
+    
+    return request
+
+@api_router.put("/admin/custom-template-requests/{request_id}")
+async def update_custom_template_request(
+    request_id: str,
+    status: Optional[str] = None,
+    admin_notes: Optional[str] = None,
+    assigned_template_id: Optional[str] = None,
+    current_user: dict = Depends(get_current_admin)
+):
+    """Admin: Update custom template request"""
+    request = await db.custom_template_requests.find_one({"id": request_id})
+    if not request:
+        raise HTTPException(status_code=404, detail="Request not found")
+    
+    update_data = {"updated_at": datetime.now(timezone.utc).isoformat()}
+    
+    if status:
+        update_data["status"] = status
+        if status == "completed":
+            update_data["completed_at"] = datetime.now(timezone.utc).isoformat()
+    
+    if admin_notes is not None:
+        update_data["admin_notes"] = admin_notes
+    
+    if assigned_template_id:
+        update_data["assigned_template_id"] = assigned_template_id
+        # Also update the template to be assigned to this user only
+        await db.contract_templates.update_one(
+            {"id": assigned_template_id},
+            {"$addToSet": {"assigned_users": request['user_id']}}
+        )
+    
+    await db.custom_template_requests.update_one(
+        {"id": request_id},
+        {"$set": update_data}
+    )
+    
+    await log_audit("custom_template_request_updated", user_id=current_user['user_id'],
+                   details=f"Request ID: {request_id}, Status: {status}")
+    
+    return {"message": "Request updated successfully"}
+
 # Backward compatibility endpoint
 @api_router.post("/subscriptions/create-payment")
 async def create_subscription_payment(
