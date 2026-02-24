@@ -250,6 +250,22 @@ const AdminPage = () => {
     }
   };
 
+  // Refresh users list only
+  const refreshUsers = async () => {
+    setRefreshingUsers(true);
+    try {
+      const response = await axios.get(`${API}/admin/users`, { 
+        headers: { Authorization: `Bearer ${token}` } 
+      });
+      setUsers(response.data);
+      toast.success('Список обновлён');
+    } catch (error) {
+      toast.error('Ошибка обновления списка');
+    } finally {
+      setRefreshingUsers(false);
+    }
+  };
+
   // Fetch custom template requests
   const fetchCustomTemplateRequests = async () => {
     setLoadingRequests(true);
