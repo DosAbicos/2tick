@@ -918,11 +918,11 @@ const ProfilePage = () => {
             </div>
 
             {/* Custom Plans Section */}
-            <div className="mt-12">
+            <div className="mt-12 overflow-hidden">
               <h3 className="text-xl font-bold text-gray-900 mb-6 text-center">{t('tariffs.customPlansTitle', 'Индивидуальные решения')}</h3>
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
                 {/* Custom Contracts Calculator */}
-                <div className="bg-gradient-to-br from-orange-50 to-white rounded-xl shadow-md border border-orange-200 p-6">
+                <div className="bg-gradient-to-br from-orange-50 to-white rounded-xl shadow-md border border-orange-200 p-4 sm:p-6 overflow-hidden">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center">
                       <Package className="w-6 h-6 text-orange-600" />
