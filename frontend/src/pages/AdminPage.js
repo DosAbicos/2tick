@@ -1049,6 +1049,14 @@ const AdminPage = () => {
       {/* User Details Dialog */}
       <Dialog open={userDetailsOpen} onOpenChange={setUserDetailsOpen}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          {/* Close button for mobile */}
+          <button
+            onClick={() => setUserDetailsOpen(false)}
+            className="absolute top-3 right-3 p-2 rounded-full hover:bg-gray-100 transition-colors z-10"
+            data-testid="close-user-profile-btn"
+          >
+            <X className="h-5 w-5 text-gray-500" />
+          </button>
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold text-gray-900">Профиль пользователя</DialogTitle>
             <DialogDescription className="text-gray-600">Подробная информация о пользователе</DialogDescription>
