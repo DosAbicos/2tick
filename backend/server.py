@@ -5654,19 +5654,35 @@ async def create_payment(
     """Create payment and get FreedomPay redirect URL"""
     import httpx
     
-    plan = TARIFF_PLANS.get(payment_data.plan_id)
-    if not plan:
-        raise HTTPException(status_code=400, detail="Invalid plan")
-    
-    if plan['price'] == 0:
-        raise HTTPException(status_code=400, detail="Free plan doesn't require payment")
+    # Handle custom_contracts plan separately
+    if payment_data.plan_id == 'custom_contracts':
+        if not payment_data.custom_contracts_count or payment_data.custom_contracts_count < 20:
+            raise HTTPException(status_code=400, detail="Minimum 20 contracts required for custom plan")
+        
+        pricing = calculate_custom_contracts_price(payment_data.custom_contracts_count)
+        if "error" in pricing:
+            raise HTTPException(status_code=400, detail=pricing["error"])
+        
+        amount = pricing["price"]
+        contracts_count = pricing["count"]
+    else:
+        plan = TARIFF_PLANS.get(payment_data.plan_id)
+        if not plan:
+            raise HTTPException(status_code=400, detail="Invalid plan")
+        
+        if plan['price'] == 0:
+            raise HTTPException(status_code=400, detail="Free plan doesn't require payment")
+        
+        amount = plan['price']
+        contracts_count = payment_data.custom_contracts_count
     
     # Create payment record
     payment = Payment(
         user_id=current_user['user_id'],
         plan_id=payment_data.plan_id,
-        amount=plan['price'],
+        amount=amount,
         auto_renewal=payment_data.auto_renewal,
+        custom_contracts_count=contracts_count if payment_data.plan_id == 'custom_contracts' else None,
         pg_order_id=f"2tick_{current_user['user_id']}_{datetime.now().strftime('%Y%m%d%H%M%S')}"
     )
     
@@ -5683,13 +5699,15 @@ async def create_payment(
     # Plan description
     plan_names = {
         'start': 'Тариф START - 20 договоров/месяц',
-        'business': 'Тариф BUSINESS - 50 договоров/месяц'
+        'business': 'Тариф BUSINESS - 50 договоров/месяц',
+        'custom_template': 'Индивидуальный договор',
+        'custom_contracts': f'Пакет {contracts_count} договоров'
     }
     
     params = {
         'pg_merchant_id': FREEDOMPAY_MERCHANT_ID,
         'pg_order_id': payment.pg_order_id,
-        'pg_amount': str(plan['price']),
+        'pg_amount': str(amount),
         'pg_currency': 'KZT',
         'pg_description': plan_names.get(payment_data.plan_id, f'Подписка {payment_data.plan_id}'),
         'pg_salt': pg_salt,
