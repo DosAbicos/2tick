@@ -198,7 +198,8 @@ const NewLandingPage = () => {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {/* Main Plans */}
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-16">
             {/* Free Plan */}
             <div className="minimal-card p-8 space-y-6">
               <div>
@@ -300,6 +301,86 @@ const NewLandingPage = () => {
                   {t('landing.pricing.choosePlan')}
                 </button>
               </Link>
+            </div>
+          </div>
+
+          {/* Custom Plans */}
+          <div className="max-w-6xl mx-auto">
+            <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">
+              {t('landing.pricing.customTitle', 'Индивидуальные решения')}
+            </h3>
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Individual Contract */}
+              <div className="minimal-card p-8 space-y-6 bg-gradient-to-br from-purple-50 to-white border border-purple-200">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center flex-shrink-0">
+                    <FileText className="w-6 h-6 text-purple-600" />
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-bold text-gray-900">{t('landing.pricing.customTemplate.title', 'Индивидуальный договор')}</h4>
+                    <p className="text-sm text-gray-500 mt-1">{t('landing.pricing.customTemplate.desc', 'Создадим договор под ваши нужды')}</p>
+                  </div>
+                </div>
+                <div className="flex items-baseline">
+                  <span className="text-3xl font-bold text-gray-900">29 990 ₸</span>
+                  <span className="ml-2 text-gray-500">{t('landing.pricing.oneTime', '/ разово')}</span>
+                </div>
+                <ul className="space-y-3">
+                  <li className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-purple-500 flex-shrink-0" />
+                    <span className="text-gray-600">{t('landing.pricing.customTemplate.feature1', 'Уникальный шаблон под ваш бизнес')}</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-purple-500 flex-shrink-0" />
+                    <span className="text-gray-600">{t('landing.pricing.customTemplate.feature2', 'Автоматическое заполнение полей')}</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-purple-500 flex-shrink-0" />
+                    <span className="text-gray-600">{t('landing.pricing.customTemplate.feature3', 'Доступен только вам')}</span>
+                  </li>
+                </ul>
+                <Link to="/register" className="block">
+                  <button className="w-full py-4 font-medium text-purple-600 bg-purple-100 rounded-xl hover:bg-purple-200 transition-all">
+                    {t('landing.pricing.order', 'Заказать')}
+                  </button>
+                </Link>
+              </div>
+
+              {/* Custom Contracts Package */}
+              <div className="minimal-card p-8 space-y-6 bg-gradient-to-br from-orange-50 to-white border border-orange-200">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center flex-shrink-0">
+                    <Package className="w-6 h-6 text-orange-600" />
+                  </div>
+                  <div>
+                    <h4 className="text-xl font-bold text-gray-900">{t('landing.pricing.customContracts.title', 'Пакет договоров')}</h4>
+                    <p className="text-sm text-gray-500 mt-1">{t('landing.pricing.customContracts.desc', 'Фиксированное количество без ежемесячного сброса')}</p>
+                  </div>
+                </div>
+                <div className="flex items-baseline">
+                  <span className="text-3xl font-bold text-gray-900">{t('landing.pricing.from', 'от')} 5 000 ₸</span>
+                  <span className="ml-2 text-gray-500">{t('landing.pricing.from20', '/ от 20 договоров')}</span>
+                </div>
+                <ul className="space-y-3">
+                  <li className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-orange-500 flex-shrink-0" />
+                    <span className="text-gray-600">{t('landing.pricing.customContracts.feature1', 'Договоры не сгорают')}</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-orange-500 flex-shrink-0" />
+                    <span className="text-gray-600">{t('landing.pricing.customContracts.feature2', 'Скидка от 50 договоров')}</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Check className="w-5 h-5 text-orange-500 flex-shrink-0" />
+                    <span className="text-gray-600">{t('landing.pricing.customContracts.feature3', '250₸ за договор')}</span>
+                  </li>
+                </ul>
+                <Link to="/register" className="block">
+                  <button className="w-full py-4 font-medium text-orange-600 bg-orange-100 rounded-xl hover:bg-orange-200 transition-all">
+                    {t('landing.pricing.calculate', 'Рассчитать')}
+                  </button>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
