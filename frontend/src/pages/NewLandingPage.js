@@ -198,166 +198,106 @@ const NewLandingPage = () => {
             </p>
           </div>
           
-          {/* All Plans in one grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {/* Free Plan */}
-            <div className="minimal-card p-6 space-y-4">
+            <div className="minimal-card p-8 space-y-6">
               <div>
-                <h3 className="text-xl font-bold text-gray-900">FREE</h3>
-                <p className="text-xs text-gray-500 mt-1">{t('landing.pricing.free.desc', 'Для тестирования')}</p>
-                <div className="mt-3 flex items-baseline">
-                  <span className="text-3xl font-bold text-gray-900">0 ₸</span>
+                <h3 className="text-2xl font-bold text-gray-900">FREE</h3>
+                <p className="text-sm text-gray-500 mt-1">{t('landing.pricing.free.desc', 'Для тестирования')}</p>
+                <div className="mt-4 flex items-baseline">
+                  <span className="text-4xl font-bold text-gray-900">0 ₸</span>
                 </div>
               </div>
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+              <ul className="space-y-4">
+                <li className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
                   <span className="text-gray-600">{t('landing.pricing.free.feature1', 'До 3 договоров')}</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+                <li className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
                   <span className="text-gray-600">{t('landing.pricing.free.feature2', 'Все способы верификации')}</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+                <li className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
                   <span className="text-gray-600">{t('landing.pricing.free.feature3', 'Базовые шаблоны')}</span>
                 </li>
               </ul>
               <Link to="/register" className="block">
-                <button className="w-full py-3 font-medium text-blue-600 bg-blue-50 rounded-xl hover:bg-blue-100 transition-all text-sm">
+                <button className="w-full py-4 font-medium text-blue-600 bg-blue-50 rounded-xl hover:bg-blue-100 transition-all">
                   {t('landing.pricing.choosePlan')}
                 </button>
               </Link>
             </div>
             
             {/* Start Plan */}
-            <div className="minimal-card p-6 space-y-4 border-2 border-blue-500 relative">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-500 text-white px-3 py-0.5 rounded-full text-xs font-medium">
+            <div className="minimal-card p-8 space-y-6 border-2 border-blue-500 relative">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-blue-500 text-white px-4 py-1 rounded-full text-sm font-medium">
                 {t('landing.pricing.popular', 'Популярный')}
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900">START</h3>
-                <p className="text-xs text-gray-500 mt-1">{t('landing.pricing.start.desc', 'Для малого бизнеса')}</p>
-                <div className="mt-3 flex items-baseline">
-                  <span className="text-3xl font-bold text-gray-900">5 990 ₸</span>
-                  <span className="ml-1 text-gray-500 text-sm">/ {t('landing.pricing.month', 'мес')}</span>
+                <h3 className="text-2xl font-bold text-gray-900">START</h3>
+                <p className="text-sm text-gray-500 mt-1">{t('landing.pricing.start.desc', 'Для малого бизнеса')}</p>
+                <div className="mt-4 flex items-baseline">
+                  <span className="text-4xl font-bold text-gray-900">5 990 ₸</span>
+                  <span className="ml-2 text-gray-500">/ {t('landing.pricing.month', 'месяц')}</span>
                 </div>
               </div>
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+              <ul className="space-y-4">
+                <li className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
                   <span className="text-gray-600">{t('landing.pricing.start.feature1', 'До 20 договоров')}</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+                <li className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
                   <span className="text-gray-600">{t('landing.pricing.start.feature2', 'Все способы верификации')}</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+                <li className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
                   <span className="text-gray-600">{t('landing.pricing.start.feature3', 'Все шаблоны')}</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <span className="text-gray-600">{t('landing.pricing.start.feature4', 'Приоритетная поддержка')}</span>
                 </li>
               </ul>
               <Link to="/register" className="block">
-                <button className="w-full py-3 font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30 text-sm">
+                <button className="w-full py-4 font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-500/30">
                   {t('landing.pricing.choosePlan')}
                 </button>
               </Link>
             </div>
 
             {/* Business Plan */}
-            <div className="minimal-card p-6 space-y-4">
+            <div className="minimal-card p-8 space-y-6">
               <div>
-                <h3 className="text-xl font-bold text-gray-900">BUSINESS</h3>
-                <p className="text-xs text-gray-500 mt-1">{t('landing.pricing.business.desc', 'Для компаний')}</p>
-                <div className="mt-3 flex items-baseline">
-                  <span className="text-3xl font-bold text-gray-900">14 990 ₸</span>
-                  <span className="ml-1 text-gray-500 text-sm">/ {t('landing.pricing.month', 'мес')}</span>
+                <h3 className="text-2xl font-bold text-gray-900">BUSINESS</h3>
+                <p className="text-sm text-gray-500 mt-1">{t('landing.pricing.business.desc', 'Для компаний')}</p>
+                <div className="mt-4 flex items-baseline">
+                  <span className="text-4xl font-bold text-gray-900">14 990 ₸</span>
+                  <span className="ml-2 text-gray-500">/ {t('landing.pricing.month', 'месяц')}</span>
                 </div>
               </div>
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+              <ul className="space-y-4">
+                <li className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
                   <span className="text-gray-600">{t('landing.pricing.business.feature1', 'До 50 договоров')}</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+                <li className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
                   <span className="text-gray-600">{t('landing.pricing.business.feature2', 'Все способы верификации')}</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+                <li className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <span className="text-gray-600">{t('landing.pricing.business.feature3', 'Все шаблоны')}</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
                   <span className="text-gray-600">{t('landing.pricing.business.feature4', 'Персональный менеджер')}</span>
                 </li>
               </ul>
               <Link to="/register" className="block">
-                <button className="w-full py-3 font-medium text-blue-600 bg-blue-50 rounded-xl hover:bg-blue-100 transition-all text-sm">
+                <button className="w-full py-4 font-medium text-blue-600 bg-blue-50 rounded-xl hover:bg-blue-100 transition-all">
                   {t('landing.pricing.choosePlan')}
-                </button>
-              </Link>
-            </div>
-
-            {/* Individual Contract */}
-            <div className="minimal-card p-6 space-y-4 bg-gradient-to-br from-purple-50 to-white border border-purple-200">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <FileText className="w-5 h-5 text-purple-600" />
-                  <h3 className="text-xl font-bold text-gray-900">{t('landing.pricing.customTemplate.titleShort', 'Индивидуальный')}</h3>
-                </div>
-                <p className="text-xs text-gray-500">{t('landing.pricing.customTemplate.desc', 'Создадим договор под ваши нужды')}</p>
-                <div className="mt-3 flex items-baseline">
-                  <span className="text-3xl font-bold text-gray-900">29 990 ₸</span>
-                  <span className="ml-1 text-gray-500 text-sm">{t('landing.pricing.oneTime', '/ разово')}</span>
-                </div>
-              </div>
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />
-                  <span className="text-gray-600">{t('landing.pricing.customTemplate.feature1', 'Уникальный шаблон')}</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />
-                  <span className="text-gray-600">{t('landing.pricing.customTemplate.feature2', 'Автозаполнение полей')}</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-purple-500 flex-shrink-0" />
-                  <span className="text-gray-600">{t('landing.pricing.customTemplate.feature3', 'Только для вас')}</span>
-                </li>
-              </ul>
-              <Link to="/register" className="block">
-                <button className="w-full py-3 font-medium text-purple-600 bg-purple-100 rounded-xl hover:bg-purple-200 transition-all text-sm">
-                  {t('landing.pricing.order', 'Заказать')}
-                </button>
-              </Link>
-            </div>
-
-            {/* Custom Contracts Package */}
-            <div className="minimal-card p-6 space-y-4 bg-gradient-to-br from-orange-50 to-white border border-orange-200">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <Package className="w-5 h-5 text-orange-600" />
-                  <h3 className="text-xl font-bold text-gray-900">{t('landing.pricing.customContracts.titleShort', 'Пакет')}</h3>
-                </div>
-                <p className="text-xs text-gray-500">{t('landing.pricing.customContracts.desc', 'Договоры не сгорают')}</p>
-                <div className="mt-3 flex items-baseline">
-                  <span className="text-3xl font-bold text-gray-900">{t('landing.pricing.from', 'от')} 5 000 ₸</span>
-                </div>
-              </div>
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-orange-500 flex-shrink-0" />
-                  <span className="text-gray-600">{t('landing.pricing.customContracts.feature1', 'Договоры не сгорают')}</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-orange-500 flex-shrink-0" />
-                  <span className="text-gray-600">{t('landing.pricing.customContracts.feature2', 'Скидка от 50 шт')}</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-orange-500 flex-shrink-0" />
-                  <span className="text-gray-600">{t('landing.pricing.customContracts.feature3', '250₸ за договор')}</span>
-                </li>
-              </ul>
-              <Link to="/register" className="block">
-                <button className="w-full py-3 font-medium text-orange-600 bg-orange-100 rounded-xl hover:bg-orange-200 transition-all text-sm">
-                  {t('landing.pricing.calculate', 'Рассчитать')}
                 </button>
               </Link>
             </div>
