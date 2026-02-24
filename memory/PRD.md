@@ -88,6 +88,10 @@ Build a comprehensive contract signing platform (2tick.kz) with:
 - User deploys to own VPS using Git and Docker Compose
 
 ## Changelog
+- **2026-02-24:** Added multi-language support to public verification page (/verify/:id)
+  - Added language switcher (RU/EN/KK)
+  - Replaced old SVG logo with new 2tick logo image
+  - Added translations for all page text in i18n.js
 - **2026-02-24:** Added custom pricing plans and individual contract request system
 - **2026-02-23:** Mobile optimizations for SignContractPage.js
 - **2026-02-23:** Reverted SignContractPage.js mobile optimization (user rejected changes)
