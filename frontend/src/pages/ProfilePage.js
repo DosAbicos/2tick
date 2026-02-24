@@ -999,7 +999,7 @@ const ProfilePage = () => {
                 </div>
 
                 {/* Custom Template */}
-                <div className="bg-gradient-to-br from-purple-50 to-white rounded-xl shadow-md border border-purple-200 p-6">
+                <div className="bg-gradient-to-br from-purple-50 to-white rounded-xl shadow-md border border-purple-200 p-4 sm:p-6 overflow-hidden">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center">
                       <FileText className="w-6 h-6 text-purple-600" />
