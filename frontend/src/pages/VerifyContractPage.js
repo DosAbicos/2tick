@@ -216,12 +216,12 @@ const VerifyContractPage = () => {
             )}
             <div>
               <h2 className={`text-lg font-bold ${isVerified ? 'text-green-700' : 'text-amber-700'}`}>
-                {isVerified ? 'Договор подписан' : 'Договор ожидает подписания'}
+                {isVerified ? t('verifyContract.verified') : t('verifyContract.pending')}
               </h2>
               <p className={`text-sm ${isVerified ? 'text-green-600' : 'text-amber-600'}`}>
                 {isVerified 
-                  ? 'Данный документ имеет юридическую силу' 
-                  : 'Документ ещё не подписан всеми сторонами'}
+                  ? t('verifyContract.verifiedDesc') 
+                  : t('verifyContract.pendingDesc')}
               </p>
             </div>
           </div>
