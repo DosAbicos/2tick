@@ -731,21 +731,22 @@ const ContractDetailsPage = () => {
                 {/* Language Switcher for Content - Only for non-PDF contracts */}
                 {contract.source_type !== 'uploaded_pdf' && (
                   <div 
-                    className="flex gap-2"
+                    className="flex flex-wrap gap-1 sm:gap-2"
                     data-testid="content-language-switcher"
                   >
                     {getAvailableContentLanguages().map((lang) => (
                       <button
                         key={lang}
                         onClick={() => setSelectedContentLang(lang)}
-                        className={`px-3 sm:px-4 py-2 rounded-lg font-semibold transition-all ${
+                        className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all whitespace-nowrap ${
                           selectedContentLang === lang
                             ? 'bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-lg'
                             : 'neuro-button'
                         }`}
                         data-testid={`content-lang-${lang}`}
                       >
-                        {lang === 'ru' ? '🇷🇺 Русский' : lang === 'kk' ? '🇰🇿 Қазақша' : '🇬🇧 English'}
+                        <span className="hidden sm:inline">{lang === 'ru' ? '🇷🇺 Русский' : lang === 'kk' ? '🇰🇿 Қазақша' : '🇬🇧 English'}</span>
+                        <span className="sm:hidden">{lang === 'ru' ? '🇷🇺 РУС' : lang === 'kk' ? '🇰🇿 ҚАЗ' : '🇬🇧 EN'}</span>
                       </button>
                     ))}
                   </div>
