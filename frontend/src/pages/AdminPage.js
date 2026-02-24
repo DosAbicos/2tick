@@ -715,6 +715,15 @@ const AdminPage = () => {
                     className="w-full sm:w-64 minimal-input"
                   />
                   <Search className="h-5 w-5 text-blue-500" />
+                  <button
+                    onClick={refreshUsers}
+                    disabled={refreshingUsers}
+                    title="Обновить список"
+                    className="p-2 hover:bg-blue-50 rounded-lg transition-colors border border-gray-200 disabled:opacity-50"
+                    data-testid="refresh-users-btn"
+                  >
+                    <RefreshCw className={`h-5 w-5 text-blue-600 ${refreshingUsers ? 'animate-spin' : ''}`} />
+                  </button>
                 </div>
               </div>
               <div className="overflow-x-auto">
