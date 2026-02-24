@@ -933,11 +933,214 @@ const ProfilePage = () => {
                 </div>
               </div>
             </div>
+
+            {/* Custom Plans Section */}
+            <div className="mt-12">
+              <h3 className="text-xl font-bold text-gray-900 mb-6 text-center">{t('tariffs.customPlansTitle', 'Индивидуальные решения')}</h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Custom Contracts Calculator */}
+                <div className="bg-gradient-to-br from-orange-50 to-white rounded-xl shadow-md border border-orange-200 p-6">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center">
+                      <Package className="w-6 h-6 text-orange-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-900">{t('tariffs.customContracts.title', 'Пакет договоров')}</h3>
+                      <p className="text-sm text-gray-500">{t('tariffs.customContracts.desc', 'Договоры не сгорают ежемесячно')}</p>
+                    </div>
+                  </div>
+
+                  {/* Counter */}
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t('tariffs.customContracts.selectCount', 'Количество договоров')}
+                    </label>
+                    <div className="flex items-center gap-4">
+                      <button
+                        onClick={() => setCustomContractsCount(Math.max(20, customContractsCount - 10))}
+                        className="w-10 h-10 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center hover:bg-orange-200 transition-colors"
+                        disabled={customContractsCount <= 20}
+                      >
+                        <Minus className="w-5 h-5" />
+                      </button>
+                      <input
+                        type="number"
+                        min="20"
+                        value={customContractsCount}
+                        onChange={(e) => setCustomContractsCount(Math.max(20, parseInt(e.target.value) || 20))}
+                        className="flex-1 text-center text-2xl font-bold text-gray-900 border-2 border-orange-200 rounded-lg py-2 focus:border-orange-500 focus:ring-0"
+                      />
+                      <button
+                        onClick={() => setCustomContractsCount(customContractsCount + 10)}
+                        className="w-10 h-10 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center hover:bg-orange-200 transition-colors"
+                      >
+                        <Plus className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Pricing Info */}
+                  {customPricing && (
+                    <div className="bg-white rounded-lg p-4 mb-6 border border-orange-100">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-gray-600">{t('tariffs.customContracts.pricePerContract', 'Цена за договор')}:</span>
+                        <span className="font-semibold text-gray-900">{customPricing.price_per_contract} ₸</span>
+                      </div>
+                      {customPricing.discount > 0 && (
+                        <div className="flex justify-between items-center mb-2 text-green-600">
+                          <span>{t('tariffs.customContracts.discount', 'Скидка')}:</span>
+                          <span className="font-semibold">-{customPricing.discount.toLocaleString()} ₸</span>
+                        </div>
+                      )}
+                      <div className="border-t border-orange-100 pt-2 mt-2">
+                        <div className="flex justify-between items-center">
+                          <span className="text-lg font-bold text-gray-900">{t('tariffs.customContracts.total', 'Итого')}:</span>
+                          <span className="text-2xl font-bold text-orange-600">{customPricing.price.toLocaleString()} ₸</span>
+                        </div>
+                      </div>
+                      {customPricing.discount_info && (
+                        <p className="text-sm text-green-600 mt-2">{customPricing.discount_info}</p>
+                      )}
+                    </div>
+                  )}
+
+                  <button
+                    onClick={handlePurchaseCustomContracts}
+                    disabled={processingPayment || !customPricing || loadingPricing}
+                    className="w-full py-3 font-semibold text-white bg-gradient-to-r from-orange-500 to-orange-400 rounded-xl hover:from-orange-600 hover:to-orange-500 transition-all shadow-lg shadow-orange-500/20 disabled:opacity-50"
+                  >
+                    {processingPayment ? t('common.loading') : t('tariffs.purchase', 'Купить')}
+                  </button>
+
+                  <p className="text-xs text-gray-500 mt-3 text-center">
+                    {t('tariffs.customContracts.note', 'Минимум 20 договоров. Скидка после 50.')}
+                  </p>
+                </div>
+
+                {/* Custom Template */}
+                <div className="bg-gradient-to-br from-purple-50 to-white rounded-xl shadow-md border border-purple-200 p-6">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center">
+                      <FileText className="w-6 h-6 text-purple-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-900">{t('tariffs.customTemplate.title', 'Индивидуальный договор')}</h3>
+                      <p className="text-sm text-gray-500">{t('tariffs.customTemplate.desc', 'Уникальный шаблон под ваш бизнес')}</p>
+                    </div>
+                  </div>
+
+                  <div className="mb-6">
+                    <div className="text-3xl font-bold text-gray-900 mb-2">29 990 ₸</div>
+                    <p className="text-sm text-gray-500">{t('tariffs.oneTimePayment', 'Разовая оплата')}</p>
+                  </div>
+
+                  <ul className="space-y-3 mb-6">
+                    <li className="flex items-center gap-2 text-gray-600">
+                      <CheckCircle className="w-5 h-5 text-purple-500" />
+                      {t('tariffs.customTemplate.feature1', 'Разработка шаблона под ваши нужды')}
+                    </li>
+                    <li className="flex items-center gap-2 text-gray-600">
+                      <CheckCircle className="w-5 h-5 text-purple-500" />
+                      {t('tariffs.customTemplate.feature2', 'Автозаполнение полей')}
+                    </li>
+                    <li className="flex items-center gap-2 text-gray-600">
+                      <CheckCircle className="w-5 h-5 text-purple-500" />
+                      {t('tariffs.customTemplate.feature3', 'Доступен только вам')}
+                    </li>
+                  </ul>
+
+                  {/* Check for existing paid request */}
+                  {customTemplateRequests.find(r => r.status === 'paid') ? (
+                    <div className="mb-4">
+                      {!showCustomTemplateForm ? (
+                        <button
+                          onClick={() => setShowCustomTemplateForm(true)}
+                          className="w-full py-3 font-semibold text-purple-600 bg-purple-100 rounded-xl hover:bg-purple-200 transition-all"
+                        >
+                          {t('tariffs.customTemplate.uploadDocument', 'Загрузить документ')}
+                        </button>
+                      ) : (
+                        <div className="space-y-4">
+                          <textarea
+                            value={customTemplateDescription}
+                            onChange={(e) => setCustomTemplateDescription(e.target.value)}
+                            placeholder={t('tariffs.customTemplate.descriptionPlaceholder', 'Опишите, какой договор вам нужен...')}
+                            className="w-full p-3 border border-purple-200 rounded-lg resize-none h-24 focus:border-purple-500 focus:ring-0"
+                          />
+                          <label className="flex items-center justify-center gap-2 py-3 px-4 border-2 border-dashed border-purple-300 rounded-lg cursor-pointer hover:bg-purple-50 transition-colors">
+                            <Upload className="w-5 h-5 text-purple-500" />
+                            <span className="text-purple-600 font-medium">
+                              {customTemplateFile ? customTemplateFile.name : t('tariffs.customTemplate.selectFile', 'Выбрать файл')}
+                            </span>
+                            <input
+                              type="file"
+                              onChange={(e) => setCustomTemplateFile(e.target.files[0])}
+                              className="hidden"
+                              accept=".pdf,.doc,.docx"
+                            />
+                          </label>
+                          <button
+                            onClick={handleSubmitCustomTemplateRequest}
+                            className="w-full py-3 font-semibold text-white bg-purple-600 rounded-xl hover:bg-purple-700 transition-all"
+                          >
+                            {t('tariffs.customTemplate.submit', 'Отправить заявку')}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <button
+                      onClick={handlePurchaseCustomTemplate}
+                      disabled={processingPayment}
+                      className="w-full py-3 font-semibold text-white bg-gradient-to-r from-purple-600 to-purple-500 rounded-xl hover:from-purple-700 hover:to-purple-600 transition-all shadow-lg shadow-purple-500/20 disabled:opacity-50"
+                    >
+                      {processingPayment ? t('common.loading') : t('tariffs.order', 'Заказать')}
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Custom Template Requests */}
+              {customTemplateRequests.length > 0 && (
+                <div className="mt-8 bg-white rounded-xl shadow-md border border-gray-200 p-6">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4">{t('tariffs.customTemplate.myRequests', 'Мои заявки')}</h3>
+                  <div className="space-y-3">
+                    {customTemplateRequests.map((request) => (
+                      <div key={request.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div>
+                          <span className={`px-2 py-1 text-xs rounded-full font-medium ${
+                            request.status === 'completed' ? 'bg-green-100 text-green-700' :
+                            request.status === 'in_progress' ? 'bg-blue-100 text-blue-700' :
+                            request.status === 'paid' ? 'bg-yellow-100 text-yellow-700' :
+                            'bg-gray-100 text-gray-700'
+                          }`}>
+                            {request.status === 'completed' ? t('tariffs.status.completed', 'Готово') :
+                             request.status === 'in_progress' ? t('tariffs.status.inProgress', 'В работе') :
+                             request.status === 'paid' ? t('tariffs.status.paid', 'Оплачено') :
+                             request.status}
+                          </span>
+                          <p className="text-sm text-gray-500 mt-1">
+                            {new Date(request.created_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                        {request.status === 'completed' && request.assigned_template_id && (
+                          <button
+                            onClick={() => navigate(`/create-contract/${request.assigned_template_id}`)}
+                            className="text-purple-600 hover:text-purple-700 font-medium text-sm"
+                          >
+                            {t('tariffs.customTemplate.useTemplate', 'Использовать')}
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </motion.div>
         )}
 
-        {/* Custom Plans Tab */}
-        {activeTab === 'custom' && (
+        {/* Payment History Tab */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
