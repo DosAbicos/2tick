@@ -204,7 +204,7 @@ const ProfilePage = () => {
     try {
       const response = await axios.post(`${API}/payment/create`, {
         plan_id: 'custom_template',
-        amount: 29990,
+        amount: 6990,
         auto_renewal: false
       }, {
         headers: { Authorization: `Bearer ${token}` }
@@ -1011,7 +1011,7 @@ const ProfilePage = () => {
                   </div>
 
                   <div className="mb-6">
-                    <div className="text-3xl font-bold text-gray-900 mb-2">29 990 ₸</div>
+                    <div className="text-3xl font-bold text-gray-900 mb-2">6 990 ₸</div>
                     <p className="text-sm text-gray-500">{t('tariffs.oneTimePayment', 'Разовая оплата')}</p>
                   </div>
 

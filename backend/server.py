@@ -5666,7 +5666,7 @@ TARIFF_PLANS = {
     'free': {'contracts': 3, 'price': 0, 'monthly': True},
     'start': {'contracts': 20, 'price': 5990, 'monthly': True},
     'business': {'contracts': 50, 'price': 14990, 'monthly': True},
-    'custom_template': {'contracts': 0, 'price': 29990, 'monthly': False},  # One-time payment for custom template
+    'custom_template': {'contracts': 0, 'price': 6990, 'monthly': False},  # One-time payment for custom template
 }
 
 # Custom contracts pricing calculator

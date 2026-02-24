@@ -321,7 +321,7 @@ const NewLandingPage = () => {
                   </div>
                 </div>
                 <div className="flex items-baseline">
-                  <span className="text-3xl font-bold text-gray-900">29 990 ₸</span>
+                  <span className="text-3xl font-bold text-gray-900">6 990 ₸</span>
                   <span className="ml-2 text-gray-500">{t('landing.pricing.oneTime', '/ разово')}</span>
                 </div>
                 <ul className="space-y-3">
