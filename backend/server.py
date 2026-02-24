@@ -5034,21 +5034,53 @@ async def delete_user(user_id: str, current_user: dict = Depends(get_current_use
 # ==================== CONTRACT TEMPLATES ENDPOINTS ====================
 
 @api_router.get("/templates")
-async def get_templates(category: Optional[str] = None):
-    """Получить список активных шаблонов (для маркетплейса)"""
+async def get_templates(
+    category: Optional[str] = None,
+    current_user: Optional[dict] = Depends(get_current_user_optional)
+):
+    """Получить список активных шаблонов (для маркетплейса)
+    Индивидуальные шаблоны (с assigned_users) показываются только назначенным пользователям
+    """
     query = {"is_active": True}
     if category:
         query["category"] = category
     
+    # Get all active templates
     templates = await db.contract_templates.find(query, {"_id": 0}).sort("created_at", -1).to_list(100)
-    return templates
+    
+    # Filter: show only public templates OR templates assigned to current user
+    user_id = current_user.get('user_id') if current_user else None
+    filtered_templates = []
+    for t in templates:
+        assigned_users = t.get('assigned_users', [])
+        if not assigned_users:
+            # Public template - show to everyone
+            filtered_templates.append(t)
+        elif user_id and user_id in assigned_users:
+            # Individual template - show only to assigned user
+            t['is_individual'] = True  # Mark as individual
+            filtered_templates.append(t)
+    
+    return filtered_templates
 
 @api_router.get("/templates/{template_id}")
-async def get_template(template_id: str):
+async def get_template(
+    template_id: str,
+    current_user: Optional[dict] = Depends(get_current_user_optional)
+):
     """Получить детали шаблона"""
     template = await db.contract_templates.find_one({"id": template_id, "is_active": True}, {"_id": 0})
     if not template:
         raise HTTPException(status_code=404, detail="Template not found")
+    
+    # Check if individual template - only assigned users can access
+    assigned_users = template.get('assigned_users', [])
+    if assigned_users:
+        user_id = current_user.get('user_id') if current_user else None
+        if not user_id or user_id not in assigned_users:
+            raise HTTPException(status_code=403, detail="This template is not available to you")
+        template['is_individual'] = True
+    
     return template
 
 # === Favorite Templates Endpoints ===
