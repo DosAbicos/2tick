@@ -46,7 +46,10 @@ import {
   AlertCircle,
   Trash2,
   UserX,
-  UserCheck
+  UserCheck,
+  Package,
+  Download,
+  ExternalLink
 } from 'lucide-react';
 import '../styles/neumorphism.css';
 
