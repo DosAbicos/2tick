@@ -24,10 +24,14 @@ Build a comprehensive contract signing platform (2tick.kz) with:
 - ✅ PDF viewer in contract details, signing, and review pages
 - ✅ Calculated fields in templates
 - ✅ Mobile optimizations for signing page (Step 2 upload, Step 5 verification)
-- ✅ **NEW: Custom pricing plans**
-  - Individual contract template (29,990₸ one-time)
+- ✅ **Custom pricing plans**
+  - Individual contract template (6,990₸ one-time)
   - Custom contracts package (from 20 contracts, 250₸/contract, discount after 50)
-- ✅ **NEW: Custom template request system** (user uploads document → admin creates template → assigned to user only)
+- ✅ **Custom template request system** (user uploads document → admin creates template → assigned to user only)
+- ✅ **Public verification page with multi-language support** (/verify/:id)
+  - Language switcher (RU/EN/KK)
+  - New 2tick logo
+  - Fully localized content
 
 ### New Pricing Structure
 | Plan | Price | Features |
