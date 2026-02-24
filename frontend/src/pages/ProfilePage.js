@@ -131,6 +131,124 @@ const ProfilePage = () => {
     }
   };
 
+  // Fetch custom contracts pricing
+  const fetchCustomPricing = async (count) => {
+    if (count < 20) return;
+    setLoadingPricing(true);
+    try {
+      const response = await axios.get(`${API}/pricing/calculate-custom?count=${count}`);
+      setCustomPricing(response.data);
+    } catch (error) {
+      console.error('Error calculating price:', error);
+    } finally {
+      setLoadingPricing(false);
+    }
+  };
+
+  // Fetch user's custom template requests
+  const fetchCustomTemplateRequests = async () => {
+    try {
+      const response = await axios.get(`${API}/custom-template-requests/my`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setCustomTemplateRequests(response.data);
+    } catch (error) {
+      console.error('Error fetching custom template requests:', error);
+    }
+  };
+
+  // Effect to fetch custom pricing when count changes
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchCustomPricing(customContractsCount);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [customContractsCount]);
+
+  // Fetch custom template requests on mount
+  useEffect(() => {
+    fetchCustomTemplateRequests();
+  }, []);
+
+  // Handle custom contracts purchase
+  const handlePurchaseCustomContracts = async () => {
+    if (!customPricing || customContractsCount < 20) return;
+    
+    setProcessingPayment(true);
+    try {
+      const response = await axios.post(`${API}/payment/create`, {
+        plan_id: 'custom_contracts',
+        amount: customPricing.price,
+        custom_contracts_count: customContractsCount,
+        auto_renewal: false
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (response.data.payment_url) {
+        window.location.href = response.data.payment_url;
+      } else {
+        toast.error(t('tariffs.paymentError', 'Ошибка инициализации платежа'));
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
+      toast.error(error.response?.data?.detail || t('tariffs.paymentError'));
+    } finally {
+      setProcessingPayment(false);
+    }
+  };
+
+  // Handle custom template purchase
+  const handlePurchaseCustomTemplate = async () => {
+    setProcessingPayment(true);
+    try {
+      const response = await axios.post(`${API}/payment/create`, {
+        plan_id: 'custom_template',
+        amount: 29990,
+        auto_renewal: false
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (response.data.payment_url) {
+        window.location.href = response.data.payment_url;
+      } else {
+        toast.error(t('tariffs.paymentError', 'Ошибка инициализации платежа'));
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
+      toast.error(error.response?.data?.detail || t('tariffs.paymentError'));
+    } finally {
+      setProcessingPayment(false);
+    }
+  };
+
+  // Submit custom template request with document
+  const handleSubmitCustomTemplateRequest = async () => {
+    const formData = new FormData();
+    formData.append('description', customTemplateDescription);
+    if (customTemplateFile) {
+      formData.append('file', customTemplateFile);
+    }
+    
+    try {
+      await axios.post(`${API}/custom-template-requests`, formData, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      toast.success(t('tariffs.requestSubmitted', 'Заявка отправлена'));
+      setShowCustomTemplateForm(false);
+      setCustomTemplateDescription('');
+      setCustomTemplateFile(null);
+      fetchCustomTemplateRequests();
+    } catch (error) {
+      console.error('Error submitting request:', error);
+      toast.error(error.response?.data?.detail || t('common.error'));
+    }
+  };
+
   const fetchUserProfile = async () => {
     try {
       const [profileRes, statsRes] = await Promise.all([
