@@ -2104,6 +2104,14 @@ async def get_current_user_optional(
     except Exception:
         return None
 
+async def get_current_admin(credentials: HTTPAuthorizationCredentials = Depends(security)) -> dict:
+    """Get current user and verify admin role"""
+    token = credentials.credentials
+    user = verify_jwt_token(token)
+    if user.get('role') != 'admin':
+        raise HTTPException(status_code=403, detail="Admin access required")
+    return user
+
 async def log_audit(action: str, contract_id: str = None, user_id: str = None, details: str = None, ip: str = None):
     log = AuditLog(action=action, contract_id=contract_id, user_id=user_id, details=details, ip_address=ip)
     doc = log.model_dump()
