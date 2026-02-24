@@ -6181,7 +6181,7 @@ async def get_custom_template_request(
 @api_router.put("/admin/custom-template-requests/{request_id}")
 async def update_custom_template_request(
     request_id: str,
-    status: Optional[str] = None,
+    new_status: Optional[str] = None,
     admin_notes: Optional[str] = None,
     assigned_template_id: Optional[str] = None,
     current_user: dict = Depends(get_current_admin)
@@ -6193,9 +6193,9 @@ async def update_custom_template_request(
     
     update_data = {"updated_at": datetime.now(timezone.utc).isoformat()}
     
-    if status:
-        update_data["status"] = status
-        if status == "completed":
+    if new_status:
+        update_data["status"] = new_status
+        if new_status == "completed":
             update_data["completed_at"] = datetime.now(timezone.utc).isoformat()
     
     if admin_notes is not None:
