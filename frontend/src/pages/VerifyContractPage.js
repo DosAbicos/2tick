@@ -77,6 +77,33 @@ const VerifyContractPage = () => {
   if (error || !contract) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-sky-50 flex items-center justify-center p-4">
+        {/* Language Switcher */}
+        <div className="fixed top-4 right-4 z-50">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button 
+                className="h-9 px-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-blue-400 transition-all flex items-center gap-1 shadow-sm"
+                data-testid="verify-language-switcher"
+              >
+                {currentLang.toUpperCase()}
+                <ChevronDown className="w-4 h-4" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="bg-white border border-gray-200 rounded-lg shadow-lg">
+              {langOptions.map((lang) => (
+                <DropdownMenuItem
+                  key={lang.code}
+                  onClick={() => changeLanguage(lang.code)}
+                  className={`px-3 py-2 text-sm hover:bg-gray-50 cursor-pointer ${currentLang === lang.code ? 'bg-blue-50 text-blue-700' : ''}`}
+                  data-testid={`verify-lang-option-${lang.code}`}
+                >
+                  {lang.label}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -85,13 +112,13 @@ const VerifyContractPage = () => {
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <XCircle className="w-8 h-8 text-red-500" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Договор не найден</h1>
-          <p className="text-gray-600 mb-6">Указанный договор не существует или был удалён.</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('verifyContract.notFound')}</h1>
+          <p className="text-gray-600 mb-6">{t('verifyContract.notFoundDesc')}</p>
           <Link 
             to="/"
             className="inline-block px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium"
           >
-            На главную
+            {t('verifyContract.goHome')}
           </Link>
         </motion.div>
       </div>
