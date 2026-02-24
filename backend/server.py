@@ -5805,43 +5805,81 @@ async def payment_result(request: Request):
     if pg_result == '1':  # Success
         # Activate subscription
         plan = TARIFF_PLANS.get(payment['plan_id'])
-        expires_at = datetime.now(timezone.utc) + timedelta(days=30)
         
-        # Create or update subscription
-        subscription = Subscription(
-            user_id=payment['user_id'],
-            plan_id=payment['plan_id'],
-            contract_limit=plan['contracts'],
-            auto_renewal=payment.get('auto_renewal', False),
-            expires_at=expires_at,
-            payment_id=payment['id']
-        )
+        # Handle different plan types
+        if payment['plan_id'] == 'custom_contracts':
+            # Custom contracts - no expiry, no monthly reset
+            contracts_count = payment.get('custom_contracts_count', 20)
+            subscription = Subscription(
+                user_id=payment['user_id'],
+                plan_id=payment['plan_id'],
+                contract_limit=contracts_count,
+                auto_renewal=False,
+                is_permanent=True,  # No monthly reset
+                expires_at=None,  # Never expires
+                payment_id=payment['id']
+            )
+            new_contract_limit = contracts_count
+        elif payment['plan_id'] == 'custom_template':
+            # Custom template - create a request for admin
+            request_obj = CustomTemplateRequest(
+                user_id=payment['user_id'],
+                status="paid",
+                payment_id=payment['id']
+            )
+            req_dict = request_obj.model_dump()
+            req_dict['created_at'] = req_dict['created_at'].isoformat() if req_dict.get('created_at') else None
+            req_dict['updated_at'] = req_dict['updated_at'].isoformat() if req_dict.get('updated_at') else None
+            await db.custom_template_requests.insert_one(req_dict)
+            
+            # No subscription change for custom_template
+            subscription = None
+            new_contract_limit = None
+        else:
+            # Regular plans (start, business)
+            expires_at = datetime.now(timezone.utc) + timedelta(days=30)
+            subscription = Subscription(
+                user_id=payment['user_id'],
+                plan_id=payment['plan_id'],
+                contract_limit=plan['contracts'],
+                auto_renewal=payment.get('auto_renewal', False),
+                is_permanent=False,
+                expires_at=expires_at,
+                payment_id=payment['id']
+            )
+            new_contract_limit = plan['contracts']
         
-        sub_dict = subscription.model_dump()
-        sub_dict['started_at'] = sub_dict['started_at'].isoformat() if sub_dict.get('started_at') else None
-        sub_dict['expires_at'] = sub_dict['expires_at'].isoformat() if sub_dict.get('expires_at') else None
-        
-        # Upsert subscription
-        await db.subscriptions.update_one(
-            {"user_id": payment['user_id']},
-            {"$set": sub_dict},
-            upsert=True
-        )
+        if subscription:
+            sub_dict = subscription.model_dump()
+            sub_dict['started_at'] = sub_dict['started_at'].isoformat() if sub_dict.get('started_at') else None
+            sub_dict['expires_at'] = sub_dict['expires_at'].isoformat() if sub_dict.get('expires_at') else None
+            
+            # Upsert subscription
+            await db.subscriptions.update_one(
+                {"user_id": payment['user_id']},
+                {"$set": sub_dict},
+                upsert=True
+            )
         
         # Update user's contract limit
-        await db.users.update_one(
-            {"id": payment['user_id']},
-            {"$set": {"contract_limit": plan['contracts']}}
-        )
+        if new_contract_limit:
+            await db.users.update_one(
+                {"id": payment['user_id']},
+                {"$set": {"contract_limit": new_contract_limit}}
+            )
         
         # Update payment status
+        expires_at_iso = None
+        if payment['plan_id'] not in ['custom_contracts', 'custom_template']:
+            expires_at_iso = (datetime.now(timezone.utc) + timedelta(days=30)).isoformat()
+        
         await db.payments.update_one(
             {"id": payment['id']},
             {"$set": {
                 "status": "success",
                 "pg_payment_id": pg_payment_id,
                 "paid_at": datetime.now(timezone.utc).isoformat(),
-                "expires_at": expires_at.isoformat()
+                "expires_at": expires_at_iso
             }}
         )
         
