@@ -422,6 +422,18 @@ const ProfilePage = () => {
               {t('profile.tariffsTab')}
             </button>
             <button
+              onClick={() => setActiveTab('custom')}
+              className={`px-6 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 ${
+                activeTab === 'custom'
+                  ? 'bg-white text-purple-600 shadow-md'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+              data-testid="tab-custom"
+            >
+              <Package className="w-4 h-4 inline-block mr-2" />
+              {t('profile.customTab', 'Индивидуальные')}
+            </button>
+            <button
               onClick={() => setActiveTab('history')}
               className={`px-6 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 ${
                 activeTab === 'history'
