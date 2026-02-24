@@ -1142,24 +1142,32 @@ const ProfilePage = () => {
 
         {/* Payment History Tab */}
         {activeTab === 'history' && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="px-2 sm:px-0"
-          >
-            <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6">
-              <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                <Receipt className="w-6 h-6 text-blue-600" />
-                {t('profile.paymentHistory', 'История покупок')}
-              </h2>
-
-              {paymentHistory.length === 0 ? (
-                <div className="text-center py-12">
-                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Receipt className="w-8 h-8 text-gray-400" />
                   </div>
-                  <p className="text-gray-500">{t('profile.noPayments', 'У вас пока нет покупок')}</p>
+                  <div>
+                    <h3 className="text-xl font-bold text-gray-900">{t('tariffs.customContracts.title', 'Пакет договоров')}</h3>
+                    <p className="text-sm text-gray-500">{t('tariffs.customContracts.desc', 'Договоры не сгорают ежемесячно')}</p>
+                  </div>
+                </div>
+
+                {/* Counter */}
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {t('tariffs.customContracts.selectCount', 'Количество договоров')}
+                  </label>
+                  <div className="flex items-center gap-4">
+                    <button
+                      onClick={() => setCustomContractsCount(Math.max(20, customContractsCount - 10))}
+                      className="w-10 h-10 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center hover:bg-orange-200 transition-colors"
+                      disabled={customContractsCount <= 20}
+                    >
+                      <Minus className="w-5 h-5" />
+                    </button>
+                    <input
+                      type="number"
+                      min="20"
+                      value={customContractsCount}
+                      onChange={(e) => setCustomContractsCount(Math.max(20, parseInt(e.target.value) || 20))}
+                      className="flex-1 text-center text-2xl font-bold text-gray-900 border-2 border-orange-200 rounded-lg py-2 focus:border-orange-500 focus:ring-0"
                     />
                     <button
                       onClick={() => setCustomContractsCount(customContractsCount + 10)}
