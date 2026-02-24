@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, Zap, Shield, Users, ArrowRight, Check, FileText, Smartphone, ChevronDown, Package } from 'lucide-react';
+import { CheckCircle2, Zap, Shield, Users, ArrowRight, Check, FileText, Smartphone, ChevronDown } from 'lucide-react';
 import Header from '../components/Header';
 import '../styles/neumorphism.css';
 
