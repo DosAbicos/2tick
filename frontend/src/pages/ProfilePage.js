@@ -1160,24 +1160,14 @@ const ProfilePage = () => {
                     <Receipt className="w-8 h-8 text-gray-400" />
                   </div>
                   <p className="text-gray-500">{t('profile.noPayments', 'У вас пока нет покупок')}</p>
-                    />
-                    <button
-                      onClick={() => setCustomContractsCount(customContractsCount + 10)}
-                      className="w-10 h-10 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center hover:bg-orange-200 transition-colors"
-                    >
-                      <Plus className="w-5 h-5" />
-                    </button>
-                  </div>
                 </div>
-
-                {/* Pricing Info */}
-                {customPricing && (
-                  <div className="bg-white rounded-lg p-4 mb-6 border border-orange-100">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-gray-600">{t('tariffs.customContracts.pricePerContract', 'Цена за договор')}:</span>
-                      <span className="font-semibold text-gray-900">{customPricing.price_per_contract} ₸</span>
-                    </div>
-                    {customPricing.discount > 0 && (
+              ) : (
+                <div className="space-y-4">
+                  {paymentHistory.map((payment) => (
+                    <div 
+                      key={payment.id}
+                      className={`border rounded-xl p-5 transition-all ${
+                        payment.status === 'success'
                       <div className="flex justify-between items-center mb-2 text-green-600">
                         <span>{t('tariffs.customContracts.discount', 'Скидка')}:</span>
                         <span className="font-semibold">-{customPricing.discount.toLocaleString()} ₸</span>
