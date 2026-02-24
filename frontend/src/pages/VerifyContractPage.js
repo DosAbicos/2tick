@@ -1,17 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { motion } from 'framer-motion';
-import { CheckCircle, XCircle, FileText, User, Calendar, Hash, Shield, Clock, Building, Phone, Mail } from 'lucide-react';
+import { CheckCircle, XCircle, FileText, User, Calendar, Hash, Shield, Clock, ChevronDown } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 const API = process.env.REACT_APP_BACKEND_URL;
 
 const VerifyContractPage = () => {
   const { contractId } = useParams();
+  const { t, i18n } = useTranslation();
   const [contract, setContract] = useState(null);
   const [signature, setSignature] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentLang, setCurrentLang] = useState(i18n.language || 'ru');
+
+  const langOptions = [
+    { code: 'ru', label: 'Русский' },
+    { code: 'kk', label: 'Қазақша' },
+    { code: 'en', label: 'English' }
+  ];
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    localStorage.setItem('language', lng);
+    setCurrentLang(lng);
+    document.documentElement.lang = lng;
+  };
 
   useEffect(() => {
     const fetchContract = async () => {
@@ -26,14 +48,14 @@ const VerifyContractPage = () => {
         if (contractRes?.data) {
           setContract(contractRes.data);
         } else {
-          setError('Договор не найден');
+          setError(t('verifyContract.notFound'));
         }
         
         if (signatureRes?.data) {
           setSignature(signatureRes.data);
         }
       } catch (err) {
-        setError('Ошибка при загрузке договора');
+        setError(t('verifyContract.loadError'));
       } finally {
         setLoading(false);
       }
@@ -42,7 +64,7 @@ const VerifyContractPage = () => {
     if (contractId) {
       fetchContract();
     }
-  }, [contractId]);
+  }, [contractId, t]);
 
   if (loading) {
     return (
