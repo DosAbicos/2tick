@@ -76,9 +76,9 @@ const VerifyContractPage = () => {
 
   if (error || !contract) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-sky-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-sky-50 flex items-center justify-center p-4 relative">
         {/* Language Switcher */}
-        <div className="fixed top-4 right-4 z-50">
+        <div className="absolute top-4 right-4 z-50">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button 
