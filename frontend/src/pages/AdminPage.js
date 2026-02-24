@@ -655,7 +655,7 @@ const AdminPage = () => {
         </div>
 
         <Tabs value={activeMainTab} onValueChange={setActiveMainTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 minimal-card p-1 h-auto gap-1">
+          <TabsList className="grid w-full grid-cols-3 minimal-card p-1 h-auto gap-1">
             <TabsTrigger 
               value="activity"
               className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-blue-500 data-[state=active]:text-white transition-all duration-300 rounded-lg py-3"
@@ -669,6 +669,13 @@ const AdminPage = () => {
             >
               <Users className="h-4 w-4 mr-2" />
               Пользователи ({stats?.total_users || 0})
+            </TabsTrigger>
+            <TabsTrigger 
+              value="requests"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-purple-500 data-[state=active]:text-white transition-all duration-300 rounded-lg py-3"
+            >
+              <Package className="h-4 w-4 mr-2" />
+              Заявки ({customTemplateRequests.filter(r => r.status !== 'completed').length})
             </TabsTrigger>
           </TabsList>
 
