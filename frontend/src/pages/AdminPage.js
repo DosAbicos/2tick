@@ -79,6 +79,13 @@ const AdminPage = () => {
   const [deleteUserOpen, setDeleteUserOpen] = useState(false);
   const [errorsModalOpen, setErrorsModalOpen] = useState(false);
   
+  // Custom template requests states
+  const [customTemplateRequests, setCustomTemplateRequests] = useState([]);
+  const [loadingRequests, setLoadingRequests] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [requestModalOpen, setRequestModalOpen] = useState(false);
+  const [templates, setTemplates] = useState([]);
+  
   // Form states
   const [newPassword, setNewPassword] = useState('');
   const [contractsToAdd, setContractsToAdd] = useState(1);
