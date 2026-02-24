@@ -39,7 +39,7 @@ Build a comprehensive contract signing platform (2tick.kz) with:
 | FREE | 0₸ | 3 contracts/month |
 | START | 5,990₸/month | 20 contracts |
 | BUSINESS | 14,990₸/month | 50 contracts |
-| Individual Contract | 29,990₸ one-time | Custom template for your business |
+| Individual Contract | 6,990₸ one-time | Custom template for your business |
 | Contract Package | from 5,000₸ | 20+ contracts, never expire |
 
 ### Known Issues
@@ -59,11 +59,13 @@ Build a comprehensive contract signing platform (2tick.kz) with:
 - **Deployment:** Docker Compose
 
 ### Key Files
+- `frontend/src/pages/VerifyContractPage.js` - Public contract verification page with multi-language support
 - `frontend/src/pages/SignContractPage.js` - Contract signing flow
 - `frontend/src/pages/ProfilePage.js` - User profile with custom plans tab
 - `frontend/src/pages/NewLandingPage.js` - Landing page with pricing
 - `frontend/src/pages/AdminPage.js` - Admin panel with requests management
 - `backend/server.py` - All backend logic
+- `frontend/public/assets/logo-2tick.png` - New 2tick logo (512x512)
 
 ### Key API Endpoints
 - `POST /api/contracts/upload-pdf` - Upload PDF contract
