@@ -5555,9 +5555,10 @@ def verify_freedompay_signature(script_name: str, params: dict, signature: str, 
     return calculated_sig == signature
 
 class PaymentCreate(BaseModel):
-    plan_id: str  # 'start' or 'business'
+    plan_id: str  # 'start', 'business', 'custom_template', 'custom_contracts'
     amount: int
     auto_renewal: bool = False
+    custom_contracts_count: Optional[int] = None  # For custom_contracts plan
 
 class Payment(BaseModel):
     """Payment record in database"""
@@ -5571,6 +5572,7 @@ class Payment(BaseModel):
     pg_payment_id: Optional[str] = None
     pg_order_id: str = ""
     auto_renewal: bool = False
+    custom_contracts_count: Optional[int] = None  # For custom_contracts plan
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     paid_at: Optional[datetime] = None
     expires_at: Optional[datetime] = None
@@ -5580,20 +5582,69 @@ class Subscription(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     user_id: str
-    plan_id: str  # 'free', 'start', 'business'
+    plan_id: str  # 'free', 'start', 'business', 'custom_template', 'custom_contracts'
     status: str = "active"  # active, expired, cancelled
     contract_limit: int = 3
     auto_renewal: bool = False
+    is_permanent: bool = False  # True for custom_contracts (no monthly reset)
     started_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     expires_at: Optional[datetime] = None
     payment_id: Optional[str] = None
 
+class CustomTemplateRequest(BaseModel):
+    """Request for custom/individual contract template"""
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    status: str = "pending"  # pending, paid, in_progress, completed, cancelled
+    description: str = ""  # User's description of what they need
+    uploaded_document: Optional[str] = None  # Base64 of uploaded document
+    uploaded_document_filename: Optional[str] = None
+    assigned_template_id: Optional[str] = None  # Template ID when completed
+    payment_id: Optional[str] = None
+    admin_notes: Optional[str] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    completed_at: Optional[datetime] = None
+
 # Plan configuration
+# Pricing: 5990/20 = ~300 per contract, with volume discount
+# custom_contracts: 250₸ per contract base, discount after 50
 TARIFF_PLANS = {
-    'free': {'contracts': 3, 'price': 0},
-    'start': {'contracts': 20, 'price': 5990},
-    'business': {'contracts': 50, 'price': 14990}
+    'free': {'contracts': 3, 'price': 0, 'monthly': True},
+    'start': {'contracts': 20, 'price': 5990, 'monthly': True},
+    'business': {'contracts': 50, 'price': 14990, 'monthly': True},
+    'custom_template': {'contracts': 0, 'price': 29990, 'monthly': False},  # One-time payment for custom template
 }
+
+# Custom contracts pricing calculator
+def calculate_custom_contracts_price(count: int) -> dict:
+    """Calculate price for custom contracts package (no monthly reset)"""
+    if count < 20:
+        return {"error": "Minimum 20 contracts required"}
+    
+    base_price_per_contract = 250  # Base price per contract
+    
+    if count <= 50:
+        # No discount for 20-50
+        total = count * base_price_per_contract
+        return {"count": count, "price": total, "discount": 0, "price_per_contract": base_price_per_contract}
+    else:
+        # Discount after 50 contracts: 10% off = 225₸ per contract
+        discount_price = 225
+        # First 50 at full price, rest at discount
+        total_full = 50 * base_price_per_contract
+        total_discount = (count - 50) * discount_price
+        total = total_full + total_discount
+        discount_amount = (count - 50) * (base_price_per_contract - discount_price)
+        avg_price = total / count
+        return {
+            "count": count, 
+            "price": total, 
+            "discount": discount_amount,
+            "price_per_contract": round(avg_price),
+            "discount_info": f"Скидка 25₸ на каждый договор после 50-го (экономия {discount_amount}₸)"
+        }
 
 @api_router.post("/payment/create")
 async def create_payment(
