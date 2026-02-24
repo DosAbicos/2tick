@@ -1141,18 +1141,7 @@ const ProfilePage = () => {
         )}
 
         {/* Payment History Tab */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="px-2 sm:px-0"
-          >
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Custom Contracts Calculator */}
-              <div className="bg-gradient-to-br from-orange-50 to-white rounded-xl shadow-md border border-orange-200 p-6">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center">
-                    <Package className="w-6 h-6 text-orange-600" />
+        {activeTab === 'history' && (
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-gray-900">{t('tariffs.customContracts.title', 'Пакет договоров')}</h3>
