@@ -2092,6 +2092,18 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     token = credentials.credentials
     return verify_jwt_token(token)
 
+async def get_current_user_optional(
+    authorization: Optional[str] = Header(None)
+) -> Optional[dict]:
+    """Optional authentication - returns None if not authenticated"""
+    if not authorization or not authorization.startswith('Bearer '):
+        return None
+    try:
+        token = authorization.split(' ')[1]
+        return verify_jwt_token(token)
+    except Exception:
+        return None
+
 async def log_audit(action: str, contract_id: str = None, user_id: str = None, details: str = None, ip: str = None):
     log = AuditLog(action=action, contract_id=contract_id, user_id=user_id, details=details, ip_address=ip)
     doc = log.model_dump()
