@@ -830,8 +830,193 @@ const AdminPage = () => {
               }}
             />
           </TabsContent>
+
+          {/* Requests Tab */}
+          <TabsContent value="requests" className="space-y-4">
+            <div className="minimal-card p-6">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">Заявки на индивидуальные договоры</h2>
+                  <p className="text-gray-600 mt-1">Управление заявками пользователей</p>
+                </div>
+                <Button 
+                  variant="outline" 
+                  onClick={fetchCustomTemplateRequests}
+                  disabled={loadingRequests}
+                >
+                  Обновить
+                </Button>
+              </div>
+
+              {loadingRequests ? (
+                <div className="text-center py-8">
+                  <Loader />
+                </div>
+              ) : customTemplateRequests.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  Нет заявок
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {customTemplateRequests.map((request) => (
+                    <div key={request.id} className="border border-gray-200 rounded-lg p-4 hover:border-purple-300 transition-colors">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <Badge className={
+                              request.status === 'completed' ? 'bg-green-100 text-green-700' :
+                              request.status === 'in_progress' ? 'bg-blue-100 text-blue-700' :
+                              request.status === 'paid' ? 'bg-yellow-100 text-yellow-700' :
+                              'bg-gray-100 text-gray-700'
+                            }>
+                              {request.status === 'completed' ? 'Готово' :
+                               request.status === 'in_progress' ? 'В работе' :
+                               request.status === 'paid' ? 'Оплачено' :
+                               request.status}
+                            </Badge>
+                            <span className="text-sm text-gray-500">
+                              {new Date(request.created_at).toLocaleDateString('ru-RU')}
+                            </span>
+                          </div>
+                          <div className="mb-2">
+                            <span className="text-sm font-medium text-gray-900">
+                              {request.user?.full_name || request.user?.email || 'Неизвестный пользователь'}
+                            </span>
+                            {request.user?.company_name && (
+                              <span className="text-sm text-gray-500 ml-2">({request.user.company_name})</span>
+                            )}
+                          </div>
+                          {request.description && (
+                            <p className="text-sm text-gray-600 mb-2">{request.description}</p>
+                          )}
+                          {request.uploaded_document_filename && (
+                            <div className="flex items-center gap-2 text-sm text-purple-600">
+                              <FileText className="h-4 w-4" />
+                              {request.uploaded_document_filename}
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {request.uploaded_document && (
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => handleDownloadDocument(request)}
+                            >
+                              <Download className="h-4 w-4" />
+                            </Button>
+                          )}
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => {
+                              setSelectedRequest(request);
+                              fetchTemplates();
+                              setRequestModalOpen(true);
+                            }}
+                          >
+                            <Eye className="h-4 w-4 mr-1" />
+                            Детали
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </TabsContent>
         </Tabs>
       </div>
+
+      {/* Request Details Dialog */}
+      <Dialog open={requestModalOpen} onOpenChange={setRequestModalOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Заявка на индивидуальный договор</DialogTitle>
+            <DialogDescription>
+              {selectedRequest?.user?.email}
+            </DialogDescription>
+          </DialogHeader>
+          {selectedRequest && (
+            <div className="space-y-4">
+              <div>
+                <Label className="text-gray-500">Пользователь</Label>
+                <p className="font-medium">{selectedRequest.user?.full_name || '-'}</p>
+                <p className="text-sm text-gray-500">{selectedRequest.user?.email}</p>
+                {selectedRequest.user?.phone && (
+                  <p className="text-sm text-gray-500">{selectedRequest.user.phone}</p>
+                )}
+              </div>
+              
+              {selectedRequest.description && (
+                <div>
+                  <Label className="text-gray-500">Описание</Label>
+                  <p>{selectedRequest.description}</p>
+                </div>
+              )}
+              
+              <div>
+                <Label className="text-gray-500">Статус</Label>
+                <select
+                  value={selectedRequest.status}
+                  onChange={(e) => setSelectedRequest({...selectedRequest, status: e.target.value})}
+                  className="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500"
+                >
+                  <option value="paid">Оплачено</option>
+                  <option value="in_progress">В работе</option>
+                  <option value="completed">Готово</option>
+                </select>
+              </div>
+              
+              {selectedRequest.status === 'completed' && (
+                <div>
+                  <Label className="text-gray-500">Назначить шаблон</Label>
+                  <select
+                    value={selectedRequest.assigned_template_id || ''}
+                    onChange={(e) => setSelectedRequest({...selectedRequest, assigned_template_id: e.target.value})}
+                    className="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500"
+                  >
+                    <option value="">Выберите шаблон</option>
+                    {templates.map((t) => (
+                      <option key={t.id} value={t.id}>{t.name}</option>
+                    ))}
+                  </select>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Шаблон будет доступен только этому пользователю
+                  </p>
+                </div>
+              )}
+              
+              <div>
+                <Label className="text-gray-500">Заметки администратора</Label>
+                <textarea
+                  value={selectedRequest.admin_notes || ''}
+                  onChange={(e) => setSelectedRequest({...selectedRequest, admin_notes: e.target.value})}
+                  className="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500 resize-none h-20"
+                  placeholder="Внутренние заметки..."
+                />
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRequestModalOpen(false)}>
+              Отмена
+            </Button>
+            <Button 
+              className="bg-purple-600 hover:bg-purple-700"
+              onClick={() => handleUpdateRequest(
+                selectedRequest.id, 
+                selectedRequest.status,
+                selectedRequest.assigned_template_id,
+                selectedRequest.admin_notes
+              )}
+            >
+              Сохранить
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* User Details Dialog */}
       <Dialog open={userDetailsOpen} onOpenChange={setUserDetailsOpen}>
