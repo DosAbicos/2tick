@@ -962,25 +962,25 @@ const ProfilePage = () => {
                   </div>
 
                   {customPricing && (
-                    <div className="bg-white rounded-lg p-4 mb-6 border border-orange-100">
+                    <div className="bg-white rounded-lg p-3 sm:p-4 mb-4 sm:mb-6 border border-orange-100">
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-gray-600">{t('tariffs.customContracts.pricePerContract', 'Цена за договор')}:</span>
+                        <span className="text-sm text-gray-600">{t('tariffs.customContracts.pricePerContract', 'Цена за договор')}:</span>
                         <span className="font-semibold text-gray-900">{customPricing.price_per_contract} ₸</span>
                       </div>
                       {customPricing.discount > 0 && (
-                        <div className="flex justify-between items-center mb-2 text-green-600">
+                        <div className="flex justify-between items-center mb-2 text-green-600 text-sm">
                           <span>{t('tariffs.customContracts.discount', 'Скидка')}:</span>
                           <span className="font-semibold">-{customPricing.discount.toLocaleString()} ₸</span>
                         </div>
                       )}
                       <div className="border-t border-orange-100 pt-2 mt-2">
                         <div className="flex justify-between items-center">
-                          <span className="text-lg font-bold text-gray-900">{t('tariffs.customContracts.total', 'Итого')}:</span>
-                          <span className="text-2xl font-bold text-orange-600">{customPricing.price.toLocaleString()} ₸</span>
+                          <span className="text-base sm:text-lg font-bold text-gray-900">{t('tariffs.customContracts.total', 'Итого')}:</span>
+                          <span className="text-xl sm:text-2xl font-bold text-orange-600">{customPricing.price.toLocaleString()} ₸</span>
                         </div>
                       </div>
                       {customPricing.discount_info && (
-                        <p className="text-sm text-green-600 mt-2">{customPricing.discount_info}</p>
+                        <p className="text-xs sm:text-sm text-green-600 mt-2">{customPricing.discount_info}</p>
                       )}
                     </div>
                   )}
