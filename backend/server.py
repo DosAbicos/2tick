@@ -6215,7 +6215,7 @@ async def update_custom_template_request(
     )
     
     await log_audit("custom_template_request_updated", user_id=current_user['user_id'],
-                   details=f"Request ID: {request_id}, Status: {status}")
+                   details=f"Request ID: {request_id}, Status: {new_status}")
     
     return {"message": "Request updated successfully"}
 
