@@ -933,30 +933,30 @@ const ProfilePage = () => {
                     </div>
                   </div>
 
-                  <div className="mb-6">
+                  <div className="mb-4 sm:mb-6">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       {t('tariffs.customContracts.selectCount', 'Количество договоров')}
                     </label>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 sm:gap-4">
                       <button
                         onClick={() => setCustomContractsCount(Math.max(20, customContractsCount - 10))}
-                        className="w-10 h-10 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center hover:bg-orange-200 transition-colors"
+                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center hover:bg-orange-200 transition-colors flex-shrink-0"
                         disabled={customContractsCount <= 20}
                       >
-                        <Minus className="w-5 h-5" />
+                        <Minus className="w-4 h-4 sm:w-5 sm:h-5" />
                       </button>
                       <input
                         type="number"
                         min="20"
                         value={customContractsCount}
                         onChange={(e) => setCustomContractsCount(Math.max(20, parseInt(e.target.value) || 20))}
-                        className="flex-1 text-center text-2xl font-bold text-gray-900 border-2 border-orange-200 rounded-lg py-2 focus:border-orange-500 focus:ring-0"
+                        className="flex-1 min-w-0 text-center text-xl sm:text-2xl font-bold text-gray-900 border-2 border-orange-200 rounded-lg py-2 focus:border-orange-500 focus:ring-0"
                       />
                       <button
                         onClick={() => setCustomContractsCount(customContractsCount + 10)}
-                        className="w-10 h-10 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center hover:bg-orange-200 transition-colors"
+                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center hover:bg-orange-200 transition-colors flex-shrink-0"
                       >
-                        <Plus className="w-5 h-5" />
+                        <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
                       </button>
                     </div>
                   </div>
