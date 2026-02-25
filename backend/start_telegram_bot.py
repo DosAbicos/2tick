@@ -242,7 +242,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         # Regular /start without deep link
         await update.message.reply_text(
-            "✅ *Добро пожаловать в Signify KZ!*\n\n"
+            "✅ *Добро пожаловать в 2tick.kz!*\n\n"
             "Этот бот отправляет коды подтверждения для:\n"
             "• Регистрации на сайте\n"
             "• Подписания договоров\n\n"
