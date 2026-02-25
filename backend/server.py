@@ -3109,7 +3109,7 @@ async def send_contract(contract_id: str, current_user: dict = Depends(get_curre
     
     # Send SMS with link (mocked)
     otp_code = generate_otp()
-    message = f"Signify KZ: Sign contract '{contract['title']}'. Link: {signature_link}. Code: {otp_code}"
+    message = f"2tick.kz: Sign contract '{contract['title']}'. Link: {signature_link}. Code: {otp_code}"
     send_sms(contract['signer_phone'], message)
     
     # Update contract status

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Telegram Bot для Signify KZ - запуск
+Telegram Bot для 2tick.kz - запуск
 Этот бот отвечает на /start и готов принимать сообщения для OTP
 """
 
@@ -78,17 +78,17 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 # Translations for registration
                 translations = {
                     'ru': {
-                        'welcome': "✅ *Добро пожаловать в Signify KZ!*\n\nПодтверждение регистрации через Telegram.\n\nСейчас я отправлю вам код...",
+                        'welcome': "✅ *Добро пожаловать в 2tick.kz!*\n\nПодтверждение регистрации через Telegram.\n\nСейчас я отправлю вам код...",
                         'message': 'Ваш код',
                         'button': '📋 Скопировать код'
                     },
                     'kk': {
-                        'welcome': "✅ *Signify KZ-ге қош келдіңіз!*\n\nTelegram арқылы тіркелуді растау.\n\nМен сізге кодты жіберемін...",
+                        'welcome': "✅ *2tick.kz-ге қош келдіңіз!*\n\nTelegram арқылы тіркелуді растау.\n\nМен сізге кодты жіберемін...",
                         'message': 'Сіздің кодыңыз',
                         'button': '📋 Кодты көшіру'
                     },
                     'en': {
-                        'welcome': "✅ *Welcome to Signify KZ!*\n\nRegistration confirmation via Telegram.\n\nI will send you a code now...",
+                        'welcome': "✅ *Welcome to 2tick.kz!*\n\nRegistration confirmation via Telegram.\n\nI will send you a code now...",
                         'message': 'Your code is',
                         'button': '📋 Copy Code'
                     }
@@ -168,17 +168,17 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 # Translations
                 translations = {
                     'ru': {
-                        'welcome': "✅ *Добро пожаловать в Signify KZ!*\n\nЭтот бот отправляет коды подтверждения для подписания договоров.\n\nСейчас я отправлю вам код...",
+                        'welcome': "✅ *Добро пожаловать в 2tick.kz!*\n\nЭтот бот отправляет коды подтверждения для подписания договоров.\n\nСейчас я отправлю вам код...",
                         'message': 'Ваш код',
                         'button': '📋 Скопировать код'
                     },
                     'kk': {
-                        'welcome': "✅ *Signify KZ-ге қош келдіңіз!*\n\nБұл бот келісімшарттарға қол қою үшін растау кодтарын жібереді.\n\nМен сізге кодты жіберемін...",
+                        'welcome': "✅ *2tick.kz-ге қош келдіңіз!*\n\nБұл бот келісімшарттарға қол қою үшін растау кодтарын жібереді.\n\nМен сізге кодты жіберемін...",
                         'message': 'Сіздің кодыңыз',
                         'button': '📋 Кодты көшіру'
                     },
                     'en': {
-                        'welcome': "✅ *Welcome to Signify KZ!*\n\nThis bot sends verification codes for signing contracts.\n\nI will send you a code now...",
+                        'welcome': "✅ *Welcome to 2tick.kz!*\n\nThis bot sends verification codes for signing contracts.\n\nI will send you a code now...",
                         'message': 'Your code is',
                         'button': '📋 Copy Code'
                     }
@@ -256,7 +256,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 def main():
     """Запуск бота"""
-    print("🤖 Starting Telegram Bot for Signify KZ...", flush=True)
+    print("🤖 Starting Telegram Bot for 2tick.kz...", flush=True)
     print(f"🔑 Token: {TELEGRAM_BOT_TOKEN[:20]}...", flush=True)
     
     application = Application.builder().token(TELEGRAM_BOT_TOKEN).build()
